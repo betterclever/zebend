@@ -111,7 +111,7 @@ impl Gen {
         format!("{base}{}", self.n)
     }
     fn bind(&mut self, expr: String) -> String {
-        self.bind_t(expr, "Fp.Fp")
+        self.bind_t(expr, "L.BF")
     }
     fn bind_t(&mut self, expr: String, ty: &str) -> String {
         let v = self.fresh("t");
@@ -131,24 +131,24 @@ impl Gen {
         }
         let name = format!("K{}", self.consts.len());
         let lit = limbs.iter().map(|x| x.to_string()).collect::<Vec<_>>().join(", ");
-        self.const_defs.push(format!("def {name}() -> Fp.Fp:\n  Fp.Fp{{{lit}}}\n"));
+        self.const_defs.push(format!("def {name}() -> L.BF:\n  L.BF0{{Fp.Fp{{{lit}}}}}\n"));
         self.consts.insert(limbs, name.clone());
         format!("{name}()")
     }
     fn mul(&mut self, a: &str, b: &str) -> String {
-        self.bind(format!("Fp.mul({a}, {b})"))
+        self.bind(format!("L.bmul({a}, {b})"))
     }
     fn add(&mut self, a: &str, b: &str) -> String {
-        self.bind(format!("Fp.add({a}, {b})"))
+        self.bind(format!("L.badd({a}, {b})"))
     }
     fn sub(&mut self, a: &str, b: &str) -> String {
-        self.bind(format!("Fp.sub({a}, {b})"))
+        self.bind(format!("L.bsub({a}, {b})"))
     }
     fn neg(&mut self, a: &str) -> String {
-        self.bind(format!("Fp.neg({a})"))
+        self.bind(format!("L.bneg({a})"))
     }
     fn inv(&mut self, a: &str) -> String {
-        self.bind(format!("Fp.inv({a})"))
+        self.bind(format!("L.binv({a})"))
     }
     fn sq(&mut self, a: &str) -> String {
         self.mul(a, a)
@@ -165,7 +165,7 @@ impl Gen {
     }
     fn log(&mut self, name: &str, v: &str) {
         let st = self.st();
-        self.next_st(format!("L.lgf({st}, \"{name}\", {v})"));
+        self.next_st(format!("L.blgf({st}, \"{name}\", {v})"));
     }
     fn check(&mut self, cond: &str) {
         let st = self.st();
@@ -175,7 +175,7 @@ impl Gen {
         let st = self.st();
         let r = self.fresh("r");
         self.bind_as(&r, format!("L.squeeze({st})"), "L.SF");
-        let v = self.bind(format!("L.sf_v({r})"));
+        let v = self.bind(format!("L.bx(L.sf_v({r}))"));
         self.next_st(format!("L.sf_st({r})"));
         self.log(name, &v);
         v
@@ -184,7 +184,7 @@ impl Gen {
         let st = self.st();
         let r = self.fresh("r");
         self.bind_as(&r, format!("L.rd_scalar({st})"), "L.SF");
-        let v = self.bind(format!("L.sf_v({r})"));
+        let v = self.bind(format!("L.bx(L.sf_v({r}))"));
         self.next_st(format!("L.sf_st({r})"));
         self.log(name, &v);
         v
@@ -194,7 +194,7 @@ impl Gen {
         let r = self.fresh("r");
         self.bind_as(&r, format!("L.rd_point({st})"), "L.SP");
         let p = self.fresh(&format!("p_{name}_"));
-        self.bind_as(&p, format!("L.sp_p({r})"), "V.Pt");
+        self.bind_as(&p, format!("L.bpt(L.sp_p({r}))"), "L.BP");
         self.next_st(format!("L.sp_st({r})"));
         p
     }
@@ -202,13 +202,13 @@ impl Gen {
         let st = self.st();
         let r = self.fresh("r");
         self.bind_as(&r, format!("L.rd_ival({st})"), "L.SF");
-        let v = self.bind(format!("L.sf_v({r})"));
+        let v = self.bind(format!("L.bx(L.sf_v({r}))"));
         self.next_st(format!("L.sf_st({r})"));
         v
     }
     fn ab_point(&mut self, p: &str) {
         let st = self.st();
-        self.next_st(format!("L.ab_point({st}, {p})"));
+        self.next_st(format!("L.bab_point({st}, {p})"));
     }
     fn rd_scalars(&mut self, n: usize) -> String {
         let st = self.st();
@@ -232,17 +232,17 @@ impl Gen {
         self.bind_t("L.ms_empty()".into(), "L.MS")
     }
     fn ms_push(&mut self, m: &str, s: &str, p: &str) -> String {
-        self.bind_t(format!("L.ms_push({m}, {s}, {p})"), "L.MS")
+        self.bind_t(format!("L.bms_push({m}, {s}, {p})"), "L.MS")
     }
     fn ms_scale(&mut self, m: &str, f: &str) -> String {
-        self.bind_t(format!("L.ms_scale({m}, {f})"), "L.MS")
+        self.bind_t(format!("L.bms_scale({m}, {f})"), "L.MS")
     }
     fn ms_cat(&mut self, a: &str, b: &str) -> String {
         self.bind_t(format!("L.ms_cat({a}, {b})"), "L.MS")
     }
     fn ab_scalar(&mut self, v: &str) {
         let st = self.st();
-        self.next_st(format!("L.ab_scalar({st}, {v})"));
+        self.next_st(format!("L.bab_scalar({st}, {v})"));
     }
 
     fn expr(&mut self, e: &Expression<Fp>, fixed: &[String], advice: &[String], inst: &[String]) -> String {
@@ -403,11 +403,11 @@ fn segment(lines: &[String], types: &HashMap<String, String>, result: &str, max_
 }
 
 fn fat(list: &str, i: usize) -> String {
-    format!("L.fat({i}n, {list})")
+    format!("L.bfat({i}n, {list})")
 }
 
 fn pat(list: &str, i: usize) -> String {
-    format!("L.pat({i}n, {list})")
+    format!("L.bpat({i}n, {list})")
 }
 
 /// Emits a Bend module defining `verify(pr: L.Proof) -> L.St` for `num_proofs` circuit
@@ -440,19 +440,19 @@ pub fn bend_verifier(
         }
     };
     let mut point_defs = vec![];
-    point_defs.push(format!("def PARAM_W() -> V.Pt:\n  {}\n", point_lit(&params.w)));
-    point_defs.push(format!("def PARAM_U() -> V.Pt:\n  {}\n", point_lit(&params.u)));
+    point_defs.push(format!("def PARAM_W() -> L.BP:\n  L.BP0{{{}}}\n", point_lit(&params.w)));
+    point_defs.push(format!("def PARAM_U() -> L.BP:\n  L.BP0{{{}}}\n", point_lit(&params.u)));
     let max_len = inst_len.iter().cloned().max().unwrap_or(0);
     for j in 0..max_len {
-        point_defs.push(format!("def G_LAG{j}() -> V.Pt:\n  {}\n", point_lit(&params.g_lagrange[j])));
+        point_defs.push(format!("def G_LAG{j}() -> L.BP:\n  L.BP0{{{}}}\n", point_lit(&params.g_lagrange[j])));
     }
     let g_list: Vec<String> = params.g.iter().map(point_lit).collect();
     point_defs.push(format!("def G_ALL() -> +List<V.Pt>:\n  [{}]\n", g_list.join(",\n   ")));
     for (i, c) in vk.fixed_commitments.iter().enumerate() {
-        point_defs.push(format!("def VK_FIXED{i}() -> V.Pt:\n  {}\n", point_lit(c)));
+        point_defs.push(format!("def VK_FIXED{i}() -> L.BP:\n  L.BP0{{{}}}\n", point_lit(c)));
     }
     for (i, c) in vk.permutation.commitments.iter().enumerate() {
-        point_defs.push(format!("def VK_PERM{i}() -> V.Pt:\n  {}\n", point_lit(c)));
+        point_defs.push(format!("def VK_PERM{i}() -> L.BP:\n  L.BP0{{{}}}\n", point_lit(c)));
     }
 
     // instance commitments: commit_lagrange(instance, Blind::default()) = sum inst_j G_lag_j + 1*W
@@ -463,8 +463,8 @@ pub fn bend_verifier(
             let mut acc = "PARAM_W()".to_string();
             for j in 0..*len {
                 let v = g.rd_ival();
-                let t = g.bind_t(format!("V.scalar_mul_s(G_LAG{j}(), {v})"), "V.Pt");
-                acc = g.bind_t(format!("V.add({acc}, {t})"), "V.Pt");
+                let t = g.bind_t(format!("L.bsmul(G_LAG{j}(), {v})"), "L.BP");
+                acc = g.bind_t(format!("L.bpadd({acc}, {t})"), "L.BP");
             }
             cols.push(acc);
         }
@@ -508,7 +508,7 @@ pub fn bend_verifier(
     let lk = |pi: usize, i: usize, f: usize| fat(&lk_ev[pi], 5 * i + f);
 
     // --- vanishing argument ---
-    let xn = g.bind(format!("Fp.sqr_n({k}n, {x})"));
+    let xn = g.bind(format!("L.bsqrn({k}n, {x})"));
     g.log("xn", &xn);
     let bf = cs.blinding_factors();
     let one = g.one.clone();
@@ -851,7 +851,8 @@ pub fn bend_verifier(
     g.log("msm_u", &u_scalar);
     // g scalars: compute_s(u, -c), plus the constant term -v at G_0
     let us_rev: Vec<String> = u_list.iter().rev().cloned().collect();
-    let s_all = g.bind_t(format!("L.sub_head(L.compute_s([{}], {neg_c}), {v})", us_rev.join(", ")), "+List<Fp.Fp>");
+    let us_rev: Vec<String> = us_rev.iter().map(|u| format!("L.ub({u})")).collect();
+    let s_all = g.bind_t(format!("L.sub_head(L.compute_s([{}], L.ub({neg_c})), L.ub({v}))", us_rev.join(", ")), "+List<Fp.Fp>");
     {
         let st = g.st();
         g.next_st(format!("L.log_list({s_all}, {st})"));
@@ -862,12 +863,12 @@ pub fn bend_verifier(
     msm = g.ms_push(&msm, &u_scalar, "PARAM_U()");
     let ps_v = g.bind_t(format!("List.append(&2, V.Pt, L.ms_ps({msm}), G_ALL())"), "+List<V.Pt>");
     let ss_v = g.bind_t(format!("List.append(&2, Wd.W, L.words_list(L.ms_ss({msm})), L.words_list({s_all}))"), "+List<Wd.W>");
-    let total = g.bind_t(format!("MSM.msm({msm_depth}n, {ps_v}, {ss_v})"), "V.Pt");
+    let total = g.bind_t(format!("L.bpt(MSM.msm({msm_depth}n, {ps_v}, {ss_v}))"), "L.BP");
     {
         let st = g.st();
-        g.next_st(format!("L.lgp({st}, \"msm_result\", {total})"));
+        g.next_st(format!("L.blgp({st}, \"msm_result\", {total})"));
     }
-    g.check(&format!("V.is_identity({total})"));
+    g.check(&format!("L.bis_identity({total})"));
 
     let mut out = String::new();
     out.push_str("# GENERATED by the Zebend halo2 codegen (zebend_codegen.rs). Do not edit.\n");
@@ -884,7 +885,7 @@ pub fn bend_verifier(
     g.types.insert("st0".into(), "L.St".into());
     lines.extend(g.lines.iter().cloned());
     let result = g.st();
-    out.push_str(&segment(&lines, &g.types, &result, 16));
+    out.push_str(&segment(&lines, &g.types, &result, 300));
     let _ = Rotation::cur();
     out
 }

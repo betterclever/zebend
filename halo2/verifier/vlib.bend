@@ -376,3 +376,87 @@ def print_log(xs: +List<Log>) -> IO(Unit):
       do IO<Unit>:
         IO.print(log_line(l))
         print_log(rest)
+
+# --- boxed values for generated code ------------------------------------------------
+# Bend's native backend flattens Data values into registers (an Fp is 16 words, a Vesta
+# point 48) and caps a call frame's live registers at 247. A recursive type is laid out as a
+# single heap pointer, so the generated verifier keeps every field element and point boxed.
+
+type BF is Data:
+  BF0{v: Fp.Fp}
+  BF1{v: Fp.Fp, n: BF}
+
+type BP is Data:
+  BP0{p: V.Pt}
+  BP1{p: V.Pt, n: BP}
+
+def ub(b: BF) -> Fp.Fp:
+  match b:
+    case BF0{+v}:
+      v
+    case BF1{+v, _}:
+      v
+
+def upt(b: BP) -> V.Pt:
+  match b:
+    case BP0{+p}:
+      p
+    case BP1{+p, _}:
+      p
+
+def bx(+v: Fp.Fp) -> BF:
+  BF0{v}
+
+def bpt(+p: V.Pt) -> BP:
+  BP0{p}
+
+def bmul(a: BF, b: BF) -> BF:
+  BF0{Fp.mul(ub(a), ub(b))}
+
+def badd(a: BF, b: BF) -> BF:
+  BF0{Fp.add(ub(a), ub(b))}
+
+def bsub(a: BF, b: BF) -> BF:
+  BF0{Fp.sub(ub(a), ub(b))}
+
+def bneg(a: BF) -> BF:
+  BF0{Fp.neg(ub(a))}
+
+def binv(a: BF) -> BF:
+  BF0{Fp.inv(ub(a))}
+
+def bsqrn(n: Nat, a: BF) -> BF:
+  BF0{Fp.sqr_n(n, ub(a))}
+
+def bsmul(p: BP, s: BF) -> BP:
+  BP0{V.scalar_mul_s(upt(p), ub(s))}
+
+def bpadd(p: BP, q: BP) -> BP:
+  BP0{V.add(upt(p), upt(q))}
+
+def bfat(i: Nat, xs: +List<Fp.Fp>) -> BF:
+  BF0{fat(i, xs)}
+
+def bpat(i: Nat, xs: +List<V.Pt>) -> BP:
+  BP0{pat(i, xs)}
+
+def blgf(st: St, name: String, +v: BF) -> St:
+  lgf(st, name, ub(v))
+
+def blgp(st: St, name: String, +p: BP) -> St:
+  lgp(st, name, upt(p))
+
+def bab_scalar(st: St, +v: BF) -> St:
+  ab_scalar(st, ub(v))
+
+def bab_point(st: St, +p: BP) -> St:
+  ab_point(st, upt(p))
+
+def bms_push(m: MS, +s: BF, +p: BP) -> MS:
+  ms_push(m, ub(s), upt(p))
+
+def bms_scale(m: MS, +f: BF) -> MS:
+  ms_scale(m, ub(f))
+
+def bis_identity(p: BP) -> Bool:
+  V.is_identity(upt(p))
