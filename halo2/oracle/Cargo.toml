@@ -1,0 +1,21 @@
+[package]
+name = "halo2-oracle"
+version = "0.1.0"
+edition = "2021"
+description = "Builds a real Orchard/Ironwood Halo 2 proof and dumps every intermediate of the official verifier"
+
+[dependencies]
+orchard = { version = "0.16", features = ["circuit"] }
+halo2_proofs = "*"
+pasta_curves = "0.6"
+ff = "0.14"
+group = "0.14"
+rand = "0.10"
+hex = "0.4"
+
+[profile.release]
+debug = 1
+
+[patch.crates-io]
+halo2_proofs = { path = "vendor/halo2_proofs" }
+orchard = { path = "vendor/orchard" }
