@@ -1,0 +1,8 @@
+vectors/target/
+vectors/out/
+t/field_tests
+t/curve_tests
+t/mulbench
+t/*.out
+msm_main
+*.gpu

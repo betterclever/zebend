@@ -1,0 +1,16 @@
+[package]
+name = "pasta-bend-vectors"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+pasta_curves = "0.5"
+group = "0.13"
+ff = "0.13"
+rand = "0.8"
+rand_chacha = "0.3"
+rayon = "1"
+halo2_proofs = { version = "0.3", features = ["multicore"] }
+
+[profile.release]
+opt-level = 3
