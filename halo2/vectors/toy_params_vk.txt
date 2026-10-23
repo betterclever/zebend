@@ -1,0 +1,34 @@
+k 05000000
+n 20000000
+omega cc789b927663a38fbcb7ce3e39a3ae3bed330856d19af2dae1f216c60d38c30c
+omega_inv 87a189965e1f4df0bafbc05f37cdfcc8edd344b81f32ce5c410fa94ba5bf2f14
+delta a29b7bdd20cd6c6a3656ee3ef1f3e4f59d04a512715b45bd6cab06000f7d750a
+zeta b94afefdbd5ead1d4931ad37d28b1f1db0b1aa57dcd5aa2c71bacd4a83cacc12
+blinding_factors 05000000
+cs_degree 05000000
+quotient_poly_degree 04000000
+num_fixed_columns 03000000
+num_advice_columns 03000000
+num_instance_columns 01000000
+transcript_repr 2c0c70766159b64352c7a9385f8e58a955a5921e980bf1500274b491326a7a27
+params.w 7520d96f3e5cd41760367151608b54821883c10c4b9a4ff2beae227bef94bcab
+params.u 379dc4dcfdbf61ccc7d5a0bb9759acf611694f24d0c040f249bad30a83b1a897
+fixed_commitment[0] 5f8137f043bf55acdfda8c63bca86b7b0bb5bb0ca50887ff02f3628a9da4bc34
+fixed_commitment[1] 9baeb5c4f53697a8a4909a92e535ddbda59d768dfb48eed35751215827f44ea2
+fixed_commitment[2] 9baeb5c4f53697a8a4909a92e535ddbda59d768dfb48eed35751215827f44ea2
+permutation_commitment[0] 714805defe6411572a31a8d20367f7fce883f29883355da73627eeba1b989a08
+permutation_commitment[1] 217a2102ecb33dc39abcabe2424079913f98e738df774c8c29a46bad79d630ad
+advice_query[0] 2 0
+advice_query[1] 0 0
+advice_query[2] 1 0
+fixed_query[0] 0 0
+fixed_query[1] 1 0
+fixed_query[2] 2 0
+instance_query[0] 0 0
+permutation_column[0] 0 2 0
+permutation_column[1] 2 0 0
+num_gates 01000000
+gate[0].num_polys 01000000
+num_lookups 01000000
+lookup[0].num_inputs 01000000
+lookup[0].num_tables 01000000

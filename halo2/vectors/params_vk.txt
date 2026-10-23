@@ -1,0 +1,192 @@
+k 0b000000
+n 00080000
+omega 1378a1ad5a5428ef4ec2a1aabc889b7a0b606d4295d3cb319e11325fad501b18
+omega_inv 046fce46a08b693b3a755b90e37d1f5e3853292e53cfac7547de72a27d38bb1a
+delta a29b7bdd20cd6c6a3656ee3ef1f3e4f59d04a512715b45bd6cab06000f7d750a
+zeta b94afefdbd5ead1d4931ad37d28b1f1db0b1aa57dcd5aa2c71bacd4a83cacc12
+blinding_factors 05000000
+cs_degree 09000000
+quotient_poly_degree 08000000
+num_fixed_columns 1d000000
+num_advice_columns 0a000000
+num_instance_columns 01000000
+transcript_repr 99b4fa5429bf1f72bbba9c1620e201206287d2cc6373012d5bb99fedb7f72205
+params.w 7520d96f3e5cd41760367151608b54821883c10c4b9a4ff2beae227bef94bcab
+params.u 379dc4dcfdbf61ccc7d5a0bb9759acf611694f24d0c040f249bad30a83b1a897
+fixed_commitment[0] 31527f386166255433e1b09e2d591bb157ff9e3a84c1c35b858828ad2c86f505
+fixed_commitment[1] 57ebb3c46480257fa82eb4f8a7d55587bd8d959dd3550312989f6754857e72be
+fixed_commitment[2] 31710e7665f2144934bc1cb884b8ae50a4f96bfb308b66ec5d1ca9d60d684837
+fixed_commitment[3] 461bb12ee8a697133757404f0dcaf8d42966bdc31542101f478b2815a009dba0
+fixed_commitment[4] 344eb7e778a98021af08b89b3ab03eaa0b3aee515acb23ba04acb74b52c4c910
+fixed_commitment[5] cb2a25d15f573c6c81314e842a8b6a119c6d89a71cc0ed7df056d53200aa47af
+fixed_commitment[6] 811f406858c39edbfca3d0ebf1102909d6bda9671807c00c4b1749aca2185e02
+fixed_commitment[7] 02baa1b62438a2fb00c879d2bae7cd91f9609d608ea2c12c698170bd456a8231
+fixed_commitment[8] 6294a5a2da45b05bebb4cbe4941d2ac4ea85e80b03010fd3212739fa1c393492
+fixed_commitment[9] 7671dfef8018371692daf7e243771911c533cd7641ca1cbdd710b0a03f8d0a30
+fixed_commitment[10] 799cc094f089ed63c070450de174b7968f3b07eef15e2a0370dca9582ff3d00a
+fixed_commitment[11] 7e82b18cd880164b19ccca22da0d676a9d083f26200acf10c16529fc4ea7bea7
+fixed_commitment[12] d30ff26e02c957f704a23a24c68575f54ccb40fc416a7d7dd8bbebc9cbb7ad82
+fixed_commitment[13] df915e6bd4a8582bb9ad9bc3dbe896f8974a9e551f1335d0b3e4a58aecd4002d
+fixed_commitment[14] 8277f11d60ea21d1727ae58ab7dcbf682d96be74f728f08b5e79de318a354b83
+fixed_commitment[15] 293f71d44d15a495ec29e3f068dee74c57b101beeaddda26adf285decb83c202
+fixed_commitment[16] be957f735e09c4b686c53ccc51a9ff3503649c731308f3194aec63420e7f771f
+fixed_commitment[17] 50f58796f1fb67caee37bf34c7b822135573608d090be9c022ce4ada76bdd093
+fixed_commitment[18] 046a4aad80e901741ce633aed2d7e786c6ea4b1dd94f8ef92af297d9b53819ab
+fixed_commitment[19] 5b30587393dbe88d432da5081d9fa88fdca57307322e51474c490fe6f7dbb115
+fixed_commitment[20] b13c74abd05080f0c28916da7de77afefff4474fc84273ace30de333ccb5a43f
+fixed_commitment[21] 54bf2477bcf2a887ff6ffdf9e1aa2684ed38bc717d2d7e0101cd18e4bf9f4b8d
+fixed_commitment[22] 9e8730ff31518103d40850247a2fea287f2ba820d89cc5d2c8b40e3c1aad7409
+fixed_commitment[23] e64b8d3d3f65094044ac83237642347712b31f4662f420c1afccff3c785d351e
+fixed_commitment[24] 9cc89112dcc0187fbbef98bf359ee1706d1302469fec9e8308c2e1b0166d4f39
+fixed_commitment[25] 1cb3d4733e48ab32c057d158dffc349d886bd6431d73148ccca1dcb93d9e7c19
+fixed_commitment[26] 614043557e9f244b17cb65d3f8232ec635c45e369df947273ecac32d4601502c
+fixed_commitment[27] fabfb8292267f0870b020e48260b1bb29f75f1af7003c5a25ed34054e0f63336
+fixed_commitment[28] ad087d3b84930454a9b5b4be2a07caa9a3d9090276c3590f494741bae92047a9
+permutation_commitment[0] 07007f4f7f22ce991acd1c728adef96220325320c59a9d6637d9ed7001bbf6b5
+permutation_commitment[1] 41ac9b609189a61654987f0f58427e417e30c2431b50e40144f2bafc1109e08c
+permutation_commitment[2] 60ef63525a077f9c6d17036e4980f1e0c68c8140c3c7ebc42df6432f38efe10b
+permutation_commitment[3] 0adf9adf06d1c3482a22d4e6b6e59504f2782b2fe0bbe7a16ed87da91f8d1f9f
+permutation_commitment[4] 3fcd2c2eddade9e0c6dd7923e32905bf878e3ab3c21b53fa77a509ef22556a3a
+permutation_commitment[5] fc7ba6886b0875aa238b26fc83a6bdd0172172374544b10d5204d288c95a549b
+permutation_commitment[6] 1f8f8b27a88a7f61461a6728de8db4717167ec91229653f281d1ca2b8723aeb7
+permutation_commitment[7] 83afa01d50cee483688ab128d511b3ddb543b34aa9fb3637409df049974813aa
+permutation_commitment[8] 89abb3e18fb46bf85806a56a363be1aa35a589cbb9c40f7a7b7277231a0fb915
+permutation_commitment[9] 4b19d31e2ef49d21b0e47b144d3ba11afb72b2533dece818c40749e9ed500f32
+permutation_commitment[10] 7b1f2cf9e12b9198f4c9685cfa182b48b77ea485d292854cde5663259e335e96
+permutation_commitment[11] def3700320f5106ea7263935ec53df1bdad7564f7c1901a8ed2fe6c87f51fd29
+permutation_commitment[12] ab03d4acac61ee9c08f67318c71607e3697dd23f0fbd4ce4eaa17516b410d2a1
+permutation_commitment[13] d5f7b96e2d92669f317319aab59dac9d9cd3fcc0959dd9990d650f8ee27d9e0f
+permutation_commitment[14] 3f45b4fbeb4b815cab5d86a9f309eb2ce415de91a894cd7762c7fa3ab73aab0a
+advice_query[0] 0 0
+advice_query[1] 1 0
+advice_query[2] 2 0
+advice_query[3] 3 0
+advice_query[4] 4 0
+advice_query[5] 5 0
+advice_query[6] 6 0
+advice_query[7] 7 0
+advice_query[8] 8 0
+advice_query[9] 9 0
+advice_query[10] 9 1
+advice_query[11] 9 -1
+advice_query[12] 2 1
+advice_query[13] 3 1
+advice_query[14] 4 1
+advice_query[15] 5 1
+advice_query[16] 0 1
+advice_query[17] 1 1
+advice_query[18] 7 1
+advice_query[19] 8 1
+advice_query[20] 6 -1
+advice_query[21] 1 -1
+advice_query[22] 6 1
+advice_query[23] 7 -1
+advice_query[24] 8 -1
+fixed_query[0] 3 0
+fixed_query[1] 0 0
+fixed_query[2] 11 0
+fixed_query[3] 4 0
+fixed_query[4] 5 0
+fixed_query[5] 6 0
+fixed_query[6] 7 0
+fixed_query[7] 8 0
+fixed_query[8] 9 0
+fixed_query[9] 10 0
+fixed_query[10] 12 0
+fixed_query[11] 1 0
+fixed_query[12] 2 0
+fixed_query[13] 13 0
+fixed_query[14] 14 0
+fixed_query[15] 15 0
+fixed_query[16] 16 0
+fixed_query[17] 17 0
+fixed_query[18] 18 0
+fixed_query[19] 19 0
+fixed_query[20] 20 0
+fixed_query[21] 21 0
+fixed_query[22] 22 0
+fixed_query[23] 23 0
+fixed_query[24] 24 0
+fixed_query[25] 25 0
+fixed_query[26] 26 0
+fixed_query[27] 27 0
+fixed_query[28] 28 0
+instance_query[0] 0 0
+permutation_column[0] 2 0 0
+permutation_column[1] 0 0 0
+permutation_column[2] 0 1 1
+permutation_column[3] 0 2 2
+permutation_column[4] 0 3 3
+permutation_column[5] 0 4 4
+permutation_column[6] 0 5 5
+permutation_column[7] 0 6 6
+permutation_column[8] 0 7 7
+permutation_column[9] 0 8 8
+permutation_column[10] 0 9 9
+permutation_column[11] 1 3 0
+permutation_column[12] 1 8 7
+permutation_column[13] 1 9 8
+permutation_column[14] 1 10 9
+num_gates 37000000
+gate[0].num_polys 04000000
+gate[1].num_polys 01000000
+gate[2].num_polys 01000000
+gate[3].num_polys 02000000
+gate[4].num_polys 01000000
+gate[5].num_polys 02000000
+gate[6].num_polys 0c000000
+gate[7].num_polys 01000000
+gate[8].num_polys 06000000
+gate[9].num_polys 04000000
+gate[10].num_polys 01000000
+gate[11].num_polys 06000000
+gate[12].num_polys 04000000
+gate[13].num_polys 02000000
+gate[14].num_polys 05000000
+gate[15].num_polys 03000000
+gate[16].num_polys 01000000
+gate[17].num_polys 03000000
+gate[18].num_polys 04000000
+gate[19].num_polys 04000000
+gate[20].num_polys 08000000
+gate[21].num_polys 03000000
+gate[22].num_polys 04000000
+gate[23].num_polys 03000000
+gate[24].num_polys 01000000
+gate[25].num_polys 02000000
+gate[26].num_polys 03000000
+gate[27].num_polys 04000000
+gate[28].num_polys 01000000
+gate[29].num_polys 02000000
+gate[30].num_polys 03000000
+gate[31].num_polys 04000000
+gate[32].num_polys 0e000000
+gate[33].num_polys 03000000
+gate[34].num_polys 03000000
+gate[35].num_polys 01000000
+gate[36].num_polys 02000000
+gate[37].num_polys 02000000
+gate[38].num_polys 05000000
+gate[39].num_polys 04000000
+gate[40].num_polys 01000000
+gate[41].num_polys 04000000
+gate[42].num_polys 05000000
+gate[43].num_polys 07000000
+gate[44].num_polys 03000000
+gate[45].num_polys 03000000
+gate[46].num_polys 01000000
+gate[47].num_polys 02000000
+gate[48].num_polys 02000000
+gate[49].num_polys 05000000
+gate[50].num_polys 04000000
+gate[51].num_polys 01000000
+gate[52].num_polys 04000000
+gate[53].num_polys 05000000
+gate[54].num_polys 07000000
+num_lookups 03000000
+lookup[0].num_inputs 01000000
+lookup[0].num_tables 01000000
+lookup[1].num_inputs 03000000
+lookup[1].num_tables 03000000
+lookup[2].num_inputs 03000000
+lookup[2].num_tables 03000000
