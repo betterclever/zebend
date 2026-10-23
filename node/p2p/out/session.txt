@@ -1,0 +1,56 @@
+Zebend P2P: Zcash mainnet, in Bend
+DNS seeds resolved: 32 addresses
+connected to 199.170.132.107:8233
+-> version (protocol 170190, /Zebend:0.1.0/)
+!! receive failed: Connection reset by peer (errno 54)
+   no headers from 199.170.132.107; trying the next peer
+connected to 172.104.142.183:8233
+-> version (protocol 170190, /Zebend:0.1.0/)
+!! receive failed: Connection reset by peer (errno 54)
+   no headers from 172.104.142.183; trying the next peer
+connected to 95.123.7.212:8233
+-> version (protocol 170190, /Zebend:0.1.0/)
+!! peer closed the connection
+   no headers from 95.123.7.212; trying the next peer
+connected to 207.246.109.227:8233
+-> version (protocol 170190, /Zebend:0.1.0/)
+!! receive failed: Connection reset by peer (errno 54)
+   no headers from 207.246.109.227; trying the next peer
+connected to 5.227.60.63:8233
+-> version (protocol 170190, /Zebend:0.1.0/)
+!! receive failed: Connection reset by peer (errno 54)
+   no headers from 5.227.60.63; trying the next peer
+connected to 136.115.98.175:8233
+-> version (protocol 170190, /Zebend:0.1.0/)
+<- version: protocol 170190, user agent /Zebra:7.0.0/, best height 3528273
+-> verack
+<- verack: handshake complete
+-> getheaders after #3522060 (00000000000705964fc4c75da9cce97978197b666c9dcdfc1bcf8d44cd776e4d)
+-> getaddr
+<- headers: 160 headers, 238081 bytes
+  #3522061  0000000000618b705628c3c87b41016ed08089021d166aa087c5266595332e87  time 1792323954  bits 1b69f731  v4  sol 1344B
+  #3522062  000000000037ca87c4814d137babd97db5d620b84b27e2bbd1c5bfd6607b08b5  time 1792323965  bits 1b6c104d  v4  sol 1344B
+  #3522101  00000000006cc356570c9047d2e4689ac6251ae2917bec9bac86ed13b035167c  time 1792327794  bits 1c0089a9  v4  sol 1344B
+  #3522141  000000000042fa7f2b3cdd9349cfc7753e5d725d9aa5d04cd0ea91962ba79dc8  time 1792330727  bits 1b79c2d5  v4  sol 1344B
+  #3522181  000000000064d6660c8332c0534b590bdb5f7de60822aeea2731171d8aa166e2  time 1792334010  bits 1b7ffa8b  v4  sol 1344B
+  #3522220  000000000032c2b5e1562a9e3d1697270ea4d265484fd1312e13d8875de15604  time 1792336825  bits 1c0092bd  v4  sol 1344B
+-> getheaders after #3522220
+<- addr: 335 peer addresses
+<- headers: 160 headers, 238081 bytes
+  #3522221  000000000085153b84d841725e58b8c82ad8f44e155948918166303d8a36403c  time 1792336858  bits 1c0094bb  v4  sol 1344B
+  #3522222  00000000002601f8d7d287125d77dbed4328c67697bd44e38746ea062d3a0555  time 1792336985  bits 1c0094bb  v4  sol 1344B
+  #3522261  000000000008096b72e5aced96d920e14bb66a46097529d42a97cfd054c6134b  time 1792339417  bits 1b789974  v4  sol 1344B
+  #3522301  00000000006b83cf5f3afb74be12008ad81e67cd28cbcf2978cea886662a5385  time 1792342300  bits 1b6d4b88  v4  sol 1344B
+  #3522341  00000000001e2dd9a751050be620ef2af6d6249816f5f617060b62a493b1adcc  time 1792345509  bits 1b75a999  v4  sol 1344B
+  #3522380  000000000052f202977734515a2c8b99fa1f3a239f1ae6b0cc8f4f8cbd9e3893  time 1792348812  bits 1c009a4c  v4  sol 1344B
+-> getheaders after #3522380
+<- headers: 160 headers, 238081 bytes
+  #3522381  000000000009aa04691b3b81f96cd8a971e9ea160db3f5969b0a30e6ee3d4e5b  time 1792348831  bits 1c009503  v4  sol 1344B
+  #3522382  0000000000678b0cb5daf8349fa05e8655de72c3eeac2d86417fbe51fdc37519  time 1792348851  bits 1c009053  v4  sol 1344B
+  #3522421  00000000004798068c161e363450ef6103e269abf01835ada607f6fc7441c135  time 1792351394  bits 1b758a9b  v4  sol 1344B
+  CHECKPOINT #3522460: SHA-256d computed in Bend == Zebra's mainnet checkpoint
+  #3522461  000000000058cb6c97bdc1404b6f5d161eb7d442db1515de16ccf4ab3d3e9647  time 1792354312  bits 1c0080c7  v4  sol 1344B
+  #3522501  00000000001d3212cdfe5c822f06f11b89273b22afe8884318d3870b8a0a850e  time 1792357836  bits 1c008916  v4  sol 1344B
+  #3522540  000000000031cd3da1c12508f7bc5a1c60b4b16549fad86a8022a085dab2adb3  time 1792360260  bits 1b7b810b  v4  sol 1344B
+summary: 480 headers linked and hashed in Bend, tip #3522540, checkpoints matched: 1, peer addresses learned: 335
+wrote out/headers.bin (raw headers, oldest first) and out/heights.txt
