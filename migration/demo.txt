@@ -1,0 +1,39 @@
+migrate 314159265 zat:
+  spend 400000000 zat from 1 Orchard note(s)
+  14 denominated outputs:
+    Ironwood  5 zat
+    Ironwood  10 zat
+    Ironwood  50 zat
+    Ironwood  200 zat
+    Ironwood  2000 zat
+    Ironwood  2000 zat
+    Ironwood  5000 zat
+    Ironwood  50000 zat
+    Ironwood  100000 zat
+    Ironwood  2000000 zat
+    Ironwood  2000000 zat
+    Ironwood  10000000 zat
+    Ironwood  100000000 zat
+    Ironwood  200000000 zat
+  change   Ironwood  85765735 zat
+  fee      75000 zat (ZIP 317)
+migrate 199990000 zat:
+  spend 210000000 zat from 2 Orchard note(s)
+  13 denominated outputs:
+    Ironwood  20000 zat
+    Ironwood  20000 zat
+    Ironwood  50000 zat
+    Ironwood  200000 zat
+    Ironwood  200000 zat
+    Ironwood  500000 zat
+    Ironwood  2000000 zat
+    Ironwood  2000000 zat
+    Ironwood  5000000 zat
+    Ironwood  20000000 zat
+    Ironwood  20000000 zat
+    Ironwood  50000000 zat
+    Ironwood  100000000 zat
+  change   Ironwood  9940000 zat
+  fee      70000 zat (ZIP 317)
+migrate 99999 zat:
+  no plan: the notes do not cover amount + fee
