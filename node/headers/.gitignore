@@ -1,0 +1,6 @@
+data/*.bin
+data/*.bin.hashes
+oracle/target/
+verify
+verify.gpu
+*.c
