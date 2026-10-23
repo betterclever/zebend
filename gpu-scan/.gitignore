@@ -1,0 +1,6 @@
+scan_main
+scan_main.gpu
+t/field_test
+t/stage_test
+vectors/target/
+vectors/out/
