@@ -12,3 +12,8 @@ smoke/
 web/t/*.wasm
 web/t/data/
 node/headers/data/
+node/tx/vectors/
+node/tx/data/
+node/tx/tampered/
+node/state/out/
+bench/fieldmul/target/
