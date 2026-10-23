@@ -37,4 +37,11 @@ The git history starts at the first snapshot; earlier work is reconstructed from
 - P2P: a Bend binary handshakes with live Zebra 7.0.0 and Zakura 1.7.0 mainnet peers and
   downloads headers, re-hashed in Bend and matched to Zebra's checkpoint.
 
-_(continued as components land)_
+- 03:41–05:20: headers (128,280 mainnet headers, Equihash on GPU), transactions (29 mainnet
+  txs, all signatures), block inclusion (10 blocks), the full mainnet Ironwood tree (838,662
+  notes, 6/6 roots), and fast Pippenger / fixed-base / batched MSMs.
+- The Halo 2 verifier verifies **real mainnet Orchard/Ironwood proofs** (29/29 txs, all three
+  circuit versions; 42/42 verdicts identical to `halo2_proofs`), then runs **in Chrome** through
+  Bend's JavaScript target: ~1 s per proof.
+
+_(continued)_
