@@ -1,0 +1,14 @@
+target/
+*.gpu
+*.dSYM/
+node_modules/
+.DS_Store
+# large regenerable test data
+gpu-scan/vectors/out/
+node/state/out/*.bin
+node/state/oracle/out/
+# smoke/scratch builds
+smoke/
+web/t/*.wasm
+web/t/data/
+node/headers/data/
