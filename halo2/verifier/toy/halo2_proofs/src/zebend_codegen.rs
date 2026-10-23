@@ -894,3 +894,743 @@ pub fn bend_verifier(
 pub fn transcript_repr(vk: &VerifyingKey<vesta::Affine>) -> Fp {
     vk.transcript_repr
 }
+
+// ===========================================================================================
+// Bundle-generic verifier: the number of circuit instances (actions) is a runtime input.
+// Per-proof work is generated once (pp_expr: gate/permutation/lookup terms folded into h;
+// pp_qa: that proof's multiopen accumulation) and run in runtime loops.
+// ===========================================================================================
+
+/// Like `segment`, for a named chain with given entry parameters, result expression and type.
+fn chain(
+    name: &str,
+    init: &[(String, String)],
+    lines: &[String],
+    types: &HashMap<String, String>,
+    result: &str,
+    ret_ty: &str,
+    max_lines: usize,
+) -> String {
+    fn tokens(l: &str) -> Vec<(usize, usize)> {
+        let b = l.as_bytes();
+        let mut out = vec![];
+        let mut i = 0;
+        let mut in_str = false;
+        while i < b.len() {
+            let c = b[i];
+            if c == b'"' {
+                in_str = !in_str;
+                i += 1;
+                continue;
+            }
+            if !in_str && (c.is_ascii_alphanumeric() || c == b'_' || c == b'.') {
+                let st = i;
+                while i < b.len() && (b[i].is_ascii_alphanumeric() || b[i] == b'_' || b[i] == b'.') {
+                    i += 1;
+                }
+                out.push((st, i));
+            } else {
+                i += 1;
+            }
+        }
+        out
+    }
+    let toks = |s: &str| -> Vec<String> {
+        tokens(s).into_iter().map(|(a, b)| s[a..b].to_string()).filter(|t| types.contains_key(t)).collect()
+    };
+    let parsed: Vec<(String, Vec<String>)> = lines
+        .iter()
+        .map(|l| {
+            let (lhs, rhs) = l.trim().trim_start_matches('+').split_once(" = ").unwrap();
+            (lhs.to_string(), toks(rhs))
+        })
+        .collect();
+    let n = parsed.len();
+    let mut live_after: Vec<BTreeSet<String>> = vec![BTreeSet::new(); n];
+    let mut live: BTreeSet<String> = toks(result).into_iter().collect();
+    for i in (0..n).rev() {
+        live_after[i] = live.clone();
+        live.remove(&parsed[i].0);
+        live.extend(parsed[i].1.iter().cloned());
+    }
+    let big = |v: &String| matches!(types[v].as_str(), "L.SF" | "L.SP" | "L.SL" | "L.PL" | "L.PLL" | "L.SLL" | "L.HS");
+    let mut bounds = vec![0];
+    let mut start = 0;
+    for i in 0..n.saturating_sub(1) {
+        if i + 1 - start >= max_lines && !live_after[i].iter().any(big) {
+            bounds.push(i + 1);
+            start = i + 1;
+        }
+    }
+    bounds.push(n);
+    let nseg = bounds.len() - 1;
+    let mut defs = vec![];
+    for si in 0..nseg {
+        let (a, b) = (bounds[si], bounds[si + 1]);
+        let fname = if si == 0 { name.to_string() } else { format!("{name}_{si}") };
+        let params: Vec<String> = if si == 0 {
+            init.iter().map(|(v, t)| format!("+{v}: {t}")).collect()
+        } else {
+            live_after[a - 1].iter().map(|v| format!("+{v}: {}", types[v])).collect()
+        };
+        let mut body = format!("def {fname}({}) -> {ret_ty}:\n", params.join(", "));
+        for l in &lines[a..b] {
+            body.push_str(l);
+            body.push('\n');
+        }
+        if si + 1 < nseg {
+            let args: Vec<String> = live_after[b - 1].iter().cloned().collect();
+            body.push_str(&format!("  {name}_{}({})\n", si + 1, args.join(", ")));
+        } else {
+            body.push_str(&format!("  {result}\n"));
+        }
+        defs.push(body);
+    }
+    defs.reverse();
+    defs.join("\n")
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
+enum PKey {
+    Inst,
+    Adv(usize),
+    PermProd(usize),
+    LkProd(usize),
+    LkIn(usize),
+    LkTab(usize),
+}
+
+impl Gen {
+    /// Starts a new chain: fresh lines and state counter (constants stay shared).
+    fn reset(&mut self) {
+        self.lines.clear();
+        self.st = 0;
+    }
+    fn param(&mut self, v: &str, ty: &str) -> String {
+        self.types.insert(v.to_string(), ty.to_string());
+        v.to_string()
+    }
+}
+
+/// Emits a Bend module with `verify(pr: L.Proof, gs: +List<V.Pt>, np: Nat, ni: Nat) -> L.St`:
+/// a bundle of `np` proofs (actions), each with `ni` instance values in its single instance
+/// column; `gs` are the 2^k IPA generators (read at runtime).
+pub fn bend_verifier_dyn(params: &Params<vesta::Affine>, vk: &VerifyingKey<vesta::Affine>, msm_depth: usize) -> String {
+    let cs = &vk.cs;
+    let dom = &vk.domain;
+    assert_eq!(cs.num_instance_columns, 1, "bundle verifier assumes one instance column");
+    let k = params.k;
+    let omega = dom.omega;
+    let omega_inv = dom.omega_inv;
+    let rot_const = |r: i32| -> Fp {
+        if r >= 0 {
+            omega.pow_vartime([r as u64])
+        } else {
+            omega_inv.pow_vartime([(-(r as i64)) as u64])
+        }
+    };
+    let nl = cs.lookups.len();
+    let chunk_len = vk.cs_degree - 2;
+    let pc = cs.permutation.columns.chunks(chunk_len).count();
+    let bf = cs.blinding_factors();
+    let last_rot = -((bf + 1) as i32);
+    let mut g = Gen::new();
+    let mut out_defs: Vec<String> = vec![];
+
+    // ---- query template (one proof), structured: (key, rotation, eval reference) ----
+    #[derive(Clone)]
+    enum Ev {
+        Ie(usize),
+        Ae(usize),
+        Pe(usize),
+        Le(usize),
+        Fe(usize),
+        Pc(usize),
+        H,
+        Rand,
+    }
+    #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
+    enum Q {
+        P(PKey),
+        Fixed(usize),
+        PermCommon(usize),
+        H,
+        Rand,
+    }
+    let mut tq: Vec<(Q, i32, Ev)> = vec![];
+    for (qi, (_col, at)) in cs.instance_queries.iter().enumerate() {
+        tq.push((Q::P(PKey::Inst), at.0, Ev::Ie(qi)));
+    }
+    for (qi, (col, at)) in cs.advice_queries.iter().enumerate() {
+        tq.push((Q::P(PKey::Adv(col.index())), at.0, Ev::Ae(qi)));
+    }
+    for i in 0..pc {
+        tq.push((Q::P(PKey::PermProd(i)), 0, Ev::Pe(3 * i)));
+        tq.push((Q::P(PKey::PermProd(i)), 1, Ev::Pe(3 * i + 1)));
+    }
+    for i in (0..pc).rev().skip(1) {
+        tq.push((Q::P(PKey::PermProd(i)), last_rot, Ev::Pe(3 * i + 2)));
+    }
+    for i in 0..nl {
+        tq.push((Q::P(PKey::LkProd(i)), 0, Ev::Le(5 * i)));
+        tq.push((Q::P(PKey::LkIn(i)), 0, Ev::Le(5 * i + 2)));
+        tq.push((Q::P(PKey::LkTab(i)), 0, Ev::Le(5 * i + 4)));
+        tq.push((Q::P(PKey::LkIn(i)), -1, Ev::Le(5 * i + 3)));
+        tq.push((Q::P(PKey::LkProd(i)), 1, Ev::Le(5 * i + 1)));
+    }
+    for (qi, (col, at)) in cs.fixed_queries.iter().enumerate() {
+        tq.push((Q::Fixed(col.index()), at.0, Ev::Fe(qi)));
+    }
+    for i in 0..vk.permutation.commitments.len() {
+        tq.push((Q::PermCommon(i), 0, Ev::Pc(i)));
+    }
+    tq.push((Q::H, 0, Ev::H));
+    tq.push((Q::Rand, 0, Ev::Rand));
+    // construct_intermediate_sets on the template: per-proof keys come first in every bundle,
+    // and later proofs repeat the same keys, so sets and point indices are those of one proof.
+    let mut point_index: IndexMap<i32, usize> = IndexMap::new();
+    let mut cmap: IndexMap<Q, Vec<usize>> = IndexMap::new();
+    for (key, rot, _) in &tq {
+        let n = point_index.len();
+        let idx = *point_index.entry(*rot).or_insert(n);
+        cmap.entry(*key).or_default().push(idx);
+    }
+    let mut set_ids: IndexMap<BTreeSet<usize>, usize> = IndexMap::new();
+    let mut cset: IndexMap<Q, BTreeSet<usize>> = IndexMap::new();
+    for (key, idxs) in &cmap {
+        let s: BTreeSet<usize> = idxs.iter().cloned().collect();
+        cset.insert(*key, s.clone());
+        let n = set_ids.len();
+        set_ids.entry(s).or_insert(n);
+    }
+    // per key: evals in the set's point order
+    let mut kev: IndexMap<Q, Vec<Option<Ev>>> = cset.iter().map(|(k, s)| (*k, vec![None; s.len()])).collect();
+    for (key, rot, ev) in &tq {
+        let pidx = point_index[rot];
+        let s: Vec<usize> = cset[key].iter().cloned().collect();
+        let pos = s.iter().position(|i| *i == pidx).unwrap();
+        kev.get_mut(key).unwrap()[pos] = Some(ev.clone());
+    }
+    let inv_point: HashMap<usize, i32> = point_index.iter().map(|(r, i)| (*i, *r)).collect();
+    let mut point_sets: Vec<Vec<i32>> = vec![vec![]; set_ids.len()];
+    for (s, sid) in &set_ids {
+        for pi in s {
+            point_sets[*sid].push(inv_point[pi]);
+        }
+    }
+    let nsets = set_ids.len();
+
+    // ---- the QA record: per point set, the q-commitment MSM, the x1 power, the q evals ----
+    let mut qa_fields: Vec<(String, String)> = vec![];
+    for s in 0..nsets {
+        qa_fields.push((format!("m{s}"), "L.MS".into()));
+        qa_fields.push((format!("p{s}"), "L.BF".into()));
+        for j in 0..point_sets[s].len() {
+            qa_fields.push((format!("e{s}_{j}"), "L.BF".into()));
+        }
+    }
+    let mut qa_def = String::from("type QA is Data:\n  QA{");
+    qa_def.push_str(&qa_fields.iter().map(|(n, t)| format!("{n}: {t}")).collect::<Vec<_>>().join(", "));
+    qa_def.push_str("}\n");
+    out_defs.push(qa_def);
+    for (fi, (f, t)) in qa_fields.iter().enumerate() {
+        let pats: Vec<String> =
+            (0..qa_fields.len()).map(|j| if j == fi { format!("+{f}") } else { "_".into() }).collect();
+        out_defs.push(format!("def QA_{f}(q: QA) -> {t}:\n  QA{{{}}} = q\n  {f}\n", pats.join(", ")));
+    }
+    // emits a key's accumulation into the QA fields held in `cur` (field -> var)
+    let accumulate = |g: &mut Gen, cur: &mut HashMap<String, String>, sid: usize, evs: Vec<String>, point: Option<String>, hmsm: Option<&str>, x1: &str| {
+        let pw = cur[&format!("p{sid}")].clone();
+        let m = cur[&format!("m{sid}")].clone();
+        let m2 = if let Some(h) = hmsm {
+            let sc = g.ms_scale(h, &pw);
+            g.ms_cat(&m, &sc)
+        } else {
+            g.ms_push(&m, &pw, &point.unwrap())
+        };
+        cur.insert(format!("m{sid}"), m2);
+        for (j, ev) in evs.iter().enumerate() {
+            let t = g.mul(ev, &pw);
+            let e = cur[&format!("e{sid}_{j}")].clone();
+            let e2 = g.add(&e, &t);
+            cur.insert(format!("e{sid}_{j}"), e2);
+        }
+        let p2 = g.mul(&pw, x1);
+        cur.insert(format!("p{sid}"), p2);
+    };
+    let qa_build = |cur: &HashMap<String, String>| -> String {
+        format!("QA{{{}}}", qa_fields.iter().map(|(f, _)| cur[f].clone()).collect::<Vec<_>>().join(", "))
+    };
+
+    // ---- pp_expr: one proof's expressions folded into h ----
+    g.reset();
+    let pnames = ["theta", "beta", "gamma", "x", "y", "l_0", "l_last", "active"];
+    let mut init: Vec<(String, String)> = vec![];
+    for n in pnames {
+        g.param(n, "L.BF");
+        init.push((n.into(), "L.BF".into()));
+    }
+    for n in ["fe", "pcv", "ae", "ie", "pe", "le"] {
+        g.param(n, "+List<Fp.Fp>");
+        init.push((n.into(), "+List<Fp.Fp>".into()));
+    }
+    g.param("h0", "L.BF");
+    init.push(("h0".into(), "L.BF".into()));
+    g.param("st0", "L.St");
+    init.push(("st0".into(), "L.St".into()));
+    {
+        let one = g.one.clone();
+        let zero = g.zero.clone();
+        let fe: Vec<String> = (0..cs.fixed_queries.len()).map(|i| fat("fe", i)).collect();
+        let ae: Vec<String> = (0..cs.advice_queries.len()).map(|i| fat("ae", i)).collect();
+        let ie: Vec<String> = (0..cs.instance_queries.len()).map(|i| fat("ie", i)).collect();
+        let mut h = "h0".to_string();
+        let mut push = |g: &mut Gen, h: &mut String, e: String| {
+            g.log("expr", &e);
+            let t = g.mul(h, "y");
+            *h = g.add(&t, &e);
+        };
+        for gate in cs.gates.iter() {
+            for poly in gate.polynomials() {
+                let v = g.expr(poly, &fe, &ae, &ie);
+                push(&mut g, &mut h, v);
+            }
+        }
+        let col_eval = |c: &crate::plonk::Column<Any>| -> String {
+            let qi = cs.get_any_query_index(*c);
+            match c.column_type() {
+                Any::Advice => ae[qi].clone(),
+                Any::Fixed => fe[qi].clone(),
+                Any::Instance => ie[qi].clone(),
+            }
+        };
+        let pe = |i: usize| fat("pe", i);
+        if pc > 0 {
+            let t = g.sub(&one, &pe(0));
+            let e = g.mul("l_0", &t);
+            push(&mut g, &mut h, e);
+            let last = pe(3 * (pc - 1));
+            let s = g.sq(&last);
+            let t = g.sub(&s, &last);
+            let e = g.mul(&t, "l_last");
+            push(&mut g, &mut h, e);
+        }
+        for i in 1..pc {
+            let t = g.sub(&pe(3 * i), &pe(3 * (i - 1) + 2));
+            let e = g.mul(&t, "l_0");
+            push(&mut g, &mut h, e);
+        }
+        for (ci, cols) in cs.permutation.columns.chunks(chunk_len).enumerate() {
+            let mut left = pe(3 * ci + 1);
+            for (j, c) in cols.iter().enumerate() {
+                let ev = col_eval(c);
+                let bp = g.mul("beta", &fat("pcv", ci * chunk_len + j));
+                let t = g.add(&ev, &bp);
+                let t = g.add(&t, "gamma");
+                left = g.mul(&left, &t);
+            }
+            let mut right = pe(3 * ci);
+            let bx = g.mul("beta", "x");
+            let dpow = g.konst(Fp::DELTA.pow_vartime([(ci * chunk_len) as u64]));
+            let mut cur_delta = g.mul(&bx, &dpow);
+            let delta = g.konst(Fp::DELTA);
+            for c in cols.iter() {
+                let ev = col_eval(c);
+                let t = g.add(&ev, &cur_delta);
+                let t = g.add(&t, "gamma");
+                right = g.mul(&right, &t);
+                cur_delta = g.mul(&cur_delta, &delta);
+            }
+            let d = g.sub(&left, &right);
+            let e = g.mul(&d, "active");
+            push(&mut g, &mut h, e);
+        }
+        for (i, arg) in cs.lookups.iter().enumerate() {
+            let lk = |f: usize| fat("le", 5 * i + f);
+            let (prod, next, inp, inp_inv, tab) = (lk(0), lk(1), lk(2), lk(3), lk(4));
+            let t0 = g.sub(&one, &prod);
+            let e = g.mul("l_0", &t0);
+            push(&mut g, &mut h, e);
+            let s = g.sq(&prod);
+            let t1 = g.sub(&s, &prod);
+            let e = g.mul("l_last", &t1);
+            push(&mut g, &mut h, e);
+            let a = g.add(&inp, "beta");
+            let b = g.add(&tab, "gamma");
+            let left = g.mul(&next, &a);
+            let left = g.mul(&left, &b);
+            let mut cin = zero.clone();
+            for ex in arg.input_expressions.iter() {
+                let v = g.expr(ex, &fe, &ae, &ie);
+                let t = g.mul(&cin, "theta");
+                cin = g.add(&t, &v);
+            }
+            let mut ctab = zero.clone();
+            for ex in arg.table_expressions.iter() {
+                let v = g.expr(ex, &fe, &ae, &ie);
+                let t = g.mul(&ctab, "theta");
+                ctab = g.add(&t, &v);
+            }
+            let ib = g.add(&cin, "beta");
+            let tg = g.add(&ctab, "gamma");
+            let right = g.mul(&prod, &ib);
+            let right = g.mul(&right, &tg);
+            let d = g.sub(&left, &right);
+            let e = g.mul(&d, "active");
+            push(&mut g, &mut h, e);
+            let dd = g.sub(&inp, &tab);
+            let e = g.mul("l_0", &dd);
+            push(&mut g, &mut h, e);
+            let d2 = g.sub(&inp, &inp_inv);
+            let t = g.mul(&dd, &d2);
+            let e = g.mul(&t, "active");
+            push(&mut g, &mut h, e);
+        }
+        let st = g.st();
+        let lines = g.lines.clone();
+        out_defs.push(chain("pp_expr", &init, &lines, &g.types, &format!("L.HS{{{h}, {st}}}"), "L.HS", 300));
+    }
+    out_defs.push(format!(
+        "def ex_loop(aes: +List<+List<Fp.Fp>>, ies: +List<+List<Fp.Fp>>, pes: +List<+List<Fp.Fp>>, les: +List<+List<Fp.Fp>>, {}, +fe: +List<Fp.Fp>, +pcv: +List<Fp.Fp>, +h: L.BF, +st: L.St) -> L.HS:\n  match aes ies pes les:\n    case Con{{+ae, ar}} Con{{+ie, ir}} Con{{+pe, pr}} Con{{+le, lr}}:\n      +r = pp_expr({}, fe, pcv, ae, ie, pe, le, h, st)\n      ex_loop(ar, ir, pr, lr, {}, fe, pcv, L.hs_h(r), L.hs_st(r))\n    case _ _ _ _:\n      L.HS{{h, st}}\n",
+        pnames.iter().map(|n| format!("+{n}: L.BF")).collect::<Vec<_>>().join(", "),
+        pnames.join(", "),
+        pnames.join(", ")
+    ));
+
+    // ---- pp_qa: one proof's keys, in reverse insertion order ----
+    g.reset();
+    let mut init: Vec<(String, String)> = vec![("q".into(), "QA".into())];
+    g.param("q", "QA");
+    for n in ["x1"] {
+        g.param(n, "L.BF");
+        init.push((n.into(), "L.BF".into()));
+    }
+    for n in ["ae", "ie", "pe", "le"] {
+        g.param(n, "+List<Fp.Fp>");
+        init.push((n.into(), "+List<Fp.Fp>".into()));
+    }
+    for n in ["ap", "lp", "pp", "kp"] {
+        g.param(n, "+List<V.Pt>");
+        init.push((n.into(), "+List<V.Pt>".into()));
+    }
+    g.param("ic", "L.BP");
+    init.push(("ic".into(), "L.BP".into()));
+    {
+        let mut cur: HashMap<String, String> = HashMap::new();
+        for (f, t) in &qa_fields {
+            let v = g.bind_t(format!("QA_{f}(q)"), t);
+            cur.insert(f.clone(), v);
+        }
+        let ev_ref = |e: &Ev| -> String {
+            match e {
+                Ev::Ie(i) => fat("ie", *i),
+                Ev::Ae(i) => fat("ae", *i),
+                Ev::Pe(i) => fat("pe", *i),
+                Ev::Le(i) => fat("le", *i),
+                _ => unreachable!(),
+            }
+        };
+        let per: Vec<Q> = cmap.keys().filter(|k| matches!(k, Q::P(_))).cloned().collect();
+        for key in per.iter().rev() {
+            let Q::P(pk) = key else { unreachable!() };
+            let point = match pk {
+                PKey::Inst => "ic".to_string(),
+                PKey::Adv(i) => pat("ap", *i),
+                PKey::PermProd(i) => pat("pp", *i),
+                PKey::LkProd(i) => pat("kp", *i),
+                PKey::LkIn(i) => pat("lp", 2 * i),
+                PKey::LkTab(i) => pat("lp", 2 * i + 1),
+            };
+            let sid = set_ids[&cset[key]];
+            let evs: Vec<String> = kev[key].iter().map(|e| ev_ref(e.as_ref().unwrap())).collect();
+            accumulate(&mut g, &mut cur, sid, evs, Some(point), None, "x1");
+        }
+        let res = qa_build(&cur);
+        let lines = g.lines.clone();
+        out_defs.push(chain("pp_qa", &init, &lines, &g.types, &res, "QA", 300));
+    }
+    out_defs.push(
+        "def qa_loop(aes: +List<+List<Fp.Fp>>, ies: +List<+List<Fp.Fp>>, pes: +List<+List<Fp.Fp>>, les: +List<+List<Fp.Fp>>, aps: +List<+List<V.Pt>>, lps: +List<+List<V.Pt>>, pps: +List<+List<V.Pt>>, kps: +List<+List<V.Pt>>, ics: +List<V.Pt>, +x1: L.BF, +q: QA) -> QA:\n  match aes ies pes les aps lps pps kps ics:\n    case Con{+ae, ar} Con{+ie, ir} Con{+pe, pr} Con{+le, lr} Con{+ap, apr} Con{+lp, lpr} Con{+pp, ppr} Con{+kp, kpr} Con{+ic, icr}:\n      qa_loop(ar, ir, pr, lr, apr, lpr, ppr, kpr, icr, x1, pp_qa(q, x1, ae, ie, pe, le, ap, lp, pp, kp, L.bpt(ic)))\n    case _ _ _ _ _ _ _ _ _:\n      q\n"
+            .to_string(),
+    );
+
+    // ---- the main chain ----
+    g.reset();
+    g.param("pr", "L.Proof");
+    g.param("gs", "+List<V.Pt>");
+    g.param("np", "Nat");
+    g.param("ni", "Nat");
+    let init: Vec<(String, String)> = vec![
+        ("pr".into(), "L.Proof".into()),
+        ("gs".into(), "+List<V.Pt>".into()),
+        ("np".into(), "Nat".into()),
+        ("ni".into(), "Nat".into()),
+    ];
+    g.bind_as("st0", "L.st_new(pr)".into(), "L.St");
+    let one = g.one.clone();
+    let zero = g.zero.clone();
+    let mut point_defs = vec![];
+    point_defs.push(format!("def PARAM_W() -> L.BP:\n  L.BP0{{{}}}\n", point_lit(&params.w)));
+    point_defs.push(format!("def PARAM_U() -> L.BP:\n  L.BP0{{{}}}\n", point_lit(&params.u)));
+    let nlag = (params.n as usize - (bf + 1)).min(32);
+    let lag: Vec<String> = params.g_lagrange[..nlag].iter().map(point_lit).collect();
+    point_defs.push(format!("def G_LAG() -> +List<V.Pt>:\n  [{}]\n", lag.join(",\n   ")));
+    for (i, c) in vk.fixed_commitments.iter().enumerate() {
+        point_defs.push(format!("def VK_FIXED{i}() -> L.BP:\n  L.BP0{{{}}}\n", point_lit(c)));
+    }
+    for (i, c) in vk.permutation.commitments.iter().enumerate() {
+        point_defs.push(format!("def VK_PERM{i}() -> L.BP:\n  L.BP0{{{}}}\n", point_lit(c)));
+    }
+    // instance commitments, then vk.hash_into, then absorb them
+    {
+        let st = g.st();
+        let r = g.fresh("r");
+        g.bind_as(&r, format!("L.inst_comms({st}, np, ni, G_LAG(), L.upt(PARAM_W()))"), "L.PL");
+        g.bind_as("ics", format!("L.pl_v({r})"), "+List<V.Pt>");
+        g.next_st(format!("L.pl_st({r})"));
+    }
+    let repr = g.konst(vk.transcript_repr);
+    g.ab_scalar(&repr);
+    {
+        let st = g.st();
+        g.next_st(format!("L.ab_points(ics, {st})"));
+    }
+    let groups = |g: &mut Gen, name: &str, k: usize, pts: bool| {
+        let st = g.st();
+        let r = g.fresh("r");
+        if pts {
+            g.bind_as(&r, format!("L.rd_groups({st}, np, {k}n)"), "L.PLL");
+            g.bind_as(name, format!("L.pll_v({r})"), "+List<+List<V.Pt>>");
+            g.next_st(format!("L.pll_st({r})"));
+        } else {
+            g.bind_as(&r, format!("L.rd_sgroups({st}, np, {k}n)"), "L.SLL");
+            g.bind_as(name, format!("L.sll_v({r})"), "+List<+List<Fp.Fp>>");
+            g.next_st(format!("L.sll_st({r})"));
+        }
+    };
+    groups(&mut g, "aps", cs.num_advice_columns, true);
+    let theta = g.squeeze("theta");
+    groups(&mut g, "lps", 2 * nl, true);
+    let beta = g.squeeze("beta");
+    let gamma = g.squeeze("gamma");
+    groups(&mut g, "pps", pc, true);
+    groups(&mut g, "kps", nl, true);
+    let rand_c = g.rd_point("rand");
+    let y = g.squeeze("y");
+    let h_c = g.rd_points(dom.quotient_poly_degree as usize);
+    let x = g.squeeze("x");
+    groups(&mut g, "ies", cs.instance_queries.len(), false);
+    groups(&mut g, "aes", cs.advice_queries.len(), false);
+    let fix_ev = g.rd_scalars(cs.fixed_queries.len());
+    let rand_ev = g.rd_scalar("random_eval");
+    let perm_common = g.rd_scalars(vk.permutation.commitments.len());
+    groups(&mut g, "pes", 3 * pc - 1, false);
+    groups(&mut g, "les", 5 * nl, false);
+    let xn = g.bind(format!("L.bsqrn({k}n, {x})"));
+    g.log("xn", &xn);
+    let xn1 = g.sub(&xn, &one);
+    let bw = g.konst(dom.barycentric_weight);
+    let common = g.mul(&xn1, &bw);
+    let mut l_evals = vec![];
+    for r in -((bf + 1) as i32)..=0 {
+        let wr = g.konst(rot_const(r));
+        let d = g.sub(&x, &wr);
+        let di = g.inv(&d);
+        let t = g.mul(&di, &common);
+        l_evals.push(g.mul(&t, &wr));
+    }
+    let l_last = l_evals[0].clone();
+    let mut l_blind = zero.clone();
+    for e in &l_evals[1..1 + bf] {
+        l_blind = g.add(&l_blind, e);
+    }
+    let l_0 = l_evals[1 + bf].clone();
+    g.log("l_last", &l_last);
+    g.log("l_blind", &l_blind);
+    g.log("l_0", &l_0);
+    let l_lb = g.add(&l_last, &l_blind);
+    let active = g.sub(&one, &l_lb);
+    {
+        let st = g.st();
+        let r = g.fresh("r");
+        g.bind_as(
+            &r,
+            format!("ex_loop(aes, ies, pes, les, {theta}, {beta}, {gamma}, {x}, {y}, {l_0}, {l_last}, {active}, {fix_ev}, {perm_common}, {zero}, {st})"),
+            "L.HS",
+        );
+        g.bind_as("hnum", format!("L.hs_h({r})"), "L.BF");
+        g.next_st(format!("L.hs_st({r})"));
+    }
+    g.log("h_fold", "hnum");
+    let xn1i = g.inv(&xn1);
+    let expected_h = g.mul("hnum", &xn1i);
+    g.log("expected_h_eval", &expected_h);
+    let mut h_msm = g.ms_empty();
+    for i in (0..dom.quotient_poly_degree as usize).rev() {
+        h_msm = g.ms_scale(&h_msm, &xn);
+        h_msm = g.ms_push(&h_msm, &one, &pat(&h_c, i));
+    }
+    let x1 = g.squeeze("x1");
+    let x2 = g.squeeze("x2");
+    let mut rot_pt: HashMap<i32, String> = HashMap::new();
+    for r in point_index.keys() {
+        let v = if *r == 0 {
+            x.clone()
+        } else {
+            let c = g.konst(rot_const(*r));
+            g.mul(&x, &c)
+        };
+        rot_pt.insert(*r, v);
+    }
+    // QA init, then global keys (they come last in the commitment map, so first in reverse)
+    let mut cur: HashMap<String, String> = HashMap::new();
+    for (f, t) in &qa_fields {
+        let v = if t == "L.MS" { g.ms_empty() } else if f.starts_with('p') { one.clone() } else { zero.clone() };
+        cur.insert(f.clone(), v);
+    }
+    let glob: Vec<Q> = cmap.keys().filter(|k| !matches!(k, Q::P(_))).cloned().collect();
+    for key in glob.iter().rev() {
+        let sid = set_ids[&cset[key]];
+        let evs: Vec<String> = kev[key]
+            .iter()
+            .map(|e| match e.as_ref().unwrap() {
+                Ev::Fe(i) => fat(&fix_ev, *i),
+                Ev::Pc(i) => fat(&perm_common, *i),
+                Ev::H => expected_h.clone(),
+                Ev::Rand => rand_ev.clone(),
+                _ => unreachable!(),
+            })
+            .collect();
+        match key {
+            Q::H => accumulate(&mut g, &mut cur, sid, evs, None, Some(&h_msm.clone()), &x1),
+            Q::Rand => accumulate(&mut g, &mut cur, sid, evs, Some(rand_c.clone()), None, &x1),
+            Q::Fixed(i) => accumulate(&mut g, &mut cur, sid, evs, Some(format!("VK_FIXED{i}()")), None, &x1),
+            Q::PermCommon(i) => accumulate(&mut g, &mut cur, sid, evs, Some(format!("VK_PERM{i}()")), None, &x1),
+            Q::P(_) => unreachable!(),
+        }
+    }
+    let q0 = g.bind_t(format!("{{{} : QA}}", qa_build(&cur)), "QA");
+    let qa = g.bind_t(
+        format!("qa_loop(L.rev_sll(aes), L.rev_sll(ies), L.rev_sll(pes), L.rev_sll(les), L.rev_pll(aps), L.rev_pll(lps), L.rev_pll(pps), L.rev_pll(kps), L.rev_pts(ics), {x1}, {q0})"),
+        "QA",
+    );
+    let fieldv = |g: &mut Gen, f: &str| -> String {
+        let t = qa_fields.iter().find(|(n, _)| n == f).unwrap().1.clone();
+        g.bind_t(format!("QA_{f}({qa})"), &t)
+    };
+    let q_prime = g.rd_point("qprime");
+    let x3 = g.squeeze("x3");
+    let us = g.rd_scalars(nsets);
+    let mut msm_eval = zero.clone();
+    for sid in 0..nsets {
+        let pts: Vec<String> = point_sets[sid].iter().map(|r| rot_pt[r].clone()).collect();
+        let qe: Vec<String> = (0..pts.len()).map(|j| fieldv(&mut g, &format!("e{sid}_{j}"))).collect();
+        let mut r_eval = zero.clone();
+        for j in 0..pts.len() {
+            let mut term = qe[j].clone();
+            for m in 0..pts.len() {
+                if m == j {
+                    continue;
+                }
+                let num = g.sub(&x3, &pts[m]);
+                let den = g.sub(&pts[j], &pts[m]);
+                let deni = g.inv(&den);
+                let f = g.mul(&num, &deni);
+                term = g.mul(&term, &f);
+            }
+            r_eval = g.add(&r_eval, &term);
+        }
+        let mut ev = g.sub(&fat(&us, sid), &r_eval);
+        for p in &pts {
+            let d = g.sub(&x3, p);
+            let di = g.inv(&d);
+            ev = g.mul(&ev, &di);
+        }
+        let t = g.mul(&msm_eval, &x2);
+        msm_eval = g.add(&t, &ev);
+    }
+    g.log("msm_eval", &msm_eval);
+    let x4 = g.squeeze("x4");
+    let mut msm = g.ms_empty();
+    msm = g.ms_push(&msm, &one, &q_prime);
+    let mut v = msm_eval.clone();
+    for sid in 0..nsets {
+        msm = g.ms_scale(&msm, &x4);
+        let qm = fieldv(&mut g, &format!("m{sid}"));
+        msm = g.ms_cat(&msm, &qm);
+        let t = g.mul(&v, &x4);
+        v = g.add(&t, &fat(&us, sid));
+    }
+    g.log("v", &v);
+    let s_poly = g.rd_point("spoly");
+    let xi = g.squeeze("xi");
+    msm = g.ms_push(&msm, &xi, &s_poly);
+    let z = g.squeeze("z");
+    let mut rounds = vec![];
+    for j in 0..k {
+        let l = g.rd_point(&format!("L{j}"));
+        let r = g.rd_point(&format!("R{j}"));
+        let u = g.squeeze("u_j");
+        rounds.push((l, r, u));
+    }
+    let mut u_list = vec![];
+    for (l, r, u) in &rounds {
+        let ui = g.inv(u);
+        msm = g.ms_push(&msm, &ui, l);
+        msm = g.ms_push(&msm, u, r);
+        u_list.push(u.clone());
+    }
+    let c = g.rd_scalar("c");
+    let f = g.rd_scalar("f");
+    let neg_c = g.neg(&c);
+    let mut tmp = one.clone();
+    let mut cur_x = x3.clone();
+    for u in u_list.iter().rev() {
+        let t = g.mul(u, &cur_x);
+        let t = g.add(&one, &t);
+        tmp = g.mul(&tmp, &t);
+        cur_x = g.sq(&cur_x);
+    }
+    g.log("b", &tmp);
+    let ncb = g.mul(&neg_c, &tmp);
+    let u_scalar = g.mul(&ncb, &z);
+    let w_scalar = g.neg(&f);
+    g.log("msm_w", &w_scalar);
+    g.log("msm_u", &u_scalar);
+    let us_rev: Vec<String> = u_list.iter().rev().map(|u| format!("L.ub({u})")).collect();
+    let s_all = g.bind_t(format!("L.sub_head(L.compute_s([{}], L.ub({neg_c})), L.ub({v}))", us_rev.join(", ")), "+List<Fp.Fp>");
+    {
+        let st = g.st();
+        g.next_st(format!("L.log_list({s_all}, {st})"));
+    }
+    msm = g.ms_push(&msm, &w_scalar, "PARAM_W()");
+    msm = g.ms_push(&msm, &u_scalar, "PARAM_U()");
+    let ps_v = g.bind_t(format!("List.append(&2, V.Pt, L.ms_ps({msm}), gs)"), "+List<V.Pt>");
+    let ss_v = g.bind_t(format!("List.append(&2, Wd.W, L.words_list(L.ms_ss({msm})), L.words_list({s_all}))"), "+List<Wd.W>");
+    let total = g.bind_t(format!("L.bpt(MSM.msm({msm_depth}n, {ps_v}, {ss_v}))"), "L.BP");
+    {
+        let st = g.st();
+        g.next_st(format!("L.blgp({st}, \"msm_result\", {total})"));
+    }
+    g.check(&format!("L.bis_identity({total})"));
+    let lines = g.lines.clone();
+    let main_chain = chain("verify", &init, &lines, &g.types, &g.st(), "L.St", 300);
+
+    let mut out = String::new();
+    out.push_str("# GENERATED by the Zebend halo2 codegen (bend_verifier_dyn). Do not edit.\n");
+    out.push_str("import Base\nimport ../lib/words.bend as Wd\nimport ../lib/fp.bend as Fp\nimport ../lib/fq.bend as Fq\nimport ../lib/vesta.bend as V\nimport ../lib/msm.bend as MSM\nimport ./vlib.bend as L\n\n");
+    for d in &g.const_defs {
+        out.push_str(d);
+        out.push('\n');
+    }
+    for d in &point_defs {
+        out.push_str(d);
+        out.push('\n');
+    }
+    for d in &out_defs {
+        out.push_str(d);
+        out.push('\n');
+    }
+    out.push_str(&main_chain);
+    out
+}

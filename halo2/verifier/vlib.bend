@@ -460,3 +460,111 @@ def bms_scale(m: MS, +f: BF) -> MS:
 
 def bis_identity(p: BP) -> Bool:
   V.is_identity(upt(p))
+
+def rd_ivals_go(n: Nat, st: St, acc: +List<Fp.Fp>) -> SL:
+  match n:
+    case 0n:
+      SL{List.reverse(&2, Fp.Fp, acc), st}
+    case 1n+k:
+      +r = rd_ival(st)
+      rd_ivals_go(k, sf_st(r), sf_v(r) <> acc)
+
+def rd_ivals(st: St, n: Nat) -> SL:
+  rd_ivals_go(n, st, Nil{})
+
+# --- per-proof groups (bundles with a runtime number of actions) -------------------
+
+type PLL is Data:
+  PLL{gs: +List<+List<V.Pt>>, st: St}
+
+def pll_v(r: PLL) -> +List<+List<V.Pt>>:
+  PLL{+gs, _} = r
+  gs
+
+def pll_st(r: PLL) -> St:
+  PLL{_, +st} = r
+  st
+
+def rd_groups_go(n: Nat, +k: Nat, st: St, acc: +List<+List<V.Pt>>) -> PLL:
+  match n:
+    case 0n:
+      PLL{List.reverse(&2, +List<V.Pt>, acc), st}
+    case 1n+m:
+      +r = rd_points(st, k)
+      rd_groups_go(m, k, pl_st(r), pl_v(r) <> acc)
+
+# n proofs, each contributing k points in a row
+def rd_groups(st: St, +n: Nat, +k: Nat) -> PLL:
+  rd_groups_go(n, k, st, Nil{})
+
+type SLL is Data:
+  SLL{gs: +List<+List<Fp.Fp>>, st: St}
+
+def sll_v(r: SLL) -> +List<+List<Fp.Fp>>:
+  SLL{+gs, _} = r
+  gs
+
+def sll_st(r: SLL) -> St:
+  SLL{_, +st} = r
+  st
+
+def rd_sgroups_go(n: Nat, +k: Nat, st: St, acc: +List<+List<Fp.Fp>>) -> SLL:
+  match n:
+    case 0n:
+      SLL{List.reverse(&2, +List<Fp.Fp>, acc), st}
+    case 1n+m:
+      +r = rd_scalars(st, k)
+      rd_sgroups_go(m, k, sl_st(r), sl_v(r) <> acc)
+
+def rd_sgroups(st: St, +n: Nat, +k: Nat) -> SLL:
+  rd_sgroups_go(n, k, st, Nil{})
+
+# sum_j vals_j * G_lagrange_j + acc
+def lag_sum(vals: +List<Fp.Fp>, gl: +List<V.Pt>, +acc: V.Pt) -> V.Pt:
+  match vals gl:
+    case Con{+v, vr} Con{+g, gr}:
+      lag_sum(vr, gr, V.add(acc, V.scalar_mul_s(g, v)))
+    case _ _:
+      acc
+
+# instance commitments, one per proof (single instance column): sum inst_j G_lag_j + 1*W
+def inst_comms_go(n: Nat, +ni: Nat, +gl: +List<V.Pt>, +w: V.Pt, st: St, acc: +List<V.Pt>) -> PL:
+  match n:
+    case 0n:
+      PL{List.reverse(&2, V.Pt, acc), st}
+    case 1n+m:
+      +r = rd_ivals(st, ni)
+      inst_comms_go(m, ni, gl, w, sl_st(r), lag_sum(sl_v(r), gl, w) <> acc)
+
+def inst_comms(st: St, +n: Nat, +ni: Nat, +gl: +List<V.Pt>, +w: V.Pt) -> PL:
+  inst_comms_go(n, ni, gl, w, st, Nil{})
+
+def ab_points(ps: +List<V.Pt>, st: St) -> St:
+  match ps:
+    case Nil{}:
+      st
+    case Con{+p, rest}:
+      ab_points(rest, ab_point(st, p))
+
+type HS is Data:
+  HS{h: BF, st: St}
+
+def hs_h(r: HS) -> BF:
+  HS{+h, _} = r
+  h
+
+def hs_st(r: HS) -> St:
+  HS{_, +st} = r
+  st
+
+def rev_pts(xs: +List<V.Pt>) -> +List<V.Pt>:
+  List.reverse(&2, V.Pt, xs)
+
+def rev_pll(xs: +List<+List<V.Pt>>) -> +List<+List<V.Pt>>:
+  List.reverse(&2, +List<V.Pt>, xs)
+
+def rev_sll(xs: +List<+List<Fp.Fp>>) -> +List<+List<Fp.Fp>>:
+  List.reverse(&2, +List<Fp.Fp>, xs)
+
+def nat_of(+n: U32) -> Nat:
+  U32.to_nat(n)

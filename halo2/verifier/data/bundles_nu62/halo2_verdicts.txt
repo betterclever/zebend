@@ -1,0 +1,10 @@
+tx_20.orchard 1 5
+tx_20.orchard.bad 0 5
+tx_21.orchard 1 2
+tx_21.orchard.bad 0 2
+tx_22.orchard 1 4
+tx_22.orchard.bad 0 4
+tx_23.orchard 1 5
+tx_23.orchard.bad 0 5
+tx_24.orchard 1 2
+tx_24.orchard.bad 0 2

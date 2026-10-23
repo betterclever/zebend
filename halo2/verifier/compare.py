@@ -12,6 +12,8 @@ def load(path):
             name, val = parts
             if name.startswith("msm_g") and name != "msm_g":
                 name = "msm_g"
+            if name.startswith("expr"):
+                name = "expr"
             seq[name].append(val)
     return seq
 
