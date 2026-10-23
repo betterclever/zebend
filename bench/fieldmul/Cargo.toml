@@ -1,0 +1,9 @@
+[package]
+name = "fieldmul"
+version = "0.1.0"
+edition = "2021"
+[dependencies]
+pasta_curves = "0.5"
+ff = "0.13"
+[profile.release]
+opt-level = 3
