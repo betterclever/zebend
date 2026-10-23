@@ -12,6 +12,7 @@ import sys
 
 src, dst = sys.argv[1], sys.argv[2]
 heap_log2 = int(sys.argv[3]) if len(sys.argv) > 3 else 30
+stack_log2 = int(sys.argv[4]) if len(sys.argv) > 4 else 24
 s = open(src).read()
 
 def sub(old, new):
@@ -22,7 +23,7 @@ def sub(old, new):
 
 # Stack: 2 GB reservation -> 16 MB, no guard page or signal alt-stack on WASI.
 sub("  u64   len = 1ull << 31;\n",
-    "#ifdef __wasi__\n  u64   len = 1ull << 24;\n#else\n  u64   len = 1ull << 31;\n#endif\n")
+    "#ifdef __wasi__\n  u64   len = 1ull << __WASI_STACK_LOG2;\n#else\n  u64   len = 1ull << 31;\n#endif\n")
 sub("""  if (mprotect(p + len, 16384, PROT_NONE)) {
     err_fail("stack guard failed");
   }
@@ -49,7 +50,7 @@ sub("  u64   alt = 4 * SIGSTKSZ;\n",
 # Heap: 8 GB CPU reservation -> 2^heap_log2 bytes.
 sub("(!gpu ? 1ull << 33 :",
     f"(!gpu ? (__WASI_HEAP_BYTES) :")
-s = f"#ifdef __wasi__\n#define __WASI_HEAP_BYTES (1ull << {heap_log2})\n#else\n#define __WASI_HEAP_BYTES (1ull << 33)\n#endif\n" + s
+s = f"#define __WASI_STACK_LOG2 {stack_log2}\n#ifdef __wasi__\n#define __WASI_HEAP_BYTES (1ull << {heap_log2})\n#else\n#define __WASI_HEAP_BYTES (1ull << 33)\n#endif\n" + s
 # Fixed-address hints above 4 GB are meaningless on wasm32.
 sub("""static void* corpus_map(u64 size) {
 """, """static void* corpus_map(u64 size) {
@@ -57,10 +58,23 @@ sub("""static void* corpus_map(u64 size) {
   return pool_mmap(size);
 #endif
 """)
-# WASI's mmap emulation rejects MAP_NORESERVE; anonymous zeroed memory is all we need.
+# WASI's mmap emulation rejects MAP_NORESERVE. Big reservations (the heap) grow
+# linear memory directly: fresh pages are zeroed and contiguous at the top, so the
+# runtime's "double the heap in place" (an mmap at H + size) keeps working while the
+# heap is the topmost allocation. Small ones (the term stack) come from calloc.
 sub("""static void* pool_try(void* at, u64 bytes) {
 """, """static void* pool_try(void* at, u64 bytes) {
 #ifdef __wasi__
+  if (bytes >= (1ull << 26)) {
+    size_t top = __builtin_wasm_memory_size(0) * 65536;
+    if (at != NULL && (size_t)at != top) {
+      return MAP_FAILED;
+    }
+    if (__builtin_wasm_memory_grow(0, (size_t)((bytes + 65535) / 65536)) == (size_t)-1) {
+      return MAP_FAILED;
+    }
+    return (void*)top;
+  }
   (void)at;
   void* z = calloc(1, (size_t)bytes);
   return z ? z : MAP_FAILED;

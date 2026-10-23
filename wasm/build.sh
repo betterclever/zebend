@@ -5,7 +5,7 @@ WASI_SDK=${WASI_SDK:?set WASI_SDK to an extracted wasi-sdk}
 here=$(cd "$(dirname "$0")" && pwd)
 tmp=$(mktemp -d)
 BEND_NO_TELEMETRY=1 "${BEND:-bend}" "$1" -o "$tmp/out.c"
-python3 "$here/bend2wasm.py" "$tmp/out.c" "$tmp/out.wasi.c" "${HEAP_LOG2:-30}"
+python3 "$here/bend2wasm.py" "$tmp/out.c" "$tmp/out.wasi.c" "${HEAP_LOG2:-30}" "${STACK_LOG2:-24}"
 # TARGET=wasm32-wasip1 (default): single-threaded, runs anywhere (wasmtime, node, browsers).
 # TARGET=wasm32-wasip1-threads: shared memory + wasi-threads, for hosts that still support it.
 target=${TARGET:-wasm32-wasip1}
