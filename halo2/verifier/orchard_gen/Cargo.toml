@@ -1,0 +1,18 @@
+[package]
+name = "orchard_gen"
+version = "0.1.0"
+edition = "2021"
+description = "Generates the Bend verifier for the Orchard (post-NU6.3) circuit and a traced reference run"
+
+[dependencies]
+orchard = { path = "../../oracle/vendor/orchard", features = ["circuit"] }
+halo2_proofs = "0.4"
+pasta_curves = "0.6"
+ff = "0.14"
+hex = "0.4"
+
+[patch.crates-io]
+halo2_proofs = { path = "../toy/halo2_proofs" }
+
+[profile.release]
+debug = 0

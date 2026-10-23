@@ -1,0 +1,15 @@
+[package]
+name = "toy"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+halo2_proofs = { path = "halo2_proofs", default-features = false }
+pasta_curves = "0.6"
+ff = "0.14"
+group = "0.14"
+rand = { version = "0.10", features = ["std_rng"] }
+hex = "0.4"
+
+[profile.release]
+debug = 0
