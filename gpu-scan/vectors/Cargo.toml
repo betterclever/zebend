@@ -1,0 +1,17 @@
+[package]
+name = "gpu-scan-vectors"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+orchard = { version = "0.16", default-features = false, features = ["std"] }
+zcash_note_encryption = "0.5.1"
+pasta_curves = "0.6"
+blake2b_simd = "1"
+chacha20 = "0.9"
+getrandom = "0.3"
+hex = "0.4"
+anyhow = "1"
+
+[profile.release]
+debug = 1
