@@ -22,6 +22,13 @@ exactly the same field operations on the actual proof:
 | `commitment/verifier.rs` | IPA: ξ, z, k rounds of (L, R, uⱼ), b, the s-vector, −v at G₀, W and U scalars |
 | `SingleVerifier` | the final MSM over all terms + 2ᵏ generators, accepted iff it is the identity (H1's lib/msm.bend) |
 
+All field elements and points in generated code are boxed (`L.BF`, `L.BP`: a recursive type is
+one heap pointer) because the native backend flattens Data values into registers and caps a
+call frame at 247 of them.
+
+Note: halo2's `Blind::default()` is ONE, so an instance commitment is `Σ instᵢ·G_lagrangeᵢ + W`.
+Every transcript challenge matching halo2 depends on absorbing exactly that point.
+
 Points are decompressed with H1's `lib/vesta.bend` (canonical x, on-curve, as pasta's `from_bytes`),
 scalars are checked canonical (< p).
 
@@ -29,10 +36,11 @@ scalars are checked canonical (< p).
 
 | | toy circuit (k=5, 2 proofs) | Orchard post-NU6.3 (k=11, 2 actions) |
 |---|---|---|
-| generated Bend | 900 lines | 16,475 lines |
-| honest proof | **accepted**: MSM = identity | (see run below) |
-| tampered proof | **rejected** | |
-| values equal to halo2 | **81 / 81** (all challenges, 20 expressions, h, multiopen, v, b, c, f, 32 G-scalars, W/U scalars) | |
+| generated Bend | ~900 lines, 3 defs | 14,375 lines, 40 defs (compile 3m39s, Homebrew clang 23) |
+| honest proof | **accepted**: final MSM = identity | **accepted**: final MSM (2048 G + 125 other terms) = identity, **0.48 s** wall on the M5 Max CPU |
+| tampered proof | **rejected** | **rejected** (byte 3632 flipped, as in H0's dump) |
+| values equal to our instrumented halo2 | **81 / 81** | **2513 / 2513** (every challenge, 430 expressions, h, multiopen, v, IPA b/c/f, 2048 G-scalars, W/U scalars) |
+| values equal to H0's independent dump | | **463 / 463** (challenges, 430 expressions, h numerator, expected h, msm_eval, v, 11 IPA uⱼ, b, c, f) |
 
 `python3 compare.py toy_out.txt toy/out/toy_trace.txt` reproduces the comparison.
 
