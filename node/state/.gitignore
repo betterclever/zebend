@@ -1,0 +1,10 @@
+oracle/target/
+oracle/out/
+out/
+t/crh_test
+t/crh_test.gpu
+t/imp.bend
+tree_main
+tree_main.gpu
+nf_main
+nf_main.gpu
