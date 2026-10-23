@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zebend Verifier</title>
+<style>
+  :root {
+    --bg: #f6f5f1; --panel: #ffffff; --ink: #1c1b18; --muted: #6b675e; --line: #e2dfd6;
+    --accent: #c47a12; --ok: #1f7a4d; --bad: #b3261e; --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12110f; --panel: #1b1a17; --ink: #ece9e1; --muted: #a29d91; --line: #2e2c27;
+      --accent: #e3a043; --ok: #4cc38a; --bad: #f2766d;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12110f; --panel: #1b1a17; --ink: #ece9e1; --muted: #a29d91; --line: #2e2c27;
+    --accent: #e3a043; --ok: #4cc38a; --bad: #f2766d;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 40px 16px 64px; }
+  h1 { font-size: 28px; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .lede { color: var(--muted); margin: 0 0 28px; max-width: 640px; }
+  .tx { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-bottom: 12px;
+        display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; align-items: center; }
+  .txid { font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; }
+  .meta { color: var(--muted); font-size: 14px; }
+  .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+  button { font: inherit; padding: 7px 14px; border-radius: 7px; border: 1px solid var(--accent);
+           background: var(--accent); color: #fff; cursor: pointer; }
+  button:disabled { opacity: 0.5; cursor: default; }
+  label { font-size: 14px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+  .result { grid-column: 1 / -1; font-family: var(--mono); font-size: 14px; min-height: 1.5em; }
+  .ok { color: var(--ok); } .bad { color: var(--bad); }
+  footer { margin-top: 32px; color: var(--muted); font-size: 14px; }
+  @media (max-width: 560px) { .tx { grid-template-columns: 1fr; } .controls { justify-content: flex-start; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Verify Zcash shielded proofs in your browser</h1>
+  <p class="lede">These are real Zcash mainnet transactions. Each Orchard/Ironwood bundle carries a Halo 2
+  zero-knowledge proof. This page checks it with a verifier written in <strong>Bend</strong>, compiled to
+  JavaScript, running entirely on your device. Nothing is sent anywhere.</p>
+  <div id="list"></div>
+  <footer>Verifier: Bend 2, generated from the Orchard verifying key, agrees with the official
+  <code>halo2_proofs</code> verifier on every mainnet bundle we tested. Post-NU6.3 circuit.
+  Single-threaded; a 2-action proof takes about 10–15 s.</footer>
+</main>
+<script type="module">
+  const worker = new Worker("worker.mjs", { type: "module" });
+  const pending = new Map();
+  let next = 0;
+  worker.onmessage = ({ data }) => { pending.get(data.id)?.(data); pending.delete(data.id); };
+  const verify = (url, tamper) => new Promise((res) => { const id = next++; pending.set(id, res); worker.postMessage({ id, url, tamper }); });
+
+  const samples = await (await fetch("data/samples.json")).json();
+  const list = document.getElementById("list");
+  for (const s of samples) {
+    const el = document.createElement("section");
+    el.className = "tx";
+    el.innerHTML = `
+      <div><div class="txid">${s.txid}</div>
+        <div class="meta">block ${s.height.toLocaleString()} · ${s.pool} · ${s.actions} actions</div></div>
+      <div class="controls"><label><input type="checkbox"> flip one proof bit</label><button>Verify</button></div>
+      <div class="result"></div>`;
+    const [box, btn, out] = [el.querySelector("input"), el.querySelector("button"), el.querySelector(".result")];
+    btn.onclick = async () => {
+      btn.disabled = true;
+      out.className = "result";
+      out.textContent = "verifying…";
+      const r = await verify(s.file, box.checked);
+      btn.disabled = false;
+      if (r.error) { out.textContent = `error: ${r.error}`; return; }
+      out.className = `result ${r.ok ? "ok" : "bad"}`;
+      out.textContent = `${r.ok ? "✓ valid proof" : "✗ invalid proof"} · ${(r.ms / 1000).toFixed(1)} s${box.checked ? " (tampered)" : ""}`;
+    };
+    list.appendChild(el);
+  }
+  // ?auto: verify the first sample honestly and tampered on load (used for headless checks).
+  if (new URLSearchParams(location.search).has("auto")) {
+    const rows = [];
+    for (const s of samples) {
+      const a = await verify(s.file, false), b = await verify(s.file, true);
+      rows.push(`${s.actions}a:${a.ok ? "valid" : "INVALID"}/${b.ok ? "TAMPER-ACCEPTED" : "tamper-rejected"}/${(a.ms / 1000).toFixed(1)}s${a.error ?? ""}${b.error ?? ""}`);
+    }
+    document.title = `auto ${rows.join(" ")}`;
+  }
+</script>
+</body>
+</html>
