@@ -1,0 +1,31 @@
+[package]
+name = "tx-oracle"
+version = "0.1.0"
+edition = "2021"
+description = "Fetches real mainnet v5/v6 transactions and dumps ground truth for the Bend tx layer"
+
+[dependencies]
+zcash_primitives = { version = "0.31", default-features = false, features = ["std"] }
+zcash_protocol = "0.11"
+orchard = { version = "0.16", features = ["circuit"] }
+halo2_proofs = "0.4"
+tonic = { version = "0.14", features = ["tls-webpki-roots", "transport", "tls-ring"] }
+tonic-prost = "0.14"
+prost = "0.14"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+hex = "0.4"
+anyhow = "1"
+blake2b_simd = "1"
+pasta_curves = "0.6"
+ff = "0.14"
+group = "0.14"
+reddsa = "0.6"
+
+[profile.release]
+opt-level = 3
+
+# Reuse the Halo 2 workstream's vendored orchard/halo2 (read-only): exposes the raw
+# halo2 VerifyingKey so instance vectors computed here can be checked by the official verifier.
+[patch.crates-io]
+halo2_proofs = { path = "../../../halo2/oracle/vendor/halo2_proofs" }
+orchard = { path = "../../../halo2/oracle/vendor/orchard" }
