@@ -1,0 +1,18 @@
+[package]
+name = "bend-halo2-perf"
+version = "0.1.0"
+edition = "2021"
+description = "Ground truth and Rust baselines for the Bend Halo 2 MSM / batch-verification work"
+
+[dependencies]
+orchard = { version = "0.16", features = ["circuit"] }
+halo2_proofs = "0.4"
+pasta_curves = "0.6"
+ff = "0.14"
+group = "0.14"
+rand = "0.10"
+rand_chacha = "0.10"
+rayon = "1"
+
+[profile.release]
+opt-level = 3
