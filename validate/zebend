@@ -1,0 +1,5 @@
+#!/bin/zsh
+# zebend validate [--tx tx_0] [--tamper header|ciphertext|proof|signature|note|doublespend]
+cd "$(dirname "$0")"
+[ "$1" = validate ] && shift
+exec python3 zebend_validate.py "$@"
