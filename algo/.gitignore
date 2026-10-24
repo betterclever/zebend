@@ -1,0 +1,12 @@
+# native binaries and Metal caches
+t/glv_test_vesta
+t/glv_test_pallas
+t/smul_glv
+t/msm_ba_main
+t/msm_ba_loop
+v/bundle_ba
+v/loop_ba
+v/loop_seq
+v/batch_main
+prof/loop_main
+*.gpu
