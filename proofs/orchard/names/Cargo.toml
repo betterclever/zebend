@@ -1,0 +1,13 @@
+[package]
+name = "orchard-gate-names"
+version = "0.1.0"
+edition = "2021"
+description = "Prints the Orchard circuit's halo2 gate names, in VerifyingKey order"
+
+[dependencies]
+orchard = { version = "0.16", features = ["circuit"] }
+halo2_proofs = "*"
+
+[patch.crates-io]
+halo2_proofs = { path = "../../../halo2/oracle/vendor/halo2_proofs" }
+orchard = { path = "../../../halo2/oracle/vendor/orchard" }
