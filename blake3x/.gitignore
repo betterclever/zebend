@@ -1,0 +1,8 @@
+scratch/
+*.gpu
+*/verify
+*/b2bench
+*/leafbench
+*/t/pt
+*/adv.bin
+*/adv.bend.txt
