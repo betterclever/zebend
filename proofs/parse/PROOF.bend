@@ -1,0 +1,257 @@
+# Proofs of LAWS.bend.
+import Base
+import ./LAWS.bend as L
+import ../../node/p2p/bytes.bend as B
+import ./canon.bend as C
+import ./wordlemmas.bend as W
+import ./bits.bend as T
+import ../../node/headers/main.bend as M
+
+# ---- small helpers ------------------------------------------------------------
+
+def mk3(v: U32) -> B.Compact:
+  B.Compact{v, 3}
+
+def mk5(v: U32) -> B.Compact:
+  B.Compact{v, 5}
+
+def and_r(+y: Bool, x: Bool) -> Bool:
+  Bool.and(x, y)
+
+def and2(+x: Bool, +y: Bool, ex: {x == True{} : Bool}, ey: {y == True{} : Bool}) -> {Bool.and(x, y) == True{} : Bool}:
+  Equal.trans(Bool, Bool.and(x, y), Bool.and(True{}, y), True{}, Equal.cong(Bool, Bool, and_r(y), x, True{}, ex), ey)
+
+def bcmp_refl(b: Bool) -> {Bool.cmp(b, b) == EQ{} : Cmp}:
+  match b:
+    case True{}:
+      {==}
+    case False{}:
+      {==}
+
+def fin_c(+b: Bool, c: Cmp) -> Cmp:
+  Word.cmp.fin(b, b, c)
+
+def wcmp_refl(+n: Nat, w: Word(n)) -> {Word.cmp(n, w, w) == EQ{} : Cmp}:
+  match n:
+    case 0n:
+      {==}
+    case 1n+p:
+      match w:
+        case WCon{+b, +t}:
+          Equal.trans(Cmp, Word.cmp.fin(b, b, Word.cmp(p, t, t)), Word.cmp.fin(b, b, EQ{}), EQ{},
+            Equal.cong(Cmp, Cmp, fin_c(b), Word.cmp(p, t, t), EQ{}, wcmp_refl(p, t)),
+            bcmp_refl(b))
+
+def u32_eq_refl(a: U32) -> {U32.is_eq(a, a) == True{} : Bool}:
+  match a:
+    case U32{+w}:
+      Equal.cong(Cmp, Bool, Cmp.is_eq, Word.cmp(32n, w, w), EQ{}, wcmp_refl(32n, w))
+
+def list_eq_refl(xs: +List<U32>) -> {B.is_eq(xs, xs) == True{} : Bool}:
+  match xs:
+    case Nil{}:
+      {==}
+    case Con{+h, +t}:
+      and2(U32.is_eq(h, h), B.is_eq(t, t), u32_eq_refl(h), list_eq_refl(t))
+
+# ---- CompactSize round trip ---------------------------------------------------
+
+def rsel(c: Bool, +b: U32, +r: +List<U32>) -> {c == True{} : Bool} -> {B.read_compact_sel(c, b, r) == B.Compact{b, 1} : B.Compact}:
+  match c:
+    case True{}:
+      h => {==}
+    case False{}:
+      h => W.absurd({B.read_compact_sel(False{}, b, r) == B.Compact{b, 1} : B.Compact}, W.false_not_true(h))
+
+def rt.big(+n: U32, +rest: +List<U32>, d: Bool) -> {U32.is_lt(n, 65536) == d : Bool} -> {B.read_compact(B.append(B.compact_big(d, n), rest)) == B.Compact{n, B.length(B.compact_big(d, n))} : B.Compact}:
+  match d:
+    case True{}:
+      hd => Equal.cong(U32, B.Compact, mk3, B.get_le16(B.le16(n)), n, T.le16.rt(n, hd))
+    case False{}:
+      hd => Equal.cong(U32, B.Compact, mk5, B.get_le32(B.le32(n)), n, T.le32.rt(n))
+
+def rt.sel(+n: U32, +rest: +List<U32>, c: Bool) -> {U32.is_lt(n, 253) == c : Bool} -> {B.read_compact(B.append(B.compact_sel(c, n), rest)) == B.Compact{n, B.length(B.compact_sel(c, n))} : B.Compact}:
+  match c:
+    case True{}:
+      h => rsel(U32.is_lt(n, 253), n, B.drop(n <> rest, 1n), h)
+    case False{}:
+      h => rt.big(n, rest, U32.is_lt(n, 65536), {==})
+
+def compact_rt(+n: U32, +rest: +List<U32>) -> {B.read_compact(B.append(B.compact(n), rest)) == B.Compact{n, B.length(B.compact(n))} : B.Compact}:
+  rt.sel(n, rest, U32.is_lt(n, 253), {==})
+
+# ---- canonical decoder ----------------------------------------------------------
+
+def check_c(+c: B.Compact, ok: Bool) -> Maybe<&2, B.Compact>:
+  C.check(ok, c)
+
+def go_c(+xs: +List<U32>, c: B.Compact) -> Maybe<&2, B.Compact>:
+  C.go(xs, c)
+
+# The prefix check succeeds on an encoding followed by anything (per size class).
+# `rest` is split so that take(rest, 0n) reduces.
+def pre.r16(+n: U32, rest: +List<U32>) -> {B.is_eq(B.take_u(B.append(253 <> B.le16(n), rest), 3), 253 <> B.le16(n)) == True{} : Bool}:
+  match rest:
+    case Nil{}:
+      list_eq_refl(253 <> B.le16(n))
+    case Con{_, _}:
+      list_eq_refl(253 <> B.le16(n))
+
+def pre.r32(+n: U32, rest: +List<U32>) -> {B.is_eq(B.take_u(B.append(254 <> B.le32(n), rest), 5), 254 <> B.le32(n)) == True{} : Bool}:
+  match rest:
+    case Nil{}:
+      list_eq_refl(254 <> B.le32(n))
+    case Con{_, _}:
+      list_eq_refl(254 <> B.le32(n))
+
+def pre.r8(+n: U32, rest: +List<U32>) -> {B.is_eq(B.take_u(B.append([n], rest), 1), [n]) == True{} : Bool}:
+  match rest:
+    case Nil{}:
+      list_eq_refl([n])
+    case Con{_, _}:
+      list_eq_refl([n])
+
+def pre.big(+n: U32, +rest: +List<U32>, d: Bool) -> {B.is_eq(B.take_u(B.append(B.compact_big(d, n), rest), B.length(B.compact_big(d, n))), B.compact_big(d, n)) == True{} : Bool}:
+  match d:
+    case True{}:
+      pre.r16(n, rest)
+    case False{}:
+      pre.r32(n, rest)
+
+def pre.sel(+n: U32, +rest: +List<U32>, c: Bool) -> {B.is_eq(B.take_u(B.append(B.compact_sel(c, n), rest), B.length(B.compact_sel(c, n))), B.compact_sel(c, n)) == True{} : Bool}:
+  match c:
+    case True{}:
+      pre.r8(n, rest)
+    case False{}:
+      pre.big(n, rest, U32.is_lt(n, 65536))
+
+def canon_ok(+n: U32, +rest: +List<U32>) -> {C.read_compact_canon(B.append(B.compact(n), rest)) == Some{B.Compact{n, B.length(B.compact(n))}} : Maybe<&2, B.Compact>}:
+  +xs : +List<U32> = B.append(B.compact(n), rest)
+  +c : B.Compact = B.Compact{n, B.length(B.compact(n))}
+  Equal.trans(Maybe<&2, B.Compact>, C.go(xs, B.read_compact(xs)), C.go(xs, c), Some{c},
+    Equal.cong(B.Compact, Maybe<&2, B.Compact>, go_c(xs), B.read_compact(xs), c, compact_rt(n, rest)),
+    Equal.cong(Bool, Maybe<&2, B.Compact>, check_c(c), B.is_eq(B.take_u(xs, B.length(B.compact(n))), B.compact(n)), True{}, pre.sel(n, rest, U32.is_lt(n, 253))))
+
+# ---- soundness of the canonical decoder -----------------------------------------
+
+def get_v(m: Maybe<&2, B.Compact>) -> U32:
+  match m:
+    case Some{c}:
+      B.Compact{v, _} = c
+      v
+    case None{}:
+      0
+
+def get_w(m: Maybe<&2, B.Compact>) -> U32:
+  match m:
+    case Some{c}:
+      B.Compact{_, w} = c
+      w
+    case None{}:
+      0
+
+def is_some(m: Maybe<&2, B.Compact>) -> Bool:
+  match m:
+    case Some{c}:
+      True{}
+    case None{}:
+      False{}
+
+def eq_at_v(+xs: +List<U32>, +cw: U32, a: U32) -> Bool:
+  B.is_eq(B.take_u(xs, cw), B.compact(a))
+
+def eq_at_w(+xs: +List<U32>, +v: U32, b: U32) -> Bool:
+  B.is_eq(B.take_u(xs, b), B.compact(v))
+
+def snd.check(+xs: +List<U32>, +cv: U32, +cw: U32, +v: U32, +w: U32, ok: Bool) -> {B.is_eq(B.take_u(xs, cw), B.compact(cv)) == ok : Bool} -> {C.check(ok, B.Compact{cv, cw}) == Some{B.Compact{v, w}} : Maybe<&2, B.Compact>} -> {B.is_eq(B.take_u(xs, w), B.compact(v)) == True{} : Bool}:
+  match ok:
+    case True{}:
+      e => +h =>
+        +ev = Equal.cong(Maybe<&2, B.Compact>, U32, get_v, Some{B.Compact{cv, cw}}, Some{B.Compact{v, w}}, h)
+        +ew = Equal.cong(Maybe<&2, B.Compact>, U32, get_w, Some{B.Compact{cv, cw}}, Some{B.Compact{v, w}}, h)
+        Equal.trans(Bool, B.is_eq(B.take_u(xs, w), B.compact(v)), B.is_eq(B.take_u(xs, cw), B.compact(cv)), True{},
+          Equal.trans(Bool, B.is_eq(B.take_u(xs, w), B.compact(v)), B.is_eq(B.take_u(xs, cw), B.compact(v)), B.is_eq(B.take_u(xs, cw), B.compact(cv)),
+            Equal.sym(Bool, B.is_eq(B.take_u(xs, cw), B.compact(v)), B.is_eq(B.take_u(xs, w), B.compact(v)), Equal.cong(U32, Bool, eq_at_w(xs, v), cw, w, ew)),
+            Equal.sym(Bool, B.is_eq(B.take_u(xs, cw), B.compact(cv)), B.is_eq(B.take_u(xs, cw), B.compact(v)), Equal.cong(U32, Bool, eq_at_v(xs, cw), cv, v, ev))),
+          e)
+    case False{}:
+      e => h => W.absurd({B.is_eq(B.take_u(xs, w), B.compact(v)) == True{} : Bool}, W.false_not_true(Equal.cong(Maybe<&2, B.Compact>, Bool, is_some, None{}, Some{B.Compact{v, w}}, h)))
+
+def snd.go(+xs: +List<U32>, +v: U32, +w: U32, c: B.Compact) -> {C.go(xs, c) == Some{B.Compact{v, w}} : Maybe<&2, B.Compact>} -> {B.is_eq(B.take_u(xs, w), B.compact(v)) == True{} : Bool}:
+  match c:
+    case B.Compact{+cv, +cw}:
+      snd.check(xs, cv, cw, v, w, B.is_eq(B.take_u(xs, cw), B.compact(cv)), {==})
+
+# ---- the laws ---------------------------------------------------------------------
+
+def L.le32_roundtrip(x):
+  T.le32.rt(x)
+
+def L.le16_roundtrip(x, h):
+  T.le16.rt(x, h)
+
+def L.compact_roundtrip(n, rest):
+  compact_rt(n, rest)
+
+def L.noncanonical_accepted():
+  {==}
+
+def L.noncanonical_differs():
+  {==}
+
+def L.canon_rejects_example():
+  {==}
+
+def L.canon_accepts(n, rest):
+  canon_ok(n, rest)
+
+def L.canon_sound(xs, v, w, h):
+  snd.go(xs, v, w, B.read_compact(xs), h)
+
+# ---- header stream split -----------------------------------------------------------
+
+def cons_c(+h: U32, t: +List<U32>) -> +List<U32>:
+  h <> t
+
+# take(xs, a + b) == take(xs, a) ++ take(drop(xs, a), b)
+def take_add(+a: Nat, xs: +List<U32>, +b: Nat) -> {List.take(&2, U32, xs, Nat.add(a, b)) == List.append(&2, U32, List.take(&2, U32, xs, a), List.take(&2, U32, List.drop(&2, U32, xs, a), b)) : +List<U32>}:
+  match a:
+    case 0n:
+      match xs:
+        case Nil{}:
+          {==}
+        case Con{_, _}:
+          {==}
+    case 1n+p:
+      match xs:
+        case Nil{}:
+          {==}
+        case Con{+h, +t}:
+          Equal.cong(+List<U32>, +List<U32>, cons_c(h), List.take(&2, U32, t, Nat.add(p, b)), List.append(&2, U32, List.take(&2, U32, t, p), List.take(&2, U32, List.drop(&2, U32, t, p), b)), take_add(p, t, b))
+
+def app_c(+pre: +List<U32>, ys: +List<U32>) -> +List<U32>:
+  List.append(&2, U32, pre, ys)
+
+def take0(xs: +List<U32>) -> {List.take(&2, U32, xs, 0n) == Nil{} : +List<U32>}:
+  match xs:
+    case Nil{}:
+      {==}
+    case Con{_, _}:
+      {==}
+
+def split_concat(+k: Nat, +bs: +List<U32>) -> {List.concat(&2, U32, M.split(k, bs)) == List.take(&2, U32, bs, Nat.mul(k, 1487n)) : +List<U32>}:
+  match k:
+    case 0n:
+      Equal.sym(+List<U32>, List.take(&2, U32, bs, 0n), Nil{}, take0(bs))
+    case 1n+p:
+      +pre : +List<U32> = List.take(&2, U32, bs, 1487n)
+      +rest : +List<U32> = List.drop(&2, U32, bs, 1487n)
+      Equal.trans(+List<U32>,
+        List.append(&2, U32, pre, List.concat(&2, U32, M.split(p, rest))),
+        List.append(&2, U32, pre, List.take(&2, U32, rest, Nat.mul(p, 1487n))),
+        List.take(&2, U32, bs, Nat.add(1487n, Nat.mul(p, 1487n))),
+        Equal.cong(+List<U32>, +List<U32>, app_c(pre), List.concat(&2, U32, M.split(p, rest)), List.take(&2, U32, rest, Nat.mul(p, 1487n)), split_concat(p, rest)),
+        Equal.sym(+List<U32>, List.take(&2, U32, bs, Nat.add(1487n, Nat.mul(p, 1487n))), List.append(&2, U32, pre, List.take(&2, U32, rest, Nat.mul(p, 1487n))), take_add(1487n, bs, Nat.mul(p, 1487n))))
+
+def L.header_split_concat(k, bs):
+  split_concat(k, bs)
