@@ -162,6 +162,15 @@ async fn handshake(addr: std::net::SocketAddr) -> Result<(TcpStream, i32, String
 }
 
 async fn block_hash_at(height: u64) -> Result<[u8; 32]> {
+    // lightwalletd reads height 0 as "unspecified", so use the well-known mainnet
+    // genesis hash (displayed big-endian; the protocol uses the reversed bytes).
+    if height == 0 {
+        let mut h: [u8; 32] = hex::decode("00040fe8ec8471911baa1db1266ea15dd06b4a8a5c453883c000b031973dce08")?
+            .try_into()
+            .map_err(|_| anyhow!("bad genesis hash"))?;
+        h.reverse();
+        return Ok(h);
+    }
     let mut g = connect("https://zec.rocks:443").await?;
     g.ready().await?;
     let b: CompactBlock = g
