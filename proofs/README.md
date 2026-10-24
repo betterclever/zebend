@@ -89,6 +89,8 @@ this is a model of the gate's algebra, not a check of Orchard's generated gate c
 | merkle | 0.07 s | 0.10 s |
 | field | 0.15 s | 0.41 s |
 | gadget | 0.06 s | 0.07 s |
+| prims | 0.2 s | 1 s |
+| orchard | 0.1 s | 1 s |
 
 `--verdict` is fast because Bend caches its compiled Lean kernel (`~/.bend/bendtt/`); it
 still rejects unsound proofs (an `@unsafe` "proof" fails it).
@@ -175,3 +177,93 @@ be symbolic, and there is no ring-normalisation tactic. Still missing, in order:
 normalisation over ~60 `mac64` steps, the Montgomery constant fact
 (`p · p' ≡ −1 mod 2^64`), and bit-mask select lemmas for the final subtraction.
 Field multiplication stays **tested** (116/116 against `pasta_curves`), not proven.
+
+## prims/: the fork's U32 arithmetic and widening primitives (7 laws)
+
+Target: Bend's `U32.mul` / `U32.add` / `U32.from_nat` and the primitives the bend-fork
+branch `u64-rot` adds for 64-bit and multi-limb arithmetic (`bend2/base.bend`). `K` is
+`Nat.mul(65536n, 65536n)` (= 2^32, written as the fork writes it); `A = U32.to_nat(a)` etc.
+
+| Law | Statement |
+|---|---|
+| `u32_mul_lo` | `U32.to_nat(U32.mul(a, b)) == (A * B) mod K` |
+| `u32_add_lo` | `U32.to_nat(U32.add(a, b)) == (A + B) mod K` |
+| `u32_from_nat` | `U32.to_nat(U32.from_nat(y)) == y mod K`, for every Nat `y` |
+| `mul_hi_split` | `U32.to_nat(U32.mul(a, b)) + U32.to_nat(U32.from_nat((A * B) div K)) * K == A * B` |
+| `add_hi_split` | `U32.to_nat(U32.add(a, b)) + U32.to_nat(U32.from_nat((A + B) div K)) * K == A + B` |
+| `mac_hi_split` | `U32.to_nat(((a * b + c) + d : U32)) + U32.to_nat(U32.from_nat(((A * B + C) + D) div K)) * K == (A * B + C) + D` |
+| `lane64_split` | `lane(0, x) + lane(1, x) * K == x mod 2^64`, where `lane(k, x)` is `U32.lane64`'s body with `k` = `0`, `1` |
+
+`U32.mul` is Bend's own shift-and-add `Word.mul`; `wmul.bend` proves it is multiplication
+mod 2^n for **every** width n (`word_mul_mod`), by an invariant on `Word.mul.go` and a
+congruence-mod-P library (`cong.bend`). `words.bend` proves the value bound
+`Word.to_nat(n, w) <= 2^n - 1`, `Word.inc`'s carry identity and `2^32 == 65536 * 65536`;
+`hi.bend` proves that the high digit of any `x <= M^2 - 1` is below `M` (so
+`U32.from_nat` of it does not wrap), and the bounds `A*B`, `A+B`, `A*B + C + D <= M^2 - 1`.
+`u32_from_nat` is the lemma `fieldmul/` lists as missing.
+
+**What the hi laws are about.** By definition, `U32.mul_hi(a, b)` is
+`U32.from_nat(Nat.div(A*B, K))`, `U32.add_hi` and `U32.mac_hi` likewise, and
+`U32.lane64(k, x)` is `U32.from_nat(Nat.div(Nat.mod(x, Nat.pow(2n, 64n)), Nat.pow(2n, Nat.mul(32n, U32.to_nat(k)))))`.
+Laws 4–7 are stated about those defining expressions, copied verbatim, not about the
+names: the checker cannot unfold `U32.mul_hi(a, b)` to its body. Comparing an unfolded
+body with any separately written copy of it makes the checker reduce the closed term
+`Nat.mul(65536n, 65536n)` in unary, 2^32 steps, and it overflows the stack (minimal
+repro: `law t: for +a: U32, for +b: U32, {U32.add_hi(a, b) == U32.from_nat(Nat.div(Nat.add(U32.to_nat(a), U32.to_nat(b)), Nat.mul(65536n, 65536n))) : U32}`
+with proof `{==}`; moving the constant into a 0-ary def does not help). The same
+limitation is why every proof here first rewrites `K` to `1 + mask(32)` and applies
+lemmas proven for a variable modulus `1 + bp`; a proof that lets the checker compare
+two copies of a closed 2^32 term crashes it. Since `U32.add64(k, …)` is by definition
+`U32.lane64(k, word(al, ah) + word(bl, bh))` and `U32.rotr64(k, …)` is `U32.lane64(k, r)`
+for its rotation formula `r`, `lane64_split` (for every `x`) covers both of them: their two
+lanes recombine to the 64-bit result mod 2^64.
+
+**Not proven:** `U32.mac64` (word k of a 128-bit multiply-accumulate; needs a four-digit
+split of a value below 2^128, and the same unfolding step), `U32.xor64` (needs a
+`Word.xor` lemma), and that `rotr64`'s formula is a rotation (that is its definition).
+Run with `prims/chk.sh FILE [--verdict]`: it raises the JS stack so the checker can
+expand `65536n` (2^16) once, in `words.bend`'s `e16`.
+
+## orchard/: soundness of Orchard circuit gadgets on the generated gates (7 laws)
+
+Target: the exact gate polynomials of the generated Orchard circuit
+(`halo2/gen/orchard_cs.bend`). `gates.py` parses that file, decodes its Montgomery-form
+constants, and `--check` evaluates its parsed trees on the real proof evaluations of
+`halo2/vectors/orchard_verify.txt`: **386/386** gate values equal the generated code's
+(193 polynomials × 2 proofs). `--emit` writes `gates_model.bend`: the selected gates over
+`F.fadd/fsub/fmul` (Nat mod p, `fieldmodel.bend`), with the gate's selector factor
+(checked identical for every polynomial of a gate) as a variable `sel`. Gate and
+constraint names come from the `orchard` crate (`names/names.txt`).
+
+Hypotheses (explicit in every law): p = 1 + pp with **`NZD(pp)`**: no zero divisors among
+canonical elements (true exactly when p is prime; Pallas' p is, which is not proven here);
+`1 <= pp`; every queried evaluation canonical (`Le(v, pp)`, i.e. `v < p`); the selector is
+**invertible**, `fmul(si, sel) == 1` (in Fp: the gate is active on this row, `sel != 0`);
+the gate polynomial(s) evaluate to 0. `a<k>` is the k-th queried advice evaluation.
+
+| Law | Gate / constraint | Conclusion |
+|---|---|---|
+| `value_balance` | 0 "Orchard circuit checks": "v_old - v_new = magnitude * sign" | `a0 == a1 + a2·a3` (needs no `NZD`) |
+| `anchor_or_zero` | 0: "Either v_old = 0, or root = anchor" | `a0 == 0` or `a4 == a5` |
+| `spend_disabled_zero` | 0: "v_old = 0 or enable_spend = 1" | `a0 == 0` or `a6 == 1` |
+| `output_disabled_zero` | 0: "v_new = 0 or enable_output = 1" | `a1 == 0` or `a7 == 1` |
+| `last_window_bit` | 19 "Short fixed-base mul gate": "last_window_check" | `a5 == 0` or `a5 == 1` |
+| `decompose_bit` | 13 "Decompose scalar for complete bits of variable-base mul": "bool_check" and "y_switch" together | `a10 == 2·a11 + 0` and `a9 + a21 == 0`, or `a10 == 2·a11 + 1` and `a9 == a21` |
+| `cond_swap` | 26 "a' = b ⋅ swap + a ⋅ (1-swap)": "a check", "b check", "swap is bool" together | `a4 == 0`, `a2 == a0`, `a3 == a1`; or `a4 == 1`, `a2 == a1`, `a3 == a0` |
+
+(`+`, `·`, `2·` above are `F.fadd`/`F.fmul` in Fp.) The laws are about the generated code
+after `gates.py`'s translation; that translation is checked by the 386/386 evaluation, not
+proven. Each law is about one gate on one row; what a gadget means across rows (e.g. a
+whole running-sum decomposition) is not covered.
+
+**The selector is invertible rather than just non-zero** because Bend can use a function
+hypothesis (`NZD`) at most once: a law that strips the selector of three constraints and
+then splits a product could not use `NZD` four times. Stripping with an inverse needs no
+`NZD` (`evals.bend`'s `strip_inv`), so each law uses it at most once.
+
+**Finding: `gadget/`'s `bool_gate_sound` is vacuous.** Its hypothesis `NoZeroDivisors(p)`
+quantifies over all Nats, and x = p, y = 1 is a zero divisor (p·1 mod p = 0), so the
+hypothesis is false for every p ≥ 1. `orchard/gadget_vacuous.bend` proves this
+(`nzd_unsatisfiable: NoZeroDivisors(1 + pp) -> Empty`). `orchard/`'s `NZD` quantifies only
+over canonical elements, which a prime p satisfies, and `orchard/`'s `last_window_bit` /
+`E.boolean` is the non-vacuous version of that law, on a real Orchard gate.
