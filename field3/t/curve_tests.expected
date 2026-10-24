@@ -1,0 +1,136 @@
+ok   V decompress/encode 0
+ok   V add 0
+ok   V double 0
+ok   V add self 0
+ok   V neg 0
+ok   V sub 0
+ok   V p + -p = 0 0
+ok   V add_aff 0
+ok   V scalar_mul 0
+ok   V is_eq 0
+ok   V decompress/encode 1
+ok   V add 1
+ok   V double 1
+ok   V add self 1
+ok   V neg 1
+ok   V sub 1
+ok   V p + -p = 0 1
+ok   V add_aff 1
+ok   V scalar_mul 1
+ok   V is_eq 1
+ok   V decompress/encode 2
+ok   V add 2
+ok   V double 2
+ok   V add self 2
+ok   V neg 2
+ok   V sub 2
+ok   V p + -p = 0 2
+ok   V add_aff 2
+ok   V scalar_mul 2
+ok   V is_eq 2
+ok   V decompress/encode 3
+ok   V add 3
+ok   V double 3
+ok   V add self 3
+ok   V neg 3
+ok   V sub 3
+ok   V p + -p = 0 3
+ok   V add_aff 3
+ok   V scalar_mul 3
+ok   V is_eq 3
+ok   V decompress/encode 4
+ok   V add 4
+ok   V double 4
+ok   V add self 4
+ok   V neg 4
+ok   V sub 4
+ok   V p + -p = 0 4
+ok   V add_aff 4
+ok   V scalar_mul 4
+ok   V is_eq 4
+ok   V decompress/encode 5
+ok   V add 5
+ok   V double 5
+ok   V add self 5
+ok   V neg 5
+ok   V sub 5
+ok   V p + -p = 0 5
+ok   V add_aff 5
+ok   V scalar_mul 5
+ok   V is_eq 5
+ok   V 0 + p
+ok   V double 0
+ok   V encode 0
+ok   V decompress 0
+ok   V scalar_mul by 0
+ok   V reject x=0 sign=1
+ok   V reject x >= modulus
+ok   V reject off-curve x=2
+ok   P decompress/encode 0
+ok   P add 0
+ok   P double 0
+ok   P add self 0
+ok   P neg 0
+ok   P sub 0
+ok   P p + -p = 0 0
+ok   P add_aff 0
+ok   P scalar_mul 0
+ok   P is_eq 0
+ok   P decompress/encode 1
+ok   P add 1
+ok   P double 1
+ok   P add self 1
+ok   P neg 1
+ok   P sub 1
+ok   P p + -p = 0 1
+ok   P add_aff 1
+ok   P scalar_mul 1
+ok   P is_eq 1
+ok   P decompress/encode 2
+ok   P add 2
+ok   P double 2
+ok   P add self 2
+ok   P neg 2
+ok   P sub 2
+ok   P p + -p = 0 2
+ok   P add_aff 2
+ok   P scalar_mul 2
+ok   P is_eq 2
+ok   P decompress/encode 3
+ok   P add 3
+ok   P double 3
+ok   P add self 3
+ok   P neg 3
+ok   P sub 3
+ok   P p + -p = 0 3
+ok   P add_aff 3
+ok   P scalar_mul 3
+ok   P is_eq 3
+ok   P decompress/encode 4
+ok   P add 4
+ok   P double 4
+ok   P add self 4
+ok   P neg 4
+ok   P sub 4
+ok   P p + -p = 0 4
+ok   P add_aff 4
+ok   P scalar_mul 4
+ok   P is_eq 4
+ok   P decompress/encode 5
+ok   P add 5
+ok   P double 5
+ok   P add self 5
+ok   P neg 5
+ok   P sub 5
+ok   P p + -p = 0 5
+ok   P add_aff 5
+ok   P scalar_mul 5
+ok   P is_eq 5
+ok   P 0 + p
+ok   P double 0
+ok   P encode 0
+ok   P decompress 0
+ok   P scalar_mul by 0
+ok   P reject x=0 sign=1
+ok   P reject x >= modulus
+ok   P reject off-curve x=2
