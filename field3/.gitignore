@@ -1,0 +1,4 @@
+__pycache__/
+rust/target/
+*.gpu
+t/*.got
