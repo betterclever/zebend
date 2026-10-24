@@ -1,0 +1,22 @@
+# emitted C, native builds and profiling variants
+*.c
+*.gpu
+v/loop_ba
+v/loop_base
+v/loop_native
+v/loop_o2
+v/loop_pgo
+v/loop_pgogen
+v/batch_main
+v/bundle_ba
+v64/loop_ba
+v64/batch_main
+v64/bundle_ba
+t/arr_bench
+t/msm_arr_loop
+t/msm_arr_main
+t/msm_ba_loop
+t/msm_ba_main
+t/smul_glv
+t64/msm_ba_main
+t64/smul_glv
