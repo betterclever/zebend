@@ -11,7 +11,7 @@ tmp=$(mktemp -d)
 BEND_NO_TELEMETRY=1 "${BEND:-$HOME/.bend/bin/bend}" "$1" -o "$tmp/prog.c"
 python3 "$here/intrinsify.py" "$tmp/prog.c" "$tmp/prog.fast.c"
 gpu=()
-if grep -q '^#define BANGS *1' "$tmp/prog.fast.c" && [ "$(uname)" = Darwin ]; then
+if grep -q '^#define BANGS *[1-9]' "$tmp/prog.fast.c" && [ "$(uname)" = Darwin ]; then
   gpu=(-DBEND_METAL=1 -x objective-c -fobjc-arc -fmodules)
 fi
 "${CC:-clang}" ${gpu[@]+"${gpu[@]}"} -std=c11 -O3 "$tmp/prog.fast.c" -lpthread -lm -o "$2"
