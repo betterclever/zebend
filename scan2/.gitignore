@@ -1,0 +1,9 @@
+scan_main
+scan_main_v1
+scan_main_v2
+*.gpu
+t/deep_238
+t/deep_239
+t/*.c
+rust/target/
+rust/out/*.bin
