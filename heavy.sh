@@ -21,8 +21,13 @@ while kill -0 $child 2>/dev/null; do
     END { for (p in pp) { q = p; while (q != "" && q != root && q in pp && q != 1) q = pp[q]; if (q == root) s += r[p] } print s + 0 }')
   if [ "$rss" -gt $MAXKB ] || [ $t -gt $MAXS ]; then
     echo "heavy.sh: killing '$*' (rss ${rss} KB, ${t}s)" >&2
-    kill -9 $child 2>/dev/null; wait $child 2>/dev/null; exit 137
+    # Kill the whole tree, not just the direct child: a wrapper's grandchild (e.g. the bun
+    # compiler under build.sh) would otherwise survive as an orphan outside the lock.
+    kids=$(ps -A -o pid=,ppid= | awk -v root=$child '
+      { pp[$1] = $2 }
+      END { for (p in pp) { q = p; while (q != "" && q != root && q in pp && q != 1) q = pp[q]; if (q == root) print p } }')
+    kill -9 ${=kids} $child 2>/dev/null; wait $child 2>/dev/null; exit 137
   fi
-  sleep 2; t=$((t + 2))
+  sleep 1; t=$((t + 1))
 done
 wait $child
