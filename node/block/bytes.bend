@@ -128,24 +128,64 @@ def compact(+n: U32) -> +List<U32>:
 type Compact is Data:
   Compact{value: U32, width: U32}
 
+# CompactSize exactly as zcash_encoding::CompactSize::read accepts it (merged from
+# harden/lib/cs.bend): the bytes must be present, the encoding canonical (fd + u16 needs
+# >= 253, fe + u32 needs >= 2^16, ff + u64 always exceeds the cap) and the value
+# <= MAX_COMPACT_SIZE = 0x02000000. Failure is Compact{0, 0}: width 0 means "malformed",
+# and callers must treat it as a protocol error.
+def compact_max() -> U32:
+  33554432
+
+# At least n elements, looking at no more than n of them.
+def has(xs: +List<U32>, n: Nat) -> Bool:
+  match xs n:
+    case _ 0n:
+      True{}
+    case Nil{} 1n+p:
+      False{}
+    case Con{_, t} 1n+p:
+      has(t, p)
+
+def compact_ok(ok: Bool, +v: U32, +w: U32) -> Compact:
+  match ok:
+    case True{}:
+      Compact{v, w}
+    case False{}:
+      Compact{0, 0}
+
 def read_compact_wide(is16: Bool, +rest: +List<U32>) -> Compact:
   match is16:
     case True{}:
-      Compact{get_le16(rest), 3}
+      +v = get_le16(rest)
+      compact_ok(has(rest, 2n) && U32.is_le(253, v), v, 3)
     case False{}:
-      Compact{get_le32(rest), 5}
+      +v = get_le32(rest)
+      compact_ok(has(rest, 4n) && U32.is_le(65536, v) && U32.is_le(v, compact_max()), v, 5)
 
+def read_compact_big(is255: Bool, +b: U32, +rest: +List<U32>) -> Compact:
+  match is255:
+    case True{}:
+      Compact{0, 0}
+    case False{}:
+      read_compact_wide(U32.is_eq(b, 253), rest)
 
 def read_compact_sel(small: Bool, +b: U32, +rest: +List<U32>) -> Compact:
   match small:
     case True{}:
       Compact{b, 1}
     case False{}:
-      read_compact_wide(U32.is_eq(b, 253), rest)
+      read_compact_big(U32.is_eq(b, 255), b, rest)
+
+def read_compact_nonempty(ok: Bool, +xs: +List<U32>) -> Compact:
+  match ok:
+    case False{}:
+      Compact{0, 0}
+    case True{}:
+      +b = get_u8(xs)
+      read_compact_sel(U32.is_lt(b, 253), b, drop(xs, 1n))
 
 def read_compact(+xs: +List<U32>) -> Compact:
-  +b = get_u8(xs)
-  read_compact_sel(U32.is_lt(b, 253), b, drop(xs, 1n))
+  read_compact_nonempty(has(xs, 1n), xs)
 
 # ASCII text <-> bytes.
 def of_string(s: String) -> +List<U32>:

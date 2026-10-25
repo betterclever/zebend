@@ -193,14 +193,47 @@ def next_batch(acc: Acc) -> Acc:
   +left = (b - 1 : U32)
   next_sel(Bool.or(f, U32.is_eq(left, 0)), Acc{St{p, e, h, left, ch, cx, s, l, c, a, f}, sends, outs})
 
-def on_headers(+payload: +List<U32>, acc: Acc) -> Acc:
+# A headers message is valid only if it is exactly what zcashd/Zebra send: a canonical count
+# of at most 160 (MAX_HEADERS_RESULTS), then that many 1487-byte headers, each with the
+# 1344-byte Equihash solution (CompactSize fd 40 05) and a zero tx count, and nothing else.
+def hdr_ok(+xs: +List<U32>) -> Bool:
+  B.is_eq(B.take(B.drop(xs, 140n), 3n), [253, 64, 5]) && U32.is_eq(B.get_u8(B.drop(xs, 1487n)), 0)
+
+def hdrs_ok(n: Nat, +xs: +List<U32>) -> Bool:
+  match n:
+    case 0n:
+      True{}
+    case 1n+p:
+      hdr_ok(xs) && hdrs_ok(p, B.drop(xs, 1488n))
+
+def headers_valid(+payload: +List<U32>) -> Bool:
+  +c = compact2(payload)
+  +w = c2_width(c)
+  +n = c2_value(c)
+  U32.is_ne(w, 0) && U32.is_le(n, 160) && U32.is_eq(B.length(payload), (w + n * 1488 : U32))
+    && hdrs_ok(U32.to_nat(n), B.drop_u(payload, w))
+
+def bad_msg(acc: Acc, +what: String) -> Acc:
+  finish(say(acc, "!! malformed " ++ what ++ " message: dropping the peer"))
+
+def on_headers_go(+payload: +List<U32>, acc: Acc) -> Acc:
   +rs = raws_of(payload)
   +n = U32.from_nat(List.length(&2, +List<U32>, rs))
   next_batch(link_all(rs, say(acc, "<- headers: " ++ u(n) ++ " headers, " ++ u(B.length(payload)) ++ " bytes"), 0, n))
 
+def on_headers_ok(ok: Bool, +payload: +List<U32>, acc: Acc) -> Acc:
+  match ok:
+    case True{}:
+      on_headers_go(payload, acc)
+    case False{}:
+      bad_msg(acc, "headers")
+
+def on_headers(+payload: +List<U32>, acc: Acc) -> Acc:
+  on_headers_ok(headers_valid(payload), payload, acc)
+
 # ---- other messages -------------------------------------------------------
 
-def on_version(+payload: +List<U32>, acc: Acc) -> Acc:
+def on_version_go(+payload: +List<U32>, acc: Acc) -> Acc:
   +ua_at = B.drop(payload, 80n)
   +c = compact2(ua_at)
   +ua_len = c2_value(c)
@@ -210,6 +243,25 @@ def on_version(+payload: +List<U32>, acc: Acc) -> Acc:
   send(say(acc, "<- version: protocol " ++ u(B.get_le32(payload)) ++ ", user agent " ++ ua
     ++ ", best height " ++ u(best) ++ "\n-> verack"), "verack", Nil{})
 
+# The user agent is a canonical CompactSize-prefixed string of at most 256 bytes
+# (MAX_SUBVERSION_LENGTH), followed by the 4-byte start height, all actually present.
+def version_valid(+payload: +List<U32>) -> Bool:
+  +c = compact2(B.drop(payload, 80n))
+  +w = c2_width(c)
+  +ua_len = c2_value(c)
+  U32.is_ne(w, 0) && U32.is_le(ua_len, 256)
+    && B.has(payload, U32.to_nat((80 + w + ua_len + 4 : U32)))
+
+def on_version_ok(ok: Bool, +payload: +List<U32>, acc: Acc) -> Acc:
+  match ok:
+    case True{}:
+      on_version_go(payload, acc)
+    case False{}:
+      bad_msg(acc, "version")
+
+def on_version(+payload: +List<U32>, acc: Acc) -> Acc:
+  on_version_ok(version_valid(payload), payload, acc)
+
 def on_verack(+acc: Acc) -> Acc:
   +a2 = say(acc, "<- verack: handshake complete\n-> getheaders after #" ++ u(height_of(acc))
     ++ " (" ++ B.hex_rev(expect_of(acc)) ++ ")\n-> getaddr")
@@ -218,9 +270,18 @@ def on_verack(+acc: Acc) -> Acc:
 def on_ping(+payload: +List<U32>, acc: Acc) -> Acc:
   send(say(acc, "<- ping " ++ B.hex(payload) ++ "  -> pong"), "pong", payload)
 
+def on_addr_ok(ok: Bool, +n: U32, acc: Acc) -> Acc:
+  match ok:
+    case True{}:
+      add_addrs(say(acc, "<- addr: " ++ u(n) ++ " peer addresses"), n)
+    case False{}:
+      bad_msg(acc, "addr")
+
+# A canonical count of at most 1000 entries (MAX_ADDR_TO_SEND).
 def on_addr(+payload: +List<U32>, acc: Acc) -> Acc:
-  +n = c2_value(compact2(payload))
-  add_addrs(say(acc, "<- addr: " ++ u(n) ++ " peer addresses"), n)
+  +c = compact2(payload)
+  +n = c2_value(c)
+  on_addr_ok(U32.is_ne(c2_width(c), 0) && U32.is_le(n, 1000), n, acc)
 
 def on_other(+cmd: String, +payload: +List<U32>, acc: Acc) -> Acc:
   say(acc, "<- " ++ cmd ++ " (" ++ u(B.length(payload)) ++ " bytes)")

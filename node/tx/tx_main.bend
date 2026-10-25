@@ -4,6 +4,7 @@
 # Prints the same "name hex" lines the Rust oracle writes, for a byte-for-byte diff.
 import Base
 import ./tx.bend as T
+import ../wire/txv.bend as V
 
 def bytes_of(r: File & Result<&1, &1, U32 & String, +List<U32>>) -> +List<U32>:
   (_, res) = r
@@ -31,15 +32,27 @@ def paths(xs: List<String>) -> Paths:
     case _:
       Paths{"", ""}
 
+# Only transactions that the wire validator (node/wire/txv.bend, differentially fuzzed against
+# zcash_primitives Transaction::read on 200k cases) accepts reach the digest code.
+def gated_ok(ok: Bool, +tx: +List<U32>, +ctx: +List<U32>) -> String:
+  match ok:
+    case True{}:
+      T.report(tx, ctx_amounts(ctx), ctx_scripts(ctx))
+    case False{}:
+      "INVALID malformed transaction (rejected by the wire validator)"
+
+def gated(+tx: +List<U32>, +ctx: +List<U32>) -> String:
+  gated_ok(V.valid(tx), tx, ctx)
+
 def go(p: Paths) -> IO(Unit):
   Paths{tp, cp} = p
   do IO<Unit>:
     f : File <- IO.try(File, File.open(tp, "r"))
-    r : File & Result<&1, &1, U32 & String, +List<U32>> <- File.read_bytes(f, 4000000)
+    r : File & Result<&1, &1, U32 & String, +List<U32>> <- File.read_bytes(f, 2000001)
     g : File <- IO.try(File, File.open(cp, "r"))
     s : File & Result<&1, &1, U32 & String, +List<U32>> <- File.read_bytes(g, 4000000)
     +ctx : +List<U32> = bytes_of(s)
-    IO.print(T.report(bytes_of(r), ctx_amounts(ctx), ctx_scripts(ctx)))
+    IO.print(gated(bytes_of(r), ctx))
 
 def main() -> IO(Unit):
   do IO<Unit>:

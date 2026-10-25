@@ -9,6 +9,7 @@ import ./tx.bend as T
 import ./bytes.bend as Y
 import ./sha256.bend as S
 import ./util.bend as U
+import ../wire/blk.bend as KB
 
 def bytes_of(r: File & Result<&1, &1, U32 & String, List<&2, U32>>) -> +List<U32>:
   (_, res) = r
@@ -85,6 +86,16 @@ def report(+height: U32, +blk: +List<U32>, +hist: +List<U32>, +verified: +List<U
     ++ "commitments " ++ U.bhex(bc) ++ " " ++ verdict(Y.is_eq(bc, T.at(hdr, 68n, 32n))) ++ "\n"
     ++ "verified_header " ++ verdict(Y.is_eq(hdr, verified)) ++ "\n"
 
+# Blocks go through the wire validator first (node/wire/blk.bend: header, CompactSize tx count,
+# every transaction well-formed, exact end, at most MAX_BLOCK_SIZE = 2,000,000 bytes),
+# differentially fuzzed against zcash_primitives; only accepted blocks reach the digest code.
+def gated(m: Maybe<&2, U32>, +height: U32, +blk: +List<U32>, +hist: +List<U32>, +verified: +List<U32>) -> String:
+  match m:
+    case Some{_}:
+      report(height, blk, hist, verified)
+    case None{}:
+      "INVALID malformed or oversized block (rejected by the wire validator)\n"
+
 def or_zero(m: Maybe<&2, U32>) -> U32:
   match m:
     case Some{v}:
@@ -111,12 +122,13 @@ def run(a: Args) -> IO(Unit):
   +h0 = num(h0s)
   do IO<Unit>:
     f : File <- IO.try(File, File.open(bp, "r"))
-    r : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_bytes(f, 4000000)
+    r : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_bytes(f, 2000001)
     g : File <- IO.try(File, File.open(hp, "r"))
     s : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_bytes(g, 64)
     v : File <- IO.try(File, File.open(fp, "r"))
     w : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_at(v, ((h - h0 : U32) * 1487 : U32), 1487)
-    IO.print(report(h, bytes_of(r), bytes_of(s), bytes_of(w)))
+    +blk : +List<U32> = bytes_of(r)
+    IO.print(gated(KB.parse_capped(blk), h, blk, bytes_of(s), bytes_of(w)))
 
 def main() -> IO(Unit):
   do IO<Unit>:
