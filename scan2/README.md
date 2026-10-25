@@ -8,10 +8,13 @@ outputs/s on the M5 Max GPU, about 2.6× orchard's own batch trial decryption on
 cores (~346k/s); 173k/s on 18 threads and 12.3k/s on 1 thread. On the CPU, orchard is still
 ~2× faster.**
 
-> **Correction.** The tables below were measured on the earlier variable-time build
-> (~1.2M outputs/s on Metal). That build's GPU program gives a MISMATCH after a fresh Metal
-> compile; its matching runs used an older cached GPU build. Do not quote those GPU numbers.
-> The constant-time build matches orchard's hit lists on 1 thread, 18 threads and Metal.
+> **Note.** The tables below were measured on the earlier variable-time build (~1.2M
+> outputs/s on Metal), which leaks timing that depends on the secret ivk and is therefore not
+> the shipped build. A reported Metal MISMATCH for that build was a test-harness artifact (a
+> fresh-compile message on stderr shifted the parsed lines): re-run with stderr separated, it
+> matches orchard's hit list 20/20 with a fresh Metal compile each run
+> (`bench/metal_determinism.log`). The constant-time build matches on 1 thread, 18 threads
+> and Metal (20/20).
 
 ## What changed (cumulative)
 
