@@ -90,6 +90,36 @@ def read_all(path: String) -> IO(List<&2, U32>):
     got_pair(r)
 
 
+# Bundles that came back empty (np = 0): a file the runtime failed to read. perf3's
+# batch_main reads a failed open as an empty bundle and accepts it (at K > ~4096 files);
+# here any such bundle rejects the batch.
+def zero_nat(n: Nat) -> U32:
+  match n:
+    case 0n:
+      1
+    case _:
+      0
+
+def zero_u32(n: U32) -> U32:
+  match n:
+    case 0:
+      1
+    case _:
+      0
+
+# 1 iff a = b. par() once dropped every bundle past 2^fuel (fuel 12: K > 4096 verified only
+# 4096 and still printed `result 1`), so the verdict now also requires that every one of
+# the K bundles produced a Fin.
+def same(+a: Nat, +b: Nat) -> U32:
+  (zero_nat(Nat.sub(a, b)) .&. zero_nat(Nat.sub(b, a)) : U32)
+
+def empties(xs: +List<In>, n: U32) -> U32:
+  match xs:
+    case Con{+x, t}:
+      empties(t, (n + zero_nat(in_np(x)) : U32))
+    case Nil{}:
+      n
+
 def vfin(+x: In, +gs: +List<V.Pt>) -> BT.Fin:
   O.verify(in_pr(x), gs, in_np(x), in_ni(x))
 
@@ -138,8 +168,11 @@ def run(gpath: String, bpaths: List<String>) -> IO(Unit):
     +warm : U32 = BT.is_id(V.identity())
     t0x : Nat <- IO.now()
     +t0 : Nat = t0x
-    +fs : +List<BT.Fin> = par(12n, k, xs, gs)
-    +ok : U32 = BT.batch(fs, rs, gs)
+    +fs : +List<BT.Fin> = par(32n, k, xs, gs)
+    +nv : Nat = List.length(&2, BT.Fin, fs)
+    +bad : U32 = (empties(xs, 0) + 1 - same(nv, k) : U32)
+    +ok : U32 = (BT.batch(fs, rs, gs) .&. zero_u32(bad) : U32)
+    IO.print("verified " ++ Nat.show(nv) ++ " unreadable_or_missing " ++ U32.show(bad))
     IO.print("batch K " ++ Nat.show(k) ++ " result " ++ U32.show(ok))
     t1x : Nat <- IO.now()
     +t1 : Nat = t1x
