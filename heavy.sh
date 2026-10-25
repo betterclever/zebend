@@ -14,7 +14,11 @@ trap 'rm -rf $LOCK' EXIT INT TERM
 "$@" &
 child=$!; t=0
 while kill -0 $child 2>/dev/null; do
-  rss=$(ps -o rss= -g $(ps -o pgid= -p $child | tr -d " ") 2>/dev/null | awk '{s+=$1} END {print s+0}')
+  # RSS of the job's own process tree. (Not its process group: under OrbStack's `mac`, every
+  # command shares OrbStack Helper's group, which would count unrelated processes.)
+  rss=$(ps -A -o pid=,ppid=,rss= | awk -v root=$child '
+    { pp[$1] = $2; r[$1] = $3 }
+    END { for (p in pp) { q = p; while (q != "" && q != root && q in pp && q != 1) q = pp[q]; if (q == root) s += r[p] } print s + 0 }')
   if [ "$rss" -gt $MAXKB ] || [ $t -gt $MAXS ]; then
     echo "heavy.sh: killing '$*' (rss ${rss} KB, ${t}s)" >&2
     kill -9 $child 2>/dev/null; wait $child 2>/dev/null; exit 137
