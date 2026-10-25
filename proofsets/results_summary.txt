@@ -1,0 +1,5 @@
+txs 366418; bundles 392806 (Counter({'ironwood': 352141, 'orchard': 40665})); actions 1155249; heights 3428144..3529855
+by circuit: {'PostNu6_3': 392806}
+official verifier valid 392806/392806 (parse + verify 870 s wall on all cores)
+Bend valid 392806/392806; agree with official 392806/392806; disagree 0; not run 0
+Bend batch verification: 6144 batches (0 rejected), 579 s process time = 679 bundles/s

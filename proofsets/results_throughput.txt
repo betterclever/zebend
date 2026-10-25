@@ -1,0 +1,11 @@
+== same 10,048 bundles (part 0 of 12, first 157 chunks)
+15:29  up 1 day,  2:07, 1 user, load averages: 17.00 19.22 18.82
+rust halo2 BatchVerifier threads=1: 10048 bundles, all ok true, 106.5s = 94 bundles/s
+15:31  up 1 day,  2:09, 1 user, load averages: 15.76 18.30 18.51
+bend batch_main threads=1: 10048 bundles, all ok 1, 75.8s = 133 bundles/s
+15:32  up 1 day,  2:10, 1 user, load averages: 13.99 16.96 17.97
+rust halo2 BatchVerifier threads=18: 10048 bundles, all ok true, 8.0s = 1260 bundles/s
+15:32  up 1 day,  2:10, 1 user, load averages: 22.27 18.65 18.56
+15:33  up 1 day,  2:10, 1 user, load averages: 22.27 18.87 18.64
+bend batch_main threads=18: 10048 bundles, all ok 1, 14.0s = 719 bundles/s
+15:33  up 1 day,  2:11, 1 user, load averages: 26.04 19.89 19.01

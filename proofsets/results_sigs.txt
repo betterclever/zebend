@@ -1,0 +1,4 @@
+txs 276675: txid match 276675/276675; spend-auth sigs verified 980364; binding sigs verified 303047; all valid True; 1127s
+(superseded) tamper control (last tx byte flipped): this tx failed to parse after the flip, so no signature lines were produced; replaced by the two signature-byte controls below
+tamper control (orchard.a0.spend_auth_sig byte flipped): txid unchanged True; spend-auth checks 5 with 1 failing; binding checks 1 with 0 failing
+tamper control (orchard.binding_sig byte flipped): txid unchanged True; spend-auth checks 5 with 0 failing; binding checks 1 with 1 failing

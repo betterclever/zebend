@@ -2,6 +2,7 @@
 # Full pipeline after scan + fetch: official verification in parts, Bend verification in
 # slices, summary. Every heavy step goes through ../heavy.sh (one heavy job Mac-wide).
 set -e
+setopt null_glob
 cd "$(dirname "$0")"
 H="$(cd .. && pwd)/heavy.sh"
 O=oracle/target/release/proofsets-oracle
