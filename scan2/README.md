@@ -3,12 +3,34 @@
 Round 2 of `gpu-scan`: the same wallet filter (per compact output: decompress `epk`,
 `S = [ivk]·epk`, `K = BLAKE2b-256("Zcash_OrchardKDF", repr(S) ‖ epk)`, ChaCha20 block 1,
 lead byte `== 0x03`), rebuilt on field3's 64-bit-limb fields with the key prepared once.
-**Current build (constant-time key handling, merged from `harden/scan_ct`): ~892k
-outputs/s on the M5 Max GPU, about 2.6× orchard's own batch trial decryption on all 18 CPU
-cores (~346k/s); 173k/s on 18 threads and 12.3k/s on 1 thread. On the CPU, orchard is still
+**Current build (constant-time key handling, merged from `harden/scan_ct`), always-inline
+Metal: ~410k outputs/s on the M5 Max GPU, about 1.2× orchard's own batch trial decryption on
+all 18 CPU cores (~346k/s); 173k/s on 18 threads and 12.3k/s on 1 thread (CPU numbers are
+from the earlier build; inlining only changes the Metal kernel). On the CPU, orchard is still
 ~2× faster.**
 
-> **Note.** The tables below were measured on the earlier variable-time build (~1.2M
+> **Metal re-gate, 2026-10-26 (always-inline build).** Apple's Metal compiler can corrupt
+> a 32-bit word of a caller's data across a helper call it keeps (nondeterministically), so
+> every shipped Metal number must come from a build whose kernel has no calls. `scan_main` is
+> now built with the Bend fork's `metal-spill` branch (`c8f04a61`: every device helper
+> `always_inline`, GPU lane spill restored; `bend-fork/METAL_INLINE.md`). The emitted Metal
+> compiles to AIR with **1 function and 0 non-intrinsic calls** (`gpuv/t/aircalls.sh`;
+> `bench/metal_inline_build.log`). Gate (`bench/metal_inline_gate.sh scan`,
+> `bench/metal_inline_gate.log`): 262,144 outputs at depth 14, **20 runs, hit list MATCH
+> 20/20, 1 distinct output**.
+>
+> Speed: warm scan **639 ms median over 20 runs (≈410k outputs/s)**, load average 4.4–4.7.
+> The previous non-inlined build (kept as `scan_main.noinline`), in the same session:
+> 273.5 ms median over 6 runs (≈958k outputs/s), load 4.2–4.4. The ~892k/s claim was that
+> build. **Full inlining costs ≈2.3× on Metal** at every depth from 10 to 16 (depth 14: 635 vs
+> 273 ms). The inlined metallib is 45 MB against 1.9 MB: the old build kept the field
+> multiplication and similar spins as calls (the FAR-only perl patch from `sigbatch/build.sh`
+> still leaves 18,408 non-intrinsic calls in this program's AIR, e.g. 492 to the field-mul
+> spin, so it is not an option). `BEND_CUBE_LOG=6` is slower (1,127 ms). Getting the speed
+> back needs the kernel restructured around few call sites of the big spins (METAL_INLINE.md,
+> "Kernel size"); not done.
+
+> **Note.** The tables below were measured on the earlier variable-time, non-inlined build (~1.2M
 > outputs/s on Metal), which leaks timing that depends on the secret ivk and is therefore not
 > the shipped build. A reported Metal MISMATCH for that build was a test-harness artifact (a
 > fresh-compile message on stderr shifted the parsed lines): re-run with stderr separated, it
@@ -113,8 +135,10 @@ through non-tail list walks); making those walks tail-recursive fixed every dept
   harden/README.md (−3% 1T, −6% 18T, −20% Metal at the time of measurement). The
   throughput tables above were measured before this change.
 - The variable-time square root is used only on `epk`, which is public.
-- Built with the forked Bend (`../../bend-fork`, branch `u64-rot`, which includes
-  `U32.mac64`), via `./build.sh`.
+- Built with the forked Bend (`../../bend-fork`, branch `metal-spill` at `c8f04a61`, which is
+  `u64-rot` (with `U32.mac64`) plus the lane spill and always-inline Metal), via `./build.sh`
+  (it uses whatever branch the fork has checked out). Earlier builds predate `metal-spill` and
+  are not inline-gated; none of the Metal numbers in the tables below are.
 
 ## Files and commands
 
