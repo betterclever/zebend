@@ -365,15 +365,43 @@ def tx_job(height, idx, txid, ctx):
     return res
 
 
+def verdict(name, pattern, *args, tries=3):
+    """Run a verifier until it prints a verdict line matching `pattern` (group 1 is 0 or 1).
+
+    Only an explicit `result 0` is a rejection. A crash, a runtime error (e.g. a heap
+    reservation failing under memory pressure) or missing output is not a verdict: it is
+    retried, and if it persists it is reported as a verifier error, never as an invalid proof.
+    """
+    out = ""
+    for i in range(tries):
+        out, _ = run(name, *args)
+        m = re.search(pattern, out, re.M)
+        if m:
+            return int(m.group(1)), out
+        prof(f"retry: {name} gave no verdict", 0)
+        time.sleep(1 + 2 * i)
+    raise Fail(f"verifier error: {name} gave no verdict after {tries} runs; last output: {out.strip()[-300:]!r}")
+
+
 def halo2_check(bundles):
-    """Every bundle's Halo 2 proof, batched; on a rejected batch, find the failing bundles."""
+    """Every bundle's Halo 2 proof, batched; on a rejected batch, find the failing bundles.
+
+    A bundle is declared invalid only if two independent Bend verifier builds (halo2_one and
+    halo2_two) both print `result 0` for it.
+    """
     for c in range(0, len(bundles), HALO2_CHUNK):
         chunk = bundles[c:c + HALO2_CHUNK]
-        out, _ = run("halo2_batch", PARAMS, *chunk)
-        if not re.search(r"^batch K \d+ result 1$", out, re.M):
-            one = pmap(lambda b: run("halo2_one", PARAMS, b)[0], [(b,) for b in chunk])
-            bad = [f"{b.parent.name}/{b.name}" for b, o in zip(chunk, one) if not re.search(r"^result 1$", o, re.M)]
-            raise Fail(f"Halo 2 batch of {len(chunk)} bundles rejected; failing bundles: {bad}")
+        ok, _ = verdict("halo2_batch", r"^batch K \d+ result ([01])$", PARAMS, *chunk)
+        if ok:
+            continue
+        one = pmap(lambda b: verdict("halo2_one", r"^result ([01])$", PARAMS, b)[0], [(b,) for b in chunk])
+        suspects = [b for b, v in zip(chunk, one) if v == 0]
+        two = pmap(lambda b: verdict("halo2_two", r"^result ([01])$", PARAMS, b)[0], [(b,) for b in suspects])
+        bad = [f"{b.parent.name}/{b.name}" for b, v in zip(suspects, two) if v == 0]
+        if not bad:
+            raise Fail(f"verifier disagreement: batch of {len(chunk)} rejected, but no bundle is rejected by both "
+                       f"single verifiers (halo2_one rejected {[f'{b.parent.name}/{b.name}' for b in suspects]})")
+        raise Fail(f"Halo 2 batch of {len(chunk)} bundles rejected; failing bundles: {bad}")
 
 
 def frontier_roots(cmx, counts, heights):
