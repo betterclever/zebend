@@ -1,3 +1,7 @@
 oracle/target/
 data/
 *.gpu
+fz
+bundle_main_h
+scan_ct/scan_main_base*
+scan_ct/scan_main_ct*

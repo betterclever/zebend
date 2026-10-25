@@ -207,7 +207,46 @@ It runs:
 
 Heavy steps go through `../heavy.sh`. Logs go to `data/ci/`. The last run's table:
 
-CI_TABLE
+| step | result | time | detail |
+|---|---|---:|---|
+| proof consensus/anchors            | PASS |     2s | ALL PROOFS CHECK (--verdict) |
+| proof consensus/issuance           | PASS |     2s | ALL PROOFS CHECK (--verdict) |
+| proof migration                    | PASS |     4s | ALL PROOFS CHECK (--verdict) |
+| proof node/headers                 | PASS |     2s | ALL PROOFS CHECK (--verdict) |
+| proof node/state                   | PASS |     2s | ALL PROOFS CHECK (--verdict) |
+| proof proofs/difficulty            | PASS |     2s | ALL PROOFS CHECK (--verdict) |
+| proof proofs/field                 | PASS |     2s | ALL PROOFS CHECK (--verdict) |
+| proof proofs/fieldmul              | PASS |     2s | ALL PROOFS CHECK (--verdict) |
+| proof proofs/gadget                | PASS |     2s | ALL PROOFS CHECK (--verdict) |
+| proof proofs/merkle                | PASS |     2s | ALL PROOFS CHECK (--verdict) |
+| proof proofs/orchard               | PASS |     2s | ALL PROOFS CHECK (--verdict) |
+| proof proofs/parse                 | PASS |     2s | ALL PROOFS CHECK (--verdict) |
+| proof proofs/prims                 | PASS |     2s | ALL PROOFS CHECK (--verdict) |
+| proof proofs/state                 | PASS |     4s | ALL PROOFS CHECK (--verdict) |
+| proof turnstile                    | PASS |     2s | ALL PROOFS CHECK (--verdict) |
+| suite field (Fp/Fq)                | PASS |     0s | 116 ok, 0 not ok |
+| suite curve (Pallas/Vesta)         | PASS |     0s | 136 ok, 0 not ok |
+| halo2 bundles (42)                 | PASS |     7s | 42 bundles: bend accepts 21, rejects 21; agrees with halo2 on 42/42 |
+| halo2 bundles nu62                 | PASS |     2s | 10 bundles: bend accepts 5, rejects 5; agrees with halo2 on 10/10 |
+| halo2 bundles prenu62              | PASS |     2s | 8 bundles: bend accepts 4, rejects 4; agrees with halo2 on 8/8 |
+| halo2 hardened verifier            | PASS |     6s | bend accepts 21, rejects 21; agrees with halo2 on 42/42; malformed probes 10/10 |
+| validate zebend                    | PASS |    26s | VALID: 5/5 steps passed   total 25.6 s |
+| fuzz build                         | PASS |     0s | fz + oracle ready |
+| fuzz cs                            | PASS |     0s | 20000 cases (8059 Rust-accepted); RSS 3.1 MiB, 0 mismatches, 0 crashed chunks |
+| fuzz header                        | PASS |     1s | 20000 cases (7925 accepted by the reference), 0.1s (141468/s); RSS 68.6 MiB, 0 mismatches, 0 crashed chunks |
+| fuzz p2p frame                     | PASS |     0s | 20000 cases (7895 accepted by the reference), 0.2s (118262/s); RSS 61.0 MiB, 0 mismatches, 0 crashed chunks |
+| fuzz tx                            | PASS |     2s | 10000 cases (3902 accepted by the reference), 1.2s (8124/s); RSS 100.0 MiB, 0 mismatches, 0 crashed chunks |
+| fuzz block                         | PASS |     0s | 500 cases (205 accepted by the reference), 0.4s (1359/s); RSS 43.4 MiB, 0 mismatches, 0 crashed chunks |
+| fuzz halo2 bundle input            | PASS |     1s | 10000 cases (2404 accepted by the reference), 0.7s (14997/s); RSS 87.1 MiB, 0 mismatches, 0 crashed chunks |
+| resource limits                    | PASS |     0s | 16/16 adversarial inputs give the expected verdict; max RSS 126 MiB |
+| constant-time scan                 | PASS |     2s | 2/2 hit lists MATCH; 913394 outputs/s Metal |
+
+31/31 steps passed in 83 s; logs in /Users/betterclever/projects/zecathon/bend-zcash/harden/data/ci
+
+Proof checks take ~2 s each on a re-run (Bend reuses its check cache; consensus/anchors
+took 26 s cold). A cold run of the whole script took ~110 s of work. One earlier run spent
+49 min queued on `heavy.sh` behind other agents' jobs, so light steps (the scans, the fuzz
+smoke runs) no longer take the lock.
 
 ## Merge plan
 
