@@ -1,0 +1,16 @@
+[package]
+name = "delta-oracle"
+version = "0.1.0"
+edition = "2021"
+description = "Ground truth for fullnode/bend blockdelta: every extracted field of real mainnet blocks, from zcash_primitives"
+
+[dependencies]
+zcash_primitives = { version = "0.31", default-features = false, features = ["std"] }
+zcash_protocol = "0.11"
+orchard = "0.16"
+sha2 = "0.10"
+hex = "0.4"
+anyhow = "1"
+
+[profile.release]
+opt-level = 3
