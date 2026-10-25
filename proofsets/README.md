@@ -35,17 +35,25 @@ The 89,743 txs with transparent inputs were not signature-checked here: their ZI
 sighash needs the spent outputs' amounts and scripts, which this pipeline does not fetch.
 Their Halo 2 proofs are included above.
 
-**Throughput on identical bundles** (the first 10,048 bundles of part 0, same machine, run back
-to back; load average 14–22 from other jobs; both batch 64 bundles at a time):
+**Throughput** (re-measured in `../gpuv/`; M5 Max, shared machine):
 
-| | 1 thread | 18 threads |
+| | 10,048-bundle sample | all 392,806 bundles |
 |---|---|---|
-| Bend `perf3/v64/batch_main` (process time incl. file reads) | 133 bundles/s | 719 bundles/s |
-| Rust halo2 `BatchVerifier` (vendored halo2_proofs 0.4, instance computation included) | 94 bundles/s | 1,260 bundles/s |
+| Bend `batch_cpu` (= fixed `perf3/v64/batch_main`), 18 threads, batches of 3,840 | 769 bundles/s | **793 bundles/s, 495 s** |
+| Rust halo2 `BatchVerifier` (vendored halo2_proofs 0.4, instance computation included), 18 threads | 712 bundles/s | **1,068 bundles/s, 368 s** |
+| Rust halo2 `BatchVerifier`, 1 thread | 64 bundles/s | — |
 
-On this set Bend is faster single-threaded and Rust is 1.75× faster on 18 threads. Treat the
-single-thread result with care: an earlier comparison on 2-action bundles against orchard's
-`BatchValidator` had Rust ahead (155 vs 113 bundles/s), and the machine was shared.
+On the whole set Rust is about 1.35× faster on 18 threads; the sample result (Bend ahead)
+is within the noise of a shared machine.
+
+> **Correction.** This section used to report Bend at 133 bundles/s (1 thread) and 719 bundles/s
+> (18 threads) on the 10,048-bundle sample. Those runs passed all 10,048 bundles to one
+> `perf3/v64/batch_main` process, whose parallel split had a recursion budget of 2^12: every
+> bundle past 4,096 was silently dropped and the batch still printed `result 1`. Both numbers
+> are invalid and are withdrawn. The verdict run above (64 bundles per process) was never
+> affected. `batch_main` now uses budget 2^32 and accepts only if all K bundles were verified
+> and none came back empty (4,201 bundles with the tampered one last: `result 0`).
+
 Official verification for the whole set (parse + single `verify_proof` per bundle, all cores):
 870 s wall.
 
