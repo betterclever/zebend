@@ -23,3 +23,5 @@ follow/work/
 consensus/oracle/out/
 proofsets/data/
 harden/data/
+# old non-inlined Metal builds kept after the always-inline re-gate (bench/metal_inline_gate.sh)
+*.noinline

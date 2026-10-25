@@ -21,7 +21,8 @@ compare ratios measured at the same moment, not absolute numbers across tables.
 | field3 `add_hi` (baseline here) | 1,417/s | 16,804/s | — |
 | + list-free leaves / tree / index unpacking (`eqv2`) | 4,312/s | — | — |
 | **+ leaf compression (`eqv3`, Bend fork)** | **4,194/s** | **40,857/s** | (fork Metal faults) |
-| same, stock Bend 2.0.38, portable carries (`eqv4`) | 3,610/s | 37,751/s | **21,500/s** |
+| same, stock Bend 2.0.38, portable carries (`eqv4`) | 3,610/s | 37,751/s | (21,500/s, not inline-gated) |
+| `eqv4` rebuilt with the fork's always-inline `metal-spill` branch (current binary) | — | — | **20,858/s** |
 | Rust `equihash` crate (Equihash only) | ~9,000/s | ~117,000/s | — |
 
 Bend's numbers time the whole header check: SHA-256d block hash, hash ≤ target, prev-hash links and
@@ -29,7 +30,22 @@ the difficulty adjustment, as well as Equihash. Rust's time only `equihash::is_v
 Measured on the same 16,384 mainnet headers (Equihash 1-thread row for `eqv2` on 4,096).
 
 All 128,280 mainnet headers (3,400,000–3,528,279): `eqv3` on 18 CPU threads in **5.3 s**, `eqv4` on
-the GPU in 11.0 s (the original GPU run took 52.5 s). Equihash, target, links and difficulty: 100%.
+the GPU in 11.0 s (the original GPU run took 52.5 s; both GPU runs were non-inlined builds, not
+re-gated). Equihash, target, links and difficulty: 100%.
+
+**Metal re-gate, 2026-10-26 (always-inline build).** Apple's Metal compiler can corrupt a 32-bit
+word of a caller's data across a helper call it keeps (nondeterministically), so every shipped
+Metal number must come from a build whose kernel has no calls. `eqv4/verify` is now built from
+`eqv4/main.bend` with the Bend fork's `metal-spill` branch (`c8f04a61`: every device helper
+`always_inline`, lane spill restored; `bend-fork/METAL_INLINE.md`). Its Metal compiles to AIR with
+**1 function and 0 non-intrinsic calls** (`gpuv/t/aircalls.sh`; `bench/metal_inline_build.log`).
+Gate (`bench/metal_inline_gate.sh eq`, `bench/metal_inline_gate.log`): 16,384 mainnet headers,
+**20 runs, 1 distinct output**: equihash valid 16,384/16,384, hash ≤ target 16,384/16,384,
+prev-hash links 16,383/16,383, difficulty 16,356/16,356. Speed (sum of the four 4,096-header batch
+times): **785.5 ms median over 20 runs = 20,858 headers/s**, load average 4.7–4.8. The previous
+stock-2.0.38 build (kept as `eqv4/verify.noinline`), same session: 852 ms median over 6 runs =
+19,230 headers/s, load 4.4. So inlining did not slow it down; the 21,500/s claim was measured
+on another day under different load.
 
 Net: Equihash went from 1,417 to 4,194 headers/s single-threaded (3.0×) and from 16,804 to 40,857
 on 18 threads (2.4×). Rust is still 2.1× (1 thread) and 2.9× (18 threads) ahead; a BLAKE2b
@@ -85,4 +101,5 @@ Getting BLAKE2b itself to Rust speed needs 64-bit values that survive between op
 - `build.sh` / `guard.sh`: build with the Bend fork, kill runaway compiles
 
 Bend fork: `/Users/betterclever/projects/zecathon/bend-fork`, branch `u64-rot`, commit `ad0523fa`
-(local, not pushed).
+(local, not pushed). The shipped GPU binary `eqv4/verify` is built with branch `metal-spill`,
+commit `c8f04a61` (`bench/metal_inline_build.sh eq`).
