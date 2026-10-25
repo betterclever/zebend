@@ -13,6 +13,7 @@ import ../fq32.bend as Fq
 import ../lib32/vesta.bend as V
 import ./vlib.bend as L
 import ./orchard_dyn_fast.bend as O
+import ../../../node/wire/bundle.bend as BU
 
 def items(ws: +List<U32>) -> +List<Wd.W>:
   match ws:
@@ -97,13 +98,26 @@ def report(+verbose: Bool, +st: L.St) -> IO(Unit):
     case False{}:
       IO.print("result " ++ U32.show(L.st_ok(st)))
 
-def run(gpath: String, bpath: String, +verbose: Bool) -> IO(Unit):
+def verify_bytes(gpath: String, bb: List<&2, U32>, +verbose: Bool) -> IO(Unit):
   do IO<Unit>:
     gb : List<&2, U32> <- read_all(gpath)
-    bb : List<&2, U32> <- read_all(bpath)
     +inp : In = parse_bundle(bb)
     +st : L.St = O.verify(in_pr(inp), points(items(L.pack4(gb))), in_np(inp), in_ni(inp))
     report(verbose, st)
+
+# The input is checked by node/wire/bundle.bend (header shape, exact length, canonical
+# instance values) before parsing, so a malformed file is `result 0` with bounded memory.
+def checked(ok: Bool, gpath: String, bb: List<&2, U32>, +verbose: Bool) -> IO(Unit):
+  match ok:
+    case True{}:
+      verify_bytes(gpath, bb, verbose)
+    case False{}:
+      IO.print("result 0")
+
+def run(gpath: String, bpath: String, +verbose: Bool) -> IO(Unit):
+  do IO<Unit>:
+    +bb : List<&2, U32> <- read_all(bpath)
+    checked(BU.valid(bb), gpath, bb, verbose)
 
 def run_args(xs: List<String>) -> IO(Unit):
   match xs:
