@@ -118,22 +118,41 @@ async fn main() -> Result<()> {
             let id: BlockId = lwd.unary("GetLatestBlock", ChainSpec {}).await?;
             println!("tip {}", id.height);
         }
+        // Requests run concurrently (up to 32 in flight on the one channel); output lines
+        // are keyed by height / txid, so their order does not matter.
         Some("tree") => {
-            for h in &args[2..] {
-                let ts: TreeState = lwd.unary("GetTreeState", BlockId { height: h.parse()?, hash: vec![] }).await?;
-                if ts.ironwood_tree.is_empty() {
-                    println!("height {h} none");
-                    continue;
+            for chunk in args[2..].chunks(32) {
+                let mut set = tokio::task::JoinSet::new();
+                for h in chunk {
+                    let (mut c, h) = (Lwd { grpc: lwd.grpc.clone() }, h.clone());
+                    set.spawn(async move {
+                        let ts: TreeState = c.unary("GetTreeState", BlockId { height: h.parse()?, hash: vec![] }).await?;
+                        if ts.ironwood_tree.is_empty() {
+                            return anyhow::Ok(format!("height {h} none"));
+                        }
+                        let t = parse_tree_state(&ts.ironwood_tree)?;
+                        Ok(format!("height {} size {} root {}", ts.height, t.size(), hex::encode(t.root().to_bytes())))
+                    });
                 }
-                let t = parse_tree_state(&ts.ironwood_tree)?;
-                println!("height {} size {} root {}", ts.height, t.size(), hex::encode(t.root().to_bytes()));
+                while let Some(r) = set.join_next().await {
+                    println!("{}", r??);
+                }
             }
         }
         Some("rawtx") => {
-            for id in &args[2..] {
-                let hash = hex::decode(id)?;
-                let rt: RawTransaction = lwd.unary("GetTransaction", TxFilter { block: None, index: 0, hash }).await?;
-                println!("rawtx {id} height {} hex {}", rt.height, hex::encode(&rt.data));
+            for chunk in args[2..].chunks(32) {
+                let mut set = tokio::task::JoinSet::new();
+                for id in chunk {
+                    let (mut c, id) = (Lwd { grpc: lwd.grpc.clone() }, id.clone());
+                    set.spawn(async move {
+                        let hash = hex::decode(&id)?;
+                        let rt: RawTransaction = c.unary("GetTransaction", TxFilter { block: None, index: 0, hash }).await?;
+                        anyhow::Ok(format!("rawtx {id} height {} hex {}", rt.height, hex::encode(&rt.data)))
+                    });
+                }
+                while let Some(r) = set.join_next().await {
+                    println!("{}", r??);
+                }
             }
         }
         _ => eprintln!("usage: follow-lwd tip | tree H... | rawtx TXID..."),
