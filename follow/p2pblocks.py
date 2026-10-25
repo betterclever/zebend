@@ -5,7 +5,7 @@ as required by the wire protocol) and asks peers for blocks by the hashes that t
 P2P client computed. It does not validate anything: every received block is handed to the
 Bend components, which recompute the header hash, merkle root, txids and everything else.
 """
-import hashlib, random, socket, struct, time
+import collections, hashlib, random, socket, struct, threading, time
 
 MAGIC = bytes.fromhex("24e92764")
 PROTO = 170190
@@ -92,21 +92,34 @@ class Peer:
         return got
 
     def _chunk(self, hashes, prevs):
-        inv = _varint(len(hashes)) + b"".join(struct.pack("<I", MSG_BLOCK) + bytes.fromhex(h)[::-1] for h in hashes)
-        self.s.sendall(_frame("getdata", inv))
+        """Fetch a few blocks; re-request the ones a peer silently skipped.
+
+        Zebra caps the bytes it returns for one getdata and drops the rest without a
+        notfound, so after a quiet period the still-missing blocks are asked for again.
+        """
         slot = {p: i for i, p in enumerate(prevs)}
         got = [None] * len(hashes)
-        deadline = time.time() + 60
-        while any(b is None for b in got):
-            if time.time() > deadline:
-                raise TimeoutError(f"peer sent {sum(b is not None for b in got)}/{len(hashes)} blocks in 60 s")
-            cmd, p = self.recv()
-            if cmd == "block":
-                i = slot.get(p[4:36][::-1].hex())
-                if i is not None:
-                    got[i] = p
-            elif cmd == "notfound":
-                raise LookupError("peer does not have a requested block")
+        for _ in range(6):
+            missing = [h for h, b in zip(hashes, got) if b is None]
+            if not missing:
+                break
+            inv = _varint(len(missing)) + b"".join(struct.pack("<I", MSG_BLOCK) + bytes.fromhex(h)[::-1] for h in missing)
+            self.s.sendall(_frame("getdata", inv))
+            quiet_until = time.time() + 10
+            while any(b is None for b in got) and time.time() < quiet_until:
+                try:
+                    cmd, p = self.recv()
+                except (TimeoutError, OSError):
+                    break
+                if cmd == "block":
+                    i = slot.get(p[4:36][::-1].hex())
+                    if i is not None and got[i] is None:
+                        got[i] = p
+                        quiet_until = time.time() + 10
+                elif cmd == "notfound":
+                    raise LookupError("peer does not have a requested block")
+        if any(b is None for b in got):
+            raise TimeoutError(f"peer sent {sum(b is not None for b in got)}/{len(hashes)} blocks after 6 requests")
         return got
 
     def close(self):
@@ -114,6 +127,166 @@ class Peer:
             self.s.close()
         except OSError:
             pass
+
+
+class Swarm:
+    """Download blocks from several peers at once.
+
+    Each worker thread owns one peer connection and keeps DEPTH single-block getdata
+    requests in flight (Zebra stops answering a multi-block getdata after a byte budget).
+    Blocks a peer has not delivered after STALL quiet seconds go back to the shared queue
+    for any peer; a peer that delivers nothing in a round is dropped for a cool-down.
+    Blocks are identified by their hashPrevBlock field against the requested chain; Bend
+    later checks every block header against the verified header at its height.
+    """
+    DEPTH, STALL, COOL = 16, 20, 300
+
+    def __init__(self, log=print, n=8, avoid=()):
+        self.log, self.n, self.avoid = log, n, set(avoid)
+        self.idle, self.bad, self.lock = [], {}, threading.Lock()
+        self.stats = {}  # ip -> [blocks, bytes, requeued], for profiling
+        self.last_warm = 0.0
+        threading.Thread(target=self._keepalive, daemon=True).start()
+
+    def _keepalive(self):
+        """Idle connections still get pings: answer them (recv does) so peers keep us."""
+        while True:
+            time.sleep(15)
+            with self.lock:
+                for p in list(self.idle):
+                    try:
+                        p.s.settimeout(0.05)
+                        while True:
+                            p.recv()  # answers pings; anything else between windows is dropped
+                    except (TimeoutError, socket.timeout):
+                        p.s.settimeout(2)
+                    except (OSError, ConnectionError, ValueError):
+                        p.close()
+                        self.idle.remove(p)
+
+    def warm(self):
+        """Handshake with every candidate at once and keep up to n working connections.
+
+        One parallel round instead of serial retries: peers rate-limit IPs that reconnect
+        often, so connections are opened rarely and kept."""
+        self.last_warm = time.time()
+        have = {p.ip for p in self.idle}
+        ips = [ip for ip in candidates() if ip not in self.avoid and ip not in have
+               and time.time() - self.bad.get(ip, 0) >= self.COOL]
+        out = [None] * len(ips)
+
+        def one(k):
+            try:
+                out[k] = Peer(ips[k], timeout=8)
+                out[k].s.settimeout(2)
+            except (OSError, TimeoutError, ConnectionError, IndexError):
+                self.bad[ips[k]] = time.time()
+
+        ts = [threading.Thread(target=one, args=(k,), daemon=True) for k in range(len(ips))]
+        for t in ts:
+            t.start()
+        for t in ts:
+            t.join()
+        good = [p for p in out if p is not None]
+        self.idle += good[:max(0, self.n - len(self.idle))]
+        for p in good[max(0, self.n - len(have)):]:
+            p.close()
+        self.log(f"  swarm: {len(self.idle)} peers ({', '.join(p.ip for p in self.idle)})")
+
+    def get(self, hashes, prev_of_first, sink):
+        """Fetch every block; sink(i, raw) is called once per block, from worker threads.
+
+        Each peer keeps DEPTH requests in flight, refilled as blocks arrive. When the queue is
+        empty, idle peers also ask for blocks still in flight elsewhere (the first copy
+        wins), so one slow peer cannot hold up the end of a window."""
+        slot = {p: i for i, p in enumerate([prev_of_first] + hashes[:-1])}
+        todo, done = collections.deque(range(len(hashes))), [False] * len(hashes)
+        asked = [0] * len(hashes)  # how many peers have it in flight
+        left, cv = [len(hashes)], threading.Condition()
+        # Re-warm rarely: a handshake round to every candidate is what peers rate-limit.
+        since = time.time() - self.last_warm
+        if (len(self.idle) < self.n // 2 and since > self.COOL) or (not self.idle and since > 30):
+            self.warm()
+        with self.lock:
+            peers, self.idle = self.idle[:self.n], self.idle[self.n:]
+
+        def refill(peer, out):
+            with cv:
+                while len(out) < self.DEPTH:
+                    if todo:
+                        i = todo.popleft()
+                    else:  # end game: a block in flight at another peer, asked at most twice
+                        spare = [i for i in range(len(hashes)) if not done[i] and i not in out and asked[i] < 2]
+                        if not spare:
+                            break
+                        i = spare[0]
+                    asked[i] += 1
+                    out[i] = time.time()
+                    peer.s.sendall(_frame("getdata", _varint(1) + struct.pack("<I", MSG_BLOCK) + bytes.fromhex(hashes[i])[::-1]))
+
+        def release(out):
+            with cv:
+                for i in out:
+                    asked[i] -= 1
+                    if not done[i] and i not in todo and asked[i] == 0:
+                        todo.appendleft(i)
+                cv.notify_all()
+
+        def worker(peer):
+            out, last = {}, time.time()  # in flight here: index -> time asked
+            try:
+                while True:
+                    refill(peer, out)
+                    with cv:
+                        if not left[0]:
+                            break
+                    if not out:
+                        with cv:
+                            cv.wait(0.5)
+                        continue
+                    if time.time() - last > self.STALL:  # nothing from this peer for a while
+                        raise TimeoutError("stalled")
+                    try:
+                        cmd, p = peer.recv()
+                    except (TimeoutError, socket.timeout):
+                        continue
+                    if cmd != "block":
+                        continue
+                    i = slot.get(p[4:36][::-1].hex())
+                    if i is None:
+                        continue
+                    last = time.time()
+                    with cv:
+                        fresh = not done[i]
+                        done[i] = True
+                        if i in out:
+                            del out[i]
+                            asked[i] -= 1
+                    if fresh:
+                        sink(i, p)
+                        st = self.stats.setdefault(peer.ip, [0, 0, 0])
+                        st[0] += 1
+                        st[1] += len(p)
+                        with cv:
+                            left[0] -= 1
+                            cv.notify_all()
+                with self.lock:
+                    self.idle.append(peer)  # outstanding duplicates are ignored next time
+            except (OSError, ConnectionError, TimeoutError, ValueError):
+                self.stats.setdefault(peer.ip, [0, 0, 0])[2] += len(out)
+                peer.close()
+                with self.lock:
+                    self.bad[peer.ip] = time.time()
+            finally:
+                release(out)
+
+        ts = [threading.Thread(target=worker, args=(p,), daemon=True) for p in peers]
+        for t in ts:
+            t.start()
+        for t in ts:
+            t.join()
+        if left[0]:
+            raise TimeoutError(f"swarm: {left[0]} of {len(hashes)} blocks undelivered (no usable peers)")
 
 
 def candidates():

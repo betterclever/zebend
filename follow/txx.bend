@@ -6,6 +6,7 @@
 #   has to parse transaction bytes to find them.
 import Base
 import ../node/tx/tx.bend as T
+import ../node/wire/txv.bend as V
 
 def bytes_of(r: File & Result<&1, &1, U32 & String, +List<U32>>) -> +List<U32>:
   (_, res) = r
@@ -47,6 +48,15 @@ def extras(+xs: +List<U32>, tx: T.Tx) -> String:
   T.Tx{_, _, +nvin, +vin0, _, _, _, +orch, +iron} = tx
   vin_lines(nvin, 0n, xs, vin0) ++ proof_line(T.nat_pos(T.bnd_n(orch)), xs, orch) ++ proof_line(T.nat_pos(T.bnd_n(iron)), xs, iron)
 
+# Only transactions the wire validator (node/wire/txv.bend) accepts reach the digest code,
+# as in node/tx/tx_main.
+def gated_ok(ok: Bool, +xs: +List<U32>, +ctx: +List<U32>) -> String:
+  match ok:
+    case True{}:
+      T.report(xs, ctx_amounts(ctx), ctx_scripts(ctx)) ++ extras(xs, T.parse(xs))
+    case False{}:
+      "INVALID malformed transaction (rejected by the wire validator)"
+
 type Paths is Type:
   Paths{tx: String, ctx: String}
 
@@ -61,12 +71,12 @@ def go(p: Paths) -> IO(Unit):
   Paths{tp, cp} = p
   do IO<Unit>:
     f : File <- IO.try(File, File.open(tp, "r"))
-    r : File & Result<&1, &1, U32 & String, +List<U32>> <- File.read_bytes(f, 4000000)
+    r : File & Result<&1, &1, U32 & String, +List<U32>> <- File.read_bytes(f, 2000001)
     g : File <- IO.try(File, File.open(cp, "r"))
     s : File & Result<&1, &1, U32 & String, +List<U32>> <- File.read_bytes(g, 4000000)
     +ctx : +List<U32> = bytes_of(s)
     +xs : +List<U32> = bytes_of(r)
-    IO.print(T.report(xs, ctx_amounts(ctx), ctx_scripts(ctx)) ++ extras(xs, T.parse(xs)))
+    IO.print(gated_ok(V.valid(xs), xs, ctx))
 
 def main() -> IO(Unit):
   do IO<Unit>:
