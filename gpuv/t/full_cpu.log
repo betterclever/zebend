@@ -1,0 +1,7 @@
+60/6144 chunks 3840 bundles 6s
+1260/6144 chunks 80609 bundles 101s
+2460/6144 chunks 157317 bundles 202s
+3660/6144 chunks 233978 bundles 299s
+4860/6144 chunks 310735 bundles 394s
+6060/6144 chunks 387471 bundles 489s
+batch_cpu: bundles 392806, agree with official 392806, disagree 0, Bend valid 392806; batches 103 (0 rejected); batch process time 495.2s = 793 bundles/s; wall 496s

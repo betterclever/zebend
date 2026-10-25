@@ -1,0 +1,5 @@
+rust halo2 BatchVerifier threads=18: 10048 bundles, all ok true, 14.1s = 712 bundles/s
+rust halo2 BatchVerifier threads=1: 10048 bundles, all ok true, 156.4s = 64 bundles/s
+batch_g: bundles 10048, agree with official 10048, disagree 0, Bend valid 10048; batches 3 (0 rejected); batch process time 15.4s = 650 bundles/s; wall 15s
+batch_cpu: bundles 10048, agree with official 10048, disagree 0, Bend valid 10048; batches 3 (0 rejected); batch process time 13.1s = 769 bundles/s; wall 13s
+rust halo2 BatchVerifier threads=18: 392806 bundles, all ok true, 367.8s = 1068 bundles/s

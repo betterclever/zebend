@@ -1,0 +1,11 @@
+SKIP(build) array_oob_access.bend: ['12 |   wrd@w1[5] <- 99']
+SKIP(build) array_padding_slots.bend: ['15 |   0']
+SKIP(build) array_unboxed_default.bend: ['14 |   0']
+SKIP(build) axiom_runtime.bend: ['15 |']
+SKIP(build) ctor_tag_dispatch_000.bend: ['12 |']
+SKIP(build) ctor_tag_dispatch_001.bend: ['12 |']
+SKIP(build) erasure_dead_param.bend: ['12 |   y = (x + 1 : U32)']
+SKIP(build) slab_drop_recycle.bend: ['11 |   0']
+SKIP(build) slab_lazy_alloc.bend: ['11 |   0']
+SKIP(build) slab_sparse_default.bend: ['15 |   0']
+PASS 137 FAIL 0 SKIP 13
