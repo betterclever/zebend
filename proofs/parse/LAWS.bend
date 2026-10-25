@@ -16,17 +16,27 @@ law le16_roundtrip:
   for h: {U32.is_lt(x, 65536) == True{} : Bool}
   {B.get_le16(B.le16(x)) == x : U32}
 
-# CompactSize: decoding the encoding of any n gives n back, and consumes exactly the
-# encoding's bytes, whatever follows it.
+# CompactSize: decoding the encoding of any n up to MAX_COMPACT_SIZE (0x02000000) gives n
+# back, and consumes exactly the encoding's bytes, whatever follows it. (The decoder rejects
+# larger values, as zcash_encoding does, so the bound is part of the claim.)
 law compact_roundtrip:
   for +n: U32
   for +rest: +List<U32>
+  for h: {U32.is_le(n, 33554432) == True{} : Bool}
   {B.read_compact(B.append(B.compact(n), rest)) == B.Compact{n, B.length(B.compact(n))} : B.Compact}
 
-# Finding: node/p2p's decoder also accepts NON-canonical encodings (zcashd rejects
-# them): [0xfd, 5, 0] decodes to 5, whose canonical encoding is the single byte [5].
-law noncanonical_accepted:
-  {B.read_compact([253, 5, 0]) == B.Compact{5, 3} : B.Compact}
+# Finding (fixed): node/p2p's decoder used to accept NON-canonical encodings, which zcashd
+# rejects: [0xfd, 5, 0] decoded to 5, whose canonical encoding is the single byte [5].
+# The merged decoder (harden/lib/cs.bend) rejects it; width 0 means "malformed".
+law noncanonical_rejected:
+  {B.read_compact([253, 5, 0]) == B.Compact{0, 0} : B.Compact}
+
+# It also rejects the 0xff (u64) form and values over the cap.
+law ff_rejected:
+  {B.read_compact([255, 0, 0, 0, 0, 1, 0, 0, 0]) == B.Compact{0, 0} : B.Compact}
+
+law over_cap_rejected:
+  {B.read_compact([254, 1, 0, 0, 2]) == B.Compact{0, 0} : B.Compact}
 
 law noncanonical_differs:
   {B.compact(5) == [5] : +List<U32>}
@@ -39,6 +49,7 @@ law canon_rejects_example:
 law canon_accepts:
   for +n: U32
   for +rest: +List<U32>
+  for h: {U32.is_le(n, 33554432) == True{} : Bool}
   {C.read_compact_canon(B.append(B.compact(n), rest)) == Some{B.Compact{n, B.length(B.compact(n))}} : Maybe<&2, B.Compact>}
 
 # ... and whatever it accepts is canonical: the consumed bytes are exactly compact(value).

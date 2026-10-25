@@ -250,6 +250,23 @@ smoke runs) no longer take the lock.
 
 ## Merge plan
 
+**Status: merged.** The validators now live in `node/wire/` (copied unchanged from `lib/`,
+same relative imports). Changes in the components:
+
+| Component | Change |
+|---|---|
+| node/p2p/bytes.bend, node/block/bytes.bend | `read_compact` is canonical, capped at 0x02000000 and length-checked; failure is `Compact{0, 0}` |
+| node/p2p/msg.bend | `parse` has the command check, the 2 MiB cap before `NeedMore`, and `len <= n - 24` |
+| node/p2p/node.bend | `headers`, `version`, `addr` payloads are validated (canonical counts, <= 160 headers of exactly 1487 bytes with a 1344-byte solution and zero tx count, user agent <= 256 bytes and present, <= 1000 addrs); a malformed one drops the peer |
+| node/tx/tx_main.bend | `node/wire/txv.bend` `valid` gates `T.report`; reads capped at 2,000,001 bytes |
+| node/block/block_main.bend | `node/wire/blk.bend` `parse_capped` gates `report`; reads capped at 2,000,001 bytes |
+| halo2/verifier, fast/pure/v32 `bundle_main*`, perf3/v64 `bundle_ba` | `node/wire/bundle.bend` `valid` gates `parse_bundle` (as `bundle_main_h.bend`) |
+| scan2/scan.bend | constant-time ivk table lookups and GLV signs (`pt_sel`, `eq16`, `ct_get`, `ct_neg`) |
+
+Not merged: follow/ (another workstream; it runs its own copies of the binaries and should
+rebuild from these sources), and node/block's internal tx walk, which still uses its own
+splitter but only ever sees blocks `parse_capped` accepted.
+
 | From | To | Change |
 |---|---|---|
 | `lib/cs.bend` | node/p2p/bytes.bend `read_compact`, node/block/bytes.bend `read_compact`, node/p2p/node.bend `compact2` | Return `Maybe` (or a width of 0 on failure) from the canonical, capped, length-checked reader. Callers must treat failure as a protocol error (`Bad`). |

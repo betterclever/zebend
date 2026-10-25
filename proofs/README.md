@@ -116,26 +116,30 @@ arithmetic) over every mainnet height 29..3,528,279: pre-Blossom 653,571/653,571
 post-Blossom 2,874,680/2,874,680 nBits equal the headers, 0 mismatches (`check_all.log`).
 Heights 1–28 lack a full 28-header window and are not checked.
 
-## parse/: encode/decode round-trips about `node/p2p/bytes.bend` (9 laws)
+## parse/: encode/decode round-trips about `node/p2p/bytes.bend` (11 laws)
 
 | Law | Statement |
 |---|---|
 | `le32_roundtrip` | for all `x: U32`, `B.get_le32(B.le32(x)) == x` |
 | `le16_roundtrip` | for all `x < 65536`, `B.get_le16(B.le16(x)) == x` |
-| `compact_roundtrip` | `read_compact(compact(n) ++ rest) == Compact{n, length(compact(n))}` |
-| `noncanonical_accepted` | `read_compact([253, 5, 0]) == Compact{5, 3}` |
+| `compact_roundtrip` | for `n ≤ 0x02000000`, `read_compact(compact(n) ++ rest) == Compact{n, length(compact(n))}` |
+| `noncanonical_rejected` | `read_compact([253, 5, 0]) == Compact{0, 0}` (width 0 = malformed) |
+| `ff_rejected` | the `0xff` (u64) form is rejected |
+| `over_cap_rejected` | `0xfe` with a value over `0x02000000` is rejected |
 | `noncanonical_differs` | `compact(5) == [5]` |
 | `canon_rejects_example` | the canonical decoder `canon.bend` rejects `[253, 5, 0]` |
-| `canon_accepts` | the canonical decoder accepts `compact(n) ++ rest` with the same result |
+| `canon_accepts` | for `n ≤ 0x02000000`, the canonical decoder accepts `compact(n) ++ rest` with the same result |
 | `canon_sound` | if the canonical decoder accepts `(v, w)` then the first `w` bytes are exactly `compact(v)` |
 | `header_split_concat` | `concat(split(k, bs)) == take(bs, k·1487)` for `node/headers/main.bend`'s `split` |
 
 The 32-bit round-trip is proved bit by bit: `gen_bits.py` asks Bend for the normalised goal
 and emits per-bit lemmas into `bits.bend` (~100 KB, imports the real `bytes.bend`).
 
-**Finding:** `node/p2p`'s CompactSize decoder accepts non-canonical encodings
-(`[0xfd, 5, 0]` decodes to 5); zcashd rejects them. The laws above prove both the bug and
-a canonical decoder that fixes it.
+**Finding (fixed):** `node/p2p`'s CompactSize decoder used to accept non-canonical
+encodings (`[0xfd, 5, 0]` decoded to 5), which zcashd rejects. The decoder now in
+`bytes.bend` (merged from `harden/lib/cs.bend`) is canonical and capped at
+`MAX_COMPACT_SIZE`; `noncanonical_rejected` proves the old counterexample is refused, and
+`compact_roundtrip` proves every in-range canonical encoding still decodes.
 
 ## state/: the Merkle theorems transferred to the running `node/state` code (5 laws)
 
