@@ -218,7 +218,8 @@ async fn main() -> Result<()> {
                     let mut buf: Vec<u8> = Vec::new();
                     let mut last = (0u64, 0u32);
                     let mut c = count;
-                    let res = async {
+                    // A stalled stream (seen in practice) times out and is retried.
+                    let res = tokio::time::timeout(std::time::Duration::from_secs(300), async {
                         let mut l = Lwd::connect().await?;
                         l.blocks(s, e, vec![pool], |b| {
                             if b.height == s && s > 1 {
@@ -240,8 +241,9 @@ async fn main() -> Result<()> {
                             Ok(())
                         })
                         .await
-                    }
-                    .await;
+                    })
+                    .await
+                    .unwrap_or_else(|_| Err(anyhow!("timed out after 300 s")));
                     match res {
                         Ok(()) if last.0 == e && last.1 as u64 == c => {
                             ok = Some((buf, c));
