@@ -17,3 +17,9 @@ node/tx/data/
 node/tx/tampered/
 node/state/out/
 bench/fieldmul/target/
+.heavy.lock
+follow/state/
+follow/work/
+consensus/oracle/out/
+proofsets/data/
+harden/data/
