@@ -8,11 +8,14 @@
 # the checkpoint pass reads the Bend-computed chunk roots back from got_roots.bend.
 #   ./orchard_main LEAVES START COUNT GPU(0|1)    chunk roots
 #   ./orchard_main LEAVES GPU(0|1)                checkpoint roots
+#   ./orchard_main LEAVES GPU(0|1) a              Orchard anchors: the root at the end of the
+#                                                 hinted block, recomputed, equals the anchor
 import Base
 import ../../halo2/lib/words.bend as Wd
 import ../../node/state/sinsemilla.bend as S
 import ./inputs.bend as I
 import ./got_roots.bend as G
+import ../anchors/hist.bend as H
 
 def rec_bytes() -> U32:
   36
@@ -169,6 +172,93 @@ def run_cps(path: String, +gpu: Bool) -> IO(Unit):
     fl : File <- IO.try(File, File.open(path, "r"))
     cps(I.checkpoints(), fl, gpu, G.got_roots(), g, es)
 
+# --- pass 3: anchors ------------------------------------------------------------------
+
+def words(r: File & Result<&1, &1, U32 & String, List<&2, U32>>) -> File & +List<U32>:
+  (fl, res) = r
+  match res:
+    case Done{bs}:
+      (fl, List.reverse(&2, U32, words_of(bs, Nil{})))
+    case Fail{_}:
+      (fl, Nil{})
+
+# Records n-1 and n: height(n-1) <= h < height(n), i.e. n is exactly the leaves through block h.
+def between_w(xs: +List<U32>, +h: Nat) -> Bool:
+  match xs:
+    case Con{a, Con{_, Con{_, Con{_, Con{_, Con{_, Con{_, Con{_, Con{_, Con{b, _}}}}}}}}}}:
+      Bool.and(Nat.is_lt(U32.to_nat(a), 1n+h), Nat.is_lt(h, U32.to_nat(b)))
+    case _:
+      False{}
+
+def after_w(xs: +List<U32>, +h: Nat) -> Bool:
+  match xs:
+    case Con{a, _}:
+      Nat.is_lt(h, U32.to_nat(a))
+    case _:
+      False{}
+
+def between(fr: File & +List<U32>, +h: Nat) -> File & Bool:
+  (fl, xs) = fr
+  (fl, between_w(xs, h))
+
+def after(fr: File & +List<U32>, +h: Nat) -> File & Bool:
+  (fl, xs) = fr
+  (fl, after_w(xs, h))
+
+def size_ok(n: Nat, +h: Nat, fl: File) -> IO(File & Bool):
+  match n:
+    case 0n:
+      do IO<File & Bool>:
+        r : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_at(fl, 0, 36)
+        return after(words(r), h)
+    case 1n+p:
+      do IO<File & Bool>:
+        r : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_at(fl, U32.from_nat(Nat.mul(p, 36n)), 72)
+        return between(words(r), h)
+
+def valid_s(b: Bool) -> String:
+  match b:
+    case True{}:
+      "VALID"
+    case False{}:
+      "INVALID"
+
+def ax_str(+ok_size: Bool, +root: Wd.W, +ax: I.Ax) -> String:
+  I.Ax{name, block, anchor, height, size} = ax
+  +v = Bool.and(ok_size, H.hits(anchor, block, H.HE{height, root}))
+  "anchor " ++ name ++ " (block " ++ Nat.show(block) ++ ") " ++ Wd.hex(anchor) ++ ": " ++ valid_s(v) ++ " (hint: end of block " ++ Nat.show(height) ++ ", " ++ Nat.show(size) ++ " leaves, size " ++ ok_s(ok_size) ++ "; bend root " ++ Wd.hex(root) ++ ")"
+
+def ax_out(sb: File & Bool, +root: Wd.W, +ax: I.Ax) -> File & String:
+  (fl, b) = sb
+  (fl, ax_str(b, root, ax))
+
+def ax_one(fr: File & Wd.W, +ax: I.Ax) -> IO(File):
+  (fl, root) = fr
+  I.Ax{_, _, _, +h, +n} = ax
+  do IO<File>:
+    sb : File & Bool <- size_ok(n, h, fl)
+    say(ax_out(sb, root, ax))
+
+def axs(xs: +List<I.Ax>, fl: File, +gpu: Bool, +roots: +List<Wd.W>, +g: S.Gens, +es: +List<Wd.W>) -> IO(Unit):
+  match xs:
+    case Con{+ax, rest}:
+      I.Ax{_, _, _, _, +n} = ax
+      +k = Nat.div(n, 65536n)
+      do IO<Unit>:
+        r : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_at(fl, U32.from_nat(Nat.mul(k, Nat.mul(65536n, 36n))), (chunk_leaves() * rec_bytes() : U32))
+        fl2 : File <- ax_one(with_partial(Nat.mod(n, 65536n), k, gpu, leaves_of(r), roots, g, es), ax)
+        axs(rest, fl2, gpu, roots, g, es)
+    case _:
+      do IO<Unit>:
+        File.close(fl)
+
+def run_axs(path: String, +gpu: Bool) -> IO(Unit):
+  +g = S.gens()
+  +es = S.empties(g)
+  do IO<Unit>:
+    fl : File <- IO.try(File, File.open(path, "r"))
+    axs(I.anchors(), fl, gpu, G.got_roots(), g, es)
+
 def num(s: String) -> Nat:
   U32.to_nat(Maybe.default(&2, U32, U32.read(s), 0))
 
@@ -186,6 +276,8 @@ def go(xs: List<String>) -> IO(Unit):
   match xs:
     case Con{_, Con{p, Con{a, Con{n, Con{m, _}}}}}:
       run_chunks(p, num(a), num(n), is_gpu(m))
+    case Con{_, Con{p, Con{m, Con{_, Nil{}}}}}:
+      run_axs(p, is_gpu(m))
     case Con{_, Con{p, Con{m, Nil{}}}}:
       run_cps(p, is_gpu(m))
     case _:

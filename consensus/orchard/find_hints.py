@@ -4,10 +4,17 @@ earlier block whose chain Orchard root (GetTreeState) equals it, and that block'
 The hint is untrusted: orchard_main recomputes the root at that size from the leaves and checks
 the size is exactly the leaves through that block."""
 import re, subprocess, pathlib
+from array import array
 HERE = pathlib.Path(__file__).parent
 ROOT = HERE.parent.parent
 ORA = str(HERE.parent / "oracle/target/release/consensus-oracle")
 EMPTY = "ae2935f1dfd8a24aed7c70df7de3a668eb7a49b1319880dde2bbd9031ae5d82f"
+# The root only changes at the end of a block that adds leaves: those are the candidates.
+blocks = set()
+with open(HERE.parent / "oracle/out/orchard_leaves.bin", "rb") as f:
+    while buf := f.read(36 << 20):
+        blocks.update(array("I", buf)[::9])
+blocks = sorted(blocks)
 out = []
 for i in range(29):
     t = (ROOT / f"node/tx/mainnet/tx_{i}.txt").read_text()
@@ -19,13 +26,14 @@ for i in range(29):
         out.append(f"tx_{i} {b} {a} 1687103 0")
         continue
     hit = None
-    for lo in range(b - 1, b - 401, -50):
-        rows = subprocess.run([ORA, "trees", "orchard"] + [str(h) for h in range(lo, lo - 50, -1)],
+    cands = [h for h in reversed(blocks) if h < b]
+    for j in range(0, 2000, 50):
+        rows = subprocess.run([ORA, "trees", "orchard"] + [str(h) for h in cands[j:j + 50]],
                               capture_output=True, text=True, check=True).stdout.split("\n")
         hit = next((r.split() for r in rows if r.endswith(a)), None)
         if hit:
             break
-    assert hit, f"tx_{i}: anchor not found in 400 blocks"
+    assert hit, f"tx_{i}: anchor not found among the last 2000 leaf-adding blocks"
     out.append(f"tx_{i} {b} {a} {hit[0]} {hit[1]}")
     print(out[-1], flush=True)
 (HERE / "anchor_hints.txt").write_text("\n".join(out) + "\n")
