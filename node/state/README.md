@@ -5,7 +5,7 @@ using Sinsemilla on Pallas, and matches the **chain's own root** at every checkp
 to the tip. It also builds the Ironwood **nullifier set** and catches a replayed nullifier
 (a double spend). The set's insertion law is **proven**.
 
-## Results (Apple M5 Max, Bend 2.0.38; machine shared with other jobs)
+## Results (Apple M5 Max, Bend 2.0.38 unless noted; machine shared with other jobs)
 
 Data: every Ironwood output from activation (block 3,428,143, ZIP 258) to block
 3,528,268: **100,126 blocks, 838,662 leaves**, streamed from `zec.rocks` lightwalletd.
@@ -22,6 +22,22 @@ At every 20,000-block chunk our leaf count equals the chain-reported
 | **3,528,268 (tip)** | **838,662** | `5ae9f773…69c0db529` | **MATCH (68.1 s)** | **MATCH (22.5 s)** |
 
 Each row is an independent full rebuild of the depth-32 tree from the first *n* leaves.
+The Metal column above was measured on the stock 2.0.38 build, which is not inline-gated (see
+below).
+
+**Metal re-gate, 2026-10-26 (always-inline build).** Apple's Metal compiler can corrupt a
+32-bit word of a caller's data across a helper call it keeps (nondeterministically), so every
+shipped Metal number must come from a build whose kernel has no calls. `tree_main` is now built
+with the Bend fork's `metal-spill` branch (`c8f04a61`: every device helper `always_inline`,
+lane spill restored; `bend-fork/METAL_INLINE.md`). Its Metal compiles to AIR with **1 function
+and 0 non-intrinsic calls** (`gpuv/t/aircalls.sh`; `bench/metal_inline_build.log`). Gate
+(`bench/metal_inline_gate.sh tree`, `bench/metal_inline_gate.log`): **20 runs, 6/6 roots MATCH
+in 20/20, 1 distinct output**. Wall time for the whole `./tree_main out/cmx.bin gpu` run:
+**20.7 s median over 20 runs** (19.6–21.9 s), load average 4.8–5.4. The previous stock
+build (kept as `tree_main.noinline`), same session: **25.4 s median over 16 runs** (22.8–29.1 s),
+load 3.6–4.4. One caveat: 2 of 22 inline runs (the gate's 20 plus a smoke run) took ~100 s,
+all of it in the tip step (~86 s instead of ~7 s), with the same correct roots. The old build
+showed no such run in 18. The cause is not known.
 For comparison, the Rust `orchard` crate's sequential frontier (one thread) takes 45 s
 for all 838,662 leaves.
 
@@ -70,7 +86,8 @@ hash code is correct; only the nullifier-set law is proven.
 ```
 Or step by step: `oracle/` (`cargo run --release -- consts | sync | trees … | roots`),
 `gen_consts.py`, `gen_inputs.py`, then `bend t/crh_test.bend`,
-`bend tree_main.bend -o tree_main && ./tree_main out/cmx.bin {gpu|tree|frontier}`,
+`bun ../../../bend-fork/bend2/main.ts tree_main.bend -o tree_main` (fork, `metal-spill`) and
+`./tree_main out/cmx.bin {gpu|tree|frontier}`,
 `bend nf_main.bend -o nf_main && ./nf_main out/nf.bin`, `bend PROOF.bend --verdict`.
 
 ## Gaps
