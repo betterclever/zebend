@@ -1,0 +1,5 @@
+oracle/target/
+data/
+*.gpu
+batch_main
+batch_gpu
