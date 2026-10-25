@@ -522,11 +522,18 @@ fn build(chunk: usize, part: usize, parts: usize) -> Result<()> {
 // ---------------------------------------------------------------- rust batch timing
 
 /// Times the official orchard BatchValidator over all post-NU6.3 bundles (proofs only), for comparison.
-fn rust_batch(threads: usize, limit: usize) -> Result<()> {
+/// Same bundle selection as build part `part` of `parts` (record index % parts == part), in the
+/// same order, so the comparison with Bend's chunks of that part is on identical bundles.
+fn rust_batch(threads: usize, limit: usize, part: usize, parts: usize) -> Result<()> {
     let pool = rayon::ThreadPoolBuilder::new().num_threads(threads).build()?;
     let vk = VerifyingKey::build(OrchardCircuitVersion::PostNu6_3);
     let mut bundles = vec![];
+    let mut idx = 0usize;
     read_raw(BufReader::new(File::open(Path::new(DATA).join("raw.bin"))?), |h, _id, raw| {
+        idx += 1;
+        if (idx - 1) % parts != part || bundles.len() >= limit {
+            return Ok(());
+        }
         let branch = BranchId::for_height(&MainNetwork, BlockHeight::from_u32(h as u32));
         let tx = Transaction::read(&raw[..], branch)?;
         for b in [tx.orchard_bundle(), tx.ironwood_bundle()].into_iter().flatten() {
@@ -567,35 +574,28 @@ fn sigsample(n: usize, seed: u64) -> Result<()> {
     let dir = Path::new(DATA).join("sigs");
     let _ = fs::remove_dir_all(&dir);
     fs::create_dir_all(&dir)?;
-    let mut all: Vec<(u64, [u8; 32], Vec<u8>)> = vec![];
-    read_raw(BufReader::new(File::open(Path::new(DATA).join("raw.bin"))?), |h, id, b| {
-        all.push((h, id, b));
-        Ok(())
-    })?;
-    // splitmix64 Fisher-Yates, so the sample is reproducible from the seed
-    let mut s = seed;
-    let mut next = || {
-        s = s.wrapping_add(0x9e3779b97f4a7c15);
-        let mut z = s;
+    // n == 0: every fully shielded tx, streamed in chain order (no shuffle, nothing held in RAM).
+    // n > 0: a seeded random sample, chosen by hashing each txid with the seed (streaming too).
+    let pick = |id: &[u8; 32]| -> bool {
+        if n == 0 {
+            return true;
+        }
+        let mut z = seed ^ u64::from_le_bytes(id[0..8].try_into().unwrap());
         z = (z ^ (z >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
         z = (z ^ (z >> 27)).wrapping_mul(0x94d049bb133111eb);
-        z ^ (z >> 31)
+        (z ^ (z >> 31)) % 1_000_000 < 10_000 // ~1% of txs, capped at n below
     };
-    for i in (1..all.len()).rev() {
-        let j = (next() % (i as u64 + 1)) as usize;
-        all.swap(i, j);
-    }
     let mut exp = BufWriter::new(File::create(dir.join("expected.txt"))?);
     let (mut k, mut skipped) = (0usize, 0usize);
-    for (h, id, raw) in all {
-        if k == n {
-            break;
+    read_raw(BufReader::new(File::open(Path::new(DATA).join("raw.bin"))?), |h, id, raw| {
+        if (n > 0 && k == n) || !pick(&id) {
+            return Ok(());
         }
         let branch = BranchId::for_height(&MainNetwork, BlockHeight::from_u32(h as u32));
         let tx = Transaction::read(&raw[..], branch)?;
         if tx.transparent_bundle().is_some_and(|t| !t.vin.is_empty()) {
             skipped += 1;
-            continue;
+            return Ok(());
         }
         let txid: [u8; 32] = *tx.txid().as_ref();
         anyhow::ensure!(txid == id, "txid mismatch");
@@ -605,7 +605,8 @@ fn sigsample(n: usize, seed: u64) -> Result<()> {
         fs::write(dir.join(format!("tx_{k}.bin")), &raw)?;
         fs::write(dir.join(format!("tx_{k}.ctx")), [0u8; 8])?;
         k += 1;
-    }
+        Ok(())
+    })?;
     exp.flush()?;
     eprintln!("sigsample: wrote {k} fully shielded txs (skipped {skipped} with transparent inputs), seed {seed}");
     Ok(())
@@ -620,8 +621,13 @@ async fn main() -> Result<()> {
         Some("scan") => scan(arg(2)?.unwrap_or(IRONWOOD_ACTIVATION), arg(3)?).await,
         Some("fetch") => fetch(arg(2)?.unwrap_or(16) as usize).await,
         Some("build") => build(arg(2)?.unwrap_or(64) as usize, arg(3)?.unwrap_or(0) as usize, arg(4)?.unwrap_or(1) as usize),
-        Some("rust-batch") => rust_batch(arg(2)?.unwrap_or(1) as usize, arg(3)?.unwrap_or(u64::MAX) as usize),
+        Some("rust-batch") => rust_batch(
+            arg(2)?.unwrap_or(1) as usize,
+            arg(3)?.unwrap_or(u64::MAX) as usize,
+            arg(4)?.unwrap_or(0) as usize,
+            arg(5)?.unwrap_or(1) as usize,
+        ),
         Some("sigsample") => sigsample(arg(2)?.unwrap_or(2000) as usize, arg(3)?.unwrap_or(2026)),
-        _ => Err(anyhow!("usage: scan [START] [END] | fetch [CONC] | build [CHUNK] [PART] [PARTS] | rust-batch [THREADS] [LIMIT] | sigsample [N] [SEED]")),
+        _ => Err(anyhow!("usage: scan [START] [END] | fetch [CONC] | build [CHUNK] [PART] [PARTS] | rust-batch [THREADS] [LIMIT] [PART] [PARTS] | sigsample [N] [SEED]")),
     }
 }
