@@ -16,6 +16,7 @@ import ../field3/fq64.bend as S
 import ../field3/lib64/pallas.bend as P
 import ../node/tx/blake2b.bend as H
 import ../node/tx/consts.bend as K
+import ../decomp/pallas_dec.bend as PD
 import ./msm_pallas.bend as BA
 import ./msm_fast_pallas.bend as MF
 
@@ -155,7 +156,7 @@ def cv_go(cvs: +List<Wd.W>, st: CS) -> CS:
     case Nil{}:
       st
     case Con{w, t}:
-      cv_go(t, cv_step(st, P.decompress(w)))
+      cv_go(t, cv_step(st, PD.decompress(w)))
 
 # Σ cv (None if any cv does not decompress).
 def cv_sum(cvs: +List<Wd.W>) -> Maybe<&2, P.Pt>:
@@ -190,7 +191,7 @@ def vk_bd(m: Maybe<&2, P.Pt>) -> VK:
 def vk_sel(sa: Bool, +vkw: Wd.W, +cvs: +List<Wd.W>, +v: P.Pt, +lo: U32, +hi: U32) -> VK:
   match sa:
     case True{}:
-      vk_sa(P.decompress(vkw), vkw)
+      vk_sa(PD.decompress(vkw), vkw)
     case False{}:
       vk_bd(bvk_of(cv_sum(cvs), v, lo, hi))
 
@@ -215,7 +216,7 @@ def pr_s(canon: Bool, +it: It, +v: P.Pt) -> Pr:
       Bad{}
     case True{}:
       It{+kind, +lo, +hi, +r, +s, +msg, +vk, cvs} = it
-      pr_fin(kind, P.decompress(r), vk_of(kind, vk, cvs, v, lo, hi), r, s, msg)
+      pr_fin(kind, PD.decompress(r), vk_of(kind, vk, cvs, v, lo, hi), r, s, msg)
 
 def prep(+it: It, +v: P.Pt) -> Pr:
   It{_, _, _, _, +s, _, _, _} = it

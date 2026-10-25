@@ -6,6 +6,7 @@ import ../../field3/fp64.bend as Fp
 import ../../field3/fq64.bend as Fq
 import ../../field3/lib64/vesta.bend as V
 import ../lib_64/glv_vesta.bend as G
+import ../../decomp/vesta_dec.bend as VD
 import ./b2.bend as B
 
 def b2u(b: Bool) -> U32:
@@ -234,7 +235,7 @@ def rd_point_go(tr: Tr, pr: Proof, +ok: U32, log: +List<Log>) -> SP:
     case Nil{}:
       SP{V.identity(), St{tr, Proof{Nil{}, ivals}, 0, log}}
     case Con{+w, rest}:
-      rd_point_dec(V.decompress(w), St{tr, Proof{rest, ivals}, ok, log})
+      rd_point_dec(VD.decompress(w), St{tr, Proof{rest, ivals}, ok, log})
 
 def rd_point(st: St) -> SP:
   St{tr, pr, +ok, +log} = st
