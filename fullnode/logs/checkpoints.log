@@ -1,0 +1,11 @@
+{
+ "source": "https://github.com/ZcashFoundation/zebra/blob/7a839a630da08739017ceb0e5516755a0b57ad52/zebra-chain/src/parameters/checkpoint/main-checkpoints.txt",
+ "sha256": "583a8aeb808db374635239c2372b308a52deefcd370e2766cf1a6e0dc7ebba80",
+ "checkpoints": 14444,
+ "last_checkpoint": 3522460,
+ "headers": 3528279,
+ "checked": 14444,
+ "mismatches": [],
+ "slice_links": 142,
+ "secs": 131
+}

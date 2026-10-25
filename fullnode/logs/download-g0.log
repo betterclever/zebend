@@ -1,0 +1,5 @@
+03:22:54 download: heights 0..1999, 20 peers, spool cap 30 GB
+03:23:55 height 1185    19.4 blocks/s   0.11 MB/s  (fetched 25.8 blocks/s)  peers 15  total 0.01 GB  spool 1.04 GB  requeued 166  drops 5
+03:23:55   drops {'ConnectionError: peer closed': 5}  rejects {'ConnectionError': 23, 'ConnectionRefusedError': 8, 'ConnectionResetError': 120, 'TimeoutError': 27, 'OSError': 1}  book 375
+03:23:55   droplog [('/Zebra:5.0.0/', 10, 120, ['block', 'block', 'block', 'block']), ('/Zakura:1.7.0/', 3, 72, ['block', 'block', 'block', 'block']), ('/Zakura:1.7.0/', 0, 0, ['version', 'verack']), ('/Zebra:7.0.0/', 0, 0, ['version', 'verack']), ('/Zebra:5.0.0/', 28, 9, ['block', 'block', 'block', 'block'])]
+03:24:17 download done at 2000

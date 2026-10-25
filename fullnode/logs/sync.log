@@ -1,0 +1,32 @@
+03:52:48 sync: state tip -1, last checkpoint 3522460, verified headers to 3530594
+03:52:53 tip 1999  window 2000 blocks 14.5 MB (bend 1.6 s, state 0.3 s)  avg 445.0 blocks/s 3.23 MB/s
+03:53:30 tip 9999  window 2000 blocks 35.1 MB (bend 2.9 s, state 1.6 s)  avg 241.5 blocks/s 3.00 MB/s
+--- restart after SIGKILL
+03:54:10 sync: state tip 9999, last checkpoint 3522460, verified headers to 3530595
+03:55:32 tip 11999  window 2000 blocks 87.7 MB (bend 14.1 s, state 3.0 s)  avg 24.2 blocks/s 1.06 MB/s
+03:57:11 tip 13579  window 1580 blocks 101.1 MB (bend 13.2 s, state 3.5 s)  avg 19.7 blocks/s 1.04 MB/s
+03:57:57 tip 17579  window 2000 blocks 44.3 MB (bend 5.6 s, state 2.6 s)  avg 33.4 blocks/s 1.24 MB/s
+03:58:44 tip 21579  window 2000 blocks 55.2 MB (bend 6.7 s, state 2.9 s)  avg 42.2 blocks/s 1.38 MB/s
+03:59:19 tip 23579  window 2000 blocks 49.1 MB (bend 5.6 s, state 2.8 s)  avg 43.9 blocks/s 1.39 MB/s
+03:59:52 tip 27579  window 2000 blocks 35.6 MB (bend 5.1 s, state 3.0 s)  avg 51.3 blocks/s 1.44 MB/s
+04:00:34 tip 33579  window 2000 blocks 29.8 MB (bend 3.0 s, state 4.0 s)  avg 61.3 blocks/s 1.53 MB/s
+04:01:08 tip 37579  window 2000 blocks 27.3 MB (bend 3.0 s, state 2.9 s)  avg 66.0 blocks/s 1.58 MB/s
+04:01:48 tip 43579  window 2000 blocks 26.9 MB (bend 3.3 s, state 3.9 s)  avg 73.3 blocks/s 1.63 MB/s
+04:02:24 tip 49579  window 2000 blocks 33.3 MB (bend 2.9 s, state 4.1 s)  avg 80.0 blocks/s 1.69 MB/s
+04:03:03 tip 55579  window 2000 blocks 25.2 MB (bend 2.6 s, state 3.8 s)  avg 85.5 blocks/s 1.72 MB/s
+04:03:58 tip 59579  window 2000 blocks 62.2 MB (bend 8.4 s, state 6.6 s)  avg 84.3 blocks/s 1.72 MB/s
+04:04:34 tip 65579  window 2000 blocks 27.5 MB (bend 2.6 s, state 4.0 s)  avg 89.1 blocks/s 1.76 MB/s
+04:05:11 tip 69579  window 2000 blocks 33.8 MB (bend 4.9 s, state 5.1 s)  avg 90.0 blocks/s 1.75 MB/s
+04:06:03 tip 73579  window 2000 blocks 35.6 MB (bend 5.3 s, state 5.2 s)  avg 89.2 blocks/s 1.73 MB/s
+04:06:35 tip 77579  window 2000 blocks 35.2 MB (bend 3.8 s, state 5.0 s)  avg 90.7 blocks/s 1.74 MB/s
+04:07:24 tip 81579  window 2000 blocks 38.6 MB (bend 4.5 s, state 7.1 s)  avg 90.1 blocks/s 1.73 MB/s
+04:08:24 tip 83579  window 2000 blocks 40.4 MB (bend 6.1 s, state 13.7 s)  avg 86.2 blocks/s 1.66 MB/s
+04:09:40 tip 85999  window 2000 blocks 32.7 MB (bend 4.3 s, state 6.6 s)  avg 81.7 blocks/s 1.57 MB/s
+04:10:29 tip 89999  window 2000 blocks 33.9 MB (bend 5.0 s, state 9.2 s)  avg 81.7 blocks/s 1.55 MB/s
+04:11:13 tip 93999  window 2000 blocks 32.5 MB (bend 4.0 s, state 6.6 s)  avg 82.1 blocks/s 1.55 MB/s
+04:11:44 tip 96999  window 1000 blocks 16.4 MB (bend 1.4 s, state 3.6 s)  avg 82.5 blocks/s 1.55 MB/s
+04:12:28 tip 97999  window 1000 blocks 16.8 MB (bend 1.5 s, state 3.7 s)  avg 80.1 blocks/s 1.51 MB/s
+04:13:02 tip 99999  window 2000 blocks 47.6 MB (bend 5.0 s, state 8.3 s)  avg 79.5 blocks/s 1.50 MB/s
+04:13:39 tip 103999  window 2000 blocks 33.3 MB (bend 3.7 s, state 6.3 s)  avg 80.4 blocks/s 1.51 MB/s
+04:14:29 tip 105999  window 2000 blocks 34.8 MB (bend 4.3 s, state 25.3 s)  avg 78.7 blocks/s 1.48 MB/s
+04:20:30 tip 106285  window 286 blocks 102.4 MB (bend 6.8 s, state 17.2 s)  avg 60.9 blocks/s 1.21 MB/s

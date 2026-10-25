@@ -1,0 +1,10 @@
+    70s  height 1800002      0.0 blocks/s    0.00 MB/s  peers 3  requeued 51  fetched 0.5 blocks/s
+    94s  height 1800050      0.5 blocks/s    0.22 MB/s  peers 3  requeued 51  fetched 0.5 blocks/s
+   108s  height 1800053      0.5 blocks/s    0.21 MB/s  peers 3  requeued 54  fetched 0.5 blocks/s
+   121s  height 1800059      0.5 blocks/s    0.22 MB/s  peers 2  requeued 63  fetched 0.6 blocks/s
+   135s  height 1800070      0.5 blocks/s    0.20 MB/s  peers 2  requeued 67  fetched 0.5 blocks/s
+   163s  height 1800091      0.6 blocks/s    0.23 MB/s  peers 2  requeued 72  fetched 0.6 blocks/s
+   186s  height 1800101      0.5 blocks/s    0.23 MB/s  peers 2  requeued 75  fetched 0.5 blocks/s
+   216s  height 1800105      0.5 blocks/s    0.21 MB/s  peers 1  requeued 80  fetched 0.5 blocks/s
+   229s  height 1800112      0.5 blocks/s    0.21 MB/s  peers 1  requeued 80  fetched 0.5 blocks/s
+   244s  height 1800114      0.5 blocks/s    0.21 MB/s  peers 1  requeued 80  fetched 0.5 blocks/s

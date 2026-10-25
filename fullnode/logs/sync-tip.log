@@ -1,0 +1,265 @@
+03:19:45 ASSUMED-STATE MODE from 3522000: not genesis-verified
+03:19:45 sync: state tip 3521999, last checkpoint 3522460, verified headers to 3530563
+03:20:49   1912 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:20:49 tip 3522199  window 200 blocks 7.7 MB (bend 0.6 s, state 0.0 s)  avg 3.1 blocks/s 0.12 MB/s
+03:22:33   1523 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:22:33 tip 3522399  window 200 blocks 6.6 MB (bend 0.4 s, state 0.0 s)  avg 2.4 blocks/s 0.09 MB/s
+03:22:54 ASSUMED-STATE MODE from 3522000: not genesis-verified
+03:22:54 sync: state tip 3522399, last checkpoint 3522460, verified headers to 3530563
+03:23:35   833 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:23:35   anchors: Ironwood 354/354 PASS; SKIPPED (tree builder pending): orchard 4, sapling 15
+03:23:36 FAIL: block 3522461 tx 27e32244c46132c64e0c7c79f1c9e03e9387d490bd602c221fbe36dac337f287: spends de2c1d861e1ca4da192bac215a7513d1da48ea8e8d8e61494f13437d80d7ae3e:0, which is not an unspent output
+03:23:36   window NOT committed; state stays at the last committed tip
+03:25:32 ASSUMED-STATE MODE from 3522000: not genesis-verified
+03:25:32 sync: state tip 3522399, last checkpoint 3522460, verified headers to 3530563
+03:25:33 tip 3522460  window 61 blocks 2.4 MB (bend 0.1 s, state 0.0 s)  avg 108.2 blocks/s 4.31 MB/s
+03:25:35   112 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:25:35   anchors: Ironwood 490/490 PASS; SKIPPED (tree builder pending): orchard 5, sapling 21
+03:25:40   transparent: SKIPPED (component pending) for 579 tx
+03:25:40   sapling: SKIPPED (component pending) for 37 tx
+03:25:40   full validation 3522461..3522660: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 579}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 37}", 'orchard': "PASS {'pass': 491, 'skipped': 0}"}
+03:25:58   840 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:25:58   anchors: Ironwood 490/490 PASS; SKIPPED (tree builder pending): orchard 10, sapling 18
+03:26:01   transparent: SKIPPED (component pending) for 756 tx
+03:26:01   sapling: SKIPPED (component pending) for 36 tx
+03:26:01   full validation 3522661..3522860: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 756}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 36}", 'orchard': "PASS {'pass': 490, 'skipped': 0}"}
+03:26:40   1701 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:26:40   anchors: Ironwood 501/501 PASS; SKIPPED (tree builder pending): orchard 8, sapling 30, sprout 4
+03:26:44   transparent: SKIPPED (component pending) for 683 tx
+03:26:44   sapling: SKIPPED (component pending) for 59 tx
+03:26:44   full validation 3522861..3523060: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 683}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 59}", 'orchard': "PASS {'pass': 503, 'skipped': 0}"}
+03:26:44 tip 3523060  window 200 blocks 6.6 MB (bend 0.4 s, state 0.0 s)  avg 9.2 blocks/s 0.30 MB/s
+03:27:00   548 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:27:00   anchors: Ironwood 607/607 PASS; SKIPPED (tree builder pending): orchard 10, sapling 23
+03:27:05   transparent: SKIPPED (component pending) for 908 tx
+03:27:05   sapling: SKIPPED (component pending) for 35 tx
+03:27:05   full validation 3523061..3523260: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 908}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 35}", 'orchard': "PASS {'pass': 607, 'skipped': 0}"}
+03:27:18   803 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:27:18   anchors: Ironwood 720/720 PASS; SKIPPED (tree builder pending): orchard 16, sapling 16
+03:27:25   transparent: SKIPPED (component pending) for 934 tx
+03:27:25   sapling: SKIPPED (component pending) for 27 tx
+03:27:25   full validation 3523261..3523460: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 934}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 27}", 'orchard': "PASS {'pass': 723, 'skipped': 0}"}
+03:27:25 tip 3523460  window 200 blocks 8.3 MB (bend 0.4 s, state 0.1 s)  avg 9.4 blocks/s 0.32 MB/s
+03:27:40 ASSUMED-STATE MODE from 3522000: not genesis-verified
+03:27:40 sync: state tip 3523460, last checkpoint 3522460, verified headers to 3530563
+03:29:16   910 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:29:16   anchors: Ironwood 535/535 PASS; SKIPPED (tree builder pending): orchard 19, sapling 17
+03:29:20   transparent: SKIPPED (component pending) for 674 tx
+03:29:20   sapling: SKIPPED (component pending) for 34 tx
+03:29:20   full validation 3523461..3523660: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 674}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 34}", 'orchard': "PASS {'pass': 540, 'skipped': 0}"}
+03:29:20 tip 3523660  window 200 blocks 6.3 MB (bend 0.3 s, state 0.0 s)  avg 2.0 blocks/s 0.06 MB/s
+03:29:25   152 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:29:25   anchors: Ironwood 471/471 PASS; SKIPPED (tree builder pending): orchard 14, sapling 9, sprout 4
+03:29:28   transparent: SKIPPED (component pending) for 445 tx
+03:29:28   sapling: SKIPPED (component pending) for 25 tx
+03:29:28   full validation 3523661..3523860: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 445}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 25}", 'orchard': "PASS {'pass': 471, 'skipped': 0}"}
+03:29:44   341 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:29:44   anchors: Ironwood 405/405 PASS; SKIPPED (tree builder pending): orchard 4, sapling 16
+03:29:48   transparent: SKIPPED (component pending) for 588 tx
+03:29:48   sapling: SKIPPED (component pending) for 31 tx
+03:29:48   full validation 3523861..3524060: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 588}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 31}", 'orchard': "PASS {'pass': 406, 'skipped': 0}"}
+03:29:53   299 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:29:53   anchors: Ironwood 349/349 PASS; SKIPPED (tree builder pending): orchard 7, sapling 26
+03:29:56   transparent: SKIPPED (component pending) for 623 tx
+03:29:56   sapling: SKIPPED (component pending) for 45 tx
+03:29:56   full validation 3524061..3524260: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 623}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 45}", 'orchard': "PASS {'pass': 351, 'skipped': 0}"}
+03:29:56 tip 3524260  window 200 blocks 4.6 MB (bend 0.3 s, state 0.0 s)  avg 5.9 blocks/s 0.15 MB/s
+03:30:58   1140 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:30:58   anchors: Ironwood 637/637 PASS; SKIPPED (tree builder pending): orchard 6, sapling 42
+03:31:02   transparent: SKIPPED (component pending) for 1033 tx
+03:31:02   sapling: SKIPPED (component pending) for 62 tx
+03:31:02   full validation 3524261..3524460: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 1033}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 62}", 'orchard': "PASS {'pass': 638, 'skipped': 0}"}
+03:31:02 tip 3524460  window 200 blocks 7.5 MB (bend 0.5 s, state 0.1 s)  avg 4.9 blocks/s 0.14 MB/s
+03:31:31   553 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:31:31   anchors: Ironwood 633/633 PASS; SKIPPED (tree builder pending): orchard 15, sapling 18
+03:31:36   transparent: SKIPPED (component pending) for 1071 tx
+03:31:36   sapling: SKIPPED (component pending) for 38 tx
+03:31:36   full validation 3524461..3524660: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 1071}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 38}", 'orchard': "PASS {'pass': 635, 'skipped': 0}"}
+03:31:36 tip 3524660  window 200 blocks 8.2 MB (bend 0.4 s, state 0.1 s)  avg 5.1 blocks/s 0.16 MB/s
+03:31:50   398 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:31:50   anchors: Ironwood 540/540 PASS; SKIPPED (tree builder pending): orchard 16, sapling 19
+03:31:54   transparent: SKIPPED (component pending) for 810 tx
+03:31:54   sapling: SKIPPED (component pending) for 43 tx
+03:31:54   full validation 3524661..3524860: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 810}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 43}", 'orchard': "PASS {'pass': 545, 'skipped': 0}"}
+03:33:39   2933 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:33:39   anchors: Ironwood 350/350 PASS; SKIPPED (tree builder pending): orchard 11, sapling 21
+03:33:44   transparent: SKIPPED (component pending) for 647 tx
+03:33:44   sapling: SKIPPED (component pending) for 41 tx
+03:33:44   full validation 3524861..3525060: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 647}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 41}", 'orchard': "PASS {'pass': 353, 'skipped': 0}"}
+03:33:44 tip 3525060  window 200 blocks 5.1 MB (bend 0.3 s, state 0.1 s)  avg 4.4 blocks/s 0.13 MB/s
+03:33:56   240 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:33:56   anchors: Ironwood 435/435 PASS; SKIPPED (tree builder pending): orchard 8, sapling 13
+03:34:00   transparent: SKIPPED (component pending) for 729 tx
+03:34:00   sapling: SKIPPED (component pending) for 25 tx
+03:34:00   full validation 3525061..3525260: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 729}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 25}", 'orchard': "PASS {'pass': 437, 'skipped': 0}"}
+03:34:17   651 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:34:17   anchors: Ironwood 482/482 PASS; SKIPPED (tree builder pending): orchard 15, sapling 24
+03:34:20   transparent: SKIPPED (component pending) for 800 tx
+03:34:20   sapling: SKIPPED (component pending) for 41 tx
+03:34:20   full validation 3525261..3525460: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 800}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 41}", 'orchard': "PASS {'pass': 486, 'skipped': 0}"}
+03:34:20 tip 3525460  window 200 blocks 5.8 MB (bend 0.3 s, state 0.0 s)  avg 5.0 blocks/s 0.15 MB/s
+03:34:44   752 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:34:44   anchors: Ironwood 608/608 PASS; SKIPPED (tree builder pending): orchard 18, sapling 38
+03:34:51   transparent: SKIPPED (component pending) for 1128 tx
+03:34:51   sapling: SKIPPED (component pending) for 51 tx
+03:34:51   full validation 3525461..3525660: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 1128}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 51}", 'orchard': "PASS {'pass': 611, 'skipped': 0}"}
+03:34:51 tip 3525660  window 200 blocks 7.5 MB (bend 0.4 s, state 0.1 s)  avg 5.1 blocks/s 0.16 MB/s
+03:35:20   829 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:35:20   anchors: Ironwood 688/688 PASS; SKIPPED (tree builder pending): orchard 13, sapling 20
+03:35:27   transparent: SKIPPED (component pending) for 1175 tx
+03:35:27   sapling: SKIPPED (component pending) for 40 tx
+03:35:27   full validation 3525661..3525860: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 1175}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 40}", 'orchard': "PASS {'pass': 695, 'skipped': 0}"}
+03:35:27 tip 3525860  window 200 blocks 8.3 MB (bend 0.5 s, state 0.1 s)  avg 5.1 blocks/s 0.16 MB/s
+03:35:35   395 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:35:35   anchors: Ironwood 535/535 PASS; SKIPPED (tree builder pending): orchard 6, sapling 17
+03:35:40   transparent: SKIPPED (component pending) for 777 tx
+03:35:40   sapling: SKIPPED (component pending) for 34 tx
+03:35:40   full validation 3525861..3526060: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 777}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 34}", 'orchard': "PASS {'pass': 537, 'skipped': 0}"}
+03:35:49   293 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:35:49   anchors: Ironwood 404/404 PASS; SKIPPED (tree builder pending): orchard 15, sapling 13
+03:35:53   transparent: SKIPPED (component pending) for 687 tx
+03:35:53   sapling: SKIPPED (component pending) for 29 tx
+03:35:53   full validation 3526061..3526260: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 687}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 29}", 'orchard': "PASS {'pass': 405, 'skipped': 0}"}
+03:35:59   254 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:35:59   anchors: Ironwood 425/425 PASS; SKIPPED (tree builder pending): orchard 8, sapling 19
+03:36:03   transparent: SKIPPED (component pending) for 588 tx
+03:36:03   sapling: SKIPPED (component pending) for 37 tx
+03:36:03   full validation 3526261..3526460: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 588}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 37}", 'orchard': "PASS {'pass': 425, 'skipped': 0}"}
+03:36:03 tip 3526460  window 200 blocks 5.2 MB (bend 0.4 s, state 0.0 s)  avg 6.0 blocks/s 0.18 MB/s
+03:36:32   607 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:36:32   anchors: Ironwood 512/512 PASS; SKIPPED (tree builder pending): orchard 8, sapling 23
+03:36:35   transparent: SKIPPED (component pending) for 735 tx
+03:36:35   sapling: SKIPPED (component pending) for 38 tx
+03:36:35   full validation 3526461..3526660: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 735}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 38}", 'orchard': "PASS {'pass': 515, 'skipped': 0}"}
+03:36:35 tip 3526660  window 200 blocks 6.1 MB (bend 0.4 s, state 0.0 s)  avg 6.0 blocks/s 0.18 MB/s
+03:36:50   453 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:36:50   anchors: Ironwood 509/509 PASS; SKIPPED (tree builder pending): orchard 4, sapling 12
+03:36:53   transparent: SKIPPED (component pending) for 701 tx
+03:36:53   sapling: SKIPPED (component pending) for 28 tx
+03:36:53   full validation 3526661..3526860: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 701}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 28}", 'orchard': "PASS {'pass': 510, 'skipped': 0}"}
+03:38:59   1868 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:38:59   anchors: Ironwood 374/374 PASS; SKIPPED (tree builder pending): orchard 4, sapling 16
+03:39:01   transparent: SKIPPED (component pending) for 661 tx
+03:39:01   sapling: SKIPPED (component pending) for 38 tx
+03:39:01   full validation 3526861..3527060: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 661}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 38}", 'orchard': "PASS {'pass': 374, 'skipped': 0}"}
+03:39:01 tip 3527060  window 200 blocks 5.0 MB (bend 0.3 s, state 0.0 s)  avg 5.3 blocks/s 0.16 MB/s
+03:40:10   3775 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:40:10   anchors: Ironwood 375/375 PASS; SKIPPED (tree builder pending): orchard 9, sapling 19
+03:40:14   transparent: SKIPPED (component pending) for 561 tx
+03:40:14   sapling: SKIPPED (component pending) for 44 tx
+03:40:14   full validation 3527061..3527260: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 561}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 44}", 'orchard': "PASS {'pass': 376, 'skipped': 0}"}
+03:40:14 tip 3527260  window 200 blocks 7.3 MB (bend 0.9 s, state 0.1 s)  avg 5.0 blocks/s 0.15 MB/s
+03:40:17   147 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:40:17   anchors: Ironwood 355/355 PASS; SKIPPED (tree builder pending): orchard 7, sapling 7
+03:40:21   transparent: SKIPPED (component pending) for 603 tx
+03:40:21   sapling: SKIPPED (component pending) for 18 tx
+03:40:21   full validation 3527261..3527460: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 603}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 18}", 'orchard': "PASS {'pass': 359, 'skipped': 0}"}
+03:40:33   410 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:40:33   anchors: Ironwood 480/480 PASS; SKIPPED (tree builder pending): orchard 18, sapling 17
+03:40:36   transparent: SKIPPED (component pending) for 658 tx
+03:40:36   sapling: SKIPPED (component pending) for 41 tx
+03:40:36   full validation 3527461..3527660: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 658}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 41}", 'orchard': "PASS {'pass': 482, 'skipped': 0}"}
+03:40:54   549 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:40:54   anchors: Ironwood 545/545 PASS; SKIPPED (tree builder pending): orchard 4, sapling 10
+03:40:58   transparent: SKIPPED (component pending) for 901 tx
+03:40:58   sapling: SKIPPED (component pending) for 22 tx
+03:40:58   full validation 3527661..3527860: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 901}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 22}", 'orchard': "PASS {'pass': 547, 'skipped': 0}"}
+03:40:58 tip 3527860  window 200 blocks 6.8 MB (bend 0.3 s, state 0.1 s)  avg 5.5 blocks/s 0.17 MB/s
+03:41:03   154 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:41:03   anchors: Ironwood 533/533 PASS; SKIPPED (tree builder pending): orchard 8, sapling 11
+03:41:06   transparent: SKIPPED (component pending) for 820 tx
+03:41:06   sapling: SKIPPED (component pending) for 28 tx
+03:41:06   full validation 3527861..3528060: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 820}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 28}", 'orchard': "PASS {'pass': 535, 'skipped': 0}"}
+03:41:31   389 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:41:31   anchors: Ironwood 396/396 PASS; SKIPPED (tree builder pending): orchard 12, sapling 12
+03:41:38   transparent: SKIPPED (component pending) for 584 tx
+03:41:38   sapling: SKIPPED (component pending) for 33 tx
+03:41:38   full validation 3528061..3528260: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 584}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 33}", 'orchard': "PASS {'pass': 400, 'skipped': 0}"}
+03:41:39 tip 3528260  window 200 blocks 5.9 MB (bend 0.3 s, state 0.0 s)  avg 5.7 blocks/s 0.17 MB/s
+03:41:44   136 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:41:44   anchors: Ironwood 268/268 PASS; SKIPPED (tree builder pending): orchard 11, sapling 11
+03:41:46   transparent: SKIPPED (component pending) for 482 tx
+03:41:46   sapling: SKIPPED (component pending) for 28 tx
+03:41:46   full validation 3528261..3528460: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 482}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 28}", 'orchard': "PASS {'pass': 271, 'skipped': 0}"}
+03:41:54   363 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:41:54   anchors: Ironwood 790/790 PASS; SKIPPED (tree builder pending): orchard 13, sapling 13
+03:42:00   transparent: SKIPPED (component pending) for 552 tx
+03:42:00   sapling: SKIPPED (component pending) for 25 tx
+03:42:00   full validation 3528461..3528660: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 552}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 25}", 'orchard': "PASS {'pass': 793, 'skipped': 0}"}
+03:42:19   232 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:42:19   anchors: Ironwood 7219/7219 PASS; SKIPPED (tree builder pending): orchard 9, sapling 9
+03:43:07   transparent: SKIPPED (component pending) for 657 tx
+03:43:07   sapling: SKIPPED (component pending) for 28 tx
+03:43:07   full validation 3528661..3528850: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 657}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 28}", 'orchard': "PASS {'pass': 7222, 'skipped': 0}"}
+03:43:08 tip 3528850  window 190 blocks 100.7 MB (bend 2.7 s, state 0.1 s)  avg 5.8 blocks/s 0.29 MB/s
+03:43:19   212 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:43:19   anchors: Ironwood 5301/5301 PASS; SKIPPED (tree builder pending): orchard 7, sapling 8
+03:43:52   transparent: SKIPPED (component pending) for 433 tx
+03:43:52   sapling: SKIPPED (component pending) for 18 tx
+03:43:52   full validation 3528851..3528999: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 433}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 18}", 'orchard': "PASS {'pass': 5304, 'skipped': 0}"}
+03:43:52 tip 3528999  window 149 blocks 72.3 MB (bend 2.4 s, state 0.1 s)  avg 5.7 blocks/s 0.35 MB/s
+03:44:20   570 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:44:20   anchors: Ironwood 2002/2002 PASS; SKIPPED (tree builder pending): orchard 11, sapling 10
+03:44:33   transparent: SKIPPED (component pending) for 733 tx
+03:44:33   sapling: SKIPPED (component pending) for 26 tx
+03:44:33   full validation 3529000..3529199: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 733}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 26}", 'orchard': "PASS {'pass': 2007, 'skipped': 0}"}
+03:44:33 tip 3529199  window 200 blocks 29.0 MB (bend 1.0 s, state 0.1 s)  avg 5.7 blocks/s 0.36 MB/s
+03:44:45   269 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:44:45   anchors: Ironwood 383/383 PASS; SKIPPED (tree builder pending): orchard 8, sapling 8
+03:44:47   transparent: SKIPPED (component pending) for 699 tx
+03:44:47   sapling: SKIPPED (component pending) for 32 tx
+03:44:47   full validation 3529200..3529399: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 699}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 32}", 'orchard': "PASS {'pass': 387, 'skipped': 0}"}
+03:44:48   48 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:44:48   anchors: Ironwood 361/361 PASS; SKIPPED (tree builder pending): orchard 6, sapling 11
+03:44:50   transparent: SKIPPED (component pending) for 326 tx
+03:44:50   sapling: SKIPPED (component pending) for 27 tx
+03:44:50   full validation 3529400..3529599: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 326}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 27}", 'orchard': "PASS {'pass': 364, 'skipped': 0}"}
+03:44:53   80 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:44:53   anchors: Ironwood 3507/3507 PASS; SKIPPED (tree builder pending): orchard 5, sapling 15
+03:45:14   transparent: SKIPPED (component pending) for 506 tx
+03:45:14   sapling: SKIPPED (component pending) for 32 tx
+03:45:14   full validation 3529600..3529799: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 506}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 32}", 'orchard': "PASS {'pass': 3509, 'skipped': 0}"}
+03:45:14 tip 3529799  window 200 blocks 38.3 MB (bend 1.1 s, state 0.1 s)  avg 6.0 blocks/s 0.40 MB/s
+03:46:39   1012 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:46:39   anchors: Ironwood 460/460 PASS; SKIPPED (tree builder pending): orchard 4, sapling 13
+03:46:42   transparent: SKIPPED (component pending) for 755 tx
+03:46:42   sapling: SKIPPED (component pending) for 31 tx
+03:46:42   full validation 3529800..3529999: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 755}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 31}", 'orchard': "PASS {'pass': 461, 'skipped': 0}"}
+03:46:42 tip 3529999  window 200 blocks 5.5 MB (bend 0.3 s, state 0.0 s)  avg 5.7 blocks/s 0.37 MB/s
+03:48:30   230 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:48:30   anchors: Ironwood 518/518 PASS; SKIPPED (tree builder pending): orchard 7, sapling 15
+03:48:33   transparent: SKIPPED (component pending) for 625 tx
+03:48:33   sapling: SKIPPED (component pending) for 31 tx
+03:48:33   full validation 3530000..3530199: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 625}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 31}", 'orchard': "PASS {'pass': 520, 'skipped': 0}"}
+03:48:33 tip 3530199  window 200 blocks 5.7 MB (bend 0.2 s, state 0.1 s)  avg 5.4 blocks/s 0.34 MB/s
+03:49:12   787 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:49:12   anchors: Ironwood 9602/9602 PASS; SKIPPED (tree builder pending): orchard 10, sapling 14
+03:49:54   transparent: SKIPPED (component pending) for 788 tx
+03:49:54   sapling: SKIPPED (component pending) for 29 tx
+03:49:54   full validation 3530200..3530399: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 788}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 29}", 'orchard': "PASS {'pass': 9604, 'skipped': 0}"}
+03:49:54 tip 3530399  window 200 blocks 89.3 MB (bend 2.7 s, state 0.1 s)  avg 5.2 blocks/s 0.39 MB/s
+03:50:18   451 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+03:50:18 FAIL: block 3530569 tx 61eca70f4a80d40f72d5ee2479667418b63d708d0ce240a65a3ca3a87c421773: Ironwood anchor fbf5bc7960f82e5b is not a root of an earlier block
+03:50:18   window NOT committed; state stays at the last committed tip
+04:14:14 ASSUMED-STATE MODE from 3522000: not genesis-verified
+04:14:14 sync: state tip 3530399, last checkpoint 3522460, verified headers to 3530596
+04:14:15   1 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+04:14:15   anchors: Ironwood 297/297 PASS; SKIPPED (tree builder pending): orchard 15, sapling 7
+04:14:17   transparent: SKIPPED (component pending) for 457 tx
+04:14:17   sapling: SKIPPED (component pending) for 26 tx
+04:14:17   full validation 3530400..3530596: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 457}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 26}", 'orchard': "PASS {'pass': 300, 'skipped': 0}"}
+04:14:17 tip 3530596  window 197 blocks 3.9 MB (bend 0.2 s, state 0.2 s)  avg 61.7 blocks/s 1.24 MB/s
+04:16:59   4 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+04:16:59   anchors: Ironwood 1001/1001 PASS; SKIPPED (tree builder pending): sapling 1
+04:17:04   transparent: SKIPPED (component pending) for 35 tx
+04:17:04   sapling: SKIPPED (component pending) for 1 tx
+04:17:04   full validation 3530597..3530611: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 35}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 1}", 'orchard': "PASS {'pass': 1001, 'skipped': 0}"}
+04:17:04 tip 3530611  window 15 blocks 9.3 MB (bend 0.4 s, state 0.2 s)  avg 1.2 blocks/s 0.08 MB/s
+04:18:58 ASSUMED-STATE MODE from 3522000: not genesis-verified
+04:18:58 sync: state tip 3530611, last checkpoint 3522460, verified headers to 3530617
+04:20:23   3 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+04:20:33   anchors: Ironwood 193/193 PASS; SKIPPED (tree builder pending): sapling 1, ironwood (roots not computed yet) 649
+04:20:37   transparent: SKIPPED (component pending) for 6 tx
+04:20:37   sapling: SKIPPED (component pending) for 1 tx
+04:20:37   full validation 3530612..3530616: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "SKIPPED (component pending) {'pass': 0, 'skipped': 6}", 'sapling': "SKIPPED (component pending) {'pass': 0, 'skipped': 1}", 'orchard': "PASS {'pass': 842, 'skipped': 0}"}
+04:20:37 tip 3530616  window 5 blocks 7.8 MB (bend 0.3 s, state 0.1 s)  avg 0.1 blocks/s 0.08 MB/s
