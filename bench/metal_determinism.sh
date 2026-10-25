@@ -1,5 +1,7 @@
 #!/bin/zsh
-# Repeat stock-Bend (2.0.38) Metal workloads on identical inputs and compare outputs bit for bit.
+# Repeat Metal workloads on identical inputs and compare outputs bit for bit. 1 is the stock
+# 2.0.38 gpu-scan build; since 2026-10-26, eqv4/verify and node/state/tree_main are the
+# always-inline fork builds (gated with bench/metal_inline_gate.sh; old ones kept as *.noinline).
 R=/Users/betterclever/projects/zecathon/bend-zcash
 out=$R/bench/metal_determinism.log; : > $out
 say() { echo "$@" | tee -a $out; }
@@ -16,7 +18,7 @@ for i in $(seq 1 30); do
 done
 say "gpu-scan 262144 outputs x30: match $ok, mismatch $bad, distinct outputs $(sort -u /tmp/zb_scan_variants | wc -l | tr -d ' ')"
 
-# 2. Equihash on GPU (eqv4, stock 2.0.38): 16384 mainnet headers, 20 runs
+# 2. Equihash on GPU (eqv4): 16384 mainnet headers, 20 runs
 cd $R/blake3x/eqv4
 : > /tmp/zb_eq
 for i in $(seq 1 20); do
@@ -25,7 +27,7 @@ done
 say "equihash GPU 16384 headers x20: distinct outputs $(sort -u /tmp/zb_eq | wc -l | tr -d ' ')"
 ./verify $R/node/headers/data/mainnet.bin 16384 4096 12 2>&1 | grep -E 'valid|target|links' | tee -a $out
 
-# 3. Ironwood tree on GPU (node/state tree_main, stock build): 6 roots, 10 runs
+# 3. Ironwood tree on GPU (node/state tree_main): 6 roots, 10 runs
 cd $R/node/state
 : > /tmp/zb_tree
 for i in $(seq 1 10); do

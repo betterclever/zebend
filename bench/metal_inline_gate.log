@@ -1,0 +1,92 @@
+== Mon Oct 26 01:06:30 IST 2026  Apple M5 Max  macOS 27.2  runs 1  binaries *.inl (the new always-inline builds, now installed under the shipped names)
+scan  ./scan_main.inl 262144 outputs x1: hit list MATCH 1/1, distinct outputs 1
+scan  warm scan_ms median 642 (408324 outputs/s); all: 642 ; load avg (1m) 4.74 -> 4.74
+eq    ./verify.inl 16384 headers x1: distinct outputs 1
+eq      last run: equihash valid 16384/16384
+eq      last run: hash <= target 16384/16384
+eq      last run: prev-hash links 16383/16383
+eq      last run: difficulty (nBits == expected) 16356/16356
+eq    sum of batch ms median 791 (20713 headers/s); wall s median 3.121; batch-ms all: 791 ; load avg (1m) 4.74 -> 5.00
+tree  ./tree_main.inl gpu x1: runs with 6/6 roots MATCH 1/1, distinct outputs 1
+tree    last run: height 3428200 size 725: bend root f0b2f0c2bcea6c3b225a206af79f2332eb825c62ad73410315b9fed792df4c3a MATCH (443 ms)
+tree    last run: height 3448142 size 58122: bend root 444015c1cc7091e36f4f67b6853434a92acdf81684bf1d2bb23b8f9fba9cd102 MATCH (716 ms)
+tree    last run: height 3468142 size 131132: bend root a8f52421abe2d6fa0794d453d3f5569003641560882f82aa75854f3374cfe935 MATCH (1529 ms)
+tree    last run: height 3488142 size 398133: bend root c712f3e3358fb21d7093ce11142b312e18c00aa150a94f4afa877a58cb4ee236 MATCH (3388 ms)
+tree    last run: height 3508142 size 693785: bend root a3f94f08455cdb00adf85bc384e011a75536beba396501143f83bca8eb79a115 MATCH (6508 ms)
+tree    last run: height 3528268 size 838662: bend root 5ae9f773375c00b29137094f30cce0f385be3a4a69f3852958101ee69c0db529 MATCH (85775 ms)
+tree  wall s median 98.988; all: 98.988 ; load avg (1m) 5.00 -> 4.88
+== done Mon Oct 26 01:08:16 IST 2026
+== Mon Oct 26 01:08:24 IST 2026  Apple M5 Max  macOS 27.2  runs 2  binaries * (pre-swap: the OLD non-inlined builds, now *.noinline)
+scan  ./scan_main 262144 outputs x2: hit list MATCH 2/2, distinct outputs 1
+scan  warm scan_ms median 324 (809086 outputs/s); all: 311 337 ; load avg (1m) 6.43 -> 6.16
+eq    ./verify 16384 headers x2: distinct outputs 1
+eq      last run: equihash valid 16384/16384
+eq      last run: hash <= target 16384/16384
+eq      last run: prev-hash links 16383/16383
+eq      last run: difficulty (nBits == expected) 16356/16356
+eq    sum of batch ms median 892.5 (18357 headers/s); wall s median 3.2025; batch-ms all: 905 880 ; load avg (1m) 6.16 -> 5.82
+tree  ./tree_main gpu x2: runs with 6/6 roots MATCH 2/2, distinct outputs 1
+tree    last run: height 3428200 size 725: bend root f0b2f0c2bcea6c3b225a206af79f2332eb825c62ad73410315b9fed792df4c3a MATCH (385 ms)
+tree    last run: height 3448142 size 58122: bend root 444015c1cc7091e36f4f67b6853434a92acdf81684bf1d2bb23b8f9fba9cd102 MATCH (837 ms)
+tree    last run: height 3468142 size 131132: bend root a8f52421abe2d6fa0794d453d3f5569003641560882f82aa75854f3374cfe935 MATCH (1467 ms)
+tree    last run: height 3488142 size 398133: bend root c712f3e3358fb21d7093ce11142b312e18c00aa150a94f4afa877a58cb4ee236 MATCH (4074 ms)
+tree    last run: height 3508142 size 693785: bend root a3f94f08455cdb00adf85bc384e011a75536beba396501143f83bca8eb79a115 MATCH (7393 ms)
+tree    last run: height 3528268 size 838662: bend root 5ae9f773375c00b29137094f30cce0f385be3a4a69f3852958101ee69c0db529 MATCH (9819 ms)
+tree  wall s median 24.984; all: 24.930 25.038 ; load avg (1m) 5.82 -> 5.28
+== done Mon Oct 26 01:09:26 IST 2026
+== Mon Oct 26 01:09:26 IST 2026  Apple M5 Max  macOS 27.2  runs 2  binaries *.inl (the new always-inline builds, now installed under the shipped names)
+scan  ./scan_main.inl 262144 outputs x2: hit list MATCH 2/2, distinct outputs 1
+scan  warm scan_ms median 637 (411529 outputs/s); all: 637 637 ; load avg (1m) 5.28 -> 5.10
+eq    ./verify.inl 16384 headers x2: distinct outputs 1
+eq      last run: equihash valid 16384/16384
+eq      last run: hash <= target 16384/16384
+eq      last run: prev-hash links 16383/16383
+eq      last run: difficulty (nBits == expected) 16356/16356
+eq    sum of batch ms median 797.5 (20544 headers/s); wall s median 3.1245; batch-ms all: 790 805 ; load avg (1m) 5.10 -> 4.62
+== done Mon Oct 26 01:09:38 IST 2026
+== Mon Oct 26 01:10:28 IST 2026  Apple M5 Max  macOS 27.2  runs 20  binaries *.inl (the new always-inline builds, now installed under the shipped names)
+scan  ./scan_main.inl 262144 outputs x20: hit list MATCH 20/20, distinct outputs 1
+scan  warm scan_ms median 639 (410241 outputs/s); all: 634 632 633 639 637 642 639 641 638 638 641 640 642 640 637 640 637 639 640 638 ; load avg (1m) 4.37 -> 4.66
+eq    ./verify.inl 16384 headers x20: distinct outputs 1
+eq      last run: equihash valid 16384/16384
+eq      last run: hash <= target 16384/16384
+eq      last run: prev-hash links 16383/16383
+eq      last run: difficulty (nBits == expected) 16356/16356
+eq    sum of batch ms median 785.5 (20858 headers/s); wall s median 3.1245; batch-ms all: 783 793 785 779 780 780 796 785 790 786 781 788 790 788 790 784 791 784 791 782 ; load avg (1m) 4.66 -> 4.78
+tree  ./tree_main.inl gpu x20: runs with 6/6 roots MATCH 20/20, distinct outputs 1
+tree    last run: height 3428200 size 725: bend root f0b2f0c2bcea6c3b225a206af79f2332eb825c62ad73410315b9fed792df4c3a MATCH (459 ms)
+tree    last run: height 3448142 size 58122: bend root 444015c1cc7091e36f4f67b6853434a92acdf81684bf1d2bb23b8f9fba9cd102 MATCH (720 ms)
+tree    last run: height 3468142 size 131132: bend root a8f52421abe2d6fa0794d453d3f5569003641560882f82aa75854f3374cfe935 MATCH (1554 ms)
+tree    last run: height 3488142 size 398133: bend root c712f3e3358fb21d7093ce11142b312e18c00aa150a94f4afa877a58cb4ee236 MATCH (3448 ms)
+tree    last run: height 3508142 size 693785: bend root a3f94f08455cdb00adf85bc384e011a75536beba396501143f83bca8eb79a115 MATCH (6598 ms)
+tree    last run: height 3528268 size 838662: bend root 5ae9f773375c00b29137094f30cce0f385be3a4a69f3852958101ee69c0db529 MATCH (7387 ms)
+tree  wall s median 20.7215; all: 19.640 19.653 20.707 20.713 20.717 20.726 20.698 19.694 20.720 20.706 20.773 20.723 20.737 21.800 21.876 101.165 20.713 20.735 20.780 20.733 ; load avg (1m) 4.78 -> 5.44
+== done Mon Oct 26 01:20:49 IST 2026
+== Mon Oct 26 01:28:42 IST 2026  Apple M5 Max  macOS 27.2  runs 6  binaries * (pre-swap: the OLD non-inlined builds, now *.noinline)
+scan  ./scan_main 262144 outputs x6: hit list MATCH 6/6, distinct outputs 1
+scan  warm scan_ms median 273.5 (958479 outputs/s); all: 274 275 273 272 273 275 ; load avg (1m) 4.16 -> 4.36
+eq    ./verify 16384 headers x6: distinct outputs 1
+eq      last run: equihash valid 16384/16384
+eq      last run: hash <= target 16384/16384
+eq      last run: prev-hash links 16383/16383
+eq      last run: difficulty (nBits == expected) 16356/16356
+eq    sum of batch ms median 852 (19230 headers/s); wall s median 3.122; batch-ms all: 853 852 846 853 843 852 ; load avg (1m) 4.36 -> 4.44
+tree  ./tree_main gpu x6: runs with 6/6 roots MATCH 6/6, distinct outputs 1
+tree    last run: height 3428200 size 725: bend root f0b2f0c2bcea6c3b225a206af79f2332eb825c62ad73410315b9fed792df4c3a MATCH (366 ms)
+tree    last run: height 3448142 size 58122: bend root 444015c1cc7091e36f4f67b6853434a92acdf81684bf1d2bb23b8f9fba9cd102 MATCH (766 ms)
+tree    last run: height 3468142 size 131132: bend root a8f52421abe2d6fa0794d453d3f5569003641560882f82aa75854f3374cfe935 MATCH (1408 ms)
+tree    last run: height 3488142 size 398133: bend root c712f3e3358fb21d7093ce11142b312e18c00aa150a94f4afa877a58cb4ee236 MATCH (5342 ms)
+tree    last run: height 3508142 size 693785: bend root a3f94f08455cdb00adf85bc384e011a75536beba396501143f83bca8eb79a115 MATCH (9287 ms)
+tree    last run: height 3528268 size 838662: bend root 5ae9f773375c00b29137094f30cce0f385be3a4a69f3852958101ee69c0db529 MATCH (11291 ms)
+tree  wall s median 25.437; all: 22.872 22.842 23.883 26.991 28.034 29.127 ; load avg (1m) 4.44 -> 3.89
+== done Mon Oct 26 01:31:47 IST 2026
+== Mon Oct 26 01:32:36 IST 2026  Apple M5 Max  macOS 27.2  runs 10  binaries *.noinline
+tree  ./tree_main.noinline gpu x10: runs with 6/6 roots MATCH 10/10, distinct outputs 1
+tree    last run: height 3428200 size 725: bend root f0b2f0c2bcea6c3b225a206af79f2332eb825c62ad73410315b9fed792df4c3a MATCH (367 ms)
+tree    last run: height 3448142 size 58122: bend root 444015c1cc7091e36f4f67b6853434a92acdf81684bf1d2bb23b8f9fba9cd102 MATCH (772 ms)
+tree    last run: height 3468142 size 131132: bend root a8f52421abe2d6fa0794d453d3f5569003641560882f82aa75854f3374cfe935 MATCH (1373 ms)
+tree    last run: height 3488142 size 398133: bend root c712f3e3358fb21d7093ce11142b312e18c00aa150a94f4afa877a58cb4ee236 MATCH (3806 ms)
+tree    last run: height 3508142 size 693785: bend root a3f94f08455cdb00adf85bc384e011a75536beba396501143f83bca8eb79a115 MATCH (8034 ms)
+tree    last run: height 3528268 size 838662: bend root 5ae9f773375c00b29137094f30cce0f385be3a4a69f3852958101ee69c0db529 MATCH (9763 ms)
+tree  wall s median 25.44; all: 26.154 23.872 23.902 23.925 24.920 28.405 27.030 26.077 25.960 24.912 ; load avg (1m) 3.59 -> 3.84
+== done Mon Oct 26 01:36:51 IST 2026
