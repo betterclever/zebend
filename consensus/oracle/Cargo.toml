@@ -1,0 +1,22 @@
+[package]
+name = "consensus-oracle"
+version = "0.1.0"
+edition = "2021"
+description = "Ground truth for Zebend consensus rules: Orchard/Ironwood leaves, per-block root history, tree states, coinbase outputs"
+
+[dependencies]
+orchard = { version = "0.16", default-features = false, features = ["std"] }
+sinsemilla = "0.2"
+pasta_curves = "0.6"
+ff = "0.14"
+group = "0.14"
+incrementalmerkletree = { version = "0.9", features = ["legacy-api"] }
+tonic = { version = "0.14", features = ["tls-ring", "tls-webpki-roots"] }
+tonic-prost = "0.14"
+prost = "0.14"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+hex = "0.4"
+anyhow = "1"
+
+[profile.release]
+debug = 1
