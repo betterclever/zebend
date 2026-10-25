@@ -1,0 +1,286 @@
+zebend follow: state tip 3528278 00000000004979ad…, 838,692 Ironwood nullifiers, 63,764 known Ironwood roots
+  peer 136.115.98.175 /Zebra:7.0.0/
+  3528279  0000000000183e71  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528280  00000000002500e4  txs   7  shielded  2  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments MATCH    sigs PASS  anchors 2/2  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 2 tx]
+  3528281  000000000047673b  txs   3  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: 2 v4 tx (transparent/Sapling)]
+  3528282  00000000000cb5a6  txs  15  shielded  7  ironwood actions  18  orchard actions  3  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 6/6  root MATCH  [not checked: 3 v4 tx (transparent/Sapling), transparent inputs of 5 tx, Orchard anchors+nullifiers]
+  3528283  00000000000a6849  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528284  00000000001ecd6a  txs   2  shielded  1  ironwood actions   3  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH
+  3528285  000000000041b8a8  txs   3  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528286  0000000000059d22  txs   4  shielded  1  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 2 tx]
+  3528287  000000000068a98b  txs   9  shielded  4  ironwood actions   8  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 4/4  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 2 tx]
+  3528288  00000000002e2755  txs   4  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528289  000000000073ae78  txs   5  shielded  1  ironwood actions   0  orchard actions 16  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 1 tx, Orchard anchors+nullifiers]
+  3528290  00000000004959a1  txs   8  shielded  3  ironwood actions   5  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 3/3  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 5 tx]
+  3528291  0000000000509e49  txs   9  shielded  4  ironwood actions   7  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 4/4  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 3 tx]
+  3528292  0000000000761905  txs   2  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: 1 v4 tx (transparent/Sapling)]
+  3528293  000000000035f25b  txs   2  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: transparent inputs of 1 tx]
+  3528294  000000000007c580  txs   2  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: 1 v4 tx (transparent/Sapling)]
+  3528295  0000000000232763  txs   6  shielded  3  ironwood actions  12  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 3/3  root MATCH  [not checked: transparent inputs of 2 tx]
+  3528296  0000000000732c9f  txs   9  shielded  3  ironwood actions  10  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 3/3  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 3 tx]
+  3528297  000000000012e2c8  txs   4  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528298  0000000000213f48  txs   2  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: transparent inputs of 1 tx]
+  3528299  00000000003306f7  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528300  000000000039a1f3  txs  11  shielded  5  ironwood actions  10  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments MATCH    sigs PASS  anchors 5/5  root MATCH  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 7 tx]
+  3528301  000000000057d6a4  txs   5  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528302  00000000004f4d79  txs  11  shielded  4  ironwood actions   9  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 4/4  root MATCH  [not checked: 5 v4 tx (transparent/Sapling), transparent inputs of 2 tx]
+  3528303  00000000000a6f0d  txs   9  shielded  5  ironwood actions  10  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 5/5  root MATCH  [not checked: 3 v4 tx (transparent/Sapling), transparent inputs of 2 tx]
+  batch 3528279..3528303: 25 blocks, 45 Halo 2 bundles, 104 nullifiers, 104 commitments in 89.9 s (headers 0.03 s, Halo 2 0.06 s, nullifiers 6.72 s, tree 0.08 s)
+  transport: ConnectionResetError: [Errno 54] Connection reset by peer; reconnecting to another peer
+  peer 34.80.219.125 /Zebra:7.0.0/
+=== restart ===
+zebend follow: state tip 3528303 00000000000a6f0d…, 838,796 Ironwood nullifiers, 63,778 known Ironwood roots
+  peer 136.115.98.175 /Zebra:7.0.0/
+  3528304  0000000000345652  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528305  00000000007c9767  txs   9  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 5 v4 tx (transparent/Sapling), transparent inputs of 2 tx]
+  3528306  000000000008bb81  txs   7  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 4 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528307  00000000002ea2dd  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528308  0000000000202d1b  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528309  000000000046d379  txs   6  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 3 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528310  00000000000e971a  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528311  00000000000b4966  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528312  00000000004dd072  txs  12  shielded  1  ironwood actions   3  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 3 v4 tx (transparent/Sapling), transparent inputs of 7 tx]
+  3528313  0000000000106c40  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528314  00000000001562bd  txs   4  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 2 tx]
+  3528315  00000000003ffdf3  txs   6  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 3 tx]
+  3528316  00000000006f8cb1  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528317  000000000002d22f  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528318  0000000000394cd1  txs   2  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: transparent inputs of 1 tx]
+  3528319  00000000005047de  txs   5  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528320  00000000002b7049  txs   2  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments MATCH    sigs PASS  anchors 0/0  root unchanged  [not checked: transparent inputs of 1 tx]
+  3528321  00000000006efdac  txs  10  shielded  4  ironwood actions  11  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 4/4  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 4 tx]
+  3528322  000000000011a29a  txs   7  shielded  2  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 4 tx]
+  3528323  00000000003009b2  txs   4  shielded  1  ironwood actions   5  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528324  000000000024f3b0  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528325  000000000002776f  txs   8  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: 4 v4 tx (transparent/Sapling), transparent inputs of 3 tx]
+  3528326  0000000000135de9  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528327  00000000006c69e9  txs   3  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: transparent inputs of 1 tx]
+  3528328  00000000005e732b  txs   5  shielded  2  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 2 tx]
+  batch 3528304..3528328: 25 blocks, 16 Halo 2 bundles, 39 nullifiers, 39 commitments in 36.8 s (headers 0.02 s, Halo 2 0.04 s, nullifiers 5.05 s, tree 0.05 s)
+  3528329  00000000000c5fa3  txs  11  shielded  3  ironwood actions   6  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 3/3  root MATCH  [not checked: 5 v4 tx (transparent/Sapling), transparent inputs of 3 tx]
+  3528330  0000000000621079  txs   3  shielded  2  ironwood actions   3  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: transparent inputs of 1 tx]
+  3528331  000000000001cd67  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528332  00000000001f81fd  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528333  0000000000393f2c  txs   2  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: transparent inputs of 1 tx]
+  3528334  00000000002757a7  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528335  000000000003f29f  txs   2  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH
+  3528336  000000000018a107  txs  17  shielded 10  ironwood actions  18  orchard actions  3  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 9/9  root MATCH  [not checked: 4 v4 tx (transparent/Sapling), transparent inputs of 6 tx, Orchard anchors+nullifiers]
+  3528337  000000000052d8cf  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528338  0000000000158ca7  txs  10  shielded  3  ironwood actions   8  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 3/3  root MATCH  [not checked: 4 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528339  000000000014908d  txs   9  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 3 v4 tx (transparent/Sapling), transparent inputs of 4 tx]
+  3528340  0000000000067174  txs   4  shielded  2  ironwood actions   1  orchard actions  2  PoW/diff PASS  merkle MATCH  commitments MATCH    sigs PASS  anchors 1/1  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), Orchard anchors+nullifiers]
+  3528341  00000000004931e7  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528342  000000000056033d  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528343  000000000028b82e  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528344  000000000037ee02  txs   8  shielded  2  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 4 tx]
+  3528345  0000000000145df0  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528346  0000000000018ef9  txs   4  shielded  2  ironwood actions   7  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: transparent inputs of 1 tx]
+  3528347  0000000000133086  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528348  0000000000174d85  txs   2  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: transparent inputs of 1 tx]
+  3528349  00000000001ce171  txs   7  shielded  2  ironwood actions   3  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 4 tx]
+  3528350  00000000001a25cf  txs   8  shielded  4  ironwood actions   5  orchard actions  2  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 3/3  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 3 tx, Orchard anchors+nullifiers]
+  3528351  00000000000dcd53  txs   9  shielded  3  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 3/3  root MATCH  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 6 tx]
+  3528352  0000000000389b79  txs   3  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 1 v4 tx (transparent/Sapling)]
+  3528353  0000000000407b4b  txs   7  shielded  2  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 2 tx]
+  batch 3528329..3528353: 25 blocks, 38 Halo 2 bundles, 69 nullifiers, 69 commitments in 50.2 s (headers 0.02 s, Halo 2 0.06 s, nullifiers 6.75 s, tree 0.07 s)
+  transport: ConnectionError: peer closed; reconnecting to another peer
+  peer 34.80.219.125 /Zebra:7.0.0/
+  3528354  0000000000467730  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528355  0000000000165411  txs   6  shielded  1  ironwood actions   3  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 3 tx]
+  3528356  00000000001467e0  txs   8  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 3 v4 tx (transparent/Sapling), transparent inputs of 3 tx]
+  3528357  00000000001ff1d1  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528358  0000000000046b15  txs   9  shielded  2  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 3 v4 tx (transparent/Sapling), transparent inputs of 4 tx]
+  3528359  000000000043c954  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528360  000000000058751d  txs  10  shielded  6  ironwood actions   8  orchard actions  2  PoW/diff PASS  merkle MATCH  commitments MATCH    sigs PASS  anchors 5/5  root MATCH  [not checked: 4 v4 tx (transparent/Sapling), transparent inputs of 1 tx, Orchard anchors+nullifiers]
+  3528361  000000000022e3e2  txs   4  shielded  2  ironwood actions   6  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 1 v4 tx (transparent/Sapling)]
+  3528362  000000000047917f  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528363  00000000003a2bfc  txs  14  shielded  2  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 8 v4 tx (transparent/Sapling), transparent inputs of 3 tx]
+  3528364  0000000000424ac6  txs   3  shielded  2  ironwood actions   3  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: transparent inputs of 1 tx]
+  3528365  000000000007fec4  txs   6  shielded  2  ironwood actions   6  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 2 tx]
+  3528366  000000000059cb59  txs   3  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: transparent inputs of 2 tx]
+  3528367  00000000003bed6e  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528368  00000000004357ad  txs   5  shielded  2  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 2 v4 tx (transparent/Sapling)]
+  3528369  000000000062ff5f  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528370  00000000001c9f02  txs  16  shielded  8  ironwood actions  18  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 8/8  root MATCH  [not checked: 4 v4 tx (transparent/Sapling), transparent inputs of 7 tx]
+  3528371  000000000040190c  txs   2  shielded  1  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: transparent inputs of 1 tx]
+  3528372  00000000004d74ce  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528373  00000000002bf2ed  txs   6  shielded  2  ironwood actions   5  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 3 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528374  0000000000340801  txs   8  shielded  4  ironwood actions   9  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 4/4  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528375  00000000006bc801  txs   2  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: transparent inputs of 1 tx]
+  3528376  00000000004ef6ac  txs   3  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: 2 v4 tx (transparent/Sapling)]
+  3528377  000000000031b64a  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528378  0000000000304ce1  txs  10  shielded  7  ironwood actions  14  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 7/7  root MATCH  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 3 tx]
+  batch 3528354..3528378: 25 blocks, 42 Halo 2 bundles, 90 nullifiers, 90 commitments in 63.6 s (headers 0.01 s, Halo 2 0.04 s, nullifiers 5.66 s, tree 0.06 s)
+  3528379  000000000005f1ce  txs  10  shielded  5  ironwood actions   9  orchard actions  2  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 4/4  root MATCH  [not checked: 3 v4 tx (transparent/Sapling), transparent inputs of 3 tx, Orchard anchors+nullifiers]
+  3528380  000000000036c7c4  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments MATCH    sigs PASS  anchors 0/0  root unchanged
+  3528381  0000000000668f59  txs   4  shielded  2  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 1 v4 tx (transparent/Sapling)]
+  3528382  000000000024d162  txs   3  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 1 v4 tx (transparent/Sapling)]
+  3528383  000000000046caf3  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528384  0000000000445141  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528385  000000000058eb09  txs  10  shielded  5  ironwood actions   8  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 5/5  root MATCH  [not checked: 3 v4 tx (transparent/Sapling), transparent inputs of 4 tx]
+  3528386  00000000002c2333  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528387  00000000003c587b  txs   3  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528388  00000000004767a2  txs   9  shielded  3  ironwood actions   5  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 3/3  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 5 tx]
+  3528389  0000000000572536  txs   6  shielded  3  ironwood actions  11  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 3/3  root MATCH  [not checked: transparent inputs of 3 tx]
+  3528390  00000000005dd799  txs   7  shielded  5  ironwood actions  11  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 5/5  root MATCH  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 2 tx]
+  3528391  000000000070779a  txs   8  shielded  4  ironwood actions   7  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 4/4  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 2 tx]
+  3528392  000000000078ddba  txs  11  shielded  5  ironwood actions   5  orchard actions  2  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 4/4  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 5 tx, Orchard anchors+nullifiers]
+  3528393  00000000001c555a  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528394  0000000000318607  txs   4  shielded  1  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: transparent inputs of 2 tx]
+  3528395  00000000004f51ae  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528396  000000000012a671  txs  12  shielded  5  ironwood actions   9  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 5/5  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 6 tx]
+  3528397  00000000005c44c9  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528398  00000000000e2a5b  txs   2  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: transparent inputs of 1 tx]
+  3528399  00000000007aef13  txs   7  shielded  4  ironwood actions   8  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 4/4  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528400  00000000003ac297  txs   5  shielded  3  ironwood actions   6  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments MATCH    sigs PASS  anchors 3/3  root MATCH  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528401  000000000081dbcd  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528402  00000000004d5310  txs   8  shielded  2  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 3 tx]
+  3528403  0000000000803fbe  txs   5  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: transparent inputs of 4 tx]
+  batch 3528379..3528403: 25 blocks, 48 Halo 2 bundles, 93 nullifiers, 93 commitments in 110.7 s (headers 0.01 s, Halo 2 0.05 s, nullifiers 5.85 s, tree 0.08 s)
+  transport: ConnectionError: peer closed; reconnecting to another peer
+  peer 54.39.196.12 /Zakura:1.7.0/
+  transport: ConnectionError: peer closed; reconnecting to another peer
+  peer 38.190.136.76 /Zakura:1.7.0/
+  3528404  0000000000715552  txs  12  shielded  5  ironwood actions  15  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 5/5  root MATCH  [not checked: 3 v4 tx (transparent/Sapling), transparent inputs of 3 tx]
+  3528405  000000000041ea0a  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528406  0000000000773972  txs   8  shielded  2  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 4 tx]
+  3528407  0000000000077f86  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528408  0000000000459e74  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528409  000000000037bd35  txs  12  shielded  6  ironwood actions  18  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 6/6  root MATCH  [not checked: 3 v4 tx (transparent/Sapling), transparent inputs of 2 tx]
+  3528410  00000000004c2ff4  txs  11  shielded  3  ironwood actions  10  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 3/3  root MATCH  [not checked: 5 v4 tx (transparent/Sapling), transparent inputs of 4 tx]
+  3528411  0000000000678306  txs   8  shielded  3  ironwood actions   8  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 3/3  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 3 tx]
+  3528412  000000000010c659  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528413  00000000003b84e7  txs   5  shielded  4  ironwood actions  10  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 4/4  root MATCH
+  3528414  00000000000c1e55  txs   3  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528415  000000000056910c  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528416  00000000001e800b  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528417  00000000007f7631  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528418  00000000007c492b  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528419  00000000003e3b1a  txs  17  shielded  3  ironwood actions   6  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 3/3  root MATCH  [not checked: 6 v4 tx (transparent/Sapling), transparent inputs of 8 tx]
+  3528420  000000000082a23c  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments MATCH    sigs PASS  anchors 0/0  root unchanged
+  3528421  000000000092c3f0  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528422  00000000004a4c45  txs   6  shielded  2  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528423  000000000045e897  txs   2  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH
+  3528424  00000000002942d0  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528425  00000000004a2787  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528426  00000000005a830a  txs  11  shielded  2  ironwood actions   8  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 5 v4 tx (transparent/Sapling), transparent inputs of 3 tx]
+  3528427  0000000000114b11  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528428  00000000002df349  txs  14  shielded  6  ironwood actions  18  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 6/6  root MATCH  [not checked: 3 v4 tx (transparent/Sapling), transparent inputs of 6 tx]
+  batch 3528404..3528428: 25 blocks, 37 Halo 2 bundles, 103 nullifiers, 103 commitments in 48.5 s (headers 0.01 s, Halo 2 0.04 s, nullifiers 6.31 s, tree 0.10 s)
+  3528429  000000000083cfdd  txs   8  shielded  5  ironwood actions  10  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 5/5  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 4 tx]
+  3528430  000000000036a146  txs   8  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 4 v4 tx (transparent/Sapling), transparent inputs of 2 tx]
+  3528431  000000000008383b  txs   4  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528432  00000000008850bd  txs   6  shielded  2  ironwood actions   4  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 2/2  root MATCH  [not checked: 3 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528433  000000000083a357  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528434  0000000000132b6a  txs   2  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: 1 v4 tx (transparent/Sapling)]
+  3528435  0000000000879d21  txs  11  shielded  4  ironwood actions  10  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 4/4  root MATCH  [not checked: 3 v4 tx (transparent/Sapling), transparent inputs of 5 tx]
+  3528436  000000000026837f  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528437  000000000068a8c3  txs   6  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 2 tx]
+  3528438  000000000047d626  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528439  00000000004737d9  txs   3  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528440  000000000093b24a  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments MATCH    sigs PASS  anchors 0/0  root unchanged
+  3528441  00000000001698ca  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528442  00000000006b89ef  txs   3  shielded  1  ironwood actions   1  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: transparent inputs of 2 tx]
+  3528443  000000000088c1c4  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528444  0000000000323fb6  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528445  000000000069cdfd  txs   3  shielded  1  ironwood actions   1  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: transparent inputs of 2 tx]
+  3528446  0000000000810e3f  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528447  00000000007484e3  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528448  000000000031828e  txs   3  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: transparent inputs of 2 tx]
+  3528449  000000000038d22f  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528450  0000000000764305  txs   6  shielded  3  ironwood actions   6  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 3/3  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528451  00000000000fb0ac  txs   2  shielded  1  ironwood actions   1  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: transparent inputs of 1 tx]
+  3528452  00000000001b6994  txs   3  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: transparent inputs of 1 tx]
+  3528453  000000000037845a  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  batch 3528429..3528453: 25 blocks, 21 Halo 2 bundles, 41 nullifiers, 41 commitments in 39.4 s (headers 0.01 s, Halo 2 0.03 s, nullifiers 3.99 s, tree 0.05 s)
+  transport: ConnectionError: peer closed; reconnecting to another peer
+  peer 216.230.225.43: ConnectionResetError
+  peer 188.172.229.195: ConnectionResetError
+  peer 151.236.222.234: ConnectionResetError
+  peer 167.99.42.60: ConnectionResetError
+  peer 207.244.242.7: ConnectionResetError
+  peer 64.227.44.93: ConnectionResetError
+  peer 45.158.39.203: ConnectionResetError
+  peer 34.73.119.93: ConnectionResetError
+  peer 37.27.61.34: ConnectionError
+  peer 216.230.225.42: ConnectionError
+  peer 51.178.97.131: ConnectionResetError
+  peer 159.203.113.196: ConnectionResetError
+  peer 172.104.149.87: ConnectionResetError
+  peer 45.32.78.86: ConnectionResetError
+  peer 54.37.245.148: ConnectionResetError
+  peer 5.227.60.63: ConnectionResetError
+  peer 142.132.216.52: ConnectionResetError
+  peer 35.196.173.72: ConnectionResetError
+  peer 18.163.11.135: ConnectionResetError
+  peer 3.84.80.62: ConnectionResetError
+  peer 162.156.217.154: ConnectionError
+  peer 34.139.49.200: ConnectionResetError
+  peer 188.165.37.58 /Zebra:7.0.0/
+  3528454  00000000003ee0c2  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528455  00000000000c7389  txs   6  shielded  4  ironwood actions   7  orchard actions  2  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 3/3  root MATCH  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 3 tx, Orchard anchors+nullifiers]
+  3528456  000000000075cd1e  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528457  000000000081fd7b  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528458  00000000007d4ad9  txs   4  shielded  1  ironwood actions   2  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 1/1  root MATCH  [not checked: 1 v4 tx (transparent/Sapling), transparent inputs of 1 tx]
+  3528459  0000000000412944  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  3528460  00000000007875df  txs   3  shielded  1  ironwood actions   7  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments MATCH    sigs PASS  anchors 1/1  root MATCH
+  3528461  00000000002749e8  txs   2  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged  [not checked: 1 v4 tx (transparent/Sapling)]
+  3528462  0000000000311f13  txs   6  shielded  3  ironwood actions   5  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 3/3  root MATCH  [not checked: 2 v4 tx (transparent/Sapling), transparent inputs of 2 tx]
+  3528463  000000000002ae38  txs   1  shielded  0  ironwood actions   0  orchard actions  0  PoW/diff PASS  merkle MATCH  commitments SKIPPED  sigs PASS  anchors 0/0  root unchanged
+  batch 3528454..3528463: 10 blocks, 9 Halo 2 bundles, 21 nullifiers, 21 commitments in 38.5 s (headers 0.01 s, Halo 2 0.02 s, nullifiers 3.47 s, tree 0.03 s)
+  transport: ConnectionError: peer closed; reconnecting to another peer
+  peer 34.73.119.93: ConnectionResetError
+  peer 188.172.229.195: ConnectionResetError
+  peer 18.163.11.135: ConnectionResetError
+  peer 3.84.80.62: ConnectionResetError
+  peer 162.156.217.154: ConnectionResetError
+  peer 34.139.49.200: ConnectionResetError
+  peer 88.99.167.81: ConnectionResetError
+  peer 151.236.222.234: ConnectionResetError
+  peer 167.99.42.60: ConnectionResetError
+  peer 207.244.242.7: ConnectionResetError
+  peer 64.227.44.93: ConnectionResetError
+  peer 45.158.39.203: ConnectionResetError
+  peer 37.27.61.34: ConnectionResetError
+  peer 216.230.225.42: ConnectionError
+  peer 172.104.149.87: ConnectionError
+  peer 216.230.225.43: ConnectionResetError
+  peer 45.32.78.86: ConnectionResetError
+  peer 54.37.245.148: ConnectionResetError
+  peer 5.227.60.63: ConnectionResetError
+  peer 142.132.216.52: ConnectionResetError
+  peer 35.196.173.72: ConnectionResetError
+  peer 159.203.113.196: ConnectionResetError
+  peer 51.178.97.131: ConnectionResetError
+  peer 38.190.136.76: ConnectionResetError
+  peer 188.165.37.58 /Zebra:7.0.0/
+  transport: IndexError: index out of range; reconnecting to another peer
+  peer 216.230.225.43: ConnectionError
+  peer 188.172.229.195: ConnectionResetError
+  peer 151.236.222.234: ConnectionResetError
+  peer 167.99.42.60: ConnectionError
+  peer 207.244.242.7: ConnectionResetError
+  peer 64.227.44.93: ConnectionResetError
+  peer 45.158.39.203: ConnectionResetError
+  peer 34.73.119.93: ConnectionResetError
+  peer 37.27.61.34: ConnectionResetError
+  peer 216.230.225.42: ConnectionResetError
+  peer 51.178.97.131 /Zakura:1.7.0/
+  transport: IndexError: index out of range; reconnecting to another peer
+  peer 34.73.119.93: ConnectionResetError
+  peer 188.172.229.195: ConnectionError
+  peer 162.156.217.154: ConnectionResetError
+  peer 34.139.49.200: ConnectionResetError
+  peer 88.99.167.81: ConnectionResetError
+  peer 151.236.222.234: ConnectionResetError
+  peer 167.99.42.60: ConnectionResetError
+  peer 207.244.242.7: ConnectionResetError
+  peer 64.227.44.93: ConnectionResetError
+  peer 45.158.39.203: ConnectionResetError
+  peer 37.27.61.34: ConnectionResetError
+  peer 216.230.225.42: ConnectionError
+  peer 159.203.113.196: ConnectionResetError
+  peer 172.104.149.87: ConnectionResetError
+  peer 216.230.225.43: ConnectionError
+  peer 45.32.78.86: ConnectionResetError
+  peer 38.190.136.76 /Zakura:1.7.0/
