@@ -1,0 +1,16 @@
+[package]
+name = "harden-oracle"
+version = "0.1.0"
+edition = "2021"
+description = "Differential fuzzing oracle: generates parser test cases and records the official Zcash crates' verdicts"
+
+[dependencies]
+zcash_primitives = { version = "0.31", default-features = false, features = ["std"] }
+zcash_protocol = "0.11"
+zcash_encoding = "0.5"
+sha2 = "0.10"
+hex = "0.4"
+anyhow = "1"
+
+[profile.release]
+opt-level = 3
