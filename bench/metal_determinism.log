@@ -1,0 +1,9 @@
+== Sun Oct 25 22:08:13 IST 2026  Apple M5 Max  macOS 27.2
+gpu-scan 262144 outputs x30: match 30, mismatch 0, distinct outputs 1
+equihash GPU 16384 headers x20: distinct outputs 1
+equihash valid 16384/16384
+hash <= target 16384/16384
+prev-hash links 16383/16383
+ironwood tree GPU x10: distinct outputs 1
+roots MATCH in last run: 6/6
+== done Sun Oct 25 22:20:59 IST 2026
