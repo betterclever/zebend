@@ -3,8 +3,15 @@
 Round 2 of `gpu-scan`: the same wallet filter (per compact output: decompress `epk`,
 `S = [ivk]·epk`, `K = BLAKE2b-256("Zcash_OrchardKDF", repr(S) ‖ epk)`, ChaCha20 block 1,
 lead byte `== 0x03`), rebuilt on field3's 64-bit-limb fields with the key prepared once.
-**On the M5 Max GPU it scans ~1.2 million outputs/s, about 3.3× orchard's own batch
-trial decryption on all 18 CPU cores. On the CPU, orchard is still ~2× faster.**
+**Current build (constant-time key handling, merged from `harden/scan_ct`): ~892k
+outputs/s on the M5 Max GPU, about 2.6× orchard's own batch trial decryption on all 18 CPU
+cores (~346k/s); 173k/s on 18 threads and 12.3k/s on 1 thread. On the CPU, orchard is still
+~2× faster.**
+
+> **Correction.** The tables below were measured on the earlier variable-time build
+> (~1.2M outputs/s on Metal). That build's GPU program gives a MISMATCH after a fresh Metal
+> compile; its matching runs used an older cached GPU build. Do not quote those GPU numbers.
+> The constant-time build matches orchard's hit lists on 1 thread, 18 threads and Metal.
 
 ## What changed (cumulative)
 
@@ -96,10 +103,12 @@ through non-tail list walks); making those walks tail-recursive fixed every dept
 
 ## Caveats
 
-- **Not constant-time in the key.** The ladder looks up table entries by walking a list to
-  the digit, so timing depends on ivk's digits (the same sequence for every output).
-  gpu-scan used constant-time masked selects. Fine for a wallet scanning on its own device;
-  a shared or remote prover would want masked selects (slower).
+- **Constant time in the key** (merged from harden/scan_ct). Every ivk-dependent table
+  lookup reads all 16 entries through masked selects, and the GLV signs are applied by
+  masked select, so the work per output does not depend on ivk. The earlier digit-indexed
+  lookups were measurably key-dependent (~1.5%); the cost of the fix is in
+  harden/README.md (−3% 1T, −6% 18T, −20% Metal at the time of measurement). The
+  throughput tables above were measured before this change.
 - The variable-time square root is used only on `epk`, which is public.
 - Built with the forked Bend (`../../bend-fork`, branch `u64-rot`, which includes
   `U32.mac64`), via `./build.sh`.

@@ -1,3 +1,7 @@
+# Constant time in the secret ivk (merged from harden/scan_ct): every ivk-dependent table
+# lookup reads all 16 entries through masked selects, and the GLV signs are applied by masked
+# select of y and -y, so the work per output does not depend on ivk. Marked "CT:".
+#
 # Ironwood trial decryption, round 2: the gpu-scan filter on field3's 64-bit-limb fields
 # with the wallet key prepared once.
 #
@@ -42,10 +46,36 @@ def prep(+ivk: Wd.W) -> Prep:
 
 # Table 2 entry i = (-1)^(n1 xor n2) * phi(table 1 entry i): phi commutes with scalar
 # multiplication, and P2 = (-1)^n2 phi(P) while P1 = (-1)^n1 P.
+# CT: c = 1 selects a, c = 0 selects b, limb by limb through masks (fp64's sel).
+def pt_sel(+c: U32, a: V.Pt, b: V.Pt) -> V.Pt:
+  V.Pt{+ax, +ay, +az} = a
+  V.Pt{+bx, +by, +bz} = b
+  V.Pt{B.sel(c, ax, bx), B.sel(c, ay, by), B.sel(c, az, bz)}
+
+# CT: 1 if i == d else 0, for i, d < 16 (i xor d - 1 borrows into bit 31 only when equal).
+def eq16(+i: U32, +d: U32) -> U32:
+  (((i .^. d : U32) - 1 : U32) >> 31n : U32)
+
+# CT: table entry d, touching every entry (replaces G.get's d-step list walk).
+def ct_go(t: +List<V.Pt>, +i: U32, +d: U32, acc: V.Pt) -> V.Pt:
+  match t:
+    case Nil{}:
+      acc
+    case Con{h, rest}:
+      ct_go(rest, (i + 1 : U32), d, pt_sel(eq16(i, d), h, acc))
+
+def ct_get(+t: +List<V.Pt>, +d: U32) -> V.Pt:
+  ct_go(t, 0, d, V.identity())
+
+# CT: (-1)^n P for n in {0, 1}: both y and -y are computed (replaces G.neg_if's branch).
+def ct_neg(+n: U32, p: V.Pt) -> V.Pt:
+  V.Pt{x, +y, z} = p
+  V.Pt{x, B.sel(n, B.neg(y), y), z}
+
 def tab2(+flip: U32, t1: +List<V.Pt>) -> +List<V.Pt>:
   match t1:
     case Con{h, t}:
-      G.neg_if(flip, G.endo(h)) <> tab2(flip, t)
+      ct_neg(flip, G.endo(h)) <> tab2(flip, t)
     case Nil{}:
       Nil{}
 
@@ -54,12 +84,12 @@ def ladder(ds: +List<U32>, +t1: +List<V.Pt>, +t2: +List<V.Pt>, acc: V.Pt) -> V.P
     case Nil{}:
       acc
     case Con{+d, rest}:
-      +a1 = V.add(G.dbl4(acc), G.get(t1, (d >> 4n : U32)))
-      ladder(rest, t1, t2, V.add(a1, G.get(t2, (d .&. 15 : U32))))
+      +a1 = V.add(G.dbl4(acc), ct_get(t1, (d >> 4n : U32)))
+      ladder(rest, t1, t2, V.add(a1, ct_get(t2, (d .&. 15 : U32))))
 
 def smul(+k: Prep, +p: V.Pt) -> V.Pt:
   Prep{+n1, +flip, +ds, _} = k
-  +t1 = G.table(G.neg_if(n1, p))
+  +t1 = G.table(ct_neg(n1, p))
   ladder(ds, t1, tab2(flip, t1), V.identity())
 
 # --- records, flags, tree ----------------------------------------------------------------
