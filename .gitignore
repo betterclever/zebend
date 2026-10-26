@@ -25,3 +25,12 @@ proofsets/data/
 harden/data/
 # old non-inlined Metal builds kept after the always-inline re-gate (bench/metal_inline_gate.sh)
 *.noinline
+fullnode/state/
+fullnode/state-tip/
+fullnode/state*/
+fullnode/spool/
+fullnode/work/
+fullnode/hdr/*.bin
+fullnode/**/target/
+fullnode/**/data/
+__pycache__/
