@@ -1,0 +1,32 @@
+[package]
+name = "tv-oracle"
+version = "0.1.0"
+edition = "2021"
+description = "Ground truth for Zebend transparent-input validation: Zebra-14-equivalent script verdicts (zcash_script 0.6 + zcash_primitives sighashes) over real mainnet inputs"
+
+[[bin]]
+name = "tv-oracle"
+path = "src/main.rs"
+
+[dependencies]
+zcash_primitives = { version = "0.31", default-features = false, features = ["std"] }
+zcash_protocol = "0.11"
+zcash_transparent = "0.11"
+zcash_script = "0.6"
+sha2 = "0.10"
+tonic = { version = "0.14", features = ["tls-ring", "tls-webpki-roots"] }
+tonic-prost = "0.14"
+prost = "0.14"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
+hex = "0.4"
+anyhow = "1"
+rayon = "1"
+libzcash_script = { version = "0.2", optional = true }
+
+[features]
+# Second oracle: zcashd's C++ interpreter (needs a C++ toolchain and libclang for bindgen).
+cxx = ["dep:libzcash_script"]
+
+[profile.release]
+opt-level = 3
+debug = 1
