@@ -1,0 +1,21 @@
+[package]
+name = "tv-fuzz"
+version = "0.1.0"
+edition = "2021"
+description = "Differential fuzz cases for Zebend's transparent validation: zcash_script 0.6 + zcash_primitives sighash (Zebra's callback) decide"
+
+[dependencies]
+zcash_script = { version = "0.6", features = ["test-dependencies"] }
+zcash_primitives = { version = "0.31", default-features = false, features = ["std"] }
+zcash_protocol = "0.11"
+zcash_transparent = { version = "0.11", default-features = false }
+sapling = { package = "sapling-crypto", version = "0.9", default-features = false }
+orchard = { version = "0.16", default-features = false }
+secp256k1 = { version = "0.33", features = ["rand", "std"] }
+rand = "0.9"
+sha2 = "0.10"
+ripemd = "0.1"
+sha1 = "0.10"
+
+[profile.release]
+opt-level = 3
