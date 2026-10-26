@@ -1,0 +1,33 @@
+[package]
+name = "groth16-oracle"
+version = "0.1.0"
+edition = "2021"
+description = "Ground truth for the Bend Groth16/BLS12-381 verifier: bellman + bls12_381 + sapling-crypto"
+
+[dependencies]
+bellman = { version = "0.15", features = ["multicore"] }
+groth16 = { version = "0.2", features = ["multicore"] }
+bls12_381 = { version = "0.9", features = ["alloc", "pairings", "groups", "experimental"] }
+sapling = { package = "sapling-crypto", version = "0.9", features = ["multicore"] }
+zcash_primitives = { version = "0.31", default-features = false, features = ["std"] }
+zcash_protocol = "0.11"
+group = "0.14"
+ff = "0.14"
+pairing = "0.23"
+jubjub = "*"
+redjubjub = "0.9"
+rand = { version = "0.10", features = ["sys_rng"] }
+rand_core = "0.10"
+hex = "0.4"
+anyhow = "1"
+rayon = "1"
+blake2b_simd = "1"
+zcash_proofs = { version = "0.31", default-features = false, features = ["multicore"] }
+
+tonic = { version = "0.14", features = ["tls-webpki-roots", "transport", "tls-ring"] }
+tonic-prost = "0.14"
+prost = "0.14"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+
+[profile.release]
+opt-level = 3
