@@ -82,13 +82,16 @@ def prof(stage, secs):
 
 
 def run(name, *args, cwd=None):
-    # Under parallel load a Bend process occasionally exits 0 having printed nothing (about
-    # 1 run in 700; never seen serially). Empty output can satisfy no check, so it is rerun.
+    # Under parallel load a Bend process occasionally printed nothing (about 1 run in 700,
+    # all in one 30-minute window on Oct 25; not reproduced in ~422k stress runs, see
+    # bendprs/empty-output.md). The likeliest cause is an external SIGKILL, so the exit
+    # status is logged. Empty output can satisfy no check, so it is rerun.
     t = time.perf_counter()
     for _ in range(4):
         r = subprocess.run([str(BIN / name), *map(str, args)], capture_output=True, text=True, cwd=cwd)
         if (r.stdout + r.stderr).strip():
             break
+        log(f"  rerun: {name} printed nothing (exit status {r.returncode})")
         prof(f"rerun: {name} printed nothing", 0)
     secs = time.perf_counter() - t
     prof(name, secs)
