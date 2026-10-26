@@ -1,0 +1,34 @@
+[package]
+name = "sapling-oracle"
+version = "0.1.0"
+edition = "2021"
+description = "Ground truth for Zebend's Sapling work: mainnet leaves/nullifiers/tree states, crypto test vectors, real RedJubjub signatures with official verdicts, tx samples"
+
+[dependencies]
+zcash_primitives = { version = "0.31", default-features = false, features = ["std"] }
+zcash_protocol = "0.11"
+sapling = { package = "sapling-crypto", version = "0.9", default-features = false, features = ["std"] }
+redjubjub = "0.9"
+reddsa = "0.6.1"
+jubjub = "0.11.1"
+bls12_381 = "0.9"
+ff = "0.14"
+group = "0.14"
+incrementalmerkletree = { version = "0.9", features = ["legacy-api"] }
+rand_core = "0.10"
+rand_chacha = "0.10"
+tonic = { version = "0.14", features = ["tls-webpki-roots", "transport", "tls-ring"] }
+tonic-prost = "0.14"
+prost = "0.14"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time"] }
+hex = "0.4"
+anyhow = "1"
+blake2b_simd = "1"
+rayon = "1"
+subtle = "2"
+orchard = { version = "0.16", default-features = false, features = ["std"] }
+transparent = { package = "zcash_transparent", version = "0.11", default-features = false, features = ["std"] }
+
+[profile.release]
+opt-level = 3
+debug = 1
