@@ -1,0 +1,8 @@
+load before: 17.53 16.17 22.97; 86 files, 131146 inputs
+round 1 ./tv       user  28.63 s ( 218.3 us/input)  cycles  120.8 G ( 920.9 kcycles/input)
+round 1 ./tv.new   user  24.14 s ( 184.1 us/input)  cycles  102.0 G ( 777.4 kcycles/input)
+round 1 oracle     user   3.25 s (  24.8 us/input)  cycles   17.1 G ( 130.7 kcycles/input)
+round 2 ./tv       user  28.57 s ( 217.8 us/input)  cycles  120.8 G ( 921.0 kcycles/input)
+round 2 ./tv.new   user  23.82 s ( 181.6 us/input)  cycles  101.1 G ( 771.2 kcycles/input)
+round 2 oracle     user   3.25 s (  24.8 us/input)  cycles   16.9 G ( 128.9 kcycles/input)
+load after: 12.11 14.63 21.46

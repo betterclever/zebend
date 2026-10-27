@@ -2,7 +2,7 @@
 """Bend `sh` sighashes vs the oracle's FILE.sighash (the values zcash_primitives / the oracle
 fed to zcash_script's callback). Each oracle line (r, in, ht, value) is compared with Bend's
 line for the same record, input and hash type when ht is one of 01 02 03 81 82 83.
-  python3 sighash_check.py DIR_OR_FILE... (run under ../heavy.sh)"""
+  python3 sighash_check.py DIR_OR_FILE... (run under ../heavy.sh; SH_BIN=path picks another sh binary)"""
 import os, re, subprocess, sys, collections
 from concurrent.futures import ThreadPoolExecutor
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -11,7 +11,7 @@ for p in sys.argv[1:]:
     for root, _, names in (os.walk(p) if os.path.isdir(p) else [(os.path.dirname(p), None, [os.path.basename(p)])]):
         fs += [os.path.join(root, n) for n in names if n.endswith(".ztv")]
 def one(f):
-    out = subprocess.run([os.path.join(HERE, "sh"), f], capture_output=True, text=True).stdout
+    out = subprocess.run([os.environ.get("SH_BIN", os.path.join(HERE, "sh")), f], capture_output=True, text=True).stdout
     got = {(r, i, h): v for r, i, h, v in re.findall(r"^r (\d+) in (\d+) ht (\w\w) (\S+)$", out, re.M)}
     c = collections.Counter(); bad = []
     for r, i, h, v in re.findall(r"^r (\d+) in (\d+) ht (\w\w) (\S+)$", open(f[:-4] + ".sighash").read(), re.M):

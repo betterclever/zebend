@@ -1,0 +1,12 @@
+load before: 15.68 13.13 17.19
+86 files, 131146 inputs
+./tv         1 proc:  25.29 s  192.9 us/input   12 procs:   3.76 s     34859 inputs/s
+./tv.new     1 proc:  20.50 s  156.3 us/input   12 procs:   2.72 s     48264 inputs/s
+oracle       1 proc:   3.35 s   25.5 us/input   12 procs:   0.40 s    331856 inputs/s
+load after: 9.97 11.95 16.49
+load before: 9.49 11.82 16.42
+86 files, 131146 inputs
+./tv         1 proc:  25.18 s  192.0 us/input   18 procs:   3.53 s     37197 inputs/s
+./tv.new     1 proc:  19.01 s  144.9 us/input   18 procs:   2.36 s     55651 inputs/s
+oracle       1 proc:   3.40 s   25.9 us/input   18 procs:   0.35 s    378397 inputs/s
+load after: 7.06 10.80 15.77

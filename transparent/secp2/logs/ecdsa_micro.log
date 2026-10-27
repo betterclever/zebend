@@ -1,0 +1,13 @@
+23:02  up 3 days,  9:40, 1 user, load averages: 6.74 10.60 15.65
+2.37 9927806328 secp/t/secp_t
+1.76 7321133546 secp2/t/secp_t
+2.44 10165245337 secp/t/secp_t
+1.83 7369393609 secp2/t/secp_t
+build
+deps
+examples
+incremental
+secp-vectors
+secp-vectors.d
+30000 verifications (30000 ok) in 397.334084ms: 13.2 us each
+30000 compressed-key decodes in 64.669875ms

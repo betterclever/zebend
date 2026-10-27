@@ -1,0 +1,14 @@
+files 86  records 30853  inputs 131146  oracle valid 131146  bend valid 131146
+MISMATCHES: 0 records, 0 inputs   crashes/incomplete files: 0
+wall 3.1 s with 12 jobs; summed user time 21.1 s (161 us/input); peak RSS 31 MiB
+  blossom      records    2449 inputs   12409 oracle-valid   12409 mismatched inputs 0
+  canopy       records    1763 inputs   12239 oracle-valid   12239 mismatched inputs 0
+  heartwood    records    2717 inputs   12763 oracle-valid   12763 mismatched inputs 0
+  nu5          records    2326 inputs   11653 oracle-valid   11653 mismatched inputs 0
+  nu6_0        records    3571 inputs   11593 oracle-valid   11593 mismatched inputs 0
+  nu6_1        records    5463 inputs   11534 oracle-valid   11534 mismatched inputs 0
+  nu6_2        records    4007 inputs   11521 oracle-valid   11521 mismatched inputs 0
+  nu6_3        records    4411 inputs   11622 oracle-valid   11622 mismatched inputs 0
+  overwinter   records    1116 inputs   12021 oracle-valid   12021 mismatched inputs 0
+  preoverwinter records    1321 inputs   11853 oracle-valid   11853 mismatched inputs 0
+  sapling      records    1709 inputs   11938 oracle-valid   11938 mismatched inputs 0

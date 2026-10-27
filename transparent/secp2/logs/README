@@ -1,0 +1,6 @@
+Speed round 2 logs (see ../../README.md, "Speed round 2").
+  r2a/, *_r2a.*  intermediate build (GLV/wNAF only, before the hash readers / sighash2 / evloop changes)
+  *.log (no suffix), *_r2b.*  final tv.new: run_tests.sh output, bench_cycles.sh, bench2.sh, per-file cycles
+                 (perfile_r2b.txt columns: file inputs tv.new_cycles rust_cycles tv_cycles)
+  samples/       macOS `sample` call trees: tv.sample / tvn.sample (round-1 tv), tv2*.sample (tv.new builds),
+                 secp2.sample (secp_t on valid ECDSA vectors), preow.sample (pre-Overwinter inputs)

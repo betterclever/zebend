@@ -1,0 +1,6 @@
+files 77  records 303046  inputs 604719  oracle valid 174933  bend valid 174933
+MISMATCHES: 0 records, 0 inputs   crashes/incomplete files: 0
+wall 3.0 s with 12 jobs; summed user time 32.1 s (53 us/input); peak RSS 47 MiB
+  fz           records  202000 inputs  403770 oracle-valid  151252 mismatched inputs 0
+  hard         records  100000 inputs  199903 oracle-valid   23113 mismatched inputs 0
+  vec          records    1046 inputs    1046 oracle-valid     568 mismatched inputs 0

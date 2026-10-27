@@ -1,0 +1,6 @@
+field (mul sqr add sub neg inv sqrt): 20000 cases, 0 mismatches
+scalar (inv chain, mul): 20000 cases, 0 mismatches
+scalar (GLV split, sqr, add): 20232 cases, 0 mismatches
+u1 G + u2 Q (GLV/wNAF incl. edge scalars, infinity): 5494 cases, 0 mismatches
+ECDSA verify + key decoding vs libsecp256k1 (data/t/ecdsa.bin): 32000 cases, 0 mismatches
+TOTAL MISMATCHES 0
