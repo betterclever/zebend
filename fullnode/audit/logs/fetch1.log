@@ -1,0 +1,20 @@
+peer 136.115.98.175 /Zebra:7.0.0/
+have 9208
+peer error timed out
+peer 34.80.219.125 /Zebra:7.0.0/
+peer error timed out
+peer 51.178.97.131 /Zakura:1.7.0/
+peer error timed out
+peer 188.172.229.195 /Zakura:1.7.0/
+peer error peer closed
+peer 34.182.139.187 /Zebra:7.0.0/
+peer error timed out
+peer 188.165.37.58 /Zebra:7.0.0/
+peer error peer closed
+peer 15.235.54.116 /Zebra:7.0.0/
+peer error peer closed
+peer 75.164.231.139 /Zakura:1.7.0/
+peer error peer closed
+peer 34.91.248.94 /Zebra:7.0.0/
+peer error timed out
+have 9372 missing 1122 [3531366, 3531370, 3531371, 3531372, 3531373]

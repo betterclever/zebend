@@ -1,0 +1,16 @@
+ok   NU7 activation block, ZCG to P2SH, 40% of fees to miner    h 3543405 fees 25000: [] nsm 36858460520 (want 36858460520)
+ok   NU7 block before the ZIP 2008 switch (3,612,389)           h 3612389 fees 25000: [] nsm 36858460520 (want 36858460520)
+ok   NU7 block after the ZIP 2008 switch: ZCG to P2PKH          h 3612390 fees 25000: [] nsm 36858460520 (want 36858460520)
+ok   third halving 6,132,390: subsidy 26,041,666, streams ended h 6132390 fees 25000: [] nsm 36858460520 (want 36858460520)
+ok   miner claims 100% of the fees (pre-NU7 rule)               h 3543405 fees 25000: ['miner_fees']
+ok   miner claims 1 zat less than MinerFees                     h 3543405 fees 25000: ['miner_fees']
+ok   pre-NU7 subsidy 156,250,000 at NU7                         h 3543405 fees 25000: ['issuance_required_outputs', 'miner_fees']
+ok   ZCG paid to the old P2SH after the switch                  h 3612390 fees 25000: ['issuance_required_outputs']
+ok   ZCG paid before the switch to the new P2PKH                h 3612389 fees 25000: ['issuance_required_outputs']
+ok   ZCG output 1 zat short (to miner)                          h 3600000 fees 25000: ['issuance_required_outputs']
+ok   pre-third-halving subsidy 52,083,333 at 6,132,390          h 6132390 fees 25000: ['miner_fees']
+ok   a v4 transaction after NU7 (ZIP 2003)                      h 3543405 fees 50000: ['tx_version tx 1']
+ok   NSM balance would go negative (turnstile_nsm)              h 3600000 fees 25000: ['turnstile_nsm']
+ok   block 1,750,000 (2,044 Sapling IOs) read at 3543405        shielded_action_limits reported
+ok   block 1,750,000 (2,044 Sapling IOs) read at 3543404        shielded_action_limits not reported
+NU7 mainnet rules cases: 15/15 as expected

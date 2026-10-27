@@ -1,0 +1,12 @@
+t1gKyJSzLYJeZJTBz2g8qx91gGfXnFqPfZN: our tip 3532525, ref state 3532530; ours 6 utxos, ref 11 (6 created <= our tip)
+   only in ours: 0 (may be spent in blocks 3532526..3532530); only in ref (<= our tip): 0 []; value mismatches 0
+   balance over common-height outputs: ours 116521831573 ref 116521831573
+t1PKBiv7mtzD9bNafYaqyxaENeiNDbpKxxQ: our tip 3532525, ref state 3532530; ours 323 utxos, ref 330 (328 created <= our tip)
+   only in ours: 2 (may be spent in blocks 3532526..3532530); only in ref (<= our tip): 7 [('2419ec53e334ab7d4fda04230cf1dcbd65e1d62b8a7e03e4dbdf954df98c7201', 0), ('338f4865c98d7a5e84de7c32234e60f2b1fe6062da2a35574e46fa2acb6ea0d8', 1), ('7d16b022938b159807e6437a7d092c3aa970624b4f518a6c42ceba72fbf0b55f', 1)]; value mismatches 0
+   balance over common-height outputs: ours 6268274858157 ref 6351841505264
+t3cFfPt1Bcvgez9ZbMBFWeZsskxTkPzGCow: our tip 3532526, ref state 3532539; ours 6131 utxos, ref 6156 (6152 created <= our tip)
+   only in ours: 0 (may be spent in blocks 3532527..3532539); only in ref (<= our tip): 21 [('0a439f3f02dead0e5457e4413a8e1d6cb1dcc4bc5c391d1061c272583b76b2c2', 1), ('0d084cd5f0f474e34c311673e7e943626b2a2cb088a05541a1393a3749f5971e', 1), ('1051abffa0d88da528a78f0fbd440770a3909cf1ee38d8788180b891ce596437', 1)]; value mismatches 0
+   balance over common-height outputs: ours 76588088014 ref 76850588014
+t1KfwsnwJeNRVjQGBDZhwKskpQbih2qx5Ua: our tip 3532531, ref state 3532540; ours 740 utxos, ref 739 (739 created <= our tip)
+   only in ours: 1 (may be spent in blocks 3532532..3532540); only in ref (<= our tip): 0 []; value mismatches 0
+   balance over common-height outputs: ours 11600424874785 ref 11577044969551

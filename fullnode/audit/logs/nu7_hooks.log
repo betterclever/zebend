@@ -1,0 +1,10 @@
+20:25  up 3 days,  7:03, 1 user, load averages: 5.18 5.52 8.94
+blocks 4465026..4465325: 300 parsed by blockdelta, 0 INVALID []
+tx versions/branches: {'v6 br=77190ad9': 348, 'v5 br=77190ad9': 201}
+transparent: 200 real NU7 tx: {'PASS': 200}, missing 0
+sapling: 2 real NU7 tx: {'PASS': 2}, missing 0
+orchard: 332 real NU7 tx: {'PASS': 332}, missing 0
+transparent: 40 tampered copies: {'FAIL': 40} (every one must FAIL); reasons {'transparent input(s)': 40}
+sapling: 2 tampered copies: {'FAIL': 2} (every one must FAIL); reasons {'groth16 10': 1, 'redjubjub 10': 1}
+orchard: 40 tampered copies: {'FAIL': 40} (every one must FAIL); reasons {'Halo 2': 36, 'ironwood spend-auth': 4}
+RESULT PASS

@@ -1,0 +1,67 @@
+peer 34.80.219.125 /Zebra:7.0.0/
+peer error timed out
+peer 54.39.196.12 /Zakura:1.7.0/
+peer error peer closed
+peer 38.190.136.76 /Zakura:1.7.0/
+peer error peer closed
+peer 51.178.97.131 /Zakura:1.7.0/
+peer error timed out
+peer 138.68.43.212 /Zakura:1.7.0/
+peer error timed out
+peer 188.172.229.195 /Zakura:1.7.0/
+peer error peer closed
+peer 34.182.139.187 /Zebra:7.0.0/
+peer error timed out
+peer 188.165.37.58 /Zebra:7.0.0/
+peer error peer closed
+peer 15.235.54.116 /Zebra:7.0.0/
+peer error peer closed
+peer 75.164.231.139 /Zakura:1.7.0/
+peer error peer closed
+peer 34.91.248.94 /Zebra:7.0.0/
+peer error timed out
+peer 136.115.98.175 /Zebra:7.0.0/
+peer error timed out
+peer 34.80.219.125 /Zebra:7.0.0/
+peer error timed out
+peer 38.190.136.76 /Zakura:1.7.0/
+peer error peer closed
+peer 46.173.137.17 /Zebra:7.0.0/
+peer error timed out
+peer 34.182.139.187 /Zebra:7.0.0/
+have 211
+have 403
+have 611
+peer error timed out
+peer 75.164.231.139 /Zakura:1.7.0/
+peer error peer closed
+peer 34.91.248.94 /Zebra:7.0.0/
+peer error timed out
+peer 136.115.98.175 /Zebra:7.0.0/
+peer error timed out
+peer 34.80.219.125 /Zebra:7.0.0/
+peer error timed out
+peer 54.39.196.12 /Zakura:1.7.0/
+peer error peer closed
+peer 38.190.136.76 /Zakura:1.7.0/
+peer error peer closed
+peer 46.173.137.17 /Zebra:7.0.0/
+peer error timed out
+peer 188.165.37.58 /Zebra:7.0.0/
+peer error peer closed
+peer 34.182.139.187 /Zebra:7.0.0/
+peer error timed out
+peer 15.235.54.116 /Zebra:7.0.0/
+peer error peer closed
+peer 75.164.231.139 /Zakura:1.7.0/
+peer error peer closed
+peer 34.91.248.94 /Zebra:7.0.0/
+peer error timed out
+peer 136.115.98.175 /Zebra:7.0.0/
+peer error timed out
+peer 34.80.219.125 /Zebra:7.0.0/
+peer error timed out
+peer 51.178.97.131 /Zakura:1.7.0/
+have 805
+have 1013
+have 1128 missing 0 []

@@ -1,0 +1,12 @@
+244 real Testnet NU7 txs with Sapling bundles
+  anchor                 FAIL     29
+  binding sig            FAIL     244
+  orig                   PASS     244
+  output encCiphertext   FAIL     244
+  output proof           FAIL     244
+  spend proof            FAIL     29
+  spend rk               FAIL     29
+  spend-auth sig         FAIL     29
+  valueBalance           FAIL     244
+unexpected: []
+RESULT PASS

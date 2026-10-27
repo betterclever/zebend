@@ -1,0 +1,4 @@
+t3cFfPt1Bcvgez9ZbMBFWeZsskxTkPzGCow: our tip 3532539; reference-listed utxos <= tip missing in ours: 21
+    21  tx not on the checkpointed chain (reference indexes an orphan block)  e.g. ['4be2f24927d4:1@3363462', '0a439f3f02de:1@3363461', '0d084cd5f0f4:1@3363449']
+t1PKBiv7mtzD9bNafYaqyxaENeiNDbpKxxQ: our tip 3532548; reference-listed utxos <= tip missing in ours: 7
+     7  reference itself says spent (stale UTXO list)  e.g. ['2419ec53e334:0@3177769', 'e80db4ac5afb:0@3160572', '97881d342db7:0@3160572']

@@ -1,0 +1,4 @@
+94 batches across Testnet NU7 activation and halving: 94 accepted
+negative control (nBits tampered): rejected
+ctx=29 (follow's pre-wiring buffer) at A+11: rejected ({'equihash valid': (30, 30), 'hash <= target': (30, 30), 'prev-hash links': (29, 29)}, 0, 0)
+RESULT PASS

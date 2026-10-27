@@ -1,0 +1,60 @@
+getrawtransaction 3f9f0cd0a5df: vShieldedSpend MISSING in ours (ref [])
+getrawtransaction 3f9f0cd0a5df: vShieldedOutput MISSING in ours (ref [])
+getrawtransaction 3f9f0cd0a5df: orchard MISSING in ours (ref {'actions': [], 'valueBalance': 0, 'valueBalanceZat': 0})
+getrawtransaction da4082fa4ba7: authdigest MISSING in ours (ref 3a0d6c12226dd6aacaeb95ccc52cea4c1d5e530278a5a59ad18aa8efc4980f1f)
+getrawtransaction da4082fa4ba7: vout ours [{'value': 1.015, 'valueZat': 101500000, 'n': 0, 'scriptPubKey': {'hex': '76a91470b0a7ac27 != ref [{'value': 1.015, 'valueZat': 101500000, 'valueSat': 101500000, 'n': 0, 'scriptPubKey': {'
+getrawtransaction da4082fa4ba7: valueBalance MISSING in ours (ref 0)
+getrawtransaction da4082fa4ba7: valueBalanceZat MISSING in ours (ref 0)
+getrawtransaction da4082fa4ba7: vShieldedSpend MISSING in ours (ref [])
+getrawtransaction da4082fa4ba7: vShieldedOutput MISSING in ours (ref [])
+getrawtransaction da4082fa4ba7: orchard MISSING in ours (ref {'actions': [], 'valueBalance': 0, 'valueBalanceZat': 0})
+getrawtransaction da4082fa4ba7: ironwood ours {'valueBalanceZat': 101525000, 'valueBalance': 1.01525, 'anchor': '656ff0b791841fdaf73cf09 != ref {'actions': [{'cv': 'fa243accf30847f75feacfdb8e97c5c0b692355fea250192131af15f785aaea0', 'n
+getblock 3522461: authdataroot MISSING in ours (ref 0ff5a11a6316648f87c22ac72b74034dccd3a898373fa35f63f28e8891f0ff06)
+getblock 3522461: finalsaplingroot MISSING in ours (ref 5ea6f877daa090eacc092f2e001efacaa43adad3bf8c8b7b998468d4cde47023)
+getblock 3522461: finalorchardroot MISSING in ours (ref 25b82793f7b9ccb9337c173dd2eccc307e2df1bbe16b2870d386e9a31dc0973a)
+getblock 3522461: finalironwoodroot MISSING in ours (ref ec6211d3f59c0cd64beb0cfcc10de3fb1eaa5ac23b32d0eba334b388eb79e334)
+getblock 3522461: chainhistoryroot MISSING in ours (ref db54762434f577dbb199100ee0af9ec091f63c60f50a641f8fe326900fde4df8)
+getblock 3522461: difficulty ours 266815088.48873115 != ref 266814579.5793369
+getblock 3522461: chainwork ours 0000000000000000000000000000000000000000000000000000000000000000 != ref 0000000000000000000000000000000000000000000000001d854bc4ff3e76eb
+getblock 3522461: anchor MISSING in ours (ref ccf578972e413670ce83036c6ed40747127b368d414eb45e5e411991360c0038)
+getblock 3522461: trees ours {} != ref {'sapling': {'size': 73986933}, 'orchard': {'size': 50477046}, 'ironwood': {'size': 804319
+getblock 3522461: chainSupply MISSING in ours (ref {'monitored': True, 'chainValue': 16993478.2905448, 'chainValueZat': 16993478290)
+getblock 3522461: valuePools MISSING in ours (ref [{'id': 'transparent', 'monitored': True, 'chainValue': 11959567.54355464, 'chai)
+getblock 3522461: reference fields we do not return: ['anchor', 'authdataroot', 'chainSupply', 'chainhistoryroot', 'finalironwoodroot', 'finalorchardroot', 'finalsaplingroot', 'valuePools']
+getrawtransaction 0289aef4244f: authdigest MISSING in ours (ref b10fe3e17e9a33c220454da645d755b889e59d4f520a9a44e292ae23e8da34d1)
+getrawtransaction 0289aef4244f: vout ours [{'value': 0.125, 'valueZat': 12500000, 'n': 0, 'scriptPubKey': {'hex': 'a914c20cd5bdf7964 != ref [{'value': 0.125, 'valueZat': 12500000, 'valueSat': 12500000, 'n': 0, 'scriptPubKey': {'as
+getrawtransaction 0289aef4244f: valueBalance MISSING in ours (ref 0)
+getrawtransaction 0289aef4244f: valueBalanceZat MISSING in ours (ref 0)
+getrawtransaction 0289aef4244f: vShieldedSpend MISSING in ours (ref [])
+getrawtransaction 0289aef4244f: vShieldedOutput MISSING in ours (ref [])
+getrawtransaction 0289aef4244f: orchard MISSING in ours (ref {'actions': [], 'valueBalance': 0, 'valueBalanceZat': 0})
+getrawtransaction 0289aef4244f: ironwood ours {'valueBalanceZat': -125055000, 'valueBalance': -1.25055, 'anchor': 'ae2935f1dfd8a24aed7c7 != ref {'actions': [{'cv': '793d334a436f6f211c7404f6d84dda9e24ce243badfc5caaa9fb43b24a6ebe8e', 'n
+getrawtransaction 27e32244c461: authdigest MISSING in ours (ref 56426da499e875cdb75064b7c43fbcd9959618f66ee7acf1ae29f380a3b3f584)
+getrawtransaction 27e32244c461: vin ours [{'txid': 'de2c1d861e1ca4da192bac215a7513d1da48ea8e8d8e61494f13437d80d7ae3e', 'vout': 0, ' != ref [{'txid': 'de2c1d861e1ca4da192bac215a7513d1da48ea8e8d8e61494f13437d80d7ae3e', 'vout': 0, '
+getrawtransaction 27e32244c461: vout ours [{'value': 0.04789789, 'valueZat': 4789789, 'n': 0, 'scriptPubKey': {'hex': '76a91413bbd8b != ref [{'value': 0.04789789, 'valueZat': 4789789, 'valueSat': 4789789, 'n': 0, 'scriptPubKey': {
+getrawtransaction 27e32244c461: valueBalance MISSING in ours (ref 0)
+getrawtransaction 27e32244c461: valueBalanceZat MISSING in ours (ref 0)
+getrawtransaction 27e32244c461: vShieldedSpend MISSING in ours (ref [])
+getrawtransaction 27e32244c461: vShieldedOutput MISSING in ours (ref [])
+getrawtransaction 27e32244c461: orchard MISSING in ours (ref {'actions': [], 'valueBalance': 0, 'valueBalanceZat': 0})
+getrawtransaction 27e32244c461: ironwood ours {'valueBalanceZat': -195211, 'valueBalance': -0.00195211, 'anchor': 'ae2935f1dfd8a24aed7c7 != ref {'actions': [{'cv': 'c9c46a166f19197dc70a7a9ccca6c096105b0ef219a9f1db1578c752b36e8513', 'n
+getrawtransaction 6839da6a7769: authdigest MISSING in ours (ref 1213eb6908a1652a0f2a7c6381778741fce14a8042dc62d69e3a0e11776d2e81)
+getrawtransaction 6839da6a7769: vin ours [{'txid': '867dd9bd64f97487dbdfd522ac63ee826e62e7f208999cf7cebc6c37b490a8c3', 'vout': 1, ' != ref [{'txid': '867dd9bd64f97487dbdfd522ac63ee826e62e7f208999cf7cebc6c37b490a8c3', 'vout': 1, '
+getrawtransaction 6839da6a7769: valueBalance MISSING in ours (ref 0)
+getrawtransaction 6839da6a7769: valueBalanceZat MISSING in ours (ref 0)
+getrawtransaction 6839da6a7769: vShieldedSpend MISSING in ours (ref [])
+getrawtransaction 6839da6a7769: vShieldedOutput MISSING in ours (ref [])
+getrawtransaction 6839da6a7769: orchard MISSING in ours (ref {'actions': [], 'valueBalance': 0, 'valueBalanceZat': 0})
+getrawtransaction 6839da6a7769: ironwood ours {'valueBalanceZat': -49985000, 'valueBalance': -0.49985, 'anchor': '4a3c62d5f2cc09dd26d849 != ref {'actions': [{'cv': 'fdb15f6fe205962e2139f66d12f5e62a32e6fea52f08b581ea9374a115d26095', 'n
+getblockchaininfo valuePools lockbox: ours None ref (block 3532525) 7239862500000
+getblockchaininfo valuePools transparent: ours None ref (block 3532525) 1198065066088972
+getblockchaininfo chainwork: ours 0000000000000000000000000000000000000000000000000000000000000000, ref chainwork 0000000000000000000000000000000000000000000000001dd8769bae2c302f
+getblockchaininfo estimatedheight: ours 3532513
+getblockchaininfo headers: ours 3532525
+z_gettreestate: {'hash': '00000000008c2e385bda83e6c9045f46123d04617c5da8738c4352f22ef5bf74', 'height': 3532525, 'time': 1793113092, 'sprout': {'commitments': {'finalState': ''}, 'skipped': 'tree builder pending'}, 's
+address t3cFfPt1Bcvgez9ZbMBFWeZsskxTkPzGCow (21 outputs in the last 20 blocks): balance ours 76575588014 ref 76875588014 DIFF; utxos ours 6130 ref 6154 (ref list shows 100): ref-listed missing in ours 3
+address t1gKyJSzLYJeZJTBz2g8qx91gGfXnFqPfZN (10 outputs in the last 20 blocks): balance ours 116521831573 ref 118342831573 DIFF; utxos ours 6 ref 9 (ref list shows 9): ref-listed missing in ours 3
+address t1PKBiv7mtzD9bNafYaqyxaENeiNDbpKxxQ (7 outputs in the last 20 blocks): balance ours 6268274858157 ref 6456679373699 DIFF; utxos ours 323 ref 330 (ref list shows 100): ref-listed missing in ours 2
+address t1KfwsnwJeNRVjQGBDZhwKskpQbih2qx5Ua (7 outputs in the last 20 blocks): balance ours 11600424874785 ref 11600424874785 MATCH; utxos ours 740 ref 740 (ref list shows 100): ref-listed missing in ours 0
+
+SUMMARY {'MISSING authdataroot': 6, 'MISSING finalsaplingroot': 6, 'MISSING finalorchardroot': 6, 'MISSING finalironwoodroot': 6, 'MISSING chainhistoryroot': 6, 'DIFF difficulty': 6, 'DIFF chainwork': 6, 'MISSING anchor': 6, 'DIFF trees': 6, 'MISSING chainSupply': 6, 'MISSING valuePools': 6, 'MISSING authdigest': 18, 'DIFF vout': 16, 'MISSING valueBalance': 17, 'MISSING valueBalanceZat': 17, 'MISSING vShieldedSpend': 18, 'MISSING vShieldedOutput': 18, 'MISSING orchard': 17, 'MISSING ironwood': 4, 'DIFF ironwood': 7, 'DIFF vin': 7, 'DIFF valuePool lockbox': 1, 'DIFF valuePool transparent': 1, 'DIFF address balance': 3}

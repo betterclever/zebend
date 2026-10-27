@@ -1,0 +1,57 @@
+== from 4470000
+blocks 4470000..4471799: 400 parsed by blockdelta, 0 INVALID []
+tx versions/branches: {'v6 br=77190ad9': 832, 'v5 br=77190ad9': 755}
+transparent: 755 real NU7 tx: {'PASS': 755}, missing 0
+sapling: no items
+orchard: 560 real NU7 tx: {'PASS': 560}, missing 0
+transparent: 40 tampered copies: {'FAIL': 40} (every one must FAIL); reasons {'transparent input(s)': 40}
+orchard: 40 tampered copies: {'FAIL': 40} (every one must FAIL); reasons {'ironwood spend-auth': 5, 'Halo 2': 35}
+RESULT PASS
+== from 4480000
+blocks 4480004..4481156: 400 parsed by blockdelta, 0 INVALID []
+tx versions/branches: {'v6 br=77190ad9': 661, 'v5 br=77190ad9': 611}
+transparent: 611 real NU7 tx: {'PASS': 611}, missing 0
+sapling: 2 real NU7 tx: {'PASS': 2}, missing 0
+orchard: 408 real NU7 tx: {'PASS': 408}, missing 0
+transparent: 40 tampered copies: {'FAIL': 40} (every one must FAIL); reasons {'transparent input(s)': 40}
+sapling: 2 tampered copies: {'PASS': 1, 'FAIL': 1} (every one must FAIL); reasons {'redjubjub 10': 1}
+orchard: 40 tampered copies: {'FAIL': 40} (every one must FAIL); reasons {'Halo 2': 36, 'ironwood spend-auth': 4}
+RESULT FAIL
+== from 4490000
+blocks 4490000..4491244: 400 parsed by blockdelta, 0 INVALID []
+tx versions/branches: {'v6 br=77190ad9': 659, 'v5 br=77190ad9': 611}
+transparent: 619 real NU7 tx: {'PASS': 619}, missing 0
+sapling: 2 real NU7 tx: {'PASS': 2}, missing 0
+orchard: 453 real NU7 tx: {'PASS': 453}, missing 0
+transparent: 40 tampered copies: {'FAIL': 40} (every one must FAIL); reasons {'transparent input(s)': 40}
+sapling: 2 tampered copies: {'PASS': 1, 'FAIL': 1} (every one must FAIL); reasons {'redjubjub 10': 1}
+orchard: 40 tampered copies: {'FAIL': 40} (every one must FAIL); reasons {'Halo 2': 38, 'ironwood spend-auth': 2}
+RESULT FAIL
+== from 4497800
+blocks 4497800..4498314: 400 parsed by blockdelta, 0 INVALID []
+tx versions/branches: {'v6 br=77190ad9': 576, 'v5 br=77190ad9': 438}
+transparent: 440 real NU7 tx: {'PASS': 440}, missing 0
+sapling: no items
+orchard: 251 real NU7 tx: {'PASS': 251}, missing 0
+transparent: 40 tampered copies: {'FAIL': 40} (every one must FAIL); reasons {'transparent input(s)': 40}
+orchard: 40 tampered copies: {'FAIL': 40} (every one must FAIL); reasons {'Halo 2': 38, 'ironwood spend-auth': 2}
+RESULT PASS
+== from 4510000
+blocks 4510005..4511521: 400 parsed by blockdelta, 0 INVALID []
+tx versions/branches: {'v6 br=77190ad9': 627, 'v5 br=77190ad9': 599}
+transparent: 601 real NU7 tx: {'PASS': 601}, missing 0
+sapling: no items
+orchard: 473 real NU7 tx: {'PASS': 473}, missing 0
+transparent: 40 tampered copies: {'FAIL': 40} (every one must FAIL); reasons {'transparent input(s)': 40}
+orchard: 40 tampered copies: {'FAIL': 40} (every one must FAIL); reasons {'Halo 2': 34, 'ironwood spend-auth': 6}
+RESULT PASS
+== from 4525000
+blocks 4525009..4527653: 400 parsed by blockdelta, 0 INVALID []
+tx versions/branches: {'v6 br=77190ad9': 959, 'v5 br=77190ad9': 11}
+transparent: 48 real NU7 tx: {'PASS': 48}, missing 0
+sapling: 3 real NU7 tx: {'PASS': 3}, missing 0
+orchard: 718 real NU7 tx: {'PASS': 718}, missing 0
+transparent: 40 tampered copies: {'FAIL': 40} (every one must FAIL); reasons {'transparent input(s)': 40}
+sapling: 3 tampered copies: {'PASS': 3} (every one must FAIL); reasons {}
+orchard: 40 tampered copies: {'FAIL': 40} (every one must FAIL); reasons {'Halo 2': 38, 'ironwood spend-auth': 2}
+RESULT FAIL

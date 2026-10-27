@@ -1,0 +1,25 @@
+PASS  crash: exit code 3 recorded  3 exits
+PASS  crash: last log line recorded  
+PASS  crash: restarted  3 starts
+PASS  crash: alert raised  
+PASS  stall: no alert while not behind  
+PASS  stall: alert when tip frozen and headers ahead  
+PASS  stall: no new alert once the tip advances  
+PASS  headers: alert when the header chain stops growing  
+PASS  stopped: SIGSTOPped daemon reported  
+PASS  stopped: resumed with SIGCONT (resume_stopped)  state now Ss
+PASS  orphan: CPU-burning orphan under the repo reported  orphan pid 74704 at 100% CPU for 0+ min (up 0 min): /opt/homebrew/Cellar/python@
+PASS  interpreter: no alert while the executable exists  
+PASS  interpreter: deleted executable under a running daemon reported  
+      processes on this machine running a deleted Cellar interpreter: [(17732, '/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.fr'), (44863, '/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.fr')]
+PASS  code: no alert before an edit  
+PASS  code: edit of a watched file while running reported  
+PASS  rotation: rotated copies exist  
+PASS  rotation: live log stays bounded  163564 B
+PASS  rotation: writer continues at the start of the truncated file (no NUL hole)  
+PASS  rotation: at most log_keep copies  
+PASS  adopt: running daemon adopted, no second copy  pid 74883 vs 74883
+PASS  adopt: restarted under the supervisor once it died  
+PASS  disk: low free disk reported  
+PASS  mem: low free memory reported  
+23/23 PASS

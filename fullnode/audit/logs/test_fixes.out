@@ -1,0 +1,19 @@
+PASS  F1 orig: oracle hang blocks assumed.fetch (problem reproduced)  no result after 40 s
+PASS  F1 staged: oracle hang -> ConnectionError after the retries  ConnectionError oracle did not return 1 prevout txs, e.g. abababababababababababababababababababababababababababababababab (9 s)
+PASS  F2 orig: genesis and tip instances share the hook work dir (problem reproduced)  same /private/var/folders/2s/7253qpxn3n325n68ccg16tc40000gn/T/fix_orig_egpcdax0/fullnode/work/rules /private/var/folders/2s/7253qpxn3n325n68ccg16tc40000gn/T/fix_orig_egpcdax0/fullnode/work/rules
+PASS  F2b orig: a hanging hook blocks the window forever (problem reproduced)  no result after 20 s
+PASS  F2c orig: hook crash = RuleFail, i.e. the node halts on a valid block (problem reproduced)  RuleFail  hook transparent: no verdict for [(100, 0)] (exit 1: '')
+PASS  F2d orig: hook files of every window are kept (problem reproduced)  files 6
+PASS  F2 staged: per-instance hook work dir  distinct /private/var/folders/2s/7253qpxn3n325n68ccg16tc40000gn/T/fix_staged_0b8eydg3/fullnode/work/rules/state /private/var/folders/2s/7253qpxn3n325n68ccg16tc40000gn/T/fix_staged_0b8eydg3/fullnode/work/rules/state-tip
+PASS  F2b staged: hanging hook -> VerifierError (retryable)  VerifierError VerifierError hook transparent: timed out after 2 s on 1 tx
+PASS  F2c staged: hook crash = VerifierError (sync retries the window)  VerifierError VerifierError hook transparent: no verdict for [(100, 0)] (exit 1: '')
+PASS  F2d staged: only the current window's hook files exist  files 3
+PASS  F3a orig: half-written roots.txt line crashes the anchor check (problem reproduced)  CRASH ValueError not enough values to unpack (expected 3, got 2)
+PASS  F3b orig: genesis instance SKIPs every Ironwood anchor, even an invalid one (problem reproduced)  anchors: Ironwood 0/0 PASS; SKIPPED (tree builder pending): ironwood 2
+PASS  F3c orig: valid block rejected while follow is behind on a new branch (problem reproduced)  Fail block 108 tx cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc: Ironwood anchor cc00000000000000 is not a root of an earlier block
+PASS  F3a staged: only follow's committed roots are read; valid anchor PASS  anchors: Ironwood 1/1 PASS
+PASS  F3b staged: genesis instance checks Ironwood anchors against follow's roots (invalid one fails)  Fail block 107 tx cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc: Ironwood anchor eeeeeeeeeeeeeeee is not a root of an earlier block (follow committed tip 107, same chain)
+PASS  F3c staged: follow behind -> SKIPPED (reported), no false reject  anchors: Ironwood 0/0 PASS; SKIPPED: ironwood (follow behind or on another branch) 1
+PASS  F3c staged: once follow has the root, the anchor PASSes  anchors: Ironwood 1/1 PASS
+
+17/17 PASS
