@@ -1,0 +1,17 @@
+C connected to B
+6 live txs from the running mempool (received from mainnet peers)
+  PASS  B admits the txs via sendrawtransaction 6/6
+  PASS  C receives them over P2P (inv -> getdata -> tx) and admits them 6/6
+  PASS  C's source for them is the P2P peer B ['p2p 127.0.0.1']
+  PASS  B served them (getdata -> tx) tx served 6
+  PASS  sendrawtransaction of a tx already in the mempool returns its txid 
+  PASS  handshake version/verack /Zebend-mempool:0.1/
+  PASS  ping -> pong (same nonce) 
+  PASS  getaddr -> addr 50 entries
+  PASS  mempool -> inv of B's mempool 6 entries, types [5]
+  PASS  getdata (as announced) -> tx 
+  PASS  getdata with a wrong auth digest -> notfound (ZIP 239) 
+  PASS  getdata unknown tx -> notfound 
+  PASS  rate limit: flood of pings is cut off (not every ping answered, connection dropped) sent 1247, pongs 494, disconnected True
+
+RESULT: 13/13 PASS

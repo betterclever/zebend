@@ -1,0 +1,76 @@
+{
+ "window": {
+  "from": 1793095884.8,
+  "to": 1793105477.5,
+  "hours": 2.66,
+  "state_tip_now": 3532427
+ },
+ "received_distinct_txs": 683,
+ "first_source": {
+  "p2p": 683
+ },
+ "admitted": 672,
+ "admitted_after_an_earlier_tip_scoped_rejection": 11,
+ "rejected": 11,
+ "rejected_by_reason": {
+  "Ironwood anchor newer than the state's tip (the state is behind)": 9,
+  "Ironwood anchor unknown at this state's tip (invalid, or newer)": 2
+ },
+ "admitted_then_mined": 662,
+ "admitted_still_in_mempool": 10,
+ "admitted_removed_other": {},
+ "admitted_unaccounted": 0,
+ "rejected_but_mined_later": 11,
+ "rejected_but_mined_later_by_reason": {
+  "Ironwood anchor newer than the state's tip (the state is behind)": 9,
+  "Ironwood anchor unknown at this state's tip (invalid, or newer)": 2
+ },
+ "mined_heights": [
+  3532308,
+  3532427
+ ],
+ "inbound_connections_from_internet": 0,
+ "inbound_local": 14,
+ "relay": {
+  "txs": 672,
+  "served_getdata": 2,
+  "inv_back": 534
+ },
+ "p2p": {
+  "handshake failed (out)": 194,
+  "dial failed": 153,
+  "block fetch: no peer at that height": 109,
+  "handshakes out": 21,
+  "tx inv received": 3434,
+  "tx getdata sent": 697,
+  "tx received": 706,
+  "tx relayed (inv queued)": 4023,
+  "block fetched": 126,
+  "tx served": 2,
+  "handshake failed (in)": 1,
+  "block timeout": 44,
+  "tx download timeouts": 10,
+  "tx getdata retried": 9,
+  "handshakes in": 14
+ },
+ "counts": {
+  "rejected": 24,
+  "wtxid: Bend auth digest == peer's MSG_WTX inv": 525,
+  "admitted": 672,
+  "removed mined": 662,
+  "duplicate": 5
+ },
+ "anchors": {
+  "ironwood_pass": 232,
+  "skipped": {
+   "SKIPPED (Ironwood roots not computed to the tip yet)": 4,
+   "sapling SKIPPED (tree builder pending)": 8,
+   "orchard SKIPPED (tree builder pending)": 6
+  }
+ },
+ "oracle": {
+  "fetched": 166,
+  "bend_ok": 166,
+  "bend_bad": 0
+ }
+}

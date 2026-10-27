@@ -1,0 +1,104 @@
+{
+ "N": 5,
+ "T": 3532303,
+ "disconnected_txs": {
+  "3532294": 2,
+  "3532295": 15,
+  "3532296": 1,
+  "3532297": 2,
+  "3532298": 2,
+  "3532299": 8,
+  "3532300": 16,
+  "3532301": 0,
+  "3532302": 25,
+  "3532303": 1
+ },
+ "preloaded": 29,
+ "readmit": {
+  "txs": 50,
+  "admitted": 42,
+  "not_admitted": {
+   "d1f67b6d62e7bcdb1a9b1fe9d551742e53c7373f534863e6e4244e4bd4e1a7c2": [
+    "rejected",
+    "Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block"
+   ],
+   "ff625f6614dad51e2cd73ff697fceb770572b54218fd03711edb81f92ed15531": [
+    "rejected",
+    "Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block"
+   ],
+   "8d2123af8b8c4c939e2e22054c21384c391c6560b38f818785dc25ce7d12cf93": [
+    "rejected",
+    "Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block"
+   ],
+   "f9896b70f94a1bf8773085aea4a3fa4a831c851bdbbcc028f2a7f6f6542b81ba": [
+    "rejected",
+    "Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block"
+   ],
+   "aacf2c70214a9213826d19186d94d5a6d1c2c5746003823cece727bc95069a02": [
+    "rejected",
+    "Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block"
+   ],
+   "690e5d8c6dc9ae2424d8d2bf6f8f501744671a56c0d83ef115904abbab59f1b1": [
+    "rejected",
+    "Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block"
+   ],
+   "7d0ef0647ba922d55a416e0b5c5c7a69a169dd85e4002716c0ccbbee6bd2f79f": [
+    "rejected",
+    "Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block"
+   ],
+   "e91065a8278f37494f104639848e86fbb1aed93f758c9fe54e50f3c1b47f50bc": [
+    "rejected",
+    "Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block"
+   ]
+  },
+  "preloaded_still_in": 15
+ },
+ "deeper": {
+  "to": 3532293,
+  "disconnected_txs": 22,
+  "readmitted": 22,
+  "anchored_in_disconnected": 0,
+  "removed_from_mempool_by_anchor_recheck": 22,
+  "mempool_txs_anchored_above_tip": []
+ },
+ "reapply": "15:39:14 stopped at committed tip 3532303: 10 blocks 0.3 MB in 1 s, 17.2 blocks/s 0.54 MB/s",
+ "after_reapply": {
+  "disconnected_txs_in_mempool_before": 55,
+  "removed_as_mined": 55,
+  "disconnected_still_in_mempool": [],
+  "preloaded_still_in": 14,
+  "preloaded": 29
+ },
+ "anchor_in_disconnected_block": [
+  "690e5d8c6dc9ae2424d8d2bf6f8f501744671a56c0d83ef115904abbab59f1b1",
+  "7d0ef0647ba922d55a416e0b5c5c7a69a169dd85e4002716c0ccbbee6bd2f79f",
+  "8d2123af8b8c4c939e2e22054c21384c391c6560b38f818785dc25ce7d12cf93",
+  "aacf2c70214a9213826d19186d94d5a6d1c2c5746003823cece727bc95069a02",
+  "d1f67b6d62e7bcdb1a9b1fe9d551742e53c7373f534863e6e4244e4bd4e1a7c2",
+  "e91065a8278f37494f104639848e86fbb1aed93f758c9fe54e50f3c1b47f50bc",
+  "f9896b70f94a1bf8773085aea4a3fa4a831c851bdbbcc028f2a7f6f6542b81ba",
+  "ff625f6614dad51e2cd73ff697fceb770572b54218fd03711edb81f92ed15531"
+ ],
+ "preloaded_anchor_in_disconnected_block": [
+  "0837630e737c2131e5f09ac15942690e1ae79e73bdb93279e8ee6f16f3cb6246",
+  "0f0bfcf0c745629412ebee84ae69404b9c1b4ef636329fe65be3549dd6ba4ce9",
+  "32fb2349b8362eb32d1b2324c62b20cfb7ed946a32c40301f952c093a9232ea7",
+  "365bbe6fa9df4c90fc62c45f2a078cb673aed68be21dea5667817351030e3871",
+  "3d706a1fe3d6a7b0f99dfcc640b282fd24690f6318ed9c37ed6ac8d5fde7ad7f",
+  "5704f5cf0fa9b67bd17f1938350a27ad7d5db8b1cdee63c2e1838316d909277f",
+  "72aa4c5ca4f15a28cd66d6d3f1b6e701c454f24c163084ac0d43e3034d270688",
+  "812dca9a9d9dff8f55fdf8ad9ecb1644146c16cfc4e99e7a0c2b24ed3d4f354e",
+  "88146bd27ef8786ac2e043aa8a56e8d608eadaee5f25e38207a617e280dc02db",
+  "974ce0268d0ca47b7a185a414a715e8330dd1e00f824c5c5680e58028eb3c9d3",
+  "b96de9b2e1c53cf55b69b40d137819c7ddfed91df71275515ba7ec6c9d5dbc06",
+  "dcdb5bca9a75a0772046928f3abfc4806ca3943732f42654daf351e7009aa287",
+  "e3e40b4bd52ac3ea2a72bdf813652778249326dc0305efb734cb527675b94003",
+  "ff59e81145942291fefea0110401053bb4bae66080c02eaca3a7d108d869e0c5"
+ ],
+ "preloaded_removed": {
+  "anchored_to_disconnected_block": 14,
+  "dependent_of_removed": 1,
+  "other": []
+ },
+ "verdict": "PASS"
+}

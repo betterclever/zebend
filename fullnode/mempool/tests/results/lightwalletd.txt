@@ -1,0 +1,5 @@
+GetLightdInfo: 3532285 37a5165b /Zebend-fullnode:0.1/
+GetMempoolTx (all pools): 15 txs; getrawmempool 15; missing 0, not in mempool 0
+GetMempoolTx (default, shielded pools): 4 txs
+GetMempoolStream: 15 raw txs streamed (height field ['0']); getrawmempool 15
+LIGHTWALLETD MEMPOOL TEST PASS

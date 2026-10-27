@@ -1,0 +1,23 @@
+copy at tip 3532303; blocks 3532299..3532303 will be disconnected, then 3532294..3532298
+non-coinbase txs per disconnected block: {3532294: 2, 3532295: 15, 3532296: 1, 3532297: 2, 3532298: 2, 3532299: 8, 3532300: 16, 3532301: 0, 3532302: 25, 3532303: 1}
+test mempool block cache: [3532294, 3532295, 3532296, 3532297, 3532298, 3532299, 3532300, 3532301, 3532302, 3532303]
+  preload df98e079778b: not admitted on the copy: {'code': -25, 'message': 'missing input: c770db0409cbed9b196e47f2c07a74266741173047f6ac2e046da704d1b57bf5:1 is not an unspent output of the chain or the mempool'}
+preloaded 29 of 30 live mempool txs into the test mempool
+copy rolled back to 3532298
+after rollback: 42/50 disconnected-block txs re-admitted; 15/29 preloaded txs still in the mempool
+  not re-admitted d1f67b6d62e7bcdb: ('rejected', "Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block")
+  not re-admitted ff625f6614dad51e: ('rejected', "Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block")
+  not re-admitted 8d2123af8b8c4c93: ('rejected', "Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block")
+  not re-admitted f9896b70f94a1bf8: ('rejected', "Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block")
+  not re-admitted aacf2c70214a9213: ('rejected', "Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block")
+  not re-admitted 690e5d8c6dc9ae24: ('rejected', "Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block")
+  not re-admitted 7d0ef0647ba922d5: ('rejected', "Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block")
+  not re-admitted e91065a8278f3749: ('rejected', "Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block")
+copy rolled back further, to 3532293
+after the 2nd rollback: 22/22 newly disconnected txs re-admitted (0 anchored to a disconnected block); 22 mempool txs removed by the anchor re-check; mempool txs anchored above the tip: 0
+sync.py re-apply: 15:39:14 stopped at committed tip 3532303: 10 blocks 0.3 MB in 1 s, 17.2 blocks/s 0.54 MB/s
+after re-apply to 3532303: 55/55 disconnected-block txs in the mempool removed as mined; 14/29 preloaded txs still in the mempool
+8 disconnected-block txs have an Ironwood anchor of a disconnected block (must not be re-admitted)
+14 preloaded txs have an Ironwood anchor of a disconnected block (must leave the mempool)
+preloaded txs removed: {'anchored_to_disconnected_block': 14, 'dependent_of_removed': 1, 'other': []}
+REORG RE-ADMIT TEST PASS

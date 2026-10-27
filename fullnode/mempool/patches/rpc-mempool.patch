@@ -1,0 +1,74 @@
+--- a/fullnode/rpc.py	2026-10-27 13:59:52.778900738 +0400
++++ b/fullnode/rpc.py	2026-10-27 13:59:52.781497871 +0400
+@@ -9,8 +9,9 @@
+ verified headers.
+ 
+ Methods: getinfo, getblockchaininfo, getbestblockhash, getblockcount, getblockhash,
+-getblockheader, getblock (0/1/2), getrawtransaction (0/1), sendrawtransaction (relay over
+-P2P), z_gettreestate, getaddressutxos, getaddressbalance, getaddresstxids (UTXO-only, see
++getblockheader, getblock (0/1/2), getrawtransaction (0/1; mempool txs via the mempool
++process), sendrawtransaction, getrawmempool, getmempoolinfo (answered by the mempool process,
++fullnode/mempool, at ZEBEND_MEMPOOL_RPC), z_gettreestate, getaddressutxos, getaddressbalance, getaddresstxids (UTXO-only, see
+ README), getpeerinfo, getnetworkinfo, getmininginfo, getdifficulty, help.
+ 
+ usage: rpc.py [--port 8232] [--bind 127.0.0.1]
+@@ -28,6 +29,9 @@
+ BIN = HERE / "bin"
+ HDR = 1487
+ VERSION = 6020050  # reported as a zcashd-style version number (lightwalletd checks a minimum)
++# The mempool runs as its own process (fullnode/mempool/mempool.py); these methods are answered
++# by its RPC. Unset ZEBEND_MEMPOOL_RPC="" to keep the old behaviour (no mempool).
++MEMPOOL_RPC = os.environ.get("ZEBEND_MEMPOOL_RPC", "http://127.0.0.1:18234/")
+ SUBVERSION = "/Zebend-fullnode:0.1/"
+ 
+ # Network upgrades (mainnet): name, branch id, activation height.
+@@ -362,6 +366,8 @@
+ 
+     def getrawtransaction(self, txid, verbose=0):
+         r = self.q("SELECT height, idx FROM tx WHERE txid=?", (bytes.fromhex(txid)[::-1],))
++        if not r and MEMPOOL_RPC:
++            return mempool_call("getmempooltx", [txid, verbose])  # -5 if not in the mempool either
+         if not r:
+             raise RpcError(-5, "No such mempool or blockchain transaction")
+         h, i = r[0]
+@@ -376,7 +382,15 @@
+         j.update({"blockhash": b["hash"], "confirmations": tip - h + 1, "time": b["time"], "blocktime": b["time"]})
+         return j
+ 
+-    def sendrawtransaction(self, hexstr, *_):
++    def getrawmempool(self, verbose=False):
++        return mempool_call("getrawmempool", [verbose])
++
++    def getmempoolinfo(self):
++        return mempool_call("getmempoolinfo", [])
++
++    def sendrawtransaction(self, hexstr, *rest):
++        if MEMPOOL_RPC:  # full validation (Bend) + relay by the mempool process
++            return mempool_call("sendrawtransaction", [hexstr, *rest])
+         raw = bytes.fromhex(hexstr)
+         # txid and well-formedness from Bend: wrap the tx as the only tx of a dummy block record
+         # (blockdelta's wire validator + txid code); the dummy header/merkle lines are ignored.
+@@ -447,6 +461,23 @@
+                                 and m not in ("q", "tip", "height_of", "header", "branch_at", "pools", "tree_sizes")))
+ 
+ 
++def mempool_call(method, params):
++    """Call the mempool process's RPC (only methods it answers itself: no forwarding loop)."""
++    if not MEMPOOL_RPC:
++        raise RpcError(-1, "no mempool (ZEBEND_MEMPOOL_RPC is empty)")
++    import urllib.request
++    req = urllib.request.Request(MEMPOOL_RPC, data=json.dumps(
++        {"jsonrpc": "1.0", "id": 1, "method": method, "params": params}).encode(),
++        headers={"Content-Type": "application/json"})
++    try:
++        r = json.load(urllib.request.urlopen(req, timeout=300))
++    except Exception as e:
++        raise RpcError(-1, f"mempool unavailable: {e.__class__.__name__}")
++    if r.get("error"):
++        raise RpcError(r["error"].get("code", -1), r["error"].get("message", "mempool error"))
++    return r["result"]
++
++
+ def relay_tx(raw):
+     """Announce-free relay: send the `tx` message directly to a few peers."""
+     sent = 0

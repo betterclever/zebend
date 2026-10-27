@@ -1,0 +1,10 @@
+7 live txs, 5 with size <= 10,000 (cost 10,000 each); limit 30000
+  PASS  total cost never above the limit after an insertion (final 30000 / 30000, 3 txs)
+  PASS  evictions happened and every evicted txid is in the RecentlyEvicted cache 2 evicted of 5
+  PASS  re-submitting an evicted tx is answered from the cache cached: randomly evicted (ZIP 401)
+  PASS  eviction frequency follows the ZIP 401 weights (cost + 40,000 low-fee penalty) w=0.10:got=0.098 w=0.50:got=0.493 w=0.30:got=0.309 w=0.10:got=0.100
+  PASS  a rejected tx is rejected again from the cache (no re-validation) 1st: consensus (hook): transparent FAIL transparent input(s) 0 of 1 invalid; 2nd: cached: consensus (hook): transparent FAIL transparent input(s) 0 of 1 invalid
+  PASS  a malformed tx is answered from the cache the second time (keyed by its bytes' hash) 1st: consensus: malformed transaction (node/wire validator: INVALID wire); 2nd: cached: consensus: malformed transaction (node/wire validator: INVALID wire)
+  PASS  after a new block (tip-scoped caches cleared) it is validated again 3rd: consensus (hook): transparent FAIL transparent input(s) 0 of 1 invalid
+
+RESULT: 7/7 PASS

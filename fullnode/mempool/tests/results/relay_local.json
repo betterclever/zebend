@@ -1,0 +1,69 @@
+{
+ "checks": [
+  {
+   "check": "B admits the txs via sendrawtransaction",
+   "ok": true,
+   "detail": "6/6"
+  },
+  {
+   "check": "C receives them over P2P (inv -> getdata -> tx) and admits them",
+   "ok": true,
+   "detail": "6/6"
+  },
+  {
+   "check": "C's source for them is the P2P peer B",
+   "ok": true,
+   "detail": "['p2p 127.0.0.1']"
+  },
+  {
+   "check": "B served them (getdata -> tx)",
+   "ok": true,
+   "detail": "tx served 6"
+  },
+  {
+   "check": "sendrawtransaction of a tx already in the mempool returns its txid",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "handshake version/verack",
+   "ok": true,
+   "detail": "/Zebend-mempool:0.1/"
+  },
+  {
+   "check": "ping -> pong (same nonce)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "getaddr -> addr",
+   "ok": true,
+   "detail": "50 entries"
+  },
+  {
+   "check": "mempool -> inv of B's mempool",
+   "ok": true,
+   "detail": "6 entries, types [5]"
+  },
+  {
+   "check": "getdata (as announced) -> tx",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "getdata with a wrong auth digest -> notfound (ZIP 239)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "getdata unknown tx -> notfound",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "rate limit: flood of pings is cut off (not every ping answered, connection dropped)",
+   "ok": true,
+   "detail": "sent 1247, pongs 494, disconnected True"
+  }
+ ]
+}

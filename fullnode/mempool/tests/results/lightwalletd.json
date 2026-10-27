@@ -1,0 +1,17 @@
+{
+ "GetMempoolTx_all": {
+  "compact_txs": 15,
+  "getrawmempool": 15,
+  "missing": [],
+  "extra": []
+ },
+ "GetMempoolTx_shielded": 4,
+ "GetMempoolStream": {
+  "raw_txs": 15,
+  "getrawmempool": 15,
+  "heights": [
+   "0"
+  ]
+ },
+ "verdict": "PASS"
+}
