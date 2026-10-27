@@ -88,8 +88,10 @@ type Hd is Data:
   Stop{}
   Rec{h: U32, blen: U32, off: U32}
 
+# g: the caller asserts every block of the window already passed node/wire's validator
+# (blockdelta's gate on the same bytes), so the gate is not run again (argument --gated).
 type Paths is Type:
-  Paths{w: String, c: String}
+  Paths{w: String, c: String, g: Bool}
 
 type CR is Data:
   CR{ctx: +List<U32>, co: U32}
@@ -923,11 +925,18 @@ def rd_ctx(+cp: String, +coff: U32) -> IO(CR):
     lb : +List<U32> <- read_at(cp, coff, 4)
     rd_ctx2(coff, lb, cp)
 
-def with_cr(+blk: +List<U32>, +h: U32, cr: CR, p: Pools) -> BW:
-  CR{+ctx, +co} = cr
-  BW{gated(KB.parse_capped(blk), h, blk, ctx, p), co}
+def gate_sel(pre: Bool, +blk: +List<U32>) -> Maybe<&2, U32>:
+  match pre:
+    case True{}:
+      Some{0}
+    case False{}:
+      KB.parse_capped(blk)
 
-def loop(fuel: Nat, st: Hd, r: BW, +wp: String, +cp: String) -> IO(Unit):
+def with_cr(+pre: Bool, +blk: +List<U32>, +h: U32, cr: CR, p: Pools) -> BW:
+  CR{+ctx, +co} = cr
+  BW{gated(gate_sel(pre, blk), h, blk, ctx, p), co}
+
+def loop(fuel: Nat, st: Hd, r: BW, +wp: String, +cp: String, +pre: Bool) -> IO(Unit):
   match fuel st:
     case 0n _:
       BW{+b, _} = r
@@ -943,21 +952,28 @@ def loop(fuel: Nat, st: Hd, r: BW, +wp: String, +cp: String) -> IO(Unit):
         blk : +List<U32> <- read_at(wp, (off + 1495 : U32), blen)
         cr : CR <- rd_ctx(cp, coff)
         nh : +List<U32> <- read_at(wp, next, 1495)
-        loop(q, head_of(nh, next), with_cr(blk, h, cr, bout_p(b)), wp, cp)
+        loop(q, head_of(nh, next), with_cr(pre, blk, h, cr, bout_p(b)), wp, cp, pre)
+
+def is_gated_flag(xs: List<String>) -> Bool:
+  match xs:
+    case Con{f, _}:
+      String.eq(f, "--gated")
+    case Nil{}:
+      False{}
 
 def paths_of(xs: List<String>) -> Paths:
   match xs:
-    case Con{_, Con{a, Con{b, _}}}:
-      Paths{a, b}
+    case Con{_, Con{a, Con{b, t}}}:
+      Paths{a, b, is_gated_flag(t)}
     case _:
-      Paths{"", ""}
+      Paths{"", "", False{}}
 
 def run(ps: Paths) -> IO(Unit):
-  Paths{+wp, +cp} = ps
+  Paths{+wp, +cp, +pre} = ps
   do IO<Unit>:
     h0 : +List<U32> <- read_at(wp, 0, 1495)
     pb : +List<U32> <- read_at(cp, 0, 56)
-    loop(1000000n, head_of(h0, 0), BW{BOut{"", pools_of(pb)}, 56}, wp, cp)
+    loop(1000000n, head_of(h0, 0), BW{BOut{"", pools_of(pb)}, 56}, wp, cp, pre)
 
 def main() -> IO(Unit):
   do IO<Unit>:
