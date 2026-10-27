@@ -19,7 +19,8 @@ against the official crates (or the chain), never a proof.
 | **RedJubjub on real signatures** | **230,769** mainnet sigs (v4: 53,860 spend-auth + 59,055 binding; v5: 69,334 + 48,520), 29 chunks: Bend batch accepts all, Rust per-signature verdicts all valid, invalid sets equal in **29/29** chunks. **4 tampered chunks (32,766 sigs, 1,448 invalid per Rust): per-signature verdicts 32,766/32,766 equal Rust; batch + bisection finds exactly Rust's invalid set in 4/4** | ✅ tested |
 | **Transactions: parsing, txid, sighash** | **107,575** real v4/v5 Sapling txs (59,055 v4 incl. 148 with JoinSplits, 23,899 with transparent inputs; 48,520 v5): txid **107,575/107,575**, ZIP 243/244 shielded sighash = zcash_primitives **107,575/107,575**; description checks pass on all; every spend-auth and binding sig verifies under Bend's own sighash. Detailed sample (400: 200 v4, 200 v5, 30 with JoinSplits, 137 with transparent inputs incl. 40 v5 with prevout context, 46 with Orchard): txid, sighash, counts, valueBalance 400/400 each, 730/730 spend-auth + 400/400 binding valid | ✅ tested |
 | Tx negative tests | 1,623 real v4 txs × 3 tampers (enc-ciphertext byte, spend-auth sig byte, valueBalance+1): 4,869/4,869 behave as expected (txid changes; all sigs / exactly sig 0 fail) | ✅ tested (Bend only) |
-| v6 (NU6.3) txs | 2,372 seen: txid 2,372/2,372, but Sapling sig extraction/sighash is wrong for v6 (17 spend-auth + 793 binding fail): **v6 not supported** | ❌ |
+| **v6 (NU6.3) txs, with spent-output context** | all **2,372** v6 txs of the corpus (793 with transparent inputs; prevouts fetched by the oracle, `data/ctxset/`): txid 2,372/2,372, sighash = zcash_primitives 2,372/2,372, **5,046/5,046 per-signature RedJubjub verdicts equal Rust's**; their 7,616 Groth16 proofs all valid in Bend (`sapling/groth16`). The earlier v6 "failures" were only the missing transparent context: v6 uses the v5 Sapling layout and the same ZIP 244 sighash structure | ✅ tested |
+| **v5 txs with transparent inputs, with spent-output context** | all **20,431** (prevouts fetched by the oracle): txid 20,431/20,431, sighash 20,431/20,431, **21,791/21,791 per-signature verdicts equal Rust's**; their 32,105 Groth16 proofs all valid in Bend | ✅ tested |
 
 ### Speed (Bend vs Rust, same machine; load noted because other jobs shared it)
 
@@ -43,15 +44,13 @@ non-intrinsic calls (`gpuv/t/aircalls.sh`).
 | Jubjub | `jubjub/jubjub.bend`, `jubjub/consts.bend` (`gen_consts.py`, `jj.py`) |
 | Pedersen hash, tree, nullifiers | `tree/pedersen.bend`, `tree/stree.bend`, `tree/tree_main.bend`, `tree/nf_main.bend`, `tree/check_tree.py`, `tree/header_roots.py`, `tree/split_leaves.py`, `tree/gpu_gate.sh` |
 | RedJubjub | `sig/sig.bend`, `sig/msm_jj.bend`, `sig/sig_main.bend`, `sig/run_sigs.py` |
-| Transactions | `tx/stx.bend`, `tx/tx_main.bend`, `tx/check_txs.py`, `tx/hook.py` (fullnode hook adapter) |
+| Transactions | `tx/stx.bend`, `tx/tx_main.bend`, `tx/check_txs.py`, `tx/check_ctxset.py`, `hook.py` (fullnode hook) |
 | Oracle (Rust) | `oracle/` (see its README) |
 | Tests | `t/vec_main.bend`, `t/vectors.py`, `t/pyvec.py`, `t/pysig.py` |
 
 ## Not done / limits
 
 - Groth16 proofs (separate `groth16/` workstream); Sprout JoinSplit proofs and joinSplitSig.
-- v6 transactions (see table); v5 txs with transparent inputs are checked only in the 400-tx
-  sample (40 of them), because the 20,431 in the corpus have no prevouts fetched.
 - Anchors (spend anchor ∈ previous tree roots) are not checked; the tree code provides the roots.
 - Raw Pedersen-hash vectors with other personalizations (note commitments) are not run: the
   Bend hash is specialised to MerkleCRH's 516-bit input.
@@ -60,14 +59,24 @@ non-intrinsic calls (`gpuv/t/aircalls.sh`).
 - Leaves come from lightwalletd compact blocks (counts checked against the chain's tree size
   per block by the oracle; roots checked against chain and headers).
 
-## fullnode hook
+## fullnode hook (`hook.py`)
 
-`tx/hook.py <list file>` implements fullnode/hooks/README's contract for the non-proof Sapling
-checks (one `verdict <height> <txidx> PASS|FAIL <reason>` per item; reads P.tx, P.ctx, P.json).
-PASS means: Bend's txid equals P.json's, every Sapling description passes the decode /
-small-order / canonical-cmu checks, and every spend-auth and the binding signature verify under
-Bend's ZIP 243/244 sighash. v6 and other versions get FAIL "untested". It does not cover
-Groth16 or Sprout; those must also pass before a tx is valid.
+`sapling/hook.py <list file>` implements fullnode/hooks/README's contract (reads P.tx, P.ctx,
+P.json; prints `verdict <height> <txidx> PASS|FAIL <reason>`). All checks run in Bend:
+`tx/tx_main` (parse v4/v5/v6, txid, ZIP 243/244 sighash with the P.ctx spent outputs,
+description checks, every spend-auth and binding RedJubjub signature, and one Groth16
+record per spend/output written from its own parse) and `tx/g16_raw` (built from
+`groth16/verify_raw_main.bend`: every spend/output proof, public inputs computed in Bend).
+PASS = txid equals P.json's and all of the above hold. FAIL reasons: `unsupported-version`,
+`txid mismatch`, `unsupported-joinsplit` (v4 Sprout JoinSplits: joinSplitSig/Ed25519 not
+implemented), `sapling-description`, `redjubjub <verdicts>`, `groth16 <digits>`.
+Anchors are out of scope.
+
+Tests: 2,372/2,372 real v6 txs PASS (with context); 1,429 tampered copies all FAIL at the
+right stage (400 proof bit flips -> groth16; 229 spend-auth and 400 binding sig flips and 400
+valueBalance flips -> redjubjub); 400-tx v4/v5 sample: 370 PASS + 30 unsupported-joinsplit.
+Needs the binaries `tx/tx_main`, `tx/g16_raw` (`./build.sh groth16/verify_raw_main.bend
+tx/g16_raw`) and the VKs `groth16/data/vk_{spend,output,sprout}.bin`.
 
 ## Test vectors (Bend vs the Rust crates)
 
