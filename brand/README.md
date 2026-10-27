@@ -22,7 +22,7 @@ what Zebend does with Zcash's chain: it doesn't trust it, it checks it to the en
 | Pearl | `#FFF7E8` | The square on dark |
 | Coral | `#E0503A` | The square on light |
 | Ember dark | `#2B100B` | Text on light; dark ground |
-| Paper | `#FBF6EC` | Light ground |
+| Paper | `#F0DFCE` | Light ground |
 | Pass / Fail | `#2FBF71` / `#E5484D` | Verdicts only |
 
 The square is the proof's end and the self: pearl on dark, coral on light.
