@@ -3,8 +3,9 @@
 # Usage: rules <window.bin> <ctx.bin>
 #   window.bin: blockdelta's input format (records: u32 height | 1487-byte verified header |
 #               u32 length | block). The verified header is ignored here (blockdelta checks it).
-#   ctx.bin:    6 x (u32 lo, u32 hi): value pools before the first block (sprout, sapling,
-#               orchard, ironwood, lockbox, transparent; two's complement 64-bit),
+#   ctx.bin:    7 x (u32 lo, u32 hi): value pools before the first block (sprout, sapling,
+#               orchard, ironwood, lockbox, transparent, NSM value balance (ZIP 237);
+#               two's complement 64-bit),
 #               then per block: u32 L | L bytes:
 #                 u32 height | u32 nt | nt x u32 times of the previous (up to 11) blocks |
 #                 per spent transparent input of the block, in block order (coinbase input
@@ -14,7 +15,7 @@
 # fullnode/bend/parse.bend. Prints, per block:
 #   fail <h> <rule> [tx <i>] [detail]      one line per violated rule
 #   fees <h> <total miner fees>
-#   pools <h> <sprout> <sapling> <orchard> <ironwood> <lockbox> <transparent>   (after the block)
+#   pools <h> <sprout> <sapling> <orchard> <ironwood> <lockbox> <transparent> <nsm>   (after the block)
 #   verdict <h> VALID|INVALID
 # Rules (Zebra 7a839a6 / zcashd; see README.md for the source of each): coinbase position,
 # script length, BIP34 height, coinbase shielded restrictions, coinbase expiry, issuance
@@ -25,6 +26,10 @@
 # block, expiry, lock time, pre-Sapling tx size, value balance (fee >= 0), output total range,
 # coinbase maturity and the coinbase-spend shielding rule, block sigops (legacy + P2SH),
 # block time > median-time-past, and the ZIP 209 turnstile (no pool negative).
+# NU7 (>= 3,543,405; consensus/nu7, Zebra 1e03ee75): ZIP 218 subsidy / 3 and halving schedule,
+# ZIP 214 rev. 3 / ZIP 207 rev. 2 / ZIP 2008 funding streams, ZIP 235 miner fees (40% of
+# the fees; 60% to the NSM value balance), ZIP 237 NSM balance + reissuance (from 8,939,664),
+# ZIP 218 shielded action limits, ZIP 2003 (no v4: tx_version).
 import Base
 import ../bend/parse.bend as P
 import ../bend/delta.bend as D
@@ -35,6 +40,7 @@ import ../../node/block/util.bend as U
 import ../../consensus/issuance/issuance.bend as I
 import ../../consensus/issuance/params.bend as IP
 import ../../consensus/issuance/cb_main.bend as CB
+import ../../consensus/nu7/nu7.bend as N7
 
 # ---------------------------------------------------------------- 64-bit two's complement
 
@@ -58,7 +64,7 @@ type JA is Data:
 # coinbase's outputs for the issuance check; the ctx cursor after this tx's inputs.
 type TR is Data:
   TR{f: String, tin: H.U64, tout: H.U64, spr: H.U64, sap: H.U64, orch: H.U64, iw: H.U64, sig: U32,
-     keys: +List<+List<U32>>, cb: Bool, cbo: +List<IP.Out>, c: P.C}
+     keys: +List<+List<U32>>, cb: Bool, cbo: +List<IP.Out>, c: P.C, cnt: N7.Cnt}
 
 type Two is Data:
   Two{a: +List<+List<U32>>, b: +List<+List<U32>>}
@@ -67,12 +73,13 @@ type M3 is Data:
   M3{h: +List<U32>, xs: +List<+List<U32>>, ys: +List<+List<U32>>}
 
 type Pools is Data:
-  Pools{spr: H.U64, sap: H.U64, orch: H.U64, iw: H.U64, lock: H.U64, tr: H.U64}
+  Pools{spr: H.U64, sap: H.U64, orch: H.U64, iw: H.U64, lock: H.U64, tr: H.U64, nsm: H.U64}
 
 # Block accumulator over its transactions.
 type BA is Data:
   BA{f: String, fees: H.U64, tin: H.U64, tout: H.U64, spr: H.U64, sap: H.U64, orch: H.U64, iw: H.U64,
-     sig: U32, keys: +List<+List<U32>>, ncb: U32, cbout: H.U64, cbvb: H.U64, cbo: +List<IP.Out>, first_cb: Bool, c: P.C}
+     sig: U32, keys: +List<+List<U32>>, ncb: U32, cbout: H.U64, cbvb: H.U64, cbo: +List<IP.Out>, first_cb: Bool, c: P.C,
+     cnt: N7.Cnt}
 
 type BOut is Data:
   BOut{s: String, p: Pools}
@@ -547,10 +554,12 @@ def tx_out(is_cb: Bool, +h: U32, +bt: U32, +k: U32, +f: String, +common: String,
   match is_cb:
     case True{}:
       TR{f ++ common ++ coinbase_rules(h, ins, njs, nsp, nso, oflags, oacts, iflags, iacts, exp, ow),
-         tin, tout, spr, svb, ovb, ivb, (sig_legacy(ins, outs) + p2sh : U32), keys, True{}, iouts(outs), c2}
+         tin, tout, spr, svb, ovb, ivb, (sig_legacy(ins, outs) + p2sh : U32), keys, True{}, iouts(outs), c2,
+         N7.Cnt{oacts, iacts, (nsp + nso : U32), njs}}
     case False{}:
       TR{f ++ common ++ noncb_rules(h, bt, k, lock, exp, ow, fin, nn) ++ when(neg_q(fee), flt(h, "value_balance", k)),
-         tin, tout, spr, svb, ovb, ivb, (sig_legacy(ins, outs) + p2sh : U32), keys, False{}, Nil{}, c2}
+         tin, tout, spr, svb, ovb, ivb, (sig_legacy(ins, outs) + p2sh : U32), keys, False{}, Nil{}, c2,
+         N7.Cnt{oacts, iacts, (nsp + nso : U32), njs}}
 
 # ---------------------------------------------------------------- duplicates (sort, then adjacent)
 
@@ -753,17 +762,17 @@ def cbo_sel(b: Bool, +x: +List<IP.Out>, +y: +List<IP.Out>) -> +List<IP.Out>:
       y
 
 def ba_add(r: TR, +k: U32, a: BA) -> BA:
-  TR{+f, +tin, +tout, +spr, +sap, +orch, +iw, +sig, +keys, +cb, +cbo, +c} = r
-  BA{+af, +fees, +atin, +atout, +aspr, +asap, +aorch, +aiw, +asig, +akeys, +ncb, +cbout, +cbvb, +acbo, +first, _} = a
+  TR{+f, +tin, +tout, +spr, +sap, +orch, +iw, +sig, +keys, +cb, +cbo, +c, +tc} = r
+  BA{+af, +fees, +atin, +atout, +aspr, +asap, +aorch, +aiw, +asig, +akeys, +ncb, +cbout, +cbvb, +acbo, +first, _, +acnt} = a
   +fee = sub64(add64(add64(add64(sub64(tin, spr), sap), orch), iw), tout)
   +k0 = U32.is_eq(k, 0)
   BA{af ++ f, sel64(cb, fees, add64(fees, fee)), add64(atin, tin), add64(atout, tout), add64(aspr, spr),
      add64(asap, sap), add64(aorch, orch), add64(aiw, iw), (asig + sig : U32), kappend(keys, akeys),
      (ncb + b32(cb) : U32), sel64(k0, tout, cbout), sel64(k0, add64(add64(sap, orch), iw), cbvb),
-     cbo_sel(k0, cbo, acbo), sel_b(k0, cb, first), c}
+     cbo_sel(k0, cbo, acbo), sel_b(k0, cb, first), c, N7.cnt_add(acnt, tc)}
 
 def ba_c(a: BA) -> P.C:
-  BA{_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, +c} = a
+  BA{_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, +c, _} = a
   c
 
 def txs_walk(n: Nat, +h: U32, +bt: U32, +k: U32, +c: P.C, +a: BA) -> BA:
@@ -776,9 +785,9 @@ def txs_walk(n: Nat, +h: U32, +bt: U32, +k: U32, +c: P.C, +a: BA) -> BA:
       txs_walk(m, h, bt, (k + 1 : U32), P.skip(c, size), ba_add(tx_rules(h, bt, k, t, ba_c(a)), k, a))
 
 def show_pools(+h: U32, p: Pools) -> String:
-  Pools{+a, +b, +c, +d, +e, +f} = p
+  Pools{+a, +b, +c, +d, +e, +f, +g} = p
   "pools " ++ U32.show(h) ++ " " ++ D.sdec(a) ++ " " ++ D.sdec(b) ++ " " ++ D.sdec(c) ++ " " ++ D.sdec(d) ++ " "
-    ++ D.sdec(e) ++ " " ++ D.sdec(f) ++ "\n"
+    ++ D.sdec(e) ++ " " ++ D.sdec(f) ++ " " ++ D.sdec(g) ++ "\n"
 
 # Funding stream share deferred to the lockbox (ZIP 1015/2001: 12% from NU6 until 4,406,400),
 # less the NU6.1 one-time disbursement of 78,750 ZEC (ZIP 271) at 3,146,400.
@@ -793,29 +802,39 @@ def vstr(b: Bool) -> String:
     case False{}:
       "INVALID"
 
+def nat_sel2(b: Bool, +x: Nat, +y: Nat) -> Nat:
+  match b:
+    case True{}:
+      x
+    case False{}:
+      y
+
 def block_fin(a: BA, +h: U32, +bt: U32, +ntx: U32, +ts: +List<U32>, p: Pools) -> BOut:
-  BA{+f, +fees, +tin, +tout, +spr, +sap, +orch, +iw, +sig, +keys, +ncb, +cbout, +cbvb, +cbo, +first, _} = a
-  Pools{+psp, +psa, +por, +piw, +plo, +ptr} = p
+  BA{+f, +fees, +tin, +tout, +spr, +sap, +orch, +iw, +sig, +keys, +ncb, +cbout, +cbvb, +cbo, +first, _, +cnt} = a
+  Pools{+psp, +psa, +por, +piw, +plo, +ptr, +pnsm} = p
   +hn = U32.to_nat(h)
-  +subsidy = I.block_subsidy(hn)
-  +dfr = deferred(h, subsidy)
-  +es = CB.expected(hn)
+  +a7 = U32.is_ge(h, nu7())
+  +subsidy = nat_sel2(a7, Nat.add(N7.subsidy(N7.Main{}, hn), nat_of(N7.additional(N7.Main{}, h, pnsm))), I.block_subsidy(hn))
+  +dfr = sel64(a7, w64(U32.from_nat(N7.fs_deferred(N7.Main{}, hn, subsidy))), deferred(h, subsidy))
+  +es = cbo_sel(a7, N7.required7(N7.Main{}, hn, subsidy), CB.expected(hn))
   +need = List.length(&2, IP.Out, es)
   +got = CB.matched(es, cbo)
   +total_out = add64(sub64(cbout, cbvb), dfr)
-  +total_in = add64(w64(U32.from_nat(subsidy)), fees)
+  +total_in = add64(w64(U32.from_nat(subsidy)), N7.miner_fees(N7.Main{}, h, fees))
   +nsp = add64(psp, spr)
   +nsa = sub64(psa, sap)
   +nor = sub64(por, orch)
   +niw = sub64(piw, iw)
   +nlo = add64(plo, dfr)
   +ntr = add64(ptr, sub64(tout, tin))
+  +nnsm = N7.nsm_after(N7.Main{}, h, pnsm, fees)
   +nd = dups(keys)
   +f2 = f
     ++ when(Bool.not(first) || Bool.not(U32.is_eq(ncb, 1)), fl(h, "coinbase_first"))
-    ++ when(U32.is_lt(h, nu7()) && Bool.not(Nat.is_eq(need, got)), fl(h, "issuance_required_outputs"))
-    ++ when(U32.is_lt(h, nu7()) && ((U32.is_lt(h, nu6()) && lt64(total_in, total_out)) || (U32.is_ge(h, nu6()) && Bool.not(eq64(total_in, total_out)))),
+    ++ when(Bool.not(Nat.is_eq(need, got)), fl(h, "issuance_required_outputs"))
+    ++ when((U32.is_lt(h, nu6()) && lt64(total_in, total_out)) || (U32.is_ge(h, nu6()) && Bool.not(eq64(total_in, total_out))),
             fl(h, "miner_fees"))
+    ++ when(a7 && Bool.not(N7.limits_ok(cnt)), fl(h, "shielded_action_limits"))
 
     ++ when(U32.is_gt(nd, 0), fl(h, "duplicate_spend"))
     ++ when(U32.is_gt(sig, 20000), fl(h, "sigops"))
@@ -823,9 +842,10 @@ def block_fin(a: BA, +h: U32, +bt: U32, +ntx: U32, +ts: +List<U32>, p: Pools) ->
     ++ when(neg_q(nsp), fl(h, "turnstile_sprout")) ++ when(neg_q(nsa), fl(h, "turnstile_sapling"))
     ++ when(neg_q(nor), fl(h, "turnstile_orchard")) ++ when(neg_q(niw), fl(h, "turnstile_ironwood"))
     ++ when(neg_q(nlo), fl(h, "turnstile_lockbox")) ++ when(neg_q(ntr), fl(h, "turnstile_transparent"))
+    ++ when(neg_q(nnsm), fl(h, "turnstile_nsm"))
   +ok = String.eq(f2, "")
-  BOut{f2 ++ when(U32.is_ge(h, nu7()), "skip " ++ U32.show(h) ++ " issuance miner_fees lockbox (NU7 subsidy, ZIP 218/235/237: pending)\n") ++ "fees " ++ U32.show(h) ++ " " ++ D.sdec(fees) ++ " sigops " ++ U32.show(sig) ++ " txs " ++ U32.show(ntx) ++ "\n"
-       ++ show_pools(h, Pools{nsp, nsa, nor, niw, nlo, ntr}) ++ "verdict " ++ U32.show(h) ++ " " ++ vstr(ok) ++ "\n", Pools{nsp, nsa, nor, niw, nlo, ntr}}
+  BOut{f2 ++ "fees " ++ U32.show(h) ++ " " ++ D.sdec(fees) ++ " sigops " ++ U32.show(sig) ++ " txs " ++ U32.show(ntx) ++ "\n"
+       ++ show_pools(h, Pools{nsp, nsa, nor, niw, nlo, ntr, nnsm}) ++ "verdict " ++ U32.show(h) ++ " " ++ vstr(ok) ++ "\n", Pools{nsp, nsa, nor, niw, nlo, ntr, nnsm}}
 
 def block_rules(+h: U32, +blk: +List<U32>, +ctx: +List<U32>, p: Pools) -> BOut:
   +hdr = H.take(blk, 1487)
@@ -838,7 +858,7 @@ def block_rules(+h: U32, +blk: +List<U32>, +ctx: +List<U32>, p: Pools) -> BOut:
   +c0 = P.skip(cc, (8 + 4 * nt : U32))
   +ntx = P.cs_v(n)
   +a = txs_walk(U32.to_nat(ntx), h, bt, 0, P.cs_c(n),
-                BA{"", z64(), z64(), z64(), z64(), z64(), z64(), z64(), 0, Nil{}, 0, z64(), z64(), Nil{}, False{}, c0})
+                BA{"", z64(), z64(), z64(), z64(), z64(), z64(), z64(), 0, Nil{}, 0, z64(), z64(), Nil{}, False{}, c0, N7.cnt0()})
   block_fin(a, h, bt, ntx, ts, p)
 
 def gated(m: Maybe<&2, U32>, +h: U32, +blk: +List<U32>, +ctx: +List<U32>, p: Pools) -> BOut:
@@ -883,7 +903,7 @@ def u64_at(+bs: +List<U32>, +i: U32) -> H.U64:
   H.U64{H.le32(H.drop(bs, i)), H.le32(H.drop(bs, (i + 4 : U32)))}
 
 def pools_of(+bs: +List<U32>) -> Pools:
-  Pools{u64_at(bs, 0), u64_at(bs, 8), u64_at(bs, 16), u64_at(bs, 24), u64_at(bs, 32), u64_at(bs, 40)}
+  Pools{u64_at(bs, 0), u64_at(bs, 8), u64_at(bs, 16), u64_at(bs, 24), u64_at(bs, 32), u64_at(bs, 40), u64_at(bs, 48)}
 
 def bout_s(b: BOut) -> String:
   BOut{+s, _} = b
@@ -936,8 +956,8 @@ def run(ps: Paths) -> IO(Unit):
   Paths{+wp, +cp} = ps
   do IO<Unit>:
     h0 : +List<U32> <- read_at(wp, 0, 1495)
-    pb : +List<U32> <- read_at(cp, 0, 48)
-    loop(1000000n, head_of(h0, 0), BW{BOut{"", pools_of(pb)}, 48}, wp, cp)
+    pb : +List<U32> <- read_at(cp, 0, 56)
+    loop(1000000n, head_of(h0, 0), BW{BOut{"", pools_of(pb)}, 56}, wp, cp)
 
 def main() -> IO(Unit):
   do IO<Unit>:
