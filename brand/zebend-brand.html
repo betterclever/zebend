@@ -1,24 +1,24 @@
 <title>Zebend Brand</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
 /* Layout: a specimen book. Wide ink hero, then left-aligned sections on a 12-col measure. */
 :root{
-  --ink:#15123A; --violet:#5B47F0; --amber:#E08A12; --paper:#F5F4FB;
-  --bg:#F5F4FB; --surface:#FFFFFF; --fg:#15123A; --muted:#55527A; --line:#DAD7EC;
-  --stroke-on-tile:#A497FF; --amber-on-tile:#FFB547; --tile:#15123A;
+  --ink:#2B100B; --violet:#C27400; --amber:#C8391F; --paper:#FBF6EC;
+  --bg:#FBF6EC; --surface:#FFFDF8; --fg:#2B100B; --muted:#7A5145; --line:#EBDDCB;
+  --stroke-on-tile:#FFB627; --amber-on-tile:#FFF7E8; --tile:#B5301C;
   --pass:#1E9E5A; --fail:#D63D42;
-  --display:"Unbounded", "Avenir Next", system-ui, sans-serif;
+  --display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
   --body:"Instrument Sans", "Helvetica Neue", system-ui, sans-serif;
   --mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#0E0C26; --surface:#18153F; --fg:#ECEAFB; --muted:#A9A5CF; --line:#2C2860;
-  --violet:#A497FF; --amber:#FFB547; --pass:#3DD68C; --fail:#FF6B6F; color-scheme:dark } }
+  --bg:#1E0A06; --surface:#2B100B; --fg:#FFF7E8; --muted:#E2B9A8; --line:#4A2016;
+  --violet:#FFB627; --amber:#FFF7E8; --pass:#3DD68C; --fail:#FF6B6F; color-scheme:dark } }
 :root[data-theme="dark"]{
-  --bg:#0E0C26; --surface:#18153F; --fg:#ECEAFB; --muted:#A9A5CF; --line:#2C2860;
-  --violet:#A497FF; --amber:#FFB547; --pass:#3DD68C; --fail:#FF6B6F; color-scheme:dark }
+  --bg:#1E0A06; --surface:#2B100B; --fg:#FFF7E8; --muted:#E2B9A8; --line:#4A2016;
+  --violet:#FFB627; --amber:#FFF7E8; --pass:#3DD68C; --fail:#FF6B6F; color-scheme:dark }
 
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font:400 16px/1.6 var(--body);margin:0}
@@ -30,14 +30,14 @@ p{margin:0;max-width:62ch}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 
 /* Hero: always ink, the brand's own ground */
-.hero{background:#15123A;color:#ECEAFB}
+.hero{background:#2B100B;color:#FFF7E8}
 .hero .wrap{display:grid;grid-template-columns:auto 1fr;gap:clamp(24px,5vw,64px);align-items:center;padding-block:clamp(40px,7vw,88px)}
-.hero svg.icon{width:clamp(120px,20vw,220px);height:auto;display:block;border-radius:22%;box-shadow:0 0 0 1px #2C2860}
-.word{font:800 clamp(52px,11vw,124px)/.9 var(--display);letter-spacing:-.03em;color:#ECEAFB}
-.word .sq{display:inline-block;width:.32em;height:.32em;background:#FFB547;margin-left:.06em;vertical-align:baseline}
-.tag{font:500 clamp(18px,2.4vw,24px)/1.3 var(--body);color:#C9C3FF;margin-top:16px}
-.cli{margin-top:24px;font:400 14px/1.5 var(--mono);color:#A9A5CF;background:#0E0C26;border:1px solid #2C2860;border-radius:10px;padding:12px 14px;overflow-x:auto;white-space:nowrap}
-.cli b{color:#A497FF;font-weight:600}.cli .ok{color:#3DD68C}.cli .q{color:#FFB547}
+.hero svg.icon{width:clamp(120px,20vw,220px);height:auto;display:block;border-radius:22%;box-shadow:0 0 0 1px #5A2418}
+.word{font:800 clamp(52px,11vw,124px)/.9 var(--display);letter-spacing:-.03em;color:#FFF7E8}
+.word .sq{display:inline-block;width:.32em;height:.32em;background:#FFF7E8;margin-left:.06em;vertical-align:baseline}
+.tag{font:500 clamp(18px,2.4vw,24px)/1.3 var(--body);color:#FFD98A;margin-top:16px}
+.cli{margin-top:24px;font:400 14px/1.5 var(--mono);color:#F1C9B8;background:#1E0A06;border:1px solid #5A2418;border-radius:10px;padding:12px 14px;overflow-x:auto;white-space:nowrap}
+.cli b{color:#FFB627;font-weight:600}.cli .ok{color:#3DD68C}.cli .q{color:#FFF7E8}
 @media (max-width:640px){.hero .wrap{grid-template-columns:1fr}}
 
 section{padding-block:clamp(40px,6vw,72px);border-bottom:1px solid var(--line)}
@@ -85,13 +85,13 @@ section .head{display:grid;gap:8px;margin-bottom:28px}
 .apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px}
 .app{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
 .app .cap{padding:10px 14px;font:600 12px/1.4 var(--mono);color:var(--muted);border-top:1px solid var(--line)}
-.social{background:#15123A;color:#ECEAFB;aspect-ratio:1200/630;max-width:100%;padding:7%;display:grid;align-content:space-between}
+.social{background:#B5301C;color:#FFF7E8;aspect-ratio:1200/630;max-width:100%;padding:7%;display:grid;align-content:space-between}
 .social .top{display:flex;align-items:center;gap:12px}
 .social .top svg{width:44px;height:44px;border-radius:22%}
 .social .top span{font:800 26px/1 var(--display);letter-spacing:-.02em}
 .social .big{font:700 clamp(20px,3.2vw,30px)/1.15 var(--display);letter-spacing:-.01em;text-wrap:balance}
-.social .nums{font:400 12px/1.5 var(--mono);color:#A9A5CF}
-.social .nums b{color:#FFB547;font-weight:600}
+.social .nums{font:400 12px/1.5 var(--mono);color:#F1C9B8}
+.social .nums b{color:#FFF7E8;font-weight:600}
 .readme{padding:18px;display:grid;gap:10px}
 .readme .hd{display:flex;align-items:center;gap:10px}
 .readme .hd svg{width:32px;height:32px;border-radius:22%}
@@ -100,8 +100,8 @@ section .head{display:grid;gap:8px;margin-bottom:28px}
 .badges{display:flex;flex-wrap:wrap;gap:6px}
 .badge{font:600 11px/1 var(--mono);border-radius:6px;padding:6px 8px;border:1px solid var(--line)}
 .badge.p{color:var(--pass)} .badge.a{color:var(--amber)}
-.term{background:#0E0C26;color:#C9C3FF;font:400 13px/1.6 var(--mono);padding:16px;overflow-x:auto;white-space:pre}
-.term .ok{color:#3DD68C}.term .q{color:#FFB547}.term .d{color:#6F6A9E}
+.term{background:#1E0A06;color:#FFE2B0;font:400 13px/1.6 var(--mono);padding:16px;overflow-x:auto;white-space:pre}
+.term .ok{color:#3DD68C}.term .q{color:#FFD98A}.term .d{color:#6F6A9E}
 
 /* Rules */
 .rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}
@@ -122,9 +122,9 @@ footer{padding-block:40px;color:var(--muted);font-size:14px}
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <symbol id="z-tile" viewBox="0 0 512 512">
-      <rect width="512" height="512" rx="116" fill="#15123A"/>
-      <g transform="translate(-10 -3)"><path d="M124 150 H316 Q354 150 330 181 L198 337 Q174 368 214 368 H322" fill="none" stroke="#A497FF" stroke-width="64" stroke-linejoin="round"/>
-      <rect x="344" y="336" width="64" height="64" fill="#FFB547"/></g>
+      <rect width="512" height="512" rx="116" fill="#B5301C"/>
+      <g transform="translate(-10 -3)"><path d="M124 150 H316 Q354 150 330 181 L198 337 Q174 368 214 368 H322" fill="none" stroke="#FFB627" stroke-width="64" stroke-linejoin="round"/>
+      <rect x="344" y="336" width="64" height="64" fill="#FFF7E8"/></g>
     </symbol>
   </defs>
 </svg>
@@ -132,12 +132,12 @@ footer{padding-block:40px;color:var(--muted);font-size:14px}
 <header class="hero">
   <div class="wrap">
     <svg class="icon" viewBox="0 0 512 512" role="img" aria-label="Zebend icon">
-      <rect width="512" height="512" rx="116" fill="#15123A"/>
-      <g transform="translate(-10 -3)"><path d="M124 150 H316 Q354 150 330 181 L198 337 Q174 368 214 368 H322" fill="none" stroke="#A497FF" stroke-width="64" stroke-linejoin="round"/>
-      <rect class="q" x="344" y="336" width="64" height="64" fill="#FFB547"/></g>
+      <rect width="512" height="512" rx="116" fill="#B5301C"/>
+      <g transform="translate(-10 -3)"><path d="M124 150 H316 Q354 150 330 181 L198 337 Q174 368 214 368 H322" fill="none" stroke="#FFB627" stroke-width="64" stroke-linejoin="round"/>
+      <rect class="q" x="344" y="336" width="64" height="64" fill="#FFF7E8"/></g>
     </svg>
     <div>
-      <div class="eyebrow" style="color:#A9A5CF">Brand book</div>
+      <div class="eyebrow" style="color:#F1C9B8">Brand book</div>
       <h1 class="word">zebend<span class="sq" aria-hidden="true"></span></h1>
       <p class="tag">Zcash, independently verified.</p>
       <div class="cli" role="img" aria-label="Example node output"><b>zebend</b> ▸ block <span class="mono">3,532,556</span> · every rule <span class="ok">PASS</span> · turnstile checked <span class="q">∎</span></div>
@@ -166,24 +166,24 @@ footer{padding-block:40px;color:var(--muted);font-size:14px}
 </div></section>
 
 <section><div class="wrap">
-  <div class="head"><div class="eyebrow">Colour</div><h2>Ink, violet, and a rationed amber</h2>
-    <p>Amber marks only what is finished and proven: the square, a verified result. Violet carries everything else.</p></div>
+  <div class="head"><div class="eyebrow">Colour</div><h2>Saffron, vermilion and pearl</h2>
+    <p>Saffron carries the Z, the warm red grounds it, and pearl is the square that ends every proof. Black and navy stay out of the lead.</p></div>
   <div class="sw">
-    <div class="chip"><div class="c" style="background:#15123A"></div><div class="t"><b>Shield ink</b><span>#15123A · grounds, text</span></div></div>
-    <div class="chip"><div class="c" style="background:#A497FF"></div><div class="t"><b>Bend violet</b><span>#A497FF · on ink</span></div></div>
-    <div class="chip"><div class="c" style="background:#5B47F0"></div><div class="t"><b>Bend violet</b><span>#5B47F0 · on paper</span></div></div>
-    <div class="chip"><div class="c" style="background:#FFB547"></div><div class="t"><b>QED amber</b><span>#FFB547 · on ink</span></div></div>
-    <div class="chip"><div class="c" style="background:#E08A12"></div><div class="t"><b>QED amber</b><span>#E08A12 · on paper</span></div></div>
-    <div class="chip"><div class="c" style="background:#F5F4FB;border-bottom:1px solid var(--line)"></div><div class="t"><b>Paper</b><span>#F5F4FB · light ground</span></div></div>
+    <div class="chip"><div class="c" style="background:#B5301C"></div><div class="t"><b>Vermilion</b><span>#B5301C · tile, grounds</span></div></div>
+    <div class="chip"><div class="c" style="background:#FFB627"></div><div class="t"><b>Saffron</b><span>#FFB627 · the Z, on dark</span></div></div>
+    <div class="chip"><div class="c" style="background:#C27400"></div><div class="t"><b>Saffron, deep</b><span>#C27400 · the Z, on light</span></div></div>
+    <div class="chip"><div class="c" style="background:#FFF7E8;border-bottom:1px solid var(--line)"></div><div class="t"><b>Pearl</b><span>#FFF7E8 · the square, on dark</span></div></div>
+    <div class="chip"><div class="c" style="background:#C8391F"></div><div class="t"><b>Coral</b><span>#C8391F · the square, on light</span></div></div>
+    <div class="chip"><div class="c" style="background:#2B100B"></div><div class="t"><b>Ember dark</b><span>#2B100B · text, dark ground</span></div></div>
     <div class="chip"><div class="c" style="background:#2FBF71"></div><div class="t"><b>Pass</b><span>#2FBF71 · PASS, MATCH</span></div></div>
     <div class="chip"><div class="c" style="background:#E5484D"></div><div class="t"><b>Fail</b><span>#E5484D · FAIL, MISMATCH</span></div></div>
   </div>
 </div></section>
 
 <section><div class="wrap">
-  <div class="head"><div class="eyebrow">Type</div><h2>Wide for the name, plain for the words, mono for the numbers</h2></div>
+  <div class="head"><div class="eyebrow">Type</div><h2>Characterful for the name, plain for the words, mono for the numbers</h2></div>
   <div class="type">
-    <div class="spec"><div class="lbl">Unbounded 800<br>wordmark, headlines</div><div class="s1">zebend∎</div></div>
+    <div class="spec"><div class="lbl">Bricolage Grotesque 800<br>wordmark, headlines</div><div class="s1">zebend∎</div></div>
     <div class="spec"><div class="lbl">Instrument Sans<br>body</div><div class="s2">A second, independent implementation of Zcash's core, written in a proof language, that agrees with the official one on real mainnet data.</div></div>
     <div class="spec"><div class="lbl">JetBrains Mono<br>numbers, verdicts</div><div class="s3">392,806 / 392,806 agree · height 3,532,556 · 0x77190ad9</div></div>
   </div>

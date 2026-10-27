@@ -8,28 +8,28 @@ what Zebend does with Zcash's chain: it doesn't trust it, it checks it to the en
 
 | File | Use |
 |---|---|
-| `icon.svg` | App icon, avatar, favicon (dark tile). Holds at 16 px. |
-| `mark.svg` | The mark on light backgrounds (violet + amber). |
+| `icon.svg` | App icon, avatar, favicon (vermilion tile). Holds at 16 px. |
+| `mark.svg` | The mark on light backgrounds (saffron Z, coral square). |
 | `mark-mono.svg` | One colour; takes `currentColor` (print, terminals, embossing). |
 
 ## Colour
 
 | Token | Hex | Use |
 |---|---|---|
-| Shield ink | `#15123A` | Primary dark ground; text on light |
-| Bend violet (on dark) | `#A497FF` | The stroke on ink |
-| Bend violet (on light) | `#5B47F0` | The stroke and links on paper |
-| QED amber (on dark) | `#FFB547` | The square, and only things that are proven or verified |
-| QED amber (on light) | `#E08A12` | Same, on paper |
-| Paper | `#F5F4FB` | Light ground |
-| Pass | `#2FBF71` | Verdicts: PASS / MATCH |
-| Fail | `#E5484D` | Verdicts: FAIL / MISMATCH |
+| Vermilion | `#B5301C` | Icon tile, brand grounds |
+| Saffron | `#FFB627` | The Z on dark |
+| Saffron, deep | `#C27400` | The Z and links on light |
+| Pearl | `#FFF7E8` | The square on dark |
+| Coral | `#C8391F` | The square on light |
+| Ember dark | `#2B100B` | Text on light; dark ground |
+| Paper | `#FBF6EC` | Light ground |
+| Pass / Fail | `#2FBF71` / `#E5484D` | Verdicts only |
 
-Amber is rationed: it marks the end of a proof or a verified result, never decoration.
+The square is the proof's end and the self: pearl on dark, coral on light.
 
 ## Type
 
-- **Unbounded** (700) for the wordmark `zebend` and big headlines, lowercase.
+- **Bricolage Grotesque** (800) for the wordmark `zebend` and big headlines, lowercase.
 - **Instrument Sans** for body text.
 - **JetBrains Mono** for numbers, heights, hashes and verdicts, with tabular figures.
 
@@ -47,5 +47,5 @@ Taglines:
 
 - Keep clear space around the mark of at least the square's width on every side.
 - Minimum size: 16 px for the icon, 20 px tall for the mark.
-- Don't recolour the square, separate it from the Z, rotate the mark, or add effects.
+- Don't recolour the square (pearl on dark, coral on light), separate it from the Z, rotate the mark, or add effects.
 - Zebend is independent: never pair the mark with the Zcash logo or imply endorsement.
