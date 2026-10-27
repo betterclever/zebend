@@ -1324,3 +1324,499 @@
 15:11:06 download done at 3532287
 15:12:17 headers: appended 2 headers 3532287..3532288 (Equihash, target, links, difficulty: Bend PASS); verified to 3532288; have blocks to 3532286
 15:12:17 download: heights 3532287..3532288, 4 peers, spool cap 30 GB
+15:12:44 download done at 3532289
+15:14:00 headers: appended 1 headers 3532289..3532289 (Equihash, target, links, difficulty: Bend PASS); verified to 3532289; have blocks to 3532288
+15:14:00 download: heights 3532289..3532289, 4 peers, spool cap 30 GB
+15:14:27 download done at 3532290
+15:15:37 headers: appended 2 headers 3532290..3532291 (Equihash, target, links, difficulty: Bend PASS); verified to 3532291; have blocks to 3532289
+15:15:37 download: heights 3532290..3532291, 4 peers, spool cap 30 GB
+15:16:18 download done at 3532292
+15:17:30 headers: appended 1 headers 3532292..3532292 (Equihash, target, links, difficulty: Bend PASS); verified to 3532292; have blocks to 3532291
+15:17:30 download: heights 3532292..3532292, 4 peers, spool cap 30 GB
+15:18:14 download done at 3532293
+15:19:28 headers: appended 2 headers 3532293..3532294 (Equihash, target, links, difficulty: Bend PASS); verified to 3532294; have blocks to 3532292
+15:19:28 download: heights 3532293..3532294, 4 peers, spool cap 30 GB
+15:20:10 download done at 3532295
+15:21:39 headers: no headers from any peer; verified to 3532294; have blocks to 3532294
+15:22:46 headers: appended 3 headers 3532295..3532297 (Equihash, target, links, difficulty: Bend PASS); verified to 3532297; have blocks to 3532294
+15:22:46 download: heights 3532295..3532297, 4 peers, spool cap 30 GB
+15:23:10 download done at 3532298
+15:24:38 headers: appended 2 headers 3532298..3532299 (Equihash, target, links, difficulty: Bend PASS); verified to 3532299; have blocks to 3532297
+15:24:38 download: heights 3532298..3532299, 4 peers, spool cap 30 GB
+15:26:37 height 3532298  run avg    0.0 blocks/s  0.00 MB/s  last 5 min    0.0 blocks/s  0.00 MB/s  peers 1 (+3 connecting)  total 0.00 GB  spool 0.00 GB  requeued 4
+15:26:37   drops {'ConnectionError: peer closed': 2}  rejects {'ConnectionError': 66, 'ConnectionResetError': 25, 'behind, not NODE_NETWORK, or full': 13, 'ConnectionRefusedError': 16, 'TimeoutError': 31}  book 437
+15:26:37   peers: 164.132.200.159 /Zakura:1.7.0-modified/ up 0.000MB/s spb=0.19
+15:26:38 download done at 3532300
+15:27:57 headers: appended 1 headers 3532300..3532300 (Equihash, target, links, difficulty: Bend PASS); verified to 3532300; have blocks to 3532299
+15:27:57 download: heights 3532300..3532300, 4 peers, spool cap 30 GB
+15:28:29 download done at 3532301
+15:29:41 headers: appended 1 headers 3532301..3532301 (Equihash, target, links, difficulty: Bend PASS); verified to 3532301; have blocks to 3532300
+15:29:41 download: heights 3532301..3532301, 4 peers, spool cap 30 GB
+15:29:54 download done at 3532302
+15:31:26 headers: no headers from any peer; verified to 3532301; have blocks to 3532301
+15:32:47 headers: appended 1 headers 3532302..3532302 (Equihash, target, links, difficulty: Bend PASS); verified to 3532302; have blocks to 3532301
+15:32:47 download: heights 3532302..3532302, 4 peers, spool cap 30 GB
+15:33:05 download done at 3532303
+15:34:24 headers: appended 1 headers 3532303..3532303 (Equihash, target, links, difficulty: Bend PASS); verified to 3532303; have blocks to 3532302
+15:34:24 download: heights 3532303..3532303, 4 peers, spool cap 30 GB
+15:34:52 download done at 3532304
+15:36:20 headers: no headers from any peer; verified to 3532303; have blocks to 3532303
+15:39:03 headers: no headers from any peer; verified to 3532303; have blocks to 3532303
+15:40:29 headers: no headers from any peer; verified to 3532303; have blocks to 3532303
+15:41:37 headers: appended 4 headers 3532304..3532307 (Equihash, target, links, difficulty: Bend PASS); verified to 3532307; have blocks to 3532303
+15:41:37 download: heights 3532304..3532307, 4 peers, spool cap 30 GB
+15:41:42 download done at 3532308
+15:42:51 headers: appended 1 headers 3532308..3532308 (Equihash, target, links, difficulty: Bend PASS); verified to 3532308; have blocks to 3532307
+15:42:51 download: heights 3532308..3532308, 4 peers, spool cap 30 GB
+15:43:14 download done at 3532309
+15:44:28 headers: appended 1 headers 3532309..3532309 (Equihash, target, links, difficulty: Bend PASS); verified to 3532309; have blocks to 3532308
+15:44:28 download: heights 3532309..3532309, 4 peers, spool cap 30 GB
+15:44:47 download done at 3532310
+15:45:58 headers: appended 1 headers 3532310..3532310 (Equihash, target, links, difficulty: Bend PASS); verified to 3532310; have blocks to 3532309
+15:45:58 download: heights 3532310..3532310, 4 peers, spool cap 30 GB
+15:46:13 download done at 3532311
+15:47:33 headers: no headers from any peer; verified to 3532310; have blocks to 3532310
+15:48:43 headers: appended 1 headers 3532311..3532311 (Equihash, target, links, difficulty: Bend PASS); verified to 3532311; have blocks to 3532310
+15:48:43 download: heights 3532311..3532311, 4 peers, spool cap 30 GB
+15:49:07 download done at 3532312
+15:50:12 headers: appended 1 headers 3532312..3532312 (Equihash, target, links, difficulty: Bend PASS); verified to 3532312; have blocks to 3532311
+15:50:12 download: heights 3532312..3532312, 4 peers, spool cap 30 GB
+15:52:13 height 3532312  run avg    0.0 blocks/s  0.00 MB/s  last 5 min    0.0 blocks/s  0.00 MB/s  peers 1 (+3 connecting)  total 0.00 GB  spool 0.00 GB  requeued 0
+15:52:13   drops {}  rejects {'ConnectionResetError': 77, 'OSError': 15, 'behind, not NODE_NETWORK, or full': 13, 'ConnectionError': 27, 'TimeoutError': 35, 'ConnectionRefusedError': 8}  book 438
+15:52:13   peers: 65.21.224.239 /Zebra:6.4.2/ up 0.000MB/s spb=0.17
+15:52:13 download done at 3532313
+15:53:18 headers: appended 3 headers 3532313..3532315 (Equihash, target, links, difficulty: Bend PASS); verified to 3532315; have blocks to 3532312
+15:53:19 download: heights 3532313..3532315, 4 peers, spool cap 30 GB
+15:53:31 download done at 3532316
+15:54:41 headers: appended 5 headers 3532316..3532320 (Equihash, target, links, difficulty: Bend PASS); verified to 3532320; have blocks to 3532315
+15:54:41 download: heights 3532316..3532320, 4 peers, spool cap 30 GB
+15:54:53 download done at 3532321
+15:56:15 headers: no headers from any peer; verified to 3532320; have blocks to 3532320
+15:57:26 headers: appended 1 headers 3532321..3532321 (Equihash, target, links, difficulty: Bend PASS); verified to 3532321; have blocks to 3532320
+15:57:26 download: heights 3532321..3532321, 4 peers, spool cap 30 GB
+15:57:48 download done at 3532322
+15:58:53 headers: appended 1 headers 3532322..3532322 (Equihash, target, links, difficulty: Bend PASS); verified to 3532322; have blocks to 3532321
+15:58:53 download: heights 3532322..3532322, 4 peers, spool cap 30 GB
+15:59:42 download done at 3532323
+16:00:52 headers: appended 1 headers 3532323..3532323 (Equihash, target, links, difficulty: Bend PASS); verified to 3532323; have blocks to 3532322
+16:00:52 download: heights 3532323..3532323, 4 peers, spool cap 30 GB
+16:01:29 download done at 3532324
+16:02:35 headers: appended 1 headers 3532324..3532324 (Equihash, target, links, difficulty: Bend PASS); verified to 3532324; have blocks to 3532323
+16:02:35 download: heights 3532324..3532324, 4 peers, spool cap 30 GB
+16:03:00 download done at 3532325
+16:04:32 headers: no headers from any peer; verified to 3532324; have blocks to 3532324
+16:05:37 headers: appended 1 headers 3532325..3532325 (Equihash, target, links, difficulty: Bend PASS); verified to 3532325; have blocks to 3532324
+16:05:37 download: heights 3532325..3532325, 4 peers, spool cap 30 GB
+16:06:43 height 3532325  run avg    0.0 blocks/s  0.00 MB/s  last 5 min    0.0 blocks/s  0.00 MB/s  peers 1 (+3 connecting)  total 0.00 GB  spool 0.00 GB  requeued 0
+16:06:43   drops {}  rejects {'ConnectionResetError': 51, 'ConnectionError': 18, 'ConnectionRefusedError': 6, 'TimeoutError': 18, 'OSError': 12, 'behind, not NODE_NETWORK, or full': 3}  book 438
+16:06:43   peers: 34.91.248.94 /Zebra:7.0.0/ up 0.000MB/s spb=0.23
+16:06:43 download done at 3532326
+16:07:49 headers: appended 1 headers 3532326..3532326 (Equihash, target, links, difficulty: Bend PASS); verified to 3532326; have blocks to 3532325
+16:07:49 download: heights 3532326..3532326, 4 peers, spool cap 30 GB
+16:08:54 height 3532326  run avg    0.0 blocks/s  0.00 MB/s  last 5 min    0.0 blocks/s  0.00 MB/s  peers 1 (+2 connecting)  total 0.00 GB  spool 0.00 GB  requeued 0
+16:08:54   drops {}  rejects {'ConnectionError': 18, 'ConnectionResetError': 41, 'TimeoutError': 20, 'behind, not NODE_NETWORK, or full': 7, 'ConnectionRefusedError': 4, 'OSError': 11}  book 438
+16:08:54   peers: 164.132.200.159 /Zakura:1.7.0-modified/ up 0.000MB/s spb=0.25
+16:08:54 download done at 3532327
+16:10:00 headers: appended 4 headers 3532327..3532330 (Equihash, target, links, difficulty: Bend PASS); verified to 3532330; have blocks to 3532326
+16:10:00 download: heights 3532327..3532330, 4 peers, spool cap 30 GB
+16:11:08 height 3532327  run avg    0.0 blocks/s  0.00 MB/s  last 5 min    0.0 blocks/s  0.00 MB/s  peers 1 (+2 connecting)  total 0.00 GB  spool 0.00 GB  requeued 0
+16:11:08   drops {}  rejects {'OSError': 11, 'ConnectionResetError': 49, 'behind, not NODE_NETWORK, or full': 9, 'ConnectionError': 17, 'ConnectionRefusedError': 6, 'TimeoutError': 19}  book 438
+16:11:08   peers: 111.68.2.18 /Zakura:1.7.0/ up 0.000MB/s spb=0.25
+16:11:09 download done at 3532331
+16:12:32 headers: no headers from any peer; verified to 3532330; have blocks to 3532330
+16:13:54 headers: no headers from any peer; verified to 3532330; have blocks to 3532330
+16:15:28 headers: no headers from any peer; verified to 3532330; have blocks to 3532330
+16:16:39 headers: appended 3 headers 3532331..3532333 (Equihash, target, links, difficulty: Bend PASS); verified to 3532333; have blocks to 3532330
+16:16:40 download: heights 3532331..3532333, 4 peers, spool cap 30 GB
+16:17:36 download done at 3532334
+16:18:47 headers: appended 4 headers 3532334..3532337 (Equihash, target, links, difficulty: Bend PASS); verified to 3532337; have blocks to 3532333
+16:18:47 download: heights 3532334..3532337, 4 peers, spool cap 30 GB
+16:18:50 download done at 3532338
+16:20:18 headers: no headers from any peer; verified to 3532337; have blocks to 3532337
+16:21:24 headers: appended 1 headers 3532338..3532338 (Equihash, target, links, difficulty: Bend PASS); verified to 3532338; have blocks to 3532337
+16:21:24 download: heights 3532338..3532338, 4 peers, spool cap 30 GB
+16:21:40 download done at 3532339
+16:23:00 headers: no headers from any peer; verified to 3532338; have blocks to 3532338
+16:24:21 headers: no headers from any peer; verified to 3532338; have blocks to 3532338
+16:25:55 headers: no headers from any peer; verified to 3532338; have blocks to 3532338
+16:27:02 headers: appended 1 headers 3532339..3532339 (Equihash, target, links, difficulty: Bend PASS); verified to 3532339; have blocks to 3532338
+16:27:02 download: heights 3532339..3532339, 4 peers, spool cap 30 GB
+16:28:03 height 3532339  run avg    0.0 blocks/s  0.00 MB/s  last 5 min    0.0 blocks/s  0.00 MB/s  peers 1 (+3 connecting)  total 0.00 GB  spool 0.00 GB  requeued 1
+16:28:03   drops {'ConnectionError: peer closed': 1}  rejects {'ConnectionError': 8, 'behind, not NODE_NETWORK, or full': 9, 'ConnectionResetError': 48, 'TimeoutError': 16, 'OSError': 13, 'ConnectionRefusedError': 4}  book 459
+16:28:03   peers: 34.182.139.187 /Zebra:7.0.0/ up 0.000MB/s spb=0.4
+16:28:03 download done at 3532340
+16:29:09 headers: appended 1 headers 3532340..3532340 (Equihash, target, links, difficulty: Bend PASS); verified to 3532340; have blocks to 3532339
+16:29:10 download: heights 3532340..3532340, 4 peers, spool cap 30 GB
+16:29:16 download done at 3532341
+16:30:41 headers: no headers from any peer; verified to 3532340; have blocks to 3532340
+16:32:06 headers: no headers from any peer; verified to 3532340; have blocks to 3532340
+16:33:15 headers: appended 1 headers 3532341..3532341 (Equihash, target, links, difficulty: Bend PASS); verified to 3532341; have blocks to 3532340
+16:33:15 download: heights 3532341..3532341, 4 peers, spool cap 30 GB
+16:33:41 download done at 3532342
+16:34:48 headers: appended 3 headers 3532342..3532344 (Equihash, target, links, difficulty: Bend PASS); verified to 3532344; have blocks to 3532341
+16:34:48 download: heights 3532342..3532344, 4 peers, spool cap 30 GB
+16:35:29 download done at 3532345
+16:36:39 headers: appended 1 headers 3532345..3532345 (Equihash, target, links, difficulty: Bend PASS); verified to 3532345; have blocks to 3532344
+16:36:39 download: heights 3532345..3532345, 4 peers, spool cap 30 GB
+16:36:52 download done at 3532346
+16:38:17 headers: appended 1 headers 3532346..3532346 (Equihash, target, links, difficulty: Bend PASS); verified to 3532346; have blocks to 3532345
+16:38:17 download: heights 3532346..3532346, 4 peers, spool cap 30 GB
+16:38:24 download done at 3532347
+16:39:51 headers: no headers from any peer; verified to 3532346; have blocks to 3532346
+16:41:01 headers: appended 3 headers 3532347..3532349 (Equihash, target, links, difficulty: Bend PASS); verified to 3532349; have blocks to 3532346
+16:41:01 download: heights 3532347..3532349, 4 peers, spool cap 30 GB
+16:41:07 download done at 3532350
+16:42:14 headers: appended 1 headers 3532350..3532350 (Equihash, target, links, difficulty: Bend PASS); verified to 3532350; have blocks to 3532349
+16:42:14 download: heights 3532350..3532350, 4 peers, spool cap 30 GB
+16:42:15 download done at 3532351
+16:43:21 headers: appended 1 headers 3532351..3532351 (Equihash, target, links, difficulty: Bend PASS); verified to 3532351; have blocks to 3532350
+16:43:21 download: heights 3532351..3532351, 4 peers, spool cap 30 GB
+16:43:57 download done at 3532352
+16:45:04 headers: appended 2 headers 3532352..3532353 (Equihash, target, links, difficulty: Bend PASS); verified to 3532353; have blocks to 3532351
+16:45:04 download: heights 3532352..3532353, 4 peers, spool cap 30 GB
+16:46:05 height 3532353  run avg    0.0 blocks/s  0.00 MB/s  last 5 min    0.0 blocks/s  0.00 MB/s  peers 0 (+3 connecting)  total 0.00 GB  spool 0.00 GB  requeued 2
+16:46:05   drops {'ConnectionError: peer closed': 2}  rejects {'ConnectionResetError': 39, 'OSError': 10, 'ConnectionRefusedError': 7, 'TimeoutError': 18, 'behind, not NODE_NETWORK, or full': 4, 'ConnectionError': 9}  book 460
+16:46:05   peers: 54.39.196.12 /Zakura:1.7.0/ down 0.028MB/s spb=0.57
+16:46:05 download done at 3532354
+16:47:12 headers: appended 3 headers 3532354..3532356 (Equihash, target, links, difficulty: Bend PASS); verified to 3532356; have blocks to 3532353
+16:47:12 download: heights 3532354..3532356, 4 peers, spool cap 30 GB
+16:47:52 download done at 3532357
+16:48:58 headers: appended 1 headers 3532357..3532357 (Equihash, target, links, difficulty: Bend PASS); verified to 3532357; have blocks to 3532356
+16:48:58 download: heights 3532357..3532357, 4 peers, spool cap 30 GB
+16:49:42 download done at 3532358
+16:50:53 headers: appended 1 headers 3532358..3532358 (Equihash, target, links, difficulty: Bend PASS); verified to 3532358; have blocks to 3532357
+16:50:53 download: heights 3532358..3532358, 4 peers, spool cap 30 GB
+16:51:41 download done at 3532359
+16:52:47 headers: appended 4 headers 3532359..3532362 (Equihash, target, links, difficulty: Bend PASS); verified to 3532362; have blocks to 3532358
+16:52:47 download: heights 3532359..3532362, 4 peers, spool cap 30 GB
+16:52:55 download done at 3532363
+16:54:18 headers: no headers from any peer; verified to 3532362; have blocks to 3532362
+16:55:38 headers: no headers from any peer; verified to 3532362; have blocks to 3532362
+16:56:44 headers: appended 1 headers 3532363..3532363 (Equihash, target, links, difficulty: Bend PASS); verified to 3532363; have blocks to 3532362
+16:56:44 download: heights 3532363..3532363, 4 peers, spool cap 30 GB
+16:56:50 download done at 3532364
+16:57:58 headers: appended 1 headers 3532364..3532364 (Equihash, target, links, difficulty: Bend PASS); verified to 3532364; have blocks to 3532363
+16:57:58 download: heights 3532364..3532364, 4 peers, spool cap 30 GB
+16:58:00 download done at 3532365
+16:59:27 headers: no headers from any peer; verified to 3532364; have blocks to 3532364
+17:00:33 headers: appended 2 headers 3532365..3532366 (Equihash, target, links, difficulty: Bend PASS); verified to 3532366; have blocks to 3532364
+17:00:33 download: heights 3532365..3532366, 4 peers, spool cap 30 GB
+17:00:56 download done at 3532367
+17:02:01 headers: appended 2 headers 3532367..3532368 (Equihash, target, links, difficulty: Bend PASS); verified to 3532368; have blocks to 3532366
+17:02:01 download: heights 3532367..3532368, 4 peers, spool cap 30 GB
+17:02:42 download done at 3532369
+17:03:48 headers: appended 3 headers 3532369..3532371 (Equihash, target, links, difficulty: Bend PASS); verified to 3532371; have blocks to 3532368
+17:03:48 download: heights 3532369..3532371, 4 peers, spool cap 30 GB
+17:04:16 download done at 3532372
+17:05:27 headers: appended 3 headers 3532372..3532374 (Equihash, target, links, difficulty: Bend PASS); verified to 3532374; have blocks to 3532371
+17:05:27 download: heights 3532372..3532374, 4 peers, spool cap 30 GB
+17:06:53 height 3532373  run avg    0.0 blocks/s  0.00 MB/s  last 5 min    0.0 blocks/s  0.00 MB/s  peers 1 (+3 connecting)  total 0.00 GB  spool 0.00 GB  requeued 8
+17:06:53   drops {'ConnectionError: peer closed': 3}  rejects {'OSError': 20, 'behind, not NODE_NETWORK, or full': 14, 'ConnectionResetError': 74, 'ConnectionError': 18, 'ConnectionRefusedError': 8, 'TimeoutError': 23}  book 460
+17:06:53   peers: 38.190.136.76 /Zakura:1.7.0/ up 0.000MB/s spb=0.25
+17:06:53 download done at 3532375
+17:08:02 headers: appended 2 headers 3532375..3532376 (Equihash, target, links, difficulty: Bend PASS); verified to 3532376; have blocks to 3532374
+17:08:02 download: heights 3532375..3532376, 4 peers, spool cap 30 GB
+17:10:42 height 3532375  run avg    0.0 blocks/s  0.00 MB/s  last 5 min    0.0 blocks/s  0.00 MB/s  peers 1 (+1 connecting)  total 0.00 GB  spool 0.00 GB  requeued 12
+17:10:42   drops {'ConnectionError: peer closed': 5, 'TimeoutError: stalled': 1}  rejects {'OSError': 25, 'ConnectionResetError': 121, 'ConnectionError': 19, 'behind, not NODE_NETWORK, or full': 8, 'TimeoutError': 48, 'ConnectionRefusedError': 7}  book 460
+17:10:42   peers: 38.190.136.76 /Zakura:1.7.0/ up 0.000MB/s spb=0.24
+17:10:42 download done at 3532377
+17:11:48 headers: appended 2 headers 3532377..3532378 (Equihash, target, links, difficulty: Bend PASS); verified to 3532378; have blocks to 3532376
+17:11:48 download: heights 3532377..3532378, 4 peers, spool cap 30 GB
+17:12:32 download done at 3532379
+17:13:38 headers: appended 1 headers 3532379..3532379 (Equihash, target, links, difficulty: Bend PASS); verified to 3532379; have blocks to 3532378
+17:13:38 download: heights 3532379..3532379, 4 peers, spool cap 30 GB
+17:13:41 download done at 3532380
+17:14:46 headers: appended 1 headers 3532380..3532380 (Equihash, target, links, difficulty: Bend PASS); verified to 3532380; have blocks to 3532379
+17:14:46 download: heights 3532380..3532380, 4 peers, spool cap 30 GB
+17:15:31 download done at 3532381
+17:16:36 headers: appended 2 headers 3532381..3532382 (Equihash, target, links, difficulty: Bend PASS); verified to 3532382; have blocks to 3532380
+17:16:36 download: heights 3532381..3532382, 4 peers, spool cap 30 GB
+17:17:31 download done at 3532383
+17:18:36 headers: appended 3 headers 3532383..3532385 (Equihash, target, links, difficulty: Bend PASS); verified to 3532385; have blocks to 3532382
+17:18:36 download: heights 3532383..3532385, 4 peers, spool cap 30 GB
+17:19:22 download done at 3532386
+17:20:32 headers: appended 2 headers 3532386..3532387 (Equihash, target, links, difficulty: Bend PASS); verified to 3532387; have blocks to 3532385
+17:20:32 download: heights 3532386..3532387, 4 peers, spool cap 30 GB
+17:20:34 download done at 3532388
+17:21:39 headers: appended 1 headers 3532388..3532388 (Equihash, target, links, difficulty: Bend PASS); verified to 3532388; have blocks to 3532387
+17:21:39 download: heights 3532388..3532388, 4 peers, spool cap 30 GB
+17:21:44 download done at 3532389
+17:23:04 headers: no headers from any peer; verified to 3532388; have blocks to 3532388
+17:24:11 headers: appended 2 headers 3532389..3532390 (Equihash, target, links, difficulty: Bend PASS); verified to 3532390; have blocks to 3532388
+17:24:11 download: heights 3532389..3532390, 4 peers, spool cap 30 GB
+17:24:18 download done at 3532391
+17:25:28 headers: appended 2 headers 3532391..3532392 (Equihash, target, links, difficulty: Bend PASS); verified to 3532392; have blocks to 3532390
+17:25:28 download: heights 3532391..3532392, 4 peers, spool cap 30 GB
+17:25:52 download done at 3532393
+17:26:57 headers: appended 1 headers 3532393..3532393 (Equihash, target, links, difficulty: Bend PASS); verified to 3532393; have blocks to 3532392
+17:26:57 download: heights 3532393..3532393, 4 peers, spool cap 30 GB
+17:28:21 height 3532393  run avg    0.0 blocks/s  0.00 MB/s  last 5 min    0.0 blocks/s  0.00 MB/s  peers 1 (+3 connecting)  total 0.00 GB  spool 0.00 GB  requeued 2
+17:28:21   drops {'ConnectionError: peer closed': 2}  rejects {'OSError': 9, 'ConnectionRefusedError': 5, 'ConnectionError': 9, 'ConnectionResetError': 48, 'TimeoutError': 29, 'behind, not NODE_NETWORK, or full': 10}  book 460
+17:28:21   peers: 34.91.248.94 /Zebra:7.0.0/ up 0.000MB/s spb=0.2
+17:28:21 download done at 3532394
+17:29:26 headers: appended 2 headers 3532394..3532395 (Equihash, target, links, difficulty: Bend PASS); verified to 3532395; have blocks to 3532393
+17:29:26 download: heights 3532394..3532395, 4 peers, spool cap 30 GB
+17:29:45 download done at 3532396
+17:30:51 headers: appended 1 headers 3532396..3532396 (Equihash, target, links, difficulty: Bend PASS); verified to 3532396; have blocks to 3532395
+17:30:51 download: heights 3532396..3532396, 4 peers, spool cap 30 GB
+17:31:01 download done at 3532397
+17:32:21 headers: no headers from any peer; verified to 3532396; have blocks to 3532396
+17:33:42 headers: no headers from any peer; verified to 3532396; have blocks to 3532396
+17:34:49 headers: appended 1 headers 3532397..3532397 (Equihash, target, links, difficulty: Bend PASS); verified to 3532397; have blocks to 3532396
+17:34:49 download: heights 3532397..3532397, 4 peers, spool cap 30 GB
+17:35:07 download done at 3532398
+17:36:31 headers: no headers from any peer; verified to 3532397; have blocks to 3532397
+17:37:38 headers: appended 2 headers 3532398..3532399 (Equihash, target, links, difficulty: Bend PASS); verified to 3532399; have blocks to 3532397
+17:37:38 download: heights 3532398..3532399, 4 peers, spool cap 30 GB
+17:37:59 download done at 3532400
+17:39:05 headers: appended 1 headers 3532400..3532400 (Equihash, target, links, difficulty: Bend PASS); verified to 3532400; have blocks to 3532399
+17:39:05 download: heights 3532400..3532400, 4 peers, spool cap 30 GB
+17:39:11 download done at 3532401
+17:40:16 headers: appended 1 headers 3532401..3532401 (Equihash, target, links, difficulty: Bend PASS); verified to 3532401; have blocks to 3532400
+17:40:16 download: heights 3532401..3532401, 4 peers, spool cap 30 GB
+17:40:43 download done at 3532402
+17:42:09 headers: no headers from any peer; verified to 3532401; have blocks to 3532401
+17:43:29 headers: no headers from any peer; verified to 3532401; have blocks to 3532401
+17:44:51 headers: no headers from any peer; verified to 3532401; have blocks to 3532401
+17:46:13 headers: no headers from any peer; verified to 3532401; have blocks to 3532401
+17:47:18 headers: appended 1 headers 3532402..3532402 (Equihash, target, links, difficulty: Bend PASS); verified to 3532402; have blocks to 3532401
+17:47:18 download: heights 3532402..3532402, 4 peers, spool cap 30 GB
+17:47:26 download done at 3532403
+17:48:50 headers: no headers from any peer; verified to 3532402; have blocks to 3532402
+17:50:12 headers: no headers from any peer; verified to 3532402; have blocks to 3532402
+17:51:32 headers: no headers from any peer; verified to 3532402; have blocks to 3532402
+17:52:52 headers: no headers from any peer; verified to 3532402; have blocks to 3532402
+17:54:13 headers: no headers from any peer; verified to 3532402; have blocks to 3532402
+17:55:19 headers: appended 1 headers 3532403..3532403 (Equihash, target, links, difficulty: Bend PASS); verified to 3532403; have blocks to 3532402
+17:55:19 download: heights 3532403..3532403, 4 peers, spool cap 30 GB
+17:55:31 download done at 3532404
+17:59:53 headers: appended 3 headers 3532404..3532406 (Equihash, target, links, difficulty: Bend PASS); verified to 3532406; have blocks to 3532403
+17:59:53 download: heights 3532404..3532406, 4 peers, spool cap 30 GB
+18:00:03 download done at 3532407
+18:01:13 headers: appended 2 headers 3532407..3532408 (Equihash, target, links, difficulty: Bend PASS); verified to 3532408; have blocks to 3532406
+18:01:13 download: heights 3532407..3532408, 4 peers, spool cap 30 GB
+18:01:40 download done at 3532409
+18:03:03 headers: no headers from any peer; verified to 3532408; have blocks to 3532408
+18:04:12 headers: appended 1 headers 3532409..3532409 (Equihash, target, links, difficulty: Bend PASS); verified to 3532409; have blocks to 3532408
+18:04:12 download: heights 3532409..3532409, 4 peers, spool cap 30 GB
+18:04:49 download done at 3532410
+18:06:12 headers: no headers from any peer; verified to 3532409; have blocks to 3532409
+18:07:17 headers: appended 1 headers 3532410..3532410 (Equihash, target, links, difficulty: Bend PASS); verified to 3532410; have blocks to 3532409
+18:07:17 download: heights 3532410..3532410, 4 peers, spool cap 30 GB
+18:07:39 download done at 3532411
+18:08:46 headers: appended 3 headers 3532411..3532413 (Equihash, target, links, difficulty: Bend PASS); verified to 3532413; have blocks to 3532410
+18:08:46 download: heights 3532411..3532413, 4 peers, spool cap 30 GB
+18:08:54 download done at 3532414
+18:10:02 headers: appended 2 headers 3532414..3532415 (Equihash, target, links, difficulty: Bend PASS); verified to 3532415; have blocks to 3532413
+18:10:02 download: heights 3532414..3532415, 4 peers, spool cap 30 GB
+18:10:53 download done at 3532416
+18:12:03 headers: appended 4 headers 3532416..3532419 (Equihash, target, links, difficulty: Bend PASS); verified to 3532419; have blocks to 3532415
+18:12:03 download: heights 3532416..3532419, 4 peers, spool cap 30 GB
+18:12:09 download done at 3532420
+18:13:14 headers: appended 2 headers 3532420..3532421 (Equihash, target, links, difficulty: Bend PASS); verified to 3532421; have blocks to 3532419
+18:13:14 download: heights 3532420..3532421, 4 peers, spool cap 30 GB
+18:13:15 download done at 3532422
+18:14:25 headers: appended 1 headers 3532422..3532422 (Equihash, target, links, difficulty: Bend PASS); verified to 3532422; have blocks to 3532421
+18:14:25 download: heights 3532422..3532422, 4 peers, spool cap 30 GB
+18:14:31 download done at 3532423
+18:15:36 headers: appended 1 headers 3532423..3532423 (Equihash, target, links, difficulty: Bend PASS); verified to 3532423; have blocks to 3532422
+18:15:36 download: heights 3532423..3532423, 4 peers, spool cap 30 GB
+18:16:19 download done at 3532424
+18:17:26 headers: appended 2 headers 3532424..3532425 (Equihash, target, links, difficulty: Bend PASS); verified to 3532425; have blocks to 3532423
+18:17:26 download: heights 3532424..3532425, 4 peers, spool cap 30 GB
+18:17:45 download done at 3532426
+18:18:50 headers: appended 1 headers 3532426..3532426 (Equihash, target, links, difficulty: Bend PASS); verified to 3532426; have blocks to 3532425
+18:18:50 download: heights 3532426..3532426, 4 peers, spool cap 30 GB
+18:19:03 download done at 3532427
+18:20:13 headers: appended 1 headers 3532427..3532427 (Equihash, target, links, difficulty: Bend PASS); verified to 3532427; have blocks to 3532426
+18:20:13 download: heights 3532427..3532427, 4 peers, spool cap 30 GB
+18:20:31 download done at 3532428
+18:21:37 headers: appended 2 headers 3532428..3532429 (Equihash, target, links, difficulty: Bend PASS); verified to 3532429; have blocks to 3532427
+18:21:37 download: heights 3532428..3532429, 4 peers, spool cap 30 GB
+18:21:39 download done at 3532430
+18:22:45 headers: appended 1 headers 3532430..3532430 (Equihash, target, links, difficulty: Bend PASS); verified to 3532430; have blocks to 3532429
+18:22:45 download: heights 3532430..3532430, 4 peers, spool cap 30 GB
+18:24:04 height 3532430  run avg    0.0 blocks/s  0.00 MB/s  last 5 min    0.0 blocks/s  0.00 MB/s  peers 1 (+2 connecting)  total 0.00 GB  spool 0.00 GB  requeued 2
+18:24:04   drops {'ConnectionError: peer closed': 2}  rejects {'ConnectionResetError': 61, 'ConnectionError': 10, 'TimeoutError': 24, 'OSError': 13, 'behind, not NODE_NETWORK, or full': 11, 'ConnectionRefusedError': 7}  book 460
+18:24:04   peers: 136.115.98.175 /Zebra:7.0.0/ up 0.000MB/s spb=0.23
+18:24:04 download done at 3532431
+18:25:09 headers: appended 3 headers 3532431..3532433 (Equihash, target, links, difficulty: Bend PASS); verified to 3532433; have blocks to 3532430
+18:25:09 download: heights 3532431..3532433, 4 peers, spool cap 30 GB
+18:25:34 download done at 3532434
+18:26:39 headers: appended 1 headers 3532434..3532434 (Equihash, target, links, difficulty: Bend PASS); verified to 3532434; have blocks to 3532433
+18:26:39 download: heights 3532434..3532434, 4 peers, spool cap 30 GB
+18:26:53 download done at 3532435
+18:27:58 headers: appended 1 headers 3532435..3532435 (Equihash, target, links, difficulty: Bend PASS); verified to 3532435; have blocks to 3532434
+18:27:58 download: heights 3532435..3532435, 4 peers, spool cap 30 GB
+18:30:08 height 3532435  run avg    0.0 blocks/s  0.00 MB/s  last 5 min    0.0 blocks/s  0.00 MB/s  peers 1 (+2 connecting)  total 0.00 GB  spool 0.00 GB  requeued 1
+18:30:08   drops {'ConnectionError: peer closed': 1}  rejects {'behind, not NODE_NETWORK, or full': 6, 'ConnectionError': 13, 'ConnectionResetError': 92, 'OSError': 19, 'ConnectionRefusedError': 9, 'TimeoutError': 44}  book 460
+18:30:08   peers: 154.21.212.82 /Zebra:7.0.0/ up 0.000MB/s spb=0.36
+18:30:08 download done at 3532436
+18:31:14 headers: appended 2 headers 3532436..3532437 (Equihash, target, links, difficulty: Bend PASS); verified to 3532437; have blocks to 3532435
+18:31:14 download: heights 3532436..3532437, 4 peers, spool cap 30 GB
+18:31:32 download done at 3532438
+18:32:39 headers: appended 1 headers 3532438..3532438 (Equihash, target, links, difficulty: Bend PASS); verified to 3532438; have blocks to 3532437
+18:32:39 download: heights 3532438..3532438, 4 peers, spool cap 30 GB
+18:32:42 download done at 3532439
+18:33:48 headers: appended 1 headers 3532439..3532439 (Equihash, target, links, difficulty: Bend PASS); verified to 3532439; have blocks to 3532438
+18:33:48 download: heights 3532439..3532439, 4 peers, spool cap 30 GB
+18:33:52 download done at 3532440
+18:34:57 headers: appended 1 headers 3532440..3532440 (Equihash, target, links, difficulty: Bend PASS); verified to 3532440; have blocks to 3532439
+18:34:57 download: heights 3532440..3532440, 4 peers, spool cap 30 GB
+18:35:05 download done at 3532441
+18:36:28 headers: no headers from any peer; verified to 3532440; have blocks to 3532440
+18:37:33 headers: appended 1 headers 3532441..3532441 (Equihash, target, links, difficulty: Bend PASS); verified to 3532441; have blocks to 3532440
+18:37:33 download: heights 3532441..3532441, 4 peers, spool cap 30 GB
+18:37:57 download done at 3532442
+18:39:02 headers: appended 2 headers 3532442..3532443 (Equihash, target, links, difficulty: Bend PASS); verified to 3532443; have blocks to 3532441
+18:39:02 download: heights 3532442..3532443, 4 peers, spool cap 30 GB
+18:40:01 download done at 3532444
+18:41:06 headers: appended 1 headers 3532444..3532444 (Equihash, target, links, difficulty: Bend PASS); verified to 3532444; have blocks to 3532443
+18:41:06 download: heights 3532444..3532444, 4 peers, spool cap 30 GB
+18:41:48 download done at 3532445
+18:42:56 headers: appended 1 headers 3532445..3532445 (Equihash, target, links, difficulty: Bend PASS); verified to 3532445; have blocks to 3532444
+18:42:56 download: heights 3532445..3532445, 4 peers, spool cap 30 GB
+18:43:51 download done at 3532446
+18:44:57 headers: appended 2 headers 3532446..3532447 (Equihash, target, links, difficulty: Bend PASS); verified to 3532447; have blocks to 3532445
+18:44:57 download: heights 3532446..3532447, 4 peers, spool cap 30 GB
+18:47:26 height 3532447  run avg    0.0 blocks/s  0.00 MB/s  last 5 min    0.0 blocks/s  0.00 MB/s  peers 1 (+1 connecting)  total 0.00 GB  spool 0.00 GB  requeued 4
+18:47:26   drops {'ConnectionError: peer closed': 2}  rejects {'ConnectionResetError': 128, 'ConnectionError': 13, 'OSError': 24, 'TimeoutError': 44, 'behind, not NODE_NETWORK, or full': 16, 'ConnectionRefusedError': 6}  book 460
+18:47:26   peers: 46.173.137.17 /Zebra:7.0.0/ up 0.000MB/s spb=0.23
+18:47:26 download done at 3532448
+18:48:31 headers: appended 3 headers 3532448..3532450 (Equihash, target, links, difficulty: Bend PASS); verified to 3532450; have blocks to 3532447
+18:48:31 download: heights 3532448..3532450, 4 peers, spool cap 30 GB
+18:48:40 download done at 3532451
+18:49:50 headers: appended 3 headers 3532451..3532453 (Equihash, target, links, difficulty: Bend PASS); verified to 3532453; have blocks to 3532450
+18:49:50 download: heights 3532451..3532453, 4 peers, spool cap 30 GB
+18:51:35 height 3532452  run avg    0.0 blocks/s  0.00 MB/s  last 5 min    0.0 blocks/s  0.00 MB/s  peers 1 (+2 connecting)  total 0.00 GB  spool 0.00 GB  requeued 3
+18:51:35   drops {'ConnectionError: peer closed': 1}  rejects {'OSError': 15, 'ConnectionRefusedError': 14, 'ConnectionResetError': 56, 'ConnectionError': 17, 'TimeoutError': 37, 'behind, not NODE_NETWORK, or full': 7}  book 460
+18:51:35   peers: 136.115.98.175 /Zebra:7.0.0/ up 0.000MB/s spb=0.18
+18:51:36 download done at 3532454
+18:52:41 headers: appended 2 headers 3532454..3532455 (Equihash, target, links, difficulty: Bend PASS); verified to 3532455; have blocks to 3532453
+18:52:41 download: heights 3532454..3532455, 4 peers, spool cap 30 GB
+18:53:04 download done at 3532456
+18:54:11 headers: appended 2 headers 3532456..3532457 (Equihash, target, links, difficulty: Bend PASS); verified to 3532457; have blocks to 3532455
+18:54:11 download: heights 3532456..3532457, 4 peers, spool cap 30 GB
+18:55:05 download done at 3532458
+18:56:10 headers: appended 1 headers 3532458..3532458 (Equihash, target, links, difficulty: Bend PASS); verified to 3532458; have blocks to 3532457
+18:56:10 download: heights 3532458..3532458, 4 peers, spool cap 30 GB
+18:56:24 download done at 3532459
+18:57:44 headers: no headers from any peer; verified to 3532458; have blocks to 3532458
+18:58:49 headers: appended 3 headers 3532459..3532461 (Equihash, target, links, difficulty: Bend PASS); verified to 3532461; have blocks to 3532458
+18:58:50 download: heights 3532459..3532461, 4 peers, spool cap 30 GB
+18:59:04 download done at 3532462
+19:00:29 headers: no headers from any peer; verified to 3532461; have blocks to 3532461
+19:01:34 headers: appended 1 headers 3532462..3532462 (Equihash, target, links, difficulty: Bend PASS); verified to 3532462; have blocks to 3532461
+19:01:34 download: heights 3532462..3532462, 4 peers, spool cap 30 GB
+19:02:13 download done at 3532463
+19:03:19 headers: appended 1 headers 3532463..3532463 (Equihash, target, links, difficulty: Bend PASS); verified to 3532463; have blocks to 3532462
+19:03:19 download: heights 3532463..3532463, 4 peers, spool cap 30 GB
+19:03:33 download done at 3532464
+19:04:38 headers: appended 1 headers 3532464..3532464 (Equihash, target, links, difficulty: Bend PASS); verified to 3532464; have blocks to 3532463
+19:04:38 download: heights 3532464..3532464, 4 peers, spool cap 30 GB
+19:04:55 download done at 3532465
+19:06:15 headers: no headers from any peer; verified to 3532464; have blocks to 3532464
+19:07:41 headers: no headers from any peer; verified to 3532464; have blocks to 3532464
+19:09:03 headers: no headers from any peer; verified to 3532464; have blocks to 3532464
+19:13:19 headers: no headers from any peer; verified to 3532464; have blocks to 3532464
+19:14:28 headers: appended 6 headers 3532465..3532470 (Equihash, target, links, difficulty: Bend PASS); verified to 3532470; have blocks to 3532464
+19:14:28 download: heights 3532465..3532470, 4 peers, spool cap 30 GB
+19:15:03 download done at 3532471
+19:16:08 headers: appended 3 headers 3532471..3532473 (Equihash, target, links, difficulty: Bend PASS); verified to 3532473; have blocks to 3532470
+19:16:08 download: heights 3532471..3532473, 4 peers, spool cap 30 GB
+19:16:41 download done at 3532474
+19:17:52 headers: appended 2 headers 3532474..3532475 (Equihash, target, links, difficulty: Bend PASS); verified to 3532475; have blocks to 3532473
+19:17:52 download: heights 3532474..3532475, 4 peers, spool cap 30 GB
+19:18:56 height 3532475  run avg    0.0 blocks/s  0.00 MB/s  last 5 min    0.0 blocks/s  0.00 MB/s  peers 1 (+2 connecting)  total 0.00 GB  spool 0.00 GB  requeued 4
+19:18:56   drops {'ConnectionError: peer closed': 2}  rejects {'OSError': 6, 'ConnectionError': 9, 'TimeoutError': 21, 'ConnectionRefusedError': 3, 'ConnectionResetError': 29, 'behind, not NODE_NETWORK, or full': 9}  book 460
+19:18:56   peers: 138.43.220.127 /Zebra:6.4.2/ up 0.000MB/s spb=0.19
+19:18:56 download done at 3532476
+19:20:03 headers: appended 1 headers 3532476..3532476 (Equihash, target, links, difficulty: Bend PASS); verified to 3532476; have blocks to 3532475
+19:20:03 download: heights 3532476..3532476, 4 peers, spool cap 30 GB
+19:20:45 download done at 3532477
+19:21:53 headers: appended 1 headers 3532477..3532477 (Equihash, target, links, difficulty: Bend PASS); verified to 3532477; have blocks to 3532476
+19:21:53 download: heights 3532477..3532477, 4 peers, spool cap 30 GB
+19:22:00 download done at 3532478
+19:23:25 headers: no headers from any peer; verified to 3532477; have blocks to 3532477
+19:24:45 headers: no headers from any peer; verified to 3532477; have blocks to 3532477
+19:26:07 headers: no headers from any peer; verified to 3532477; have blocks to 3532477
+19:27:12 headers: appended 1 headers 3532478..3532478 (Equihash, target, links, difficulty: Bend PASS); verified to 3532478; have blocks to 3532477
+19:27:12 download: heights 3532478..3532478, 4 peers, spool cap 30 GB
+19:27:37 download done at 3532479
+19:28:44 headers: appended 1 headers 3532479..3532479 (Equihash, target, links, difficulty: Bend PASS); verified to 3532479; have blocks to 3532478
+19:28:44 download: heights 3532479..3532479, 4 peers, spool cap 30 GB
+19:28:59 download done at 3532480
+19:30:19 headers: no headers from any peer; verified to 3532479; have blocks to 3532479
+19:31:30 headers: appended 1 headers 3532480..3532480 (Equihash, target, links, difficulty: Bend PASS); verified to 3532480; have blocks to 3532479
+19:31:30 download: heights 3532480..3532480, 4 peers, spool cap 30 GB
+19:31:31 download done at 3532481
+19:32:37 headers: appended 1 headers 3532481..3532481 (Equihash, target, links, difficulty: Bend PASS); verified to 3532481; have blocks to 3532480
+19:32:37 download: heights 3532481..3532481, 4 peers, spool cap 30 GB
+19:33:07 download done at 3532482
+19:34:37 headers: no headers from any peer; verified to 3532481; have blocks to 3532481
+19:35:43 headers: appended 2 headers 3532482..3532483 (Equihash, target, links, difficulty: Bend PASS); verified to 3532483; have blocks to 3532481
+19:35:43 download: heights 3532482..3532483, 4 peers, spool cap 30 GB
+19:36:24 download done at 3532484
+19:37:29 headers: appended 2 headers 3532484..3532485 (Equihash, target, links, difficulty: Bend PASS); verified to 3532485; have blocks to 3532483
+19:37:29 download: heights 3532484..3532485, 4 peers, spool cap 30 GB
+19:37:36 download done at 3532486
+19:38:41 headers: appended 1 headers 3532486..3532486 (Equihash, target, links, difficulty: Bend PASS); verified to 3532486; have blocks to 3532485
+19:38:41 download: heights 3532486..3532486, 4 peers, spool cap 30 GB
+19:39:07 download done at 3532487
+19:40:27 headers: no headers from any peer; verified to 3532486; have blocks to 3532486
+19:41:32 headers: appended 2 headers 3532487..3532488 (Equihash, target, links, difficulty: Bend PASS); verified to 3532488; have blocks to 3532486
+19:41:32 download: heights 3532487..3532488, 4 peers, spool cap 30 GB
+19:42:11 download done at 3532489
+19:43:16 headers: appended 1 headers 3532489..3532489 (Equihash, target, links, difficulty: Bend PASS); verified to 3532489; have blocks to 3532488
+19:43:16 download: heights 3532489..3532489, 4 peers, spool cap 30 GB
+19:43:44 download done at 3532490
+19:44:54 headers: appended 1 headers 3532490..3532490 (Equihash, target, links, difficulty: Bend PASS); verified to 3532490; have blocks to 3532489
+19:44:54 download: heights 3532490..3532490, 4 peers, spool cap 30 GB
+19:44:55 download done at 3532491
+19:46:18 headers: no headers from any peer; verified to 3532490; have blocks to 3532490
+19:47:39 headers: no headers from any peer; verified to 3532490; have blocks to 3532490
+19:48:46 headers: appended 1 headers 3532491..3532491 (Equihash, target, links, difficulty: Bend PASS); verified to 3532491; have blocks to 3532490
+19:48:46 download: heights 3532491..3532491, 4 peers, spool cap 30 GB
+19:49:05 download done at 3532492
+19:50:15 headers: appended 2 headers 3532492..3532493 (Equihash, target, links, difficulty: Bend PASS); verified to 3532493; have blocks to 3532491
+19:50:15 download: heights 3532492..3532493, 4 peers, spool cap 30 GB
+19:50:43 download done at 3532494
+19:52:03 headers: no headers from any peer; verified to 3532493; have blocks to 3532493
+19:53:23 headers: no headers from any peer; verified to 3532493; have blocks to 3532493
+19:54:28 headers: appended 1 headers 3532494..3532494 (Equihash, target, links, difficulty: Bend PASS); verified to 3532494; have blocks to 3532493
+19:54:28 download: heights 3532494..3532494, 4 peers, spool cap 30 GB
+19:54:33 download done at 3532495
+19:55:55 headers: no headers from any peer; verified to 3532494; have blocks to 3532494
+19:57:05 headers: appended 1 headers 3532495..3532495 (Equihash, target, links, difficulty: Bend PASS); verified to 3532495; have blocks to 3532494
+19:57:05 download: heights 3532495..3532495, 4 peers, spool cap 30 GB
+19:58:16 height 3532495  run avg    0.0 blocks/s  0.00 MB/s  last 5 min    0.0 blocks/s  0.00 MB/s  peers 1 (+3 connecting)  total 0.00 GB  spool 0.00 GB  requeued 0
+19:58:16   drops {}  rejects {'OSError': 12, 'ConnectionResetError': 40, 'ConnectionError': 6, 'TimeoutError': 24, 'behind, not NODE_NETWORK, or full': 4, 'ConnectionRefusedError': 2}  book 460
+19:58:16   peers: 136.115.98.175 /Zebra:7.0.0/ up 0.000MB/s spb=0.22
+19:58:16 download done at 3532496
+19:59:21 headers: appended 3 headers 3532496..3532498 (Equihash, target, links, difficulty: Bend PASS); verified to 3532498; have blocks to 3532495
+19:59:21 download: heights 3532496..3532498, 4 peers, spool cap 30 GB
+19:59:26 download done at 3532499
+20:00:36 headers: appended 1 headers 3532499..3532499 (Equihash, target, links, difficulty: Bend PASS); verified to 3532499; have blocks to 3532498
+20:00:36 download: heights 3532499..3532499, 4 peers, spool cap 30 GB
+20:00:42 download done at 3532500
+20:02:03 headers: no headers from any peer; verified to 3532499; have blocks to 3532499
+20:08:28 headers: no headers from any peer; verified to 3532499; have blocks to 3532499
+20:09:38 headers: appended 4 headers 3532500..3532503 (Equihash, target, links, difficulty: Bend PASS); verified to 3532503; have blocks to 3532499
+20:09:38 download: heights 3532500..3532503, 4 peers, spool cap 30 GB
+20:10:31 download done at 3532504
+20:11:36 headers: appended 4 headers 3532504..3532507 (Equihash, target, links, difficulty: Bend PASS); verified to 3532507; have blocks to 3532503
+20:11:36 download: heights 3532504..3532507, 4 peers, spool cap 30 GB
+20:12:30 download done at 3532508
+20:13:36 headers: appended 1 headers 3532508..3532508 (Equihash, target, links, difficulty: Bend PASS); verified to 3532508; have blocks to 3532507
+20:13:36 download: heights 3532508..3532508, 4 peers, spool cap 30 GB
+20:14:09 download done at 3532509
+20:15:30 headers: no headers from any peer; verified to 3532508; have blocks to 3532508
+20:16:40 headers: appended 1 headers 3532509..3532509 (Equihash, target, links, difficulty: Bend PASS); verified to 3532509; have blocks to 3532508
+20:16:40 download: heights 3532509..3532509, 4 peers, spool cap 30 GB
+20:16:50 download done at 3532510
+20:18:10 headers: appended 1 headers 3532510..3532510 (Equihash, target, links, difficulty: Bend PASS); verified to 3532510; have blocks to 3532509
+20:18:10 download: heights 3532510..3532510, 4 peers, spool cap 30 GB
+20:18:50 download done at 3532511
+20:19:56 headers: appended 3 headers 3532511..3532513 (Equihash, target, links, difficulty: Bend PASS); verified to 3532513; have blocks to 3532510
+20:19:56 download: heights 3532511..3532513, 4 peers, spool cap 30 GB
+20:19:58 download done at 3532514

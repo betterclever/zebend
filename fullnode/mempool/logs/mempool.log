@@ -1082,3 +1082,1158 @@
 18:22:48 admitted 5521bba178de024ba15ba817ce1bf5124a935d0b0ee2f128fad4be7b34b74a6f v4 655 B fee 20000 from p2p 34.130.110.3; inv to 7 peers; mempool 12 txs
 18:22:57 admitted df53247c35dbe213faa2aaad732746abe2612ea6ed5d412db0111842b49f7355 v6 12356 B fee 20000 from p2p 34.151.153.36; inv to 7 peers; mempool 13 txs
 18:23:05 admitted da9521b9ac13aaa5c3429c6e58f86cb1dd6a011d2a1c572913783c272155496c v6 241 B fee 10000 from p2p 34.130.110.3; inv to 7 peers; mempool 14 txs
+18:23:19 admitted 0e5de927e7f3ce6636bcff4b893601eb3ab2634e50bdbf57e846fb226803f478 v6 15512 B fee 25000 from p2p 143.244.184.176; inv to 7 peers; mempool 15 txs
+18:23:32 rejected 7ff32ccc80e591028a372b34186d77d5e7d4c99bcb1a275a2d9693d62aed0933 from p2p 34.91.248.94: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+18:23:37 stats: mempool 15 txs 68683 B; peers 8; counts {'rejected': 25, "wtxid: Bend auth digest == peer's MSG_WTX inv": 534, 'admitted': 683, 'removed mined': 668, 'duplicate': 5}
+18:23:42 admitted 7ed3249c53c581ee0f006d7e98f5444cac7d2016bbb0708badcf21c107a06a8f v6 9200 B fee 15000 from p2p 34.91.248.94; inv to 7 peers; mempool 16 txs
+18:23:58 admitted 16af97e3f8f9a76ec38a75f36312231a72e9f4d1eccdc8e41a9ad3e856c4b390 v5 206 B fee 20700 from p2p 51.250.116.186; inv to 6 peers; mempool 17 txs
+18:24:00 p2p: inbound peer 127.0.0.1:50966 /Zebend-fullnode:0.1/ height 0
+18:24:00 p2p: peer 127.0.0.1:50966 gone after 0 s (BrokenPipeError: [Errno 32] Broken pipe)
+18:24:04 admit: tip moved during validation (was 3532429); validating the batch again
+18:24:04 admitted f1a72f0b699d043b376512ed89b42640584a12e4e91cbb0900b19ee8e2924e6b v6 6191 B fee 10000 from p2p 34.151.153.36; inv to 6 peers; mempool 18 txs
+18:24:06 recheck: removed 6 mined
+18:24:06 tip 3532430 (000000000002cd3a): mempool 12 txs 63800 B, removed 6
+18:24:06 block cache: 3 blocks [3532419]..[3532421]
+18:24:10 admitted 256f2a5ca6307356db3fe0787ec2f1e8e4dc2b8f5e23fc36f832d7c2e3958585 v4 210 B fee 15000 from p2p 51.250.116.186; inv to 6 peers; mempool 13 txs
+18:24:18 admitted d6fc929d2e0bcc3281cc9c667faabade84a49525686b84e6b9031e740ae78ba1 v4 358 B fee 20000 from p2p 51.250.116.186; inv to 7 peers; mempool 14 txs
+18:24:37 stats: mempool 14 txs 64368 B; peers 8; counts {'rejected': 25, "wtxid: Bend auth digest == peer's MSG_WTX inv": 537, 'admitted': 688, 'removed mined': 674, 'duplicate': 5}
+18:25:01 admitted ea9675e1e70a4f14d1fc8f2798ccd2267ae9c9d46fd461936537e0a07b72dd64 v4 12157 B fee 420000 from p2p 34.92.10.23; inv to 6 peers; mempool 15 txs
+18:25:37 stats: mempool 15 txs 76525 B; peers 8; counts {'rejected': 25, "wtxid: Bend auth digest == peer's MSG_WTX inv": 537, 'admitted': 689, 'removed mined': 674, 'duplicate': 5}
+18:25:41 admit: tip moved during validation (was 3532430); validating the batch again
+18:25:41 admitted fefb8d5fb45dd56f62476703ccffcf44c82a2204a6b3f8369188d38b9cd70af5 v6 9313 B fee 15000 from p2p 34.92.10.23; inv to 4 peers; mempool 21 txs
+18:25:41 admitted 6ee068d07ec95eaa9ef87e222c7fc1f713b2e0bb921cc2ffad92a15c9fa78235 v4 1244 B fee 50000 from p2p 34.92.10.23; inv to 4 peers; mempool 21 txs
+18:25:41 admitted 61cbefa3dfab72343e8e2bbd735b826279fc0d264446bfd737cb7e36eb3f9842 v4 14224 B fee 490000 from p2p 34.151.153.36; inv to 3 peers; mempool 21 txs
+18:25:41 admitted 09189a9bfb821d7234fc265848e40be316214f31f73b618fd779b9f522d27831 v5 301 B fee 50000 from p2p 34.92.10.23; inv to 4 peers; mempool 21 txs
+18:25:41 admitted 9823162025f0ead34f4508f1e28778c2f5bc2630cc708f58b8ba718ebb6aa87e v5 238 B fee 10000 from p2p 34.92.10.23; inv to 4 peers; mempool 21 txs
+18:25:41 admitted 6ce4f3f48e96473a2c6ce40a4d7f7af330eafd2068c77abaf1c2ee9b3ab00797 v5 241 B fee 10000 from p2p 143.244.184.176; inv to 3 peers; mempool 21 txs
+18:25:41 recheck: removed 13 mined
+18:25:41 tip 3532433 (00000000006506a8): mempool 8 txs 38076 B, removed 13
+18:25:41 block cache: 0 blocks []..[]
+18:26:37 stats: mempool 8 txs 38076 B; peers 8; counts {'rejected': 25, "wtxid: Bend auth digest == peer's MSG_WTX inv": 541, 'admitted': 695, 'removed mined': 687, 'duplicate': 5}
+18:27:37 stats: mempool 8 txs 38076 B; peers 8; counts {'rejected': 25, "wtxid: Bend auth digest == peer's MSG_WTX inv": 541, 'admitted': 695, 'removed mined': 687, 'duplicate': 5}
+18:28:28 admit: tip moved during validation (was 3532433); validating the batch again
+18:28:28 rejected 3f1877b19bc3b21286a427e849a9284095edacdc55ba8ddae29198996149d877 from p2p 34.91.248.94: mined: transaction is in the best chain
+18:28:28 rejected e0cfe067e1175df09fa2c8e99e6583674bfa695a6035deeb86455804843945fe from p2p 34.92.10.23: mined: transaction is in the best chain
+18:28:28 rejected 82e90b29aaaf8bd70840c5a91edf710257dc8953226401f2e2b22fe38a5c652a from p2p 34.130.110.3: mined: transaction is in the best chain
+18:28:28 rejected 1ad43d44bd27e42953585458e320ff921937b3f56c44dbee69e82fa8a5f75cec from p2p 143.244.184.176: mined: transaction is in the best chain
+18:28:28 recheck: removed 8 mined
+18:28:28 tip 3532434 (000000000041945f): mempool 0 txs 0 B, removed 8
+18:28:28 rejected df63cf937d3357bf77bc2ae5981ec88417e6c5a0aea68bd340969c79c31363b9 from p2p 51.250.116.186: mined: transaction is in the best chain
+18:28:28 rejected 72483eb478abd5338912e05840fb1ca0d074a50ea0f58d036cf15c79b4f595d8 from p2p 34.151.153.36: mined: transaction is in the best chain
+18:28:28 admitted 1edb6732e00d5d85bfd46a440403443e626154a8a1979fc8caf2b5e6607c2df7 v4 244 B fee 50000 from p2p 34.92.10.23; inv to 4 peers; mempool 8 txs
+18:28:28 admitted f81cf38ff843dcd9cc139fea57075de61982c6e5f28120d50523b2f160124178 v6 9198 B fee 15000 from p2p 34.91.248.94; inv to 2 peers; mempool 8 txs
+18:28:28 admitted baa33d9ec03cfd80cb669dc5c8c6621eb4688a60cd0fca9703ab8089ccd9351e v6 9200 B fee 15000 from p2p 34.92.10.23; inv to 7 peers; mempool 8 txs
+18:28:28 admitted 0dfb628ded76505c433ec71b840fb6c47275740c103432c3ef0c11aa17cd0390 v5 268 B fee 20000 from p2p 34.92.10.23; inv to 7 peers; mempool 8 txs
+18:28:28 admitted 468242a8cffc275a65fbadcb0371e496bfd042ac85dbc9e1505ae8ac0e2a703d v6 53350 B fee 80000 from p2p 34.92.10.23; inv to 7 peers; mempool 8 txs
+18:28:28 admitted ec237ddf3022bd79c743123d387e49e7bcf901d0fc16e8471071b3aa504954da v6 537 B fee 15000 from p2p 34.91.248.94; inv to 5 peers; mempool 8 txs
+18:28:28 admitted 1bfe8b2fb8624815acee771591e8353084f9f89ba6810410fc283ff869f1960b v6 9313 B fee 15000 from p2p 34.92.10.23; inv to 6 peers; mempool 8 txs
+18:28:28 admitted 106bb6b1866790d5d58af97538522fd887b43e828dd6c9b72ae1d705a330b48e v4 278 B fee 18009 from p2p 34.151.153.36; inv to 7 peers; mempool 8 txs
+18:28:32 admitted 1ec0c4c6ebdace023992c9985b323b746c72646d946af186b4a982346be6f146 v6 6192 B fee 10000 from p2p 51.250.116.186; inv to 6 peers; mempool 9 txs
+18:28:37 stats: mempool 9 txs 88580 B; peers 8; counts {'rejected': 31, "wtxid: Bend auth digest == peer's MSG_WTX inv": 551, 'admitted': 704, 'removed mined': 695, 'duplicate': 5}
+18:28:43 admitted 74a9cb73df857bc0994bd465f3fc253d296bcdcdc76c8dc7f3dfcc8c1cb8b91c v5 267 B fee 20000 from p2p 34.91.248.94; inv to 5 peers; mempool 10 txs
+18:28:50 admitted 46d55c6ad20a7ace2f98cee86e34ef03e0020f0b6cc6d51447ed9d20eaee488d v4 245 B fee 50000 from p2p 34.130.110.3; inv to 7 peers; mempool 11 txs
+18:28:52 admitted dbe10e62d2806002efdba1003a34b11f39de5ab0811c58fcb970253f202d6c65 v5 241 B fee 10000 from p2p 34.130.110.3; inv to 5 peers; mempool 12 txs
+18:28:59 admitted 9f1cb67040df4b1d51aa78d8d5d355b2c8ae3c0eba8143e003338048da585eab v6 9166 B fee 10000 from p2p 34.151.153.36; inv to 6 peers; mempool 13 txs
+18:29:09 admitted 5f088a30445bd8edd55a83fe9fac483913f831da6cedb8e654f1bb7faa7cb760 v6 241 B fee 10000 from p2p 34.130.110.3; inv to 7 peers; mempool 14 txs
+18:29:12 admitted 6a290058d8ca169c5e657c7c343d94a751def43023e2b6ec8d8bffa8b7ad21fe v4 245 B fee 20000 from p2p 34.91.248.94; inv to 7 peers; mempool 15 txs
+18:29:21 admitted d16f6390e73a916bcf5b1a203d97850600491c6c56f0bbb071d48c8e30b40904 v6 241 B fee 10000 from p2p 34.92.10.23; inv to 6 peers; mempool 16 txs
+18:29:33 admitted c1139ba0184f0c8677bd8fb0c364f1181d79fa431cc261804a1adc602ba382ea v6 242 B fee 10000 from p2p 34.91.248.94; inv to 6 peers; mempool 17 txs
+18:29:37 stats: mempool 17 txs 99468 B; peers 8; counts {'rejected': 31, "wtxid: Bend auth digest == peer's MSG_WTX inv": 557, 'admitted': 712, 'removed mined': 695, 'duplicate': 5}
+18:29:41 admitted 8932ce772586cba34aa11d168f281c7e07eb3e54bd478597e28dff5898d6b555 v5 449 B fee 50000 from p2p 143.244.184.176; inv to 7 peers; mempool 18 txs
+18:29:48 admitted 4ffb57d84015cd36a8606528a1ca47dd53e3404e93fee379cad50fc1ed8c8c92 v6 9200 B fee 15000 from p2p 34.151.153.36; inv to 7 peers; mempool 19 txs
+18:29:49 admitted 04f14bff17c89f3c118fff8bee699e60c9727f5a85911722f013b687472248cb v6 241 B fee 10000 from p2p 143.244.184.176; inv to 7 peers; mempool 20 txs
+18:29:55 admitted fbd43afbcb2574c5fb31875944669c3acec423072621c3a8fd173603157b29c6 v6 9166 B fee 10000 from p2p 34.92.10.23; inv to 5 peers; mempool 21 txs
+18:30:03 admitted 436a0ac15668e7f5e5a97d289ee5ce993a15ac339accaf4c52f4117b1b3b8570 v5 274 B fee 26200 from p2p 34.92.10.23; inv to 6 peers; mempool 22 txs
+18:30:13 admitted 9855b7c757b410623769b473b3275335d133078f64e078365a50d25e0be8b374 v4 253 B fee 15000 from p2p 34.92.10.23; inv to 6 peers; mempool 23 txs
+18:30:16 recheck: removed 5 mined
+18:30:16 tip 3532435 (0000000000751819): mempool 18 txs 46791 B, removed 5
+18:30:27 admitted 36a57908ede07756332130fa05431955bf83edf735aac9fcc117c6b115fdc8eb v4 504 B fee 15000 from p2p 34.151.153.36; inv to 6 peers; mempool 19 txs
+18:30:35 admitted db19116ecb894e30f55731c7e90162dff8b400d79ea152a9f56a0e04a329b477 v5 2763 B fee 50000 from p2p 34.130.110.3; inv to 4 peers; mempool 20 txs
+18:30:37 stats: mempool 20 txs 50058 B; peers 8; counts {'rejected': 31, "wtxid: Bend auth digest == peer's MSG_WTX inv": 563, 'admitted': 720, 'removed mined': 700, 'duplicate': 5}
+18:30:52 admitted 9f1a9be01ac54152e1256ba75b05ac4916028ec5d3b4f43deea0bc58b688477f v5 241 B fee 10000 from p2p 34.130.110.3; inv to 6 peers; mempool 21 txs
+18:31:01 admitted 5a47817dad43f5a5efe4a9b6864ed5b505013d2d5a4145c3d76715802ab54d6f v6 242 B fee 10000 from p2p 34.130.110.3; inv to 5 peers; mempool 22 txs
+18:31:23 admitted a5789d03806f328e227ff0925965fd66033d45116f708154458082f1da59b902 v5 302 B fee 50000 from p2p 34.130.110.3; inv to 7 peers; mempool 23 txs
+18:31:31 admitted 10819071228accb2040b49149582bde976f6f911250b9f152ef8bc8b7715e0a6 v4 245 B fee 10000 from p2p 34.130.110.3; inv to 6 peers; mempool 24 txs
+18:31:35 admitted 27c3deeec3852121e8a4906ccb05b0be68d647eacbef350871ae1270b456df9c v4 425 B fee 25000 from p2p 34.151.153.36; inv to 6 peers; mempool 25 txs
+18:31:35 recheck: removed 20 mined
+18:31:35 tip 3532437 (00000000002e8e93): mempool 5 txs 1455 B, removed 20
+18:31:37 stats: mempool 5 txs 1455 B; peers 8; counts {'rejected': 31, "wtxid: Bend auth digest == peer's MSG_WTX inv": 566, 'admitted': 725, 'removed mined': 720, 'duplicate': 5}
+18:32:11 admitted ee19d792c16d6e93ad27d9ee571eac322ce3f0734c8c4694b31c12cda9d857e3 v4 279 B fee 18009 from p2p 34.92.10.23; inv to 5 peers; mempool 6 txs
+18:32:19 admitted d2684945c34351f151d6a2212faef4c233125b906240c1e7cb0a0451f777cd04 v6 9313 B fee 15000 from p2p 34.151.153.36; inv to 7 peers; mempool 8 txs
+18:32:19 admitted 43a7067c9a9332d271f559b5844da501d49cc02e8373b0348e114ab4c3f36c57 v6 9166 B fee 10000 from p2p 34.130.110.3; inv to 6 peers; mempool 8 txs
+18:32:26 admitted 2b98e89cec3a21ea9dab07cb595bc55f1ffd356cf106b1e3a9de424185a11e52 v6 12356 B fee 20000 from p2p 34.92.10.23; inv to 7 peers; mempool 9 txs
+18:32:27 admitted 892e7849c14ec023700d462ef2a3a8d0225728e576c3f0f53ac144ebce985da2 v4 210 B fee 10000 from p2p 143.244.184.176; inv to 7 peers; mempool 10 txs
+18:32:37 stats: mempool 10 txs 32779 B; peers 8; counts {'rejected': 31, "wtxid: Bend auth digest == peer's MSG_WTX inv": 569, 'admitted': 730, 'removed mined': 720, 'duplicate': 5}
+18:32:43 admitted e77243c1dc54034632e47e280c9c7a5749460ef9f3124a6571b93e93c3bc6fcf v5 267 B fee 20001 from p2p 34.130.110.3; inv to 6 peers; mempool 11 txs
+18:32:45 recheck: removed 5 mined
+18:32:45 tip 3532438 (00000000001b7b28): mempool 6 txs 31591 B, removed 5
+18:32:50 admitted c18f5eae14d6086f3e5430ba144d043a85dcebb17ea7e1382b7576c17882e1ac v4 244 B fee 15000 from p2p 143.244.184.176; inv to 4 peers; mempool 7 txs
+18:33:37 stats: mempool 7 txs 31835 B; peers 8; counts {'rejected': 31, "wtxid: Bend auth digest == peer's MSG_WTX inv": 570, 'admitted': 732, 'removed mined': 725, 'duplicate': 5}
+18:33:39 admitted 14cb1d4e2804569708de5621843fe356b0964e29f5e13f262f76e3446853f332 v6 242 B fee 10000 from p2p 34.130.110.3; inv to 6 peers; mempool 8 txs
+18:33:43 admitted 8087dbc8624075732e9f11624470aebd51d09e6a977c6cd6511bc528c5334b30 v5 448 B fee 50000 from p2p 34.151.153.36; inv to 6 peers; mempool 9 txs
+18:33:57 recheck: removed 7 mined
+18:33:57 tip 3532439 (0000000000239723): mempool 2 txs 690 B, removed 7
+18:34:02 admitted faece6cd9f6a46020a3fd84875e252b84de252d2097f0b2d9c5b42dae9a74271 v4 392 B fee 20000 from p2p 34.92.10.23; inv to 6 peers; mempool 3 txs
+18:34:04 admitted 312d439d63d9bf01de41f35c26f0b321715cca4717e7ee3f98397f7dd4233f1b v5 1555 B fee 50000 from p2p 34.92.10.23; inv to 7 peers; mempool 4 txs
+18:34:05 admitted 30643c6171900f954f9e0d73acb1db755046b3a8a41bdd146f7e93d597cbcaef v5 207 B fee 20700 from p2p 34.91.248.94; inv to 5 peers; mempool 5 txs
+18:34:17 admitted 96ea0081a6c5d00ac86e5df4cca572dc44fcb5306241414f135e18a7c6a20bf7 v4 244 B fee 12031 from p2p 34.91.248.94; inv to 6 peers; mempool 6 txs
+18:34:26 admitted 508c9761c6ceb65a4a409c9ac96be560f9d619bfa3efcbb4a249d7fd9f3cf9a8 v4 244 B fee 50000 from p2p 34.91.248.94; inv to 6 peers; mempool 7 txs
+18:34:37 stats: mempool 7 txs 3332 B; peers 8; counts {'rejected': 31, "wtxid: Bend auth digest == peer's MSG_WTX inv": 574, 'admitted': 739, 'removed mined': 732, 'duplicate': 5}
+18:34:37 admitted dbf9b2ac6e3e855e72f797d46cf3098053711f0358e4809f075149e9bbe55231 v6 9496 B fee 20000 from p2p 143.244.184.176; inv to 6 peers; mempool 8 txs
+18:34:46 admitted 5e9b8ac49b55eef15916f79afc8c60027fb24d48240213ed24e54155ab00caaf v6 9200 B fee 15000 from p2p 143.244.184.176; inv to 7 peers; mempool 9 txs
+18:34:52 admitted 5d380edff09d8fec4f946b4b53a4f9623a8c6b775df3f116031bd6348ddd9449 v6 9200 B fee 15000 from p2p 34.151.153.36; inv to 7 peers; mempool 10 txs
+18:34:57 admitted 65190481b3917495f69e0e1b246edf2490e024aa276ed566564f0c6f26501aca v6 208 B fee 10000 from p2p 34.92.10.23; inv to 7 peers; mempool 11 txs
+18:35:05 tip 3532440 (0000000000439a52): mempool 11 txs 31436 B, removed 0
+18:35:21 admitted b10cda1e6845074cc47f479c03f335f544d4e7dc17c2056c18f5bcc19556968d v6 241 B fee 10000 from p2p 51.250.116.186; inv to 7 peers; mempool 12 txs
+18:35:28 admitted d268ab2d026d5962187ab9a0c98bf7ae7a67b823828aa7bb47c2d937868e1cef v4 392 B fee 10000 from p2p 34.130.110.3; inv to 5 peers; mempool 13 txs
+18:35:35 admitted b4ee4f935702cbcc5a33f1c0ea63cb066a6df61f10b441d5ffe96ffe1bf151d4 v6 9166 B fee 10000 from p2p 34.130.110.3; inv to 4 peers; mempool 14 txs
+18:35:37 stats: mempool 14 txs 41235 B; peers 8; counts {'rejected': 31, "wtxid: Bend auth digest == peer's MSG_WTX inv": 580, 'admitted': 746, 'removed mined': 732, 'duplicate': 5}
+18:35:51 admitted bbbfe770e93b9437147cdc508cdff782e1f6ad3a656821a5614d6846536da5c1 v4 244 B fee 10000 from p2p 51.250.116.186; inv to 7 peers; mempool 15 txs
+18:36:11 admitted b03bce97cde6a59a5cfd6c88adac66ceffe998b38a4abc2ec09b90b0e443f171 v4 244 B fee 12031 from p2p 51.250.116.186; inv to 6 peers; mempool 16 txs
+18:36:19 admitted f68d1c3d2bee0b0b3ae8f586c8030f004dbdfaf66b3ac52df9be42ed1e7789a7 v6 6191 B fee 10000 from p2p 34.92.10.23; inv to 7 peers; mempool 17 txs
+18:36:37 stats: mempool 17 txs 47914 B; peers 8; counts {'rejected': 31, "wtxid: Bend auth digest == peer's MSG_WTX inv": 581, 'admitted': 749, 'removed mined': 732, 'duplicate': 5}
+18:37:06 admitted 1cff7f546e4fb2f7e1ba2fa7c2b95598a646b64b5c504c13c2686caf0e02e48c v5 274 B fee 26200 from p2p 34.92.10.23; inv to 6 peers; mempool 18 txs
+18:37:16 admitted ea672383a42dc05026930b6d6be080d55e9fa94d45a9d09dfc697047e527f62d v6 9200 B fee 15000 from p2p 34.92.10.23; inv to 7 peers; mempool 19 txs
+18:37:25 admitted af042893c680f519d570d58f3ed70ad1a31f7924af82106d65d211b10275bcf9 v5 450 B fee 50000 from p2p 51.250.116.186; inv to 6 peers; mempool 20 txs
+18:37:37 stats: mempool 20 txs 57838 B; peers 8; counts {'rejected': 31, "wtxid: Bend auth digest == peer's MSG_WTX inv": 584, 'admitted': 752, 'removed mined': 732, 'duplicate': 5}
+18:37:45 admitted 90a248b02d15bc3b2b47313e0a38409844ef543a41f138cb1ba1178d15c1632a v4 950 B fee 348252 from p2p 143.244.184.176; inv to 6 peers; mempool 21 txs
+18:37:51 admitted 02acbfd0374fbd2059244c0ee5fc2ab414ee5f9154d9570b9d39585aa065c845 v5 301 B fee 50000 from p2p 143.244.184.176; inv to 6 peers; mempool 22 txs
+18:37:57 admitted aaca15dbf8be87a536eaeb8ae6f7d3bb5d1c5cf72b6eb73c4368834528c5215e v5 241 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 23 txs
+18:38:02 recheck: removed 19 mined
+18:38:02 tip 3532441 (00000000004bf273): mempool 4 txs 1942 B, removed 19
+18:38:37 stats: mempool 4 txs 1942 B; peers 8; counts {'rejected': 31, "wtxid: Bend auth digest == peer's MSG_WTX inv": 586, 'admitted': 755, 'removed mined': 751, 'duplicate': 5}
+18:38:47 admitted f6b930d3d7aa8ebe734d6999838c97d75e9eaa01f9ae349b47655cddb7d36f8e v5 450 B fee 50000 from p2p 143.244.184.176; inv to 6 peers; mempool 5 txs
+18:38:59 admitted 1260280fda834fe73c90b76ffe1a3244137aff681e716b163b7b40c167e87bee v6 15150 B fee 15000 from p2p 34.92.10.23; inv to 6 peers; mempool 6 txs
+18:39:18 admitted 49e55606a7001a9e2c6c28832df08ef5839be8cfab33a4865eaa9ff7039d3988 v4 651 B fee 30000 from p2p 34.130.110.3; inv to 6 peers; mempool 7 txs
+18:39:37 stats: mempool 7 txs 18193 B; peers 8; counts {'rejected': 31, "wtxid: Bend auth digest == peer's MSG_WTX inv": 588, 'admitted': 758, 'removed mined': 751, 'duplicate': 5}
+18:40:03 recheck: removed 5 mined
+18:40:03 tip 3532443 (0000000000084ccd): mempool 2 txs 15801 B, removed 5
+18:40:11 admitted 00e1a5eedbbbad890b0d3a1b7955345613f05621dea73ee8511436c4b5b0d9d6 v4 313 B fee 23895 from p2p 34.91.248.94; inv to 6 peers; mempool 3 txs
+18:40:19 admitted 61f3f214a39c5105cccf788782dd814058bb479374498b42e6858dfccef8adc2 v5 450 B fee 50000 from p2p 34.130.110.3; inv to 5 peers; mempool 4 txs
+18:40:26 admitted 0db775633561843b034b967b32d83557fc097268418792c2392673bb82f6dcf3 v5 449 B fee 20000 from p2p 34.92.10.23; inv to 6 peers; mempool 5 txs
+18:40:29 admitted bcaa0ba8825559defaf8a053c0661ccbb3c1db94be9788318b74a8ab3e2ad59c v4 211 B fee 10000 from p2p 143.244.184.176; inv to 7 peers; mempool 6 txs
+18:40:33 admitted 161318c6046efbe3477c96bed59bb688aac95d2bfc7ae2f00831dd26f1ddb4b3 v5 268 B fee 20001 from p2p 34.92.10.23; inv to 7 peers; mempool 7 txs
+18:40:37 admitted af186c7f59416db94fb28c2feb459dae0196a0eea0408beb7b3d3955477e5b9b v6 9200 B fee 15000 from p2p 34.130.110.3; inv to 7 peers; mempool 8 txs
+18:40:37 stats: mempool 8 txs 26692 B; peers 8; counts {'rejected': 31, "wtxid: Bend auth digest == peer's MSG_WTX inv": 592, 'admitted': 764, 'removed mined': 756, 'duplicate': 5}
+18:41:23 admitted 2fe133dba5f0ea986ab26d0af3e094978338ce847caa277e81a6d10180da2a69 v5 302 B fee 50000 from p2p 34.91.248.94; inv to 6 peers; mempool 9 txs
+18:41:37 stats: mempool 9 txs 26994 B; peers 8; counts {'rejected': 31, "wtxid: Bend auth digest == peer's MSG_WTX inv": 593, 'admitted': 765, 'removed mined': 756, 'duplicate': 5}
+18:41:47 admitted 34530efc28eff10695f651bb514230fb2fddf559f06545e54de99bca8d75f6a5 v6 390 B fee 10000 from p2p 34.130.110.3; inv to 6 peers; mempool 10 txs
+18:41:53 recheck: removed 3 mined
+18:41:53 tip 3532444 (0000000000690a55): mempool 7 txs 11270 B, removed 3
+18:42:11 admitted 2a173559ffb878975aac1c8ea1235f7c61dcc625391eab854698a1cb8fda62af v4 279 B fee 18009 from p2p 34.130.110.3; inv to 5 peers; mempool 8 txs
+18:42:21 admitted fc041be6bfc57988b13bb938e573aa3dc488742ead6e8321ce43e4f07a0f4f23 v4 537 B fee 15000 from p2p 143.244.184.176; inv to 7 peers; mempool 9 txs
+18:42:37 stats: mempool 9 txs 12086 B; peers 8; counts {'rejected': 31, "wtxid: Bend auth digest == peer's MSG_WTX inv": 594, 'admitted': 768, 'removed mined': 759, 'duplicate': 5}
+18:42:40 admitted 0294acc239e1f2dc024c957a6b2a5a066493fc968d498d80ae719b2e3c346267 v5 267 B fee 20000 from p2p 51.250.116.186; inv to 5 peers; mempool 10 txs
+18:42:52 admitted 9c3abf811f84db62d986e66638d7822e354b7a0d765d43ee76a42e4fbeb38d31 v6 15512 B fee 25000 from p2p 34.92.10.23; inv to 5 peers; mempool 11 txs
+18:43:29 rejected cfd4fd1d97b1f77d81b8fa9cadf29950d1db4d5986014b3157f71294157db9bb from p2p 34.91.248.94: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+18:43:32 admitted c6007b832c81d824a37eaf7c7910c7c64fd718224eeba56ab821f570a1a54ee6 v6 15512 B fee 25000 from p2p 34.92.10.23; inv to 7 peers; mempool 12 txs
+18:43:37 stats: mempool 12 txs 43377 B; peers 8; counts {'rejected': 32, "wtxid: Bend auth digest == peer's MSG_WTX inv": 598, 'admitted': 771, 'removed mined': 759, 'duplicate': 5}
+18:43:54 recheck: removed 5 mined
+18:43:54 tip 3532445 (00000000003eea90): mempool 7 txs 32799 B, removed 5
+18:43:59 admitted c37e541784b03f2567c99a57df96715ffce3a4baa8014a8f54a0be1d27028c23 v5 449 B fee 50000 from p2p 34.130.110.3; inv to 5 peers; mempool 8 txs
+18:44:04 admitted fb326d1aeca69a94ac797dc871aa5df4ab9ad9bc1271396c34adbc7df2e83d84 v6 18668 B fee 30000 from p2p 34.151.153.36; inv to 7 peers; mempool 9 txs
+18:44:07 admitted 9dc322dd4676ca6555c1861974963ced1dae98e9c07e0bd33a583ef39dcf4fec v6 15478 B fee 20000 from p2p 34.130.110.3; inv to 7 peers; mempool 10 txs
+18:44:08 admitted 01b7581ad1ef5ed5a9483b38896de1a7188dde02396b784cd1dc877afba13555 v6 21824 B fee 35000 from p2p 34.91.248.94; inv to 4 peers; mempool 11 txs
+18:44:11 admitted b846ba0f3f88e91efaa22afdc85011fb5efd9ab166724baa2fb2fb6731293f45 v6 208 B fee 10000 from p2p 34.92.10.23; inv to 7 peers; mempool 12 txs
+18:44:13 admitted 9486c58d8636e7ee97321efd8aa9a1337907ea148156436e0b2a4bbe55856134 v4 278 B fee 18009 from p2p 143.244.184.176; inv to 7 peers; mempool 13 txs
+18:44:15 admitted 2ab16c6bff2d9eacc14a7134e91c2e22c2d6a8894ccbc3519e19bb500dd076fa v6 9166 B fee 10000 from p2p 34.151.153.36; inv to 6 peers; mempool 14 txs
+18:44:20 admitted 5f6c277dfee6a546367a085a5539a4320ef4b6890445fd9d4ac559a281ddcb44 v5 1556 B fee 50000 from p2p 143.244.184.176; inv to 6 peers; mempool 15 txs
+18:44:22 admitted 73e94017665b05f4cb70cbda29c8e9f9c9ec8fb131c0eb526ef84f5a736addef v5 416 B fee 20000 from p2p 34.130.110.3; inv to 6 peers; mempool 16 txs
+18:44:25 admitted 59bf5bb48763b0beb3d5433c2e61df2787c05c7253e6d3d4721d1c81f892a5af v4 244 B fee 50000 from p2p 34.130.110.3; inv to 6 peers; mempool 17 txs
+18:44:32 admitted 625986c895fa67da42766a2dead82200d1256cdd493a6924776999b668c2fe77 v6 6340 B fee 15000 from p2p 34.92.10.23; inv to 7 peers; mempool 18 txs
+18:44:37 stats: mempool 18 txs 107426 B; peers 8; counts {'rejected': 32, "wtxid: Bend auth digest == peer's MSG_WTX inv": 607, 'admitted': 782, 'removed mined': 764, 'duplicate': 5}
+18:44:37 admitted 3e8aa9b47404bdbc09356559fc3148a92471cf0fd8a9f204551ffe5e9464c362 v5 241 B fee 10000 from p2p 143.244.184.176; inv to 7 peers; mempool 19 txs
+18:44:42 rejected de5f40126d09563232237155eb29a1d087988a8324d058e61e22b0a0fa63195a from p2p 34.130.110.3: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+18:44:48 admitted 9267095f4f0f3eb40e2f57e6eb15dd9d3349ecd1b61458f5873d9c53249e2ea0 v6 536 B fee 15000 from p2p 143.244.184.176; inv to 6 peers; mempool 20 txs
+18:44:56 admitted 03f11d069e1abb3f81c96dce138518bf6dd2eaf146c4479ad57455979eedc806 v4 210 B fee 11328 from p2p 34.130.110.3; inv to 5 peers; mempool 21 txs
+18:45:37 stats: mempool 21 txs 108413 B; peers 8; counts {'rejected': 33, "wtxid: Bend auth digest == peer's MSG_WTX inv": 610, 'admitted': 785, 'removed mined': 764, 'duplicate': 5}
+18:45:40 admitted ddcdd05c1e5fc4c87f04f070b2e620ea2844b792b64aa91f73c5dcbdc4863339 v6 9166 B fee 10000 from p2p 34.130.110.3; inv to 7 peers; mempool 22 txs
+18:45:47 p2p: inbound peer 127.0.0.1:52784 /Zebend-fullnode:0.1/ height 0
+18:45:47 p2p: peer 127.0.0.1:52784 gone after 0 s (BrokenPipeError: [Errno 32] Broken pipe)
+18:45:47 rejected b9e83d839be6a97050331b154af181e523fcc746d349bd2854761351ef462aa6 from p2p 34.130.110.3: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+18:46:11 admitted 3b34836d4ecda47b506b0b753f64b8e8c8023b2b4c37de687c25fcd569846321 v4 278 B fee 18009 from p2p 51.250.116.186; inv to 5 peers; mempool 23 txs
+18:46:19 admitted 23ae90ceea68367b73fd5406584f5f6e62980a261a07c5b6d43282efacdfbeae v6 9166 B fee 10000 from p2p 34.130.110.3; inv to 6 peers; mempool 24 txs
+18:46:37 stats: mempool 24 txs 127023 B; peers 8; counts {'rejected': 34, "wtxid: Bend auth digest == peer's MSG_WTX inv": 613, 'admitted': 788, 'removed mined': 764, 'duplicate': 5}
+18:46:46 admitted 9af4c8526b0d747e7fefad2d84d46689905a08979cd2e8ee7b7006fea1807a2e v6 15512 B fee 25000 from p2p 143.244.184.176; inv to 7 peers; mempool 25 txs
+18:46:48 admitted 64241d00baf90fae43a7f61d44c8e3d1d4036bb052c9164f828107cd2eab0454 v6 208 B fee 10000 from p2p 143.244.184.176; inv to 6 peers; mempool 26 txs
+18:47:01 admitted e4dd99beab041d4345845bb0f957a8c2650f97b05eb80a4c4ec5c5a73ebaa0b0 v6 6338 B fee 15000 from p2p 34.91.248.94; inv to 7 peers; mempool 27 txs
+18:47:18 rejected e5e2614b1e4e1c90ef15f05ce10e298569480f60681db5aedaf3109e9d11ee75 from p2p 34.130.110.3: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+18:47:29 recheck: removed 16 mined
+18:47:29 tip 3532447 (00000000002cc2d7): mempool 11 txs 48239 B, removed 16
+18:47:37 stats: mempool 11 txs 48239 B; peers 8; counts {'rejected': 35, "wtxid: Bend auth digest == peer's MSG_WTX inv": 617, 'admitted': 791, 'removed mined': 780, 'duplicate': 5}
+18:47:40 admitted 369de930d5d4949862e7ce530cce450efb9e355b4105dd1576c0d8486d08ce11 v6 2412 B fee 15000 from p2p 34.130.110.3; inv to 5 peers; mempool 12 txs
+18:47:44 admitted e4ca6fca0b8d3a16e0df99f287b9bff1a0537e1675411389d4f7f28518265c92 v6 9166 B fee 10000 from p2p 143.244.184.176; inv to 7 peers; mempool 13 txs
+18:48:12 admitted 46b194c920611f8a980f69465c62dfc633f415c98fd2ccfd943befb7af3fee1b v4 313 B fee 23895 from p2p 34.151.153.36; inv to 6 peers; mempool 14 txs
+18:48:15 rejected dcbb5848e7e395f5981979001bc10d073083f55aeb179f091532fb718bb09493 from p2p 34.92.10.23: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+18:48:19 admitted 455c5a19de794298b270efd87bb09929cba18400600115d57c5222a269c1c846 v6 9200 B fee 15000 from p2p 34.151.153.36; inv to 7 peers; mempool 15 txs
+18:48:26 admitted 814028364b76171390c24cd9a11d7fa3afecaadc248725016e1dbd2bf68d7717 v4 245 B fee 10000 from p2p 34.92.10.23; inv to 7 peers; mempool 16 txs
+18:48:37 stats: mempool 16 txs 69575 B; peers 8; counts {'rejected': 36, "wtxid: Bend auth digest == peer's MSG_WTX inv": 621, 'admitted': 796, 'removed mined': 780, 'duplicate': 5}
+18:48:39 admitted 4e1f1a2ac90d932db509967f7a73ae11f8e43cd9f9bafa278a538eab98eb3fd0 v5 415 B fee 20000 from p2p 34.151.153.36; inv to 7 peers; mempool 17 txs
+18:48:40 admitted 2ece5acaf434cba77b440fe47139b96a00cb04e73e49bf3138bb4d84effde404 v5 448 B fee 50000 from p2p 51.250.116.186; inv to 7 peers; mempool 18 txs
+18:48:40 rejected 2beb5ed3ab5bbc517898ff892c1a3783a917edafaf3dd7dee8a4b8266921c655 from p2p 51.250.116.186: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+18:48:45 recheck: removed 11 mined
+18:48:45 tip 3532450 (0000000000236572): mempool 7 txs 22199 B, removed 11
+18:48:51 admitted b7e7de938630b282878b78878f8bec9539566ffb129278f17fc00d90df8f4da6 v6 240 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 9 txs
+18:48:51 admitted 6b23e529da67e109f6ca3020438470f772f925ead7b385f5b953d31c180b9ad5 v6 536 B fee 15000 from p2p 34.91.248.94; inv to 7 peers; mempool 9 txs
+18:49:01 admitted 01f5f6c9912fef80615a22f8f412a27d76a9ef36cdf3afc6c1268d7a308fcebd v4 210 B fee 57600 from p2p 51.250.116.186; inv to 5 peers; mempool 10 txs
+18:49:09 admitted 19d99cce8b0d8020a1c735e8b63fa336e9ce14bc828535f10e1bf18bf1a8a8b7 v5 387 B fee 10000 from p2p 34.92.10.23; inv to 4 peers; mempool 13 txs
+18:49:09 admitted dcbb5848e7e395f5981979001bc10d073083f55aeb179f091532fb718bb09493 v6 15512 B fee 25000 from p2p 34.92.10.23; inv to 4 peers; mempool 13 txs
+18:49:09 admitted 2beb5ed3ab5bbc517898ff892c1a3783a917edafaf3dd7dee8a4b8266921c655 v6 9314 B fee 15000 from p2p 34.92.10.23; inv to 4 peers; mempool 13 txs
+18:49:22 admitted 248d634561fa65207d756676815616b2f1df8357aaa6e93677457850faa13360 v6 9200 B fee 15000 from p2p 51.250.116.186; inv to 5 peers; mempool 14 txs
+18:49:37 stats: mempool 14 txs 57598 B; peers 8; counts {'rejected': 37, "wtxid: Bend auth digest == peer's MSG_WTX inv": 630, 'admitted': 805, 'removed mined': 791, 'duplicate': 5}
+18:49:43 admitted e8f1de04ad16626de3ab13d01c91e322f842e2f2ee097fc6302ca1c07ebe887a v6 9166 B fee 10000 from p2p 51.250.116.186; inv to 5 peers; mempool 15 txs
+18:49:57 admitted de1785c936d665673afbceef614e995efac808e45519a5ca1e395ee0c5bf2b52 v6 537 B fee 15000 from p2p 34.91.248.94; inv to 7 peers; mempool 16 txs
+18:50:11 admitted 4919ed6bd26f9f21cc0321b21fb965b0a570a4790b0cc3a9d73c3a6f5b28efc8 v4 245 B fee 12031 from p2p 34.151.153.36; inv to 6 peers; mempool 17 txs
+18:50:24 admitted ebd8e24f177e883832e4faba7181d47bb5ff3e4c3bab2714b8e2de4bb182e962 v5 599 B fee 20000 from p2p 34.91.248.94; inv to 5 peers; mempool 20 txs
+18:50:24 admitted 542ab2ae4c1044a7236d0e6329c029d3d6494a601bed20636194bc0f29d96714 v6 535 B fee 15000 from p2p 34.91.248.94; inv to 5 peers; mempool 20 txs
+18:50:24 admitted a6c6eb4620be2f8c56f7782a9174b279b9d62b686ac0011e76c717d762dc61ab v4 393 B fee 30000 from p2p 34.91.248.94; inv to 5 peers; mempool 20 txs
+18:50:31 admitted 94da5a3dcc19b954b7c96d5c30fd64440ad932979cecd9e8b4837652475dcff2 v6 241 B fee 10000 from p2p 51.250.116.186; inv to 6 peers; mempool 22 txs
+18:50:31 admitted 50281455a97cc6eb1097bcee32be8c781b729431f595e911c8aa05fc356f6da2 v6 242 B fee 10000 from p2p 34.92.10.23; inv to 7 peers; mempool 22 txs
+18:50:37 stats: mempool 22 txs 69556 B; peers 8; counts {'rejected': 37, "wtxid: Bend auth digest == peer's MSG_WTX inv": 636, 'admitted': 813, 'removed mined': 791, 'duplicate': 5}
+18:50:44 rejected 275d9f67716def752f14b3533783d500a901cfa4866ccb20c53a2a03d46439d3 from p2p 34.91.248.94: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+18:50:44 admitted 1fd86ca2117548e54af796a3e59988b492122efb5604143253d24cbddc74fa6e v5 268 B fee 20001 from p2p 34.91.248.94; inv to 6 peers; mempool 23 txs
+18:50:47 rejected 30123c7565d59acc8d67101eadad7c72fda285aac80c192d100ccc63f77717d8 from p2p 143.244.184.176: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+18:50:49 admitted 300e8edd2575eb8974e19f226979e8276408dff81b38fff928715d50e74413d3 v5 1040 B fee 55000 from p2p 34.92.10.23; inv to 7 peers; mempool 24 txs
+18:50:52 admitted a7c5d224e494836a67984de89db8d8085519796559ac7c31920a4dd24d3ecc19 v6 241 B fee 10000 from p2p 143.244.184.176; inv to 7 peers; mempool 25 txs
+18:51:04 admitted dca433e16cf492bcccecf4bb8502c529b084c767f6d793dd195e1887d5ef6414 v4 245 B fee 25000 from p2p 34.91.248.94; inv to 7 peers; mempool 26 txs
+18:51:13 admitted 7b99843d60e509c1810828419eff2aecc1423ded7de17ae6e57b9bb292a92343 v6 241 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 27 txs
+18:51:20 admitted f064b0aca695fcf8b8b607cb35e3070be19d0d74b8e3ed3ac5ba8143c3c5bf93 v6 242 B fee 10000 from p2p 34.92.10.23; inv to 7 peers; mempool 28 txs
+18:51:24 rejected 71e85d54f9cad1a2a2ae51977354f1cd16d2c5d0d6379cb9d9de754a0c366eb9 from p2p 34.151.153.36: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+18:51:27 admitted 31a7347fab8228de1757aeb84dbf6def263de3b40039d97e85c6c25b73437c2e v6 242 B fee 10000 from p2p 34.92.10.23; inv to 7 peers; mempool 29 txs
+18:51:30 admitted 7bcc1f7258eaf34b550d8a195a9589e9a9737521e85c34ee663b9c2029246811 v6 242 B fee 10000 from p2p 34.130.110.3; inv to 5 peers; mempool 30 txs
+18:51:32 rejected 2ce66821f02e6fa00a11a53ac21f949059ea285a70474fc9c17bb8ded4d26fe8 from p2p 34.92.10.23: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+18:51:37 stats: mempool 30 txs 72317 B; peers 8; counts {'rejected': 41, "wtxid: Bend auth digest == peer's MSG_WTX inv": 647, 'admitted': 821, 'removed mined': 791, 'duplicate': 5}
+18:51:39 admitted e86703cca3aaad589070bb945148ac10860a6a1d36adaab167deb84f00717b2d v6 9166 B fee 10000 from p2p 34.92.10.23; inv to 7 peers; mempool 31 txs
+18:51:40 recheck: removed 3 mined
+18:51:40 tip 3532453 (00000000006e0524): mempool 28 txs 69592 B, removed 3
+18:51:40 admitted 52c52596b6cd02e9609f606d6e1e8673e863e8b1109827581b8f4aea33589ec4 v4 392 B fee 30000 from p2p 143.244.184.176; inv to 5 peers; mempool 29 txs
+18:51:58 admitted 1e23fe6db293517dba9c9379396238c5c97c7793f0bc245f6d5fe4e52e264fd7 v6 9200 B fee 15000 from p2p 51.250.116.186; inv to 5 peers; mempool 30 txs
+18:52:05 admitted 365b4034256fa568a68f97efcb363196a079727bf09a4e518c7971f18603df73 v5 4351 B fee 90000 from p2p 34.92.10.23; inv to 6 peers; mempool 31 txs
+18:52:07 admitted ed1f9e0ed817a17c2a2161cceaeed44e9ff53e43afbc3c750fb211443c661c23 v6 31292 B fee 50000 from p2p 34.151.153.36; inv to 6 peers; mempool 32 txs
+18:52:12 admitted a84d3cad8a775d1d69a6067ddd994ba7e7a08c77246b7f1f81c73e05b2eb81c4 v4 244 B fee 12031 from p2p 143.244.184.176; inv to 6 peers; mempool 33 txs
+18:52:15 admitted cacb15092ec8797b18441b15c08b9369640c30199608f4a504a9a0b7ee4fa0b7 v6 12765 B fee 30000 from p2p 143.244.184.176; inv to 7 peers; mempool 34 txs
+18:52:17 admitted bfb8d7cf4257b57852b5c94b68657ac353d3f1cd26eee71e5260c77cbdbf494c v4 538 B fee 43932 from p2p 34.92.10.23; inv to 7 peers; mempool 35 txs
+18:52:28 admitted 48a1a38d6fca774c6ce92f2a7221363bd83122e66f391264f0eb5894cf3d6292 v5 302 B fee 50000 from p2p 34.130.110.3; inv to 7 peers; mempool 36 txs
+18:52:37 stats: mempool 36 txs 128676 B; peers 8; counts {'rejected': 41, "wtxid: Bend auth digest == peer's MSG_WTX inv": 653, 'admitted': 830, 'removed mined': 794, 'duplicate': 5}
+18:53:04 recheck: removed 32 mined
+18:53:04 tip 3532455 (000000000041e3dc): mempool 4 txs 13849 B, removed 32
+18:53:08 admitted f3d07f6132e05d3167a963560461e18589a57f2157e86045d2173e60717e900c v4 245 B fee 10000 from p2p 34.91.248.94; inv to 5 peers; mempool 5 txs
+18:53:15 admitted 475e2e7c97cc1c4c8652b5a45368a303a7c96da3bc99b374ca04962f5ae91852 v6 241 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 6 txs
+18:53:21 admitted 5315c809ff20c348ab67816e6b6000873b81cc291bb743e17f6fb01bed54092e v4 392 B fee 10000 from p2p 34.91.248.94; inv to 5 peers; mempool 7 txs
+18:53:24 admitted 2b81d07081b60fd97332bb5812305afe0bac5531fad0a657719ce819660fffd4 v6 9166 B fee 10000 from p2p 34.92.10.23; inv to 6 peers; mempool 8 txs
+18:53:37 admitted a36d75b11ee6a33ce746fe21e29b6a62157eaf6132f4abd717d350c6a43d3d5d v6 242 B fee 10000 from p2p 34.91.248.94; inv to 3 peers; mempool 9 txs
+18:53:37 stats: mempool 9 txs 24135 B; peers 8; counts {'rejected': 41, "wtxid: Bend auth digest == peer's MSG_WTX inv": 656, 'admitted': 835, 'removed mined': 826, 'duplicate': 5}
+18:53:48 admitted 1f3b9847f105ee560fb9dfab4da5f0f60949cfcc1bc3a2f3ed92c050ba9b5fc4 v6 9166 B fee 10000 from p2p 143.244.184.176; inv to 7 peers; mempool 10 txs
+18:54:00 admitted ee394fd8b893d6240fa35c30613841b338f3749aa73d9e175f5139b0f991331d v4 245 B fee 25000 from p2p 143.244.184.176; inv to 6 peers; mempool 11 txs
+18:54:09 admitted a040a031679c3d5fa874266882c6efc8fa05cc015c6ead5622242820821b0e6f v6 9166 B fee 10000 from p2p 34.130.110.3; inv to 6 peers; mempool 12 txs
+18:54:15 admitted e5b98b64db0e4c96fe7693ef74ac821291a9a4307dec6bd19688b3df2662fe1c v4 245 B fee 12031 from p2p 51.250.116.186; inv to 5 peers; mempool 13 txs
+18:54:22 admitted e306f0edb0d59055ca321425d9c92559e77528f2e1e9a03b97faee3a1782a116 v6 242 B fee 10000 from p2p 51.250.116.186; inv to 7 peers; mempool 14 txs
+18:54:30 admitted 16a4f2af010fa28292db29ead7047ae6f49d353202102d00c8795ad4f7c41a31 v6 15512 B fee 25000 from p2p 51.250.116.186; inv to 7 peers; mempool 15 txs
+18:54:35 admitted 8f06203450a424b11f1d2a641a1a890a827f279c12ec71a1640617ef5ff9a86e v5 272 B fee 15000 from p2p 34.151.153.36; inv to 7 peers; mempool 16 txs
+18:54:37 stats: mempool 16 txs 58983 B; peers 8; counts {'rejected': 41, "wtxid: Bend auth digest == peer's MSG_WTX inv": 661, 'admitted': 842, 'removed mined': 826, 'duplicate': 5}
+18:54:51 admitted 4f984484cec2970406aa230fc028d3342f14ddc18189aa2ee80a88fcd5b10098 v4 244 B fee 67800 from p2p 34.91.248.94; inv to 6 peers; mempool 17 txs
+18:55:10 recheck: removed 4 mined
+18:55:10 tip 3532457 (0000000000103e5c): mempool 13 txs 45378 B, removed 4
+18:55:14 admitted bd4b0c0731886c2f0e09446d6c7300de57295b220a02281ad6e31a4980f52203 v5 449 B fee 50000 from p2p 34.92.10.23; inv to 6 peers; mempool 14 txs
+18:55:37 stats: mempool 14 txs 45827 B; peers 8; counts {'rejected': 41, "wtxid: Bend auth digest == peer's MSG_WTX inv": 662, 'admitted': 844, 'removed mined': 830, 'duplicate': 5}
+18:56:25 rejected 5c9a27475b1d09bcd6dcbc34df5539f42b212e02c59514c2eec54a916ecafc83 from p2p 34.92.10.23: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+18:56:27 recheck: removed 13 mined
+18:56:27 tip 3532458 (000000000066afb4): mempool 1 txs 449 B, removed 13
+18:56:36 admitted 9272c737674b214721c0e34c161f15e6ccb75d85f66609feaa8ba3340ca40fa5 v6 15512 B fee 25000 from p2p 34.91.248.94; inv to 6 peers; mempool 2 txs
+18:56:37 stats: mempool 2 txs 15961 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 664, 'admitted': 845, 'removed mined': 843, 'duplicate': 5}
+18:56:39 admitted 6dc19b9f7509dc685982a1004788e6265afeb79fbfba00ce27f05e5848fae72c v6 9200 B fee 15000 from p2p 34.130.110.3; inv to 7 peers; mempool 3 txs
+18:56:40 admitted 5c9a27475b1d09bcd6dcbc34df5539f42b212e02c59514c2eec54a916ecafc83 v6 12356 B fee 20000 from p2p 34.91.248.94; inv to 5 peers; mempool 4 txs
+18:57:01 admitted 23504a78e8ce8f25ad2c7ea154269206a920b878779fb53c31151956e7f24549 v6 9200 B fee 15000 from p2p 34.130.110.3; inv to 5 peers; mempool 5 txs
+18:57:37 stats: mempool 5 txs 46717 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 667, 'admitted': 848, 'removed mined': 843, 'duplicate': 5}
+18:57:39 admitted 8e8cf590c79495894d0d6f3492de02b62f6612756d56876cf019f85c0ae8ceec v6 390 B fee 10000 from p2p 34.91.248.94; inv to 5 peers; mempool 6 txs
+18:57:47 admitted 6c873a981c378257e5f5395b1494eeffe261dcc9837742d2be4c1e3a9823f03c v6 241 B fee 10000 from p2p 51.250.116.186; inv to 7 peers; mempool 8 txs
+18:57:47 admitted c6953334099a5c80430decc275369ce085d464ce0f959279fa12b226a1f65cfa v6 242 B fee 10000 from p2p 51.250.116.186; inv to 5 peers; mempool 8 txs
+18:57:55 admitted 6e42ed6c2fd83cbee5688189045bb9c5990b8252bd9914f92a870d6063a308f1 v5 1335 B fee 65000 from p2p 34.91.248.94; inv to 7 peers; mempool 9 txs
+18:57:56 admitted 62d7a739a68c48d9036bfc36bb224706ef9920e7e0998d9a6e70d1dae24a52c4 v6 9200 B fee 15000 from p2p 143.244.184.176; inv to 7 peers; mempool 10 txs
+18:58:11 admitted 44020adc2ddcb67684d9820d166980e4305dcf7b6c3744a80d68a2f27fa78d43 v4 978 B fee 145650 from p2p 51.250.116.186; inv to 6 peers; mempool 11 txs
+18:58:29 admitted dfe02642b37c4cdf8d608940ffecbd47be8784a24d09c65c9dd37af7aabe3393 v5 301 B fee 50000 from p2p 34.91.248.94; inv to 6 peers; mempool 12 txs
+18:58:37 stats: mempool 12 txs 59404 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 673, 'admitted': 855, 'removed mined': 843, 'duplicate': 5}
+18:58:56 admitted 784bdd420be3a3792a4c8db535ddfe6e254b8308049c38865775d3e245010643 v6 241 B fee 10000 from p2p 51.250.116.186; inv to 6 peers; mempool 13 txs
+18:59:03 admitted 313d7bb1ff8aad41e958d32835c0803cae6fae933d940a80033ca33161bc3aad v5 1555 B fee 50000 from p2p 51.250.116.186; inv to 6 peers; mempool 14 txs
+18:59:06 recheck: removed 12 mined
+18:59:06 tip 3532461 (00000000000bae60): mempool 2 txs 1796 B, removed 12
+18:59:36 admitted 4d8623d549c6d8c7fa35192f87e5acf6f683c9c525e54f214c87ad88a25f74dc v6 537 B fee 15000 from p2p 34.92.10.23; inv to 7 peers; mempool 3 txs
+18:59:37 stats: mempool 3 txs 2333 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 676, 'admitted': 858, 'removed mined': 855, 'duplicate': 5}
+18:59:57 admitted b215db4ee37c834891414681e0d97e336fec76c6dfc5c06b07a6ca6b8c10b311 v4 211 B fee 10000 from p2p 143.244.184.176; inv to 5 peers; mempool 4 txs
+19:00:20 admitted e9b3eac9fb460fc96e14613517d8873149e37754bb2ed0cd24edbb23293d783b v5 268 B fee 20000 from p2p 34.151.153.36; inv to 7 peers; mempool 5 txs
+19:00:26 admitted 97ac7f34c69fee1d5659e233553f98ba0bc6abc38fa732c7e65ea58699ee7958 v5 3174 B fee 50000 from p2p 34.92.10.23; inv to 6 peers; mempool 7 txs
+19:00:26 admitted 57067bffdeacf560fbc33e0aa6a14523f740e902bc8db00898b7bc4bf9823aa7 v4 244 B fee 12031 from p2p 34.92.10.23; inv to 6 peers; mempool 7 txs
+19:00:37 stats: mempool 7 txs 6230 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 678, 'admitted': 862, 'removed mined': 855, 'duplicate': 5}
+19:00:46 admitted c66d98cb80fb48c9b4a37a5c7fa48ef7fa70c3feb1577582f942b28d2991b996 v6 242 B fee 10000 from p2p 143.244.184.176; inv to 7 peers; mempool 8 txs
+19:00:57 admitted bab4278e805b46d70c590e8cf69eaba87c8da2d2ac670a0fa59405cdee6ae6ad v6 9200 B fee 15000 from p2p 34.130.110.3; inv to 7 peers; mempool 9 txs
+19:01:12 admitted 89984ca70c57129b4c8c8618a474b077e8ab601b8b9ed9169aa2f1d07d34a459 v6 241 B fee 10000 from p2p 34.91.248.94; inv to 6 peers; mempool 10 txs
+19:01:24 admitted 3b84e6cf35d7953a78e73a9105c3f0d6caf92aa7e47f1ddbb06187cca0492b4a v6 15512 B fee 25000 from p2p 34.92.10.23; inv to 5 peers; mempool 11 txs
+19:01:37 stats: mempool 11 txs 31425 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 682, 'admitted': 866, 'removed mined': 855, 'duplicate': 5}
+19:01:37 admitted ec2d5282db17d437cbc092257c2325c21e0a9932e767c233d143df12b4b7110c v5 1555 B fee 50000 from p2p 34.91.248.94; inv to 5 peers; mempool 12 txs
+19:02:14 admitted c428479bbe77810ee788c1b1b950c244ad7c95cff58a77fff56a8be0d040bd5f v6 11134 B fee 20000 from p2p 34.91.248.94; inv to 4 peers; mempool 13 txs
+19:02:18 recheck: removed 8 mined
+19:02:18 tip 3532462 (00000000003bc3a4): mempool 5 txs 37642 B, removed 8
+19:02:37 stats: mempool 5 txs 37642 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 684, 'admitted': 868, 'removed mined': 863, 'duplicate': 5}
+19:02:45 admitted cf0afcd9afa87c3183e90c67e1c36d457a1566dad328bd7f09058b4b2441d82f v6 9313 B fee 15000 from p2p 34.91.248.94; inv to 7 peers; mempool 6 txs
+19:03:00 admitted adedfbb36c3d2ce30a6a98c3603ce9ac4e7eba9bd0c9d83fc0ec7b8dd052dbe0 v6 9200 B fee 15000 from p2p 34.91.248.94; inv to 7 peers; mempool 7 txs
+19:03:11 admitted 85cbf37a6ad4e19a183a125a06cd5b7a124d13f092effd3acceb13ded273a4c6 v5 2411 B fee 50000 from p2p 143.244.184.176; inv to 5 peers; mempool 8 txs
+19:03:22 admitted e9ca34d42df4b3b73dbe03cfdd7a5d0e02b1ca5e0acd71349201f1e2bae65325 v5 1126 B fee 112900 from p2p 34.91.248.94; inv to 6 peers; mempool 9 txs
+19:03:37 recheck: removed 3 mined
+19:03:37 tip 3532463 (00000000004aefbc): mempool 6 txs 34739 B, removed 3
+19:03:37 admitted 2949ccd0d9b7764ff28773eae49efcdf8dc5d7e7b1004ec8a6ccb7589fc3700f v6 535 B fee 15000 from p2p 34.130.110.3; inv to 5 peers; mempool 7 txs
+19:03:37 stats: mempool 7 txs 35274 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 689, 'admitted': 873, 'removed mined': 866, 'duplicate': 5}
+19:03:58 admitted 0d8c2c67e1de21c668756b743980fffc026990f2e5dea816498ae01890de7def v6 9200 B fee 15000 from p2p 34.151.153.36; inv to 6 peers; mempool 8 txs
+19:04:05 admitted 7a054d119347fdf80dfdec46bc47c6a415b567dd8f5c703a8e134cda5c6177b3 v6 9200 B fee 15000 from p2p 34.91.248.94; inv to 6 peers; mempool 9 txs
+19:04:12 admitted cdd1cb651a25ec9244ea7c4c39a5ec09d7dde3b774d427adc564506239731dfa v4 244 B fee 12031 from p2p 51.250.116.186; inv to 5 peers; mempool 10 txs
+19:04:18 admitted d0ebb7a7041a062790552e595626be61a26b811ff9689ff3888895d3a3fcf001 v4 210 B fee 10000 from p2p 34.130.110.3; inv to 4 peers; mempool 11 txs
+19:04:20 admitted 7d26e516e95e04cc0dbdeb0c3950d51d26d504493e5e4f2c96ec8ef1637d2554 v4 391 B fee 56250 from p2p 34.151.153.36; inv to 6 peers; mempool 12 txs
+19:04:37 stats: mempool 12 txs 54519 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 691, 'admitted': 878, 'removed mined': 866, 'duplicate': 5}
+19:04:39 admitted 4cf05e3d375a5b4dcc4f49228cfe4de549a2d55afa68be6fee2d463464a4abf8 v6 9200 B fee 15000 from p2p 34.92.10.23; inv to 6 peers; mempool 13 txs
+19:04:57 recheck: removed 6 mined
+19:04:57 tip 3532464 (00000000000f7eeb): mempool 7 txs 28980 B, removed 6
+19:05:05 admitted 237711b6edfcefabc721caea4060dfcccdb879e352dad0806674168af7e32a4a v5 274 B fee 26200 from p2p 143.244.184.176; inv to 6 peers; mempool 8 txs
+19:05:27 admitted c7266f42a89c9f5f1052ebedee0b376c1b91533951a656cb0ce04e5e845a5b55 v5 240 B fee 10000 from p2p 34.92.10.23; inv to 5 peers; mempool 10 txs
+19:05:27 admitted d8b898af138fd36134f60092fb6365c2cab658130d294a9ff4cdee7a373c646d v4 836 B fee 25000 from p2p 34.92.10.23; inv to 5 peers; mempool 10 txs
+19:05:37 stats: mempool 10 txs 30330 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 694, 'admitted': 882, 'removed mined': 872, 'duplicate': 5}
+19:05:54 admitted 499ac1f2db1ae56bbda9395dfa4d595536e2df773811e4e0db23cb4b0483725d v5 389 B fee 10098 from p2p 34.130.110.3; inv to 5 peers; mempool 11 txs
+19:06:01 admitted c8066f59a197594e9ba492972e8c9b0c8adaa6c01fbeda6f9a63120c6b1fbd9f v6 9200 B fee 15000 from p2p 34.91.248.94; inv to 7 peers; mempool 12 txs
+19:06:31 p2p: inbound peer 127.0.0.1:54399 /Zebend-fullnode:0.1/ height 0
+19:06:31 p2p: peer 127.0.0.1:54399 gone after 0 s (BrokenPipeError: [Errno 32] Broken pipe)
+19:06:37 stats: mempool 12 txs 39919 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 696, 'admitted': 884, 'removed mined': 872, 'duplicate': 5}
+19:06:42 admitted 8dd53ca38327bc0d1cdcd13e529d3c0fce6bce34a2e4149d6676d8c16680c201 v4 244 B fee 12031 from p2p 143.244.184.176; inv to 7 peers; mempool 13 txs
+19:07:23 admitted 7a64280659bb62f0b741964820e466bd07a38c2966adaf55dc0bf1634c158f4d v6 9166 B fee 10000 from p2p 34.91.248.94; inv to 6 peers; mempool 14 txs
+19:07:37 stats: mempool 14 txs 49329 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 697, 'admitted': 886, 'removed mined': 872, 'duplicate': 5}
+19:08:00 admitted 7d1eda118166a601adf4f23c62b5f652ff98f1dd712054f3783c1bbf77b0e0ed v6 9166 B fee 10000 from p2p 51.250.116.186; inv to 7 peers; mempool 15 txs
+19:08:11 admitted 41a083d232288b99b838a173bc0f6c7a4855b4731b3af4ab163efa0f99fb038e v4 279 B fee 18009 from p2p 51.250.116.186; inv to 7 peers; mempool 16 txs
+19:08:16 admitted f5cdabf15d071c3dcd794c5476e94af06ceabea4c898a1d6addb567e2cc5b2db v5 267 B fee 20001 from p2p 143.244.184.176; inv to 7 peers; mempool 17 txs
+19:08:37 stats: mempool 17 txs 59041 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 699, 'admitted': 889, 'removed mined': 872, 'duplicate': 5}
+19:09:05 admitted 30a7702a364d1c88c74bcaeefb77c935c2d410cf25c1c538102cd6f3c60f99c8 v6 241 B fee 10000 from p2p 34.92.10.23; inv to 6 peers; mempool 18 txs
+19:09:12 admitted 27a52ac7ce8dbfa51922e6f7d4c7dd92b604ee85874d9cf52246520d4498ed22 v6 9166 B fee 10000 from p2p 34.91.248.94; inv to 6 peers; mempool 19 txs
+19:09:25 admitted 3bf19d2bbcb53ef1aa91601b4f0508ea7ed33c2a8ecf43d613135dee9703d9ae v6 9200 B fee 15000 from p2p 34.92.10.23; inv to 7 peers; mempool 20 txs
+19:09:37 stats: mempool 20 txs 77648 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 702, 'admitted': 892, 'removed mined': 872, 'duplicate': 5}
+19:09:39 admitted f25a8f7d09ecb0012ec3a02b88108d45adfd03a125f7ac7dc431ea432fbc70f0 v5 387 B fee 10000 from p2p 34.91.248.94; inv to 6 peers; mempool 21 txs
+19:09:57 admitted e40a788ace5fec18d502aaeb6c53991d3dac9e101344d2b334046638c4f91ef2 v4 245 B fee 10000 from p2p 34.130.110.3; inv to 7 peers; mempool 22 txs
+19:10:12 admitted ca7af033959550beded1677aa0aa0fef3b401fdfbaf1fe2cdcdd62bafd1bbed3 v4 245 B fee 12031 from p2p 51.250.116.186; inv to 7 peers; mempool 23 txs
+19:10:18 admitted cf01165a56025f57941401571c823da0255c893cc158ecd34beb311ad65f98b6 v6 12470 B fee 20000 from p2p 34.91.248.94; inv to 5 peers; mempool 24 txs
+19:10:26 admitted 572529db4236349beb189e398874ed08b7baeb0a14e1a62e69b7bc283874a1eb v4 210 B fee 16212 from p2p 34.92.10.23; inv to 6 peers; mempool 25 txs
+19:10:31 admitted f74e28acf5d70df0e1901a57712c7ba7177b278ff2487e868951b6cbbe5744b7 v4 1240 B fee 40000 from p2p 34.130.110.3; inv to 6 peers; mempool 26 txs
+19:10:34 admitted 6a6d9ee9f177be2290a3cdb2387b2952223e9cead5dc63213ce1c711c27a725b v5 267 B fee 20001 from p2p 34.92.10.23; inv to 7 peers; mempool 27 txs
+19:10:37 stats: mempool 27 txs 92712 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 705, 'admitted': 899, 'removed mined': 872, 'duplicate': 5}
+19:10:48 admitted f2065f6e665ff312091b0d076b89395692e942470449358685e6e7ac7a9cfce4 v6 18668 B fee 30000 from p2p 51.250.116.186; inv to 7 peers; mempool 28 txs
+19:10:55 admitted 0e40353e4de72629cf394343feebee586a0fa036ea2bcc760f11be81815cd096 v6 538 B fee 15000 from p2p 34.91.248.94; inv to 5 peers; mempool 29 txs
+19:11:05 admitted 6919445dde390245943047cfbe3a6ef6f249b30482ffe33b37d40195cf67eb58 v6 9200 B fee 15000 from p2p 143.244.184.176; inv to 5 peers; mempool 30 txs
+19:11:12 admitted 7e7fd5156b55b16d0b6d5dde5218893f9194daa3134845337c447b51e19467ab v6 390 B fee 10000 from p2p 34.92.10.23; inv to 7 peers; mempool 31 txs
+19:11:26 admitted 47b2aeca1f6411cf040e9034a532852b783cbba3ea922ea7dabb196749d78f72 v6 9166 B fee 10000 from p2p 34.91.248.94; inv to 5 peers; mempool 32 txs
+19:11:33 admitted 62222546188ee565cde45edabd4988bd1d986f75d467f51a5024798a4b53cb81 v4 245 B fee 10039 from p2p 51.250.116.186; inv to 6 peers; mempool 33 txs
+19:11:36 admitted 414cf4d329c6dad179a5d92ff3ef7d6fd2d63acaac9220de1ddfcbb0a658d13f v6 208 B fee 10000 from p2p 34.151.153.36; inv to 6 peers; mempool 34 txs
+19:11:37 stats: mempool 34 txs 131127 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 711, 'admitted': 906, 'removed mined': 872, 'duplicate': 5}
+19:11:50 admitted 307fdfce3aa80ba18d98b5d707fa94aa57983ce79a78e01d9b511958f5f3d9e8 v5 388 B fee 38900 from p2p 34.91.248.94; inv to 6 peers; mempool 35 txs
+19:12:12 admitted 88f6934ebb481a89ca5576298db786ff4f9732e5605ac0f435e259b8af715799 v4 244 B fee 12031 from p2p 143.244.184.176; inv to 7 peers; mempool 36 txs
+19:12:37 stats: mempool 36 txs 131759 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 712, 'admitted': 908, 'removed mined': 872, 'duplicate': 5}
+19:12:39 admitted 3b619bcf3d58b9effc514d77769523745d32795f69fa0a98995927e1486a4dee v5 267 B fee 20000 from p2p 51.250.116.186; inv to 5 peers; mempool 37 txs
+19:12:55 admitted 4f51464428022f2a352e247aa5180b0aeb6b1961164f3933699f141d996adf0f v5 240 B fee 10000 from p2p 34.91.248.94; inv to 6 peers; mempool 38 txs
+19:13:24 admitted 812edf8b04985c95ec64975220f017358b2a8b65191258202db53602b19c76b9 v6 536 B fee 15000 from p2p 34.130.110.3; inv to 7 peers; mempool 39 txs
+19:13:37 stats: mempool 39 txs 132802 B; peers 8; counts {'rejected': 42, "wtxid: Bend auth digest == peer's MSG_WTX inv": 715, 'admitted': 911, 'removed mined': 872, 'duplicate': 5}
+19:14:09 admitted a4090ac78ec5c42cb583a5b085a0ceb887b3f53efb7360e2e3ac9fbeb972170b v6 537 B fee 15000 from p2p 34.91.248.94; inv to 7 peers; mempool 40 txs
+19:14:13 admitted 75d729c15911e7242ada2f8aca7d93acf8895953a79ddb57f97d3bbb72e62916 v5 241 B fee 10000 from p2p 34.92.10.23; inv to 7 peers; mempool 41 txs
+19:14:13 rejected 52b0130b760e04006fd94b9a80531dfe928029eb4dc0d00c2a5af310ec88f4f2 from p2p 34.92.10.23: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+19:14:24 admitted 8b9e84188f0e2fddf580aa3130c545447b4ff2fa7d252d4549cf727cd92f700e v5 415 B fee 20001 from p2p 143.244.184.176; inv to 7 peers; mempool 42 txs
+19:14:36 admitted 50bc7b82bcf306d4e27f5a03be15b0ebedacf3f83a979ec7822bcfa02ea3d788 v5 240 B fee 10000 from p2p 51.250.116.186; inv to 5 peers; mempool 43 txs
+19:14:37 stats: mempool 43 txs 134235 B; peers 8; counts {'rejected': 43, "wtxid: Bend auth digest == peer's MSG_WTX inv": 720, 'admitted': 915, 'removed mined': 872, 'duplicate': 5}
+19:15:02 admitted 5672fc54db514ec7c0f0c2556479e5593ba3f15b52dccdc828f76bb29605281e v6 537 B fee 15000 from p2p 143.244.184.176; inv to 7 peers; mempool 44 txs
+19:15:08 recheck: removed 41 mined
+19:15:08 tip 3532470 (0000000000631547): mempool 3 txs 1192 B, removed 41
+19:15:17 admitted 02c68b5dc7809834c0304f700fecae0abd3313dc1886cca1503ae8b1149ff038 v5 450 B fee 50000 from p2p 34.130.110.3; inv to 7 peers; mempool 4 txs
+19:15:22 admitted dea0f569bb799d594dc5df56fcc33a8d2611affbb25ce1bca6de33f4f2fbb875 v5 301 B fee 50000 from p2p 34.92.10.23; inv to 6 peers; mempool 5 txs
+19:15:27 admitted cd711b94dfd42c59b24bd125b915164d06321fe46920bd496079ca7efd45e52d v4 211 B fee 10000 from p2p 34.151.153.36; inv to 7 peers; mempool 6 txs
+19:15:28 admitted 6f09291e64a11b1bfb5541d2c44cd104711fca623af80b2b58896eedd2065e0b v4 540 B fee 35000 from p2p 34.92.10.23; inv to 5 peers; mempool 7 txs
+19:15:37 stats: mempool 7 txs 2694 B; peers 8; counts {'rejected': 43, "wtxid: Bend auth digest == peer's MSG_WTX inv": 723, 'admitted': 920, 'removed mined': 913, 'duplicate': 5}
+19:15:38 admitted f671c025f0978966cc23214ae378c0c06c2116e6a71b4e8c17c61c3f6cbb3ada v6 9166 B fee 10000 from p2p 34.130.110.3; inv to 5 peers; mempool 8 txs
+19:15:57 admitted 0a6b38a351435895ed218328499878925c7c4f1b087e563780b9880550d3e09f v5 301 B fee 50000 from p2p 34.92.10.23; inv to 6 peers; mempool 9 txs
+19:16:11 admitted cd51c8644617b85a582b8526c913716a42750d86eb554535a21999afc1b8d55f v4 278 B fee 18009 from p2p 51.250.116.186; inv to 6 peers; mempool 10 txs
+19:16:25 admitted 6007968df95851412ab9e68e6550df1fc7413c93e855db43f7de4d793aa9462d v6 15512 B fee 25000 from p2p 34.91.248.94; inv to 6 peers; mempool 11 txs
+19:16:33 admitted 6e156a97ac42229edea70b5eee2dd8281a3ccca0205bf2bf6dcba5dd3f3af970 v5 416 B fee 20001 from p2p 51.250.116.186; inv to 3 peers; mempool 12 txs
+19:16:37 stats: mempool 12 txs 28367 B; peers 8; counts {'rejected': 43, "wtxid: Bend auth digest == peer's MSG_WTX inv": 727, 'admitted': 925, 'removed mined': 913, 'duplicate': 5}
+19:16:43 recheck: removed 8 mined
+19:16:43 tip 3532473 (00000000004381cb): mempool 4 txs 16507 B, removed 8
+19:16:43 admitted c46beb7ca1d29e6ac32c332618d7f78b283a43ebfac650ee35a1e6a1e3ded42f v5 302 B fee 50000 from p2p 34.91.248.94; inv to 5 peers; mempool 5 txs
+19:16:57 admitted 5486894bd545b10a1162b7a1d09a0e47a1a4e593753c271b67b2e3baae6f7db4 v4 211 B fee 10000 from p2p 143.244.184.176; inv to 7 peers; mempool 6 txs
+19:16:59 admitted 3c925cae516569c7a8b40403cf5230ebb43655be91f901e0cb43f5141102612f v4 211 B fee 10000 from p2p 34.151.153.36; inv to 7 peers; mempool 7 txs
+19:17:07 admitted faaf37b81ed769297c1228b9eb97dc5668e00d43d05dc201743bf5101384994f v6 9200 B fee 15000 from p2p 34.92.10.23; inv to 5 peers; mempool 8 txs
+19:17:11 admitted 774bfbc3fcfa9901f769da6217a4e7321068dda8ef81795b1eeb9630a4e3624b v4 392 B fee 10000 from p2p 51.250.116.186; inv to 7 peers; mempool 11 txs
+19:17:11 admitted 8533566879c65ca7a154b48de5710af3326eb48604bb5680cc57ccef12e3fff9 v6 208 B fee 10000 from p2p 51.250.116.186; inv to 7 peers; mempool 11 txs
+19:17:11 admitted 99eb2b5cd847c6c976913321019023c0b9545848a8960b63de1f02fd4955c7fe v5 239 B fee 10000 from p2p 34.130.110.3; inv to 6 peers; mempool 11 txs
+19:17:15 admitted bf080cf5d1839feb4ad48773d61818218457fd875218819d16a300fc9c3f4ab4 v5 1558 B fee 50000 from p2p 34.92.10.23; inv to 6 peers; mempool 12 txs
+19:17:37 stats: mempool 12 txs 28828 B; peers 8; counts {'rejected': 43, "wtxid: Bend auth digest == peer's MSG_WTX inv": 732, 'admitted': 933, 'removed mined': 921, 'duplicate': 5}
+19:18:11 admitted 270589956a55f90452d62deda60e551b6e93e6e850603c5636e5781e1c75eb60 v4 313 B fee 23895 from p2p 34.151.153.36; inv to 6 peers; mempool 13 txs
+19:18:19 admitted c42dc0baf812ec5f32e0ebb48881d9b7c14c832794708c560da24d17ddd91302 v4 244 B fee 28200 from p2p 143.244.184.176; inv to 5 peers; mempool 14 txs
+19:18:29 admitted 5845de72d5bc7802a497c473ca59bfebb34380b490030892e9ec3bc3a8435fdc v6 536 B fee 15000 from p2p 34.130.110.3; inv to 6 peers; mempool 15 txs
+19:18:36 admitted 5a8caca3ac2ea1fbae05ce34dfb51ed1b90fecc7f0d82c4d2d82a8adcfaa800f v6 536 B fee 15000 from p2p 34.130.110.3; inv to 6 peers; mempool 16 txs
+19:18:37 stats: mempool 16 txs 30457 B; peers 8; counts {'rejected': 43, "wtxid: Bend auth digest == peer's MSG_WTX inv": 734, 'admitted': 937, 'removed mined': 921, 'duplicate': 5}
+19:18:44 admitted 4420630ffab22a9faf937086d5661a294b24d599c8e3291ffbc6d258e94880db v5 414 B fee 20001 from p2p 51.250.116.186; inv to 7 peers; mempool 17 txs
+19:18:58 admit: tip moved during validation (was 3532473); validating the batch again
+19:18:58 admitted 4ac044e8ad95394dadef7c65e96670d438b0a09f42270b6b4ed11b27982f8d9a v6 9166 B fee 10000 from p2p 51.250.116.186; inv to 7 peers; mempool 18 txs
+19:18:59 recheck: removed 5 mined
+19:18:59 tip 3532475 (00000000000e9693): mempool 13 txs 23228 B, removed 5
+19:19:36 admitted 54d4ee967ceb0d1b94eb87787cc3e71794368b3acfb52978f7fd77f8d712b2a8 v5 534 B fee 21440 from p2p 51.250.116.186; inv to 5 peers; mempool 14 txs
+19:19:37 stats: mempool 14 txs 23762 B; peers 8; counts {'rejected': 43, "wtxid: Bend auth digest == peer's MSG_WTX inv": 737, 'admitted': 940, 'removed mined': 926, 'duplicate': 5}
+19:20:30 admitted 5d0caa75d34465f509527147dc954a820a94fd4636a65b9de234cfd8577616a4 v4 245 B fee 25000 from p2p 34.151.153.36; inv to 7 peers; mempool 15 txs
+19:20:37 stats: mempool 15 txs 24007 B; peers 8; counts {'rejected': 43, "wtxid: Bend auth digest == peer's MSG_WTX inv": 737, 'admitted': 941, 'removed mined': 926, 'duplicate': 5}
+19:20:50 recheck: removed 8 mined
+19:20:50 tip 3532476 (0000000000152ffb): mempool 7 txs 11675 B, removed 8
+19:21:30 admitted 0c49d7c5fe7977d8bb698519d375f37c07eab1dbc6a7f8b1458da73becea4cc8 v5 355 B fee 10200 from p2p 34.91.248.94; inv to 6 peers; mempool 8 txs
+19:21:37 stats: mempool 8 txs 12030 B; peers 8; counts {'rejected': 43, "wtxid: Bend auth digest == peer's MSG_WTX inv": 738, 'admitted': 942, 'removed mined': 934, 'duplicate': 5}
+19:21:38 admitted 90c06f6611f1b323ead266f8947c5fedb065294f60700b2f852bcb69eb008c6a v6 536 B fee 15000 from p2p 34.151.153.36; inv to 7 peers; mempool 9 txs
+19:21:58 rejected edbfc813aa011ae435968c6b612ee0a794f1e3cc30067d09fa68019d9e549702 from p2p 34.151.153.36: Ironwood anchor is not a root of any block up to this state's tip (invalid, or of a newer block); retried after the next block
+19:22:04 recheck: removed 7 mined
+19:22:04 tip 3532477 (00000000006767ad): mempool 2 txs 891 B, removed 7
+19:22:06 admitted 44dd33f3ce2152fecf936905a592616cf2d2a5af650438bf97ab278630c3d7d0 v6 9166 B fee 10000 from p2p 143.244.184.176; inv to 5 peers; mempool 3 txs
+19:22:13 admitted fd5885182543107ec640af60495e9774f3f4e1bce428fc5253d1f0dd71230303 v4 313 B fee 23895 from p2p 34.91.248.94; inv to 5 peers; mempool 4 txs
+19:22:37 stats: mempool 4 txs 10370 B; peers 8; counts {'rejected': 44, "wtxid: Bend auth digest == peer's MSG_WTX inv": 741, 'admitted': 945, 'removed mined': 941, 'duplicate': 5}
+19:22:43 admitted 717b0f294137b736cacbacf1466da91545175acf578710dbef21ac4c697a3d2b v5 416 B fee 20000 from p2p 34.151.153.36; inv to 7 peers; mempool 5 txs
+19:22:51 admitted 9c4aff0cec54161be6cf757c598fe691f9b16424bd784f78525c4ae071aa94b3 v6 15478 B fee 20000 from p2p 143.244.184.176; inv to 6 peers; mempool 6 txs
+19:23:01 admitted edbfc813aa011ae435968c6b612ee0a794f1e3cc30067d09fa68019d9e549702 v6 9313 B fee 15000 from p2p 51.250.116.186; inv to 4 peers; mempool 7 txs
+19:23:37 admitted b6c1b231a9c06f337c55211d216aa76b1c3c8e80f2e3a7a75d62e6919ec35a08 v6 9166 B fee 10000 from p2p 51.250.116.186; inv to 4 peers; mempool 8 txs
+19:23:37 stats: mempool 8 txs 44743 B; peers 8; counts {'rejected': 44, "wtxid: Bend auth digest == peer's MSG_WTX inv": 745, 'admitted': 949, 'removed mined': 941, 'duplicate': 5}
+19:23:44 admitted d47e9adedeb08fbf238c89b221b8a260a52608265efe8d00954b6a583b8b92ef v6 537 B fee 15000 from p2p 34.92.10.23; inv to 7 peers; mempool 9 txs
+19:23:50 admitted 23da4715d14d496beae34a96f3ad636a3a18888741237717c68e98fb590dd0fa v6 9200 B fee 15000 from p2p 143.244.184.176; inv to 6 peers; mempool 10 txs
+19:24:09 admitted 5b6d59238468cf87294b701fd2db35026aec652a86b3bc968883ebcf7b71d3d2 v6 9166 B fee 10000 from p2p 34.92.10.23; inv to 7 peers; mempool 11 txs
+19:24:16 admitted 6e1e63ed80b46a68657a8f465243b2927793b9a545293f2931162878a5309d99 v4 279 B fee 18009 from p2p 34.92.10.23; inv to 5 peers; mempool 12 txs
+19:24:17 admitted 2e4cc1ff378fba60ace82766ad04886e207ac6b43f3db1e408dbc410ddfe8ba5 v6 9166 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 13 txs
+19:24:23 admitted 64719a20554ec6cb91ad7a72af3a33555998de5d9bd5a60be48ec6bb274e18f6 v5 416 B fee 20000 from p2p 51.250.116.186; inv to 5 peers; mempool 14 txs
+19:24:37 stats: mempool 14 txs 73507 B; peers 8; counts {'rejected': 44, "wtxid: Bend auth digest == peer's MSG_WTX inv": 750, 'admitted': 955, 'removed mined': 941, 'duplicate': 5}
+19:25:29 admitted 0126b602b9a43048944023ecfc1d0ad6e722fe8bfde77ec657c06b35ca5b40d1 v5 384 B fee 10000 from p2p 34.91.248.94; inv to 6 peers; mempool 15 txs
+19:25:33 admitted 32fdb8ff1d0d014379ce68cc0507e4cfce48872d50c86b9748d23b67f9d9f011 v6 9904 B fee 35000 from p2p 34.151.153.36; inv to 5 peers; mempool 17 txs
+19:25:33 admitted 412018367447016b6d59abf89291920ade6cb83e0b2b4be9be3d16d8cc72a9db v4 244 B fee 67800 from p2p 34.151.153.36; inv to 5 peers; mempool 17 txs
+19:25:37 stats: mempool 17 txs 84039 B; peers 8; counts {'rejected': 44, "wtxid: Bend auth digest == peer's MSG_WTX inv": 752, 'admitted': 958, 'removed mined': 941, 'duplicate': 5}
+19:26:02 admitted fc3ace9d34a0e6453990155bd101a64c0f613350f55dc7afc5ca02355c5b1c76 v4 245 B fee 11300 from p2p 34.92.10.23; inv to 7 peers; mempool 18 txs
+19:26:08 admitted 4047f6e778abb180fe10774d3e09cc17dd1074a256f7027cb54b1862ec8da4c3 v6 242 B fee 10000 from p2p 34.91.248.94; inv to 5 peers; mempool 19 txs
+19:26:15 admitted 0f81bc1f7268acc69b0b1fb92e2777e6eb71fbbdf26d24e432424e41146ad58d v4 245 B fee 12031 from p2p 34.91.248.94; inv to 7 peers; mempool 20 txs
+19:26:29 admitted 7122513cd0837ff0272a8938845fd54c95a1e7550f954270c47744101d25aa7c v6 9166 B fee 10000 from p2p 34.151.153.36; inv to 6 peers; mempool 21 txs
+19:26:37 stats: mempool 21 txs 93937 B; peers 8; counts {'rejected': 44, "wtxid: Bend auth digest == peer's MSG_WTX inv": 754, 'admitted': 962, 'removed mined': 941, 'duplicate': 5}
+19:26:52 admitted 6efc096f7b474a98c33d48b917d1a65289e2f04d837dd5a98d4733478051a27c v6 15512 B fee 25000 from p2p 34.130.110.3; inv to 6 peers; mempool 22 txs
+19:27:10 rejected 71f3d3d235b795d864996ba97d7f6f96068f2517ff43987614ce5a3f168c1338 from p2p 51.250.116.186: Ironwood anchor is not a root of any block up to this state's tip (invalid, or of a newer block); retried after the next block
+19:27:18 rejected 8b4b2c97112e60907bb619e02a8389fc52a306862a99d800512fd62f13ae666b from p2p 34.91.248.94: Ironwood anchor is not a root of any block up to this state's tip (invalid, or of a newer block); retried after the next block
+19:27:25 admitted f452c410bb244af2588c89822996dce56450f86c592cfe38f3592c886c4706f4 v5 2584 B fee 30000 from p2p 143.244.184.176; inv to 5 peers; mempool 23 txs
+19:27:32 admitted e2af35a7ff44c0d3b04ad167602c4fbe47432dc27e96b9f94361a66cf83019e8 v6 78270 B fee 115000 from p2p 34.151.153.36; inv to 5 peers; mempool 24 txs
+19:27:34 admitted bbcb389618f3c9a62ef4b07076937f4e2b44a3278d91bf69c95e61e5eefabdc7 v6 9166 B fee 10000 from p2p 143.244.184.176; inv to 7 peers; mempool 25 txs
+19:27:37 stats: mempool 25 txs 199469 B; peers 8; counts {'rejected': 46, "wtxid: Bend auth digest == peer's MSG_WTX inv": 760, 'admitted': 966, 'removed mined': 941, 'duplicate': 5}
+19:27:42 recheck: removed 21 mined
+19:27:42 tip 3532478 (00000000003315f0): mempool 4 txs 105532 B, removed 21
+19:27:47 admitted bdd4350e355859b8e4e3777ba6efb6ba0256703f381e007c32408386623fdb3f v6 9313 B fee 15000 from p2p 34.92.10.23; inv to 7 peers; mempool 5 txs
+19:27:58 rejected 13d7d4927709d571d733dedd6563bfee8163371b5b5138dbeeee3fe392216cf0 from p2p 51.250.116.186: Ironwood anchor is not a root of any block up to this state's tip (invalid, or of a newer block); retried after the next block
+19:28:06 rejected ef6ce6f18c67ec7c06152976d87b9309b018299d66bae1dc73798191fd2424b0 from p2p 143.244.184.176: missing input: 9b392598d785e714fea0a1d49e23248cad651c4a43939f41da2252224464332c:1 is not an unspent output of the chain or the mempool (mined above this state's tip: the state is behind the network)
+19:28:13 admitted 24ffa7829333f313cc31a55b36f07e3ea3f788b09ca4026fa3391b74a03edf78 v4 244 B fee 12031 from p2p 51.250.116.186; inv to 6 peers; mempool 6 txs
+19:28:20 admitted 6035f8994928e8a9fddefba482137468b5d6d8aa5cb66f3cbd64dee3a3f234e5 v4 453 B fee 20000 from p2p 143.244.184.176; inv to 7 peers; mempool 7 txs
+19:28:28 admitted 0558de0304fb63146b2ded81751ecde3d281a81347e3daf46d822abf6d7e5a49 v6 9313 B fee 15000 from p2p 34.151.153.36; inv to 6 peers; mempool 8 txs
+19:28:35 admitted 83f06e4dd5f140a7d54fccb4b1dd3405bdbd05cb6913d4c1a46a52f6ba587f19 v6 242 B fee 10000 from p2p 34.130.110.3; inv to 6 peers; mempool 9 txs
+19:28:37 stats: mempool 9 txs 125097 B; peers 8; counts {'rejected': 48, "wtxid: Bend auth digest == peer's MSG_WTX inv": 765, 'admitted': 971, 'removed mined': 962, 'duplicate': 5}
+19:28:42 admitted 03389850826a5b1022597bb1af4c475f9e3ff2acb0f836ae4b56d56a48dfef07 v6 242 B fee 10000 from p2p 143.244.184.176; inv to 6 peers; mempool 10 txs
+19:29:02 recheck: removed 5 mined
+19:29:02 tip 3532479 (00000000002a88ca): mempool 5 txs 10494 B, removed 5
+19:29:17 admitted 13d7d4927709d571d733dedd6563bfee8163371b5b5138dbeeee3fe392216cf0 v6 12322 B fee 15000 from p2p 34.91.248.94; inv to 3 peers; mempool 7 txs
+19:29:17 admitted ef6ce6f18c67ec7c06152976d87b9309b018299d66bae1dc73798191fd2424b0 v5 302 B fee 50000 from p2p 34.91.248.94; inv to 4 peers; mempool 7 txs
+19:29:31 admitted 346e53715fdf1dd14cd7e7bef27a6fdd55d22bce1db2ea1d5720ac67b25ccaf9 v6 9166 B fee 10000 from p2p 51.250.116.186; inv to 3 peers; mempool 8 txs
+19:29:37 stats: mempool 8 txs 32284 B; peers 8; counts {'rejected': 48, "wtxid: Bend auth digest == peer's MSG_WTX inv": 769, 'admitted': 975, 'removed mined': 967, 'duplicate': 5}
+19:29:39 admitted bed7b2294ba519b32a93f95e3d20620a3e8d6b3524dbd23174dd101498241521 v4 245 B fee 50000 from p2p 51.250.116.186; inv to 7 peers; mempool 9 txs
+19:29:59 admitted 1bff7fa23a7c855897b021685422af11b736a52707ef0e48f2b454eec292444f v6 9166 B fee 10000 from p2p 143.244.184.176; inv to 5 peers; mempool 10 txs
+19:30:03 admitted 33ce8b53b3686e071f5780b2e51bd6ba6b2057e942dfe58fa3b0dce7d9cfa812 v5 240 B fee 22800 from p2p 143.244.184.176; inv to 6 peers; mempool 11 txs
+19:30:12 admitted 2736af6944f3130aad61ea2f156110c15d1e87c5a9db693c772b4de1ea5e6e04 v4 254 B fee 15000 from p2p 34.130.110.3; inv to 7 peers; mempool 12 txs
+19:30:20 admitted 438e2c4677e459837dd46f2aa207a086baac9f4b21c042e247c8e0c616c6ba48 v4 358 B fee 28644 from p2p 143.244.184.176; inv to 5 peers; mempool 13 txs
+19:30:26 admitted a03ef6596362f9736f0022ba6cfa45b129a4d03590f58ca8b5451a7114a1a4f2 v6 9166 B fee 10000 from p2p 34.92.10.23; inv to 7 peers; mempool 14 txs
+19:30:29 admitted b8d4994aa50892050383d0a62b87e11a687353e23e3973db1adca78864cd39c5 v4 950 B fee 30000 from p2p 143.244.184.176; inv to 7 peers; mempool 15 txs
+19:30:32 admitted 3bc0c931d2412277df471c3f88482214399c94a253200945b4e26808c491e342 v6 241 B fee 10000 from p2p 34.92.10.23; inv to 5 peers; mempool 16 txs
+19:30:37 stats: mempool 16 txs 52904 B; peers 8; counts {'rejected': 48, "wtxid: Bend auth digest == peer's MSG_WTX inv": 773, 'admitted': 983, 'removed mined': 967, 'duplicate': 5}
+19:30:42 admitted 99538bfd14174412c928aa4ca9a7cab52798808347014c6b6c7f6c2672581396 v6 12322 B fee 15000 from p2p 34.130.110.3; inv to 6 peers; mempool 17 txs
+19:30:49 admitted 58bf4f64adaee7d13632a044a0968f9ca88132ace1267ad699fdcc661198600e v6 241 B fee 10000 from p2p 34.130.110.3; inv to 6 peers; mempool 18 txs
+19:30:51 admitted 63958a1f8e04e786292028e2d7f1aaf5ded14e48df79340ac8514eaeea5574f4 v5 448 B fee 50000 from p2p 143.244.184.176; inv to 7 peers; mempool 19 txs
+19:31:05 admitted 0fdeaeb26427faecc59bcb3a5ebcf32bbd964c28725a78653c298160e16f6c8e v5 240 B fee 10000 from p2p 51.250.116.186; inv to 5 peers; mempool 20 txs
+19:31:16 admitted c1059f536ee2d2362a4507b02d039fdef803dd243710d0becdb3263fa8a2682b v6 242 B fee 10000 from p2p 34.151.153.36; inv to 7 peers; mempool 21 txs
+19:31:37 recheck: removed 16 mined
+19:31:37 tip 3532480 (00000000002b0274): mempool 5 txs 13493 B, removed 16
+19:31:37 stats: mempool 5 txs 13493 B; peers 8; counts {'rejected': 48, "wtxid: Bend auth digest == peer's MSG_WTX inv": 778, 'admitted': 988, 'removed mined': 983, 'duplicate': 5}
+19:31:59 admitted 0bf9ea2887fa839b49e380a3170b627422fc8121586eae2518176de838e66ffd v5 744 B fee 45000 from p2p 51.250.116.186; inv to 6 peers; mempool 6 txs
+19:32:11 admitted 7b7391ff41e7d417e2106687b547b96d781d10fda6dd5ded46b2108f708767c9 v4 245 B fee 12031 from p2p 34.130.110.3; inv to 5 peers; mempool 7 txs
+19:32:19 admitted 75d6b6e044e771597235b5a43a536b8048108b607275dc00f9939fcf6865bb07 v6 242 B fee 10000 from p2p 34.91.248.94; inv to 6 peers; mempool 8 txs
+19:32:33 admitted 6c568445c6dd78d9c95689854f719e6a2710a011760570e59f6ebb61d8ce0205 v6 242 B fee 10000 from p2p 51.250.116.186; inv to 7 peers; mempool 9 txs
+19:32:37 stats: mempool 9 txs 14966 B; peers 8; counts {'rejected': 48, "wtxid: Bend auth digest == peer's MSG_WTX inv": 781, 'admitted': 992, 'removed mined': 983, 'duplicate': 5}
+19:32:40 admitted fac4de1a967cc17f8587a640599178dac1e60e5a6277af4694f8bd893b52aadf v5 301 B fee 50000 from p2p 34.91.248.94; inv to 5 peers; mempool 10 txs
+19:32:53 admitted ea27c75de102b9ee5afd97333828af9e9d488753265b4b8f05cd591b08d35036 v6 9313 B fee 15000 from p2p 143.244.184.176; inv to 7 peers; mempool 11 txs
+19:33:02 admitted 10bb7ec39f56ff53ea48d203064ffa9f052928dd4b5e4dfb5e6daf8da39fe1e8 v5 302 B fee 50000 from p2p 34.130.110.3; inv to 7 peers; mempool 12 txs
+19:33:08 admitted e768037e69db307ae4bad8d6d3fa1a57e27eb95cc7ca5e3afa91f22bff6162aa v6 321 B fee 25000 from p2p 34.151.153.36; inv to 6 peers; mempool 13 txs
+19:33:12 recheck: removed 7 mined
+19:33:12 tip 3532481 (0000000000573ad7): mempool 6 txs 10721 B, removed 7
+19:33:37 admitted c1e7e42a4eeb456248da90021a81d04391996726c6a923e2e1ced08f6358f423 v6 241 B fee 10000 from p2p 34.130.110.3; inv to 7 peers; mempool 7 txs
+19:33:37 stats: mempool 7 txs 10962 B; peers 8; counts {'rejected': 48, "wtxid: Bend auth digest == peer's MSG_WTX inv": 786, 'admitted': 997, 'removed mined': 990, 'duplicate': 5}
+19:34:06 admitted d8793cfd1f9e1c2572f49d94937ced254090121fdb6ed6f32893ed8970727fa2 v4 1095 B fee 21600 from p2p 34.92.10.23; inv to 4 peers; mempool 8 txs
+19:34:13 admitted 2602663f50e9df7218c441cdafabc7409b5877930c60220be0da82a9356f0942 v4 244 B fee 12031 from p2p 34.92.10.23; inv to 6 peers; mempool 9 txs
+19:34:22 admitted e737e23e03c19b1d4c932040e46542ba48f91e4a725c83aa24c812c5b20e40d5 v5 268 B fee 20000 from p2p 51.250.116.186; inv to 6 peers; mempool 10 txs
+19:34:37 stats: mempool 10 txs 12569 B; peers 8; counts {'rejected': 48, "wtxid: Bend auth digest == peer's MSG_WTX inv": 787, 'admitted': 1000, 'removed mined': 990, 'duplicate': 5}
+19:35:05 admitted 6be2c9ba6c1fcfc67110a70a74475de802cea28524d6e25781563107875e1817 v5 449 B fee 50000 from p2p 34.91.248.94; inv to 7 peers; mempool 11 txs
+19:35:11 admitted 5902d0652d414201b320b066c8f4ef9c0e09fb50e9d6809ca077462a24d33fa4 v4 245 B fee 10000 from p2p 34.130.110.3; inv to 5 peers; mempool 12 txs
+19:35:32 admitted 1fff5a4e5fec6d692f189b0d03870e4f52bafe17225aca3200488398a98c1d38 v5 1556 B fee 50000 from p2p 34.91.248.94; inv to 6 peers; mempool 13 txs
+19:35:37 stats: mempool 13 txs 14819 B; peers 8; counts {'rejected': 48, "wtxid: Bend auth digest == peer's MSG_WTX inv": 789, 'admitted': 1003, 'removed mined': 990, 'duplicate': 5}
+19:35:49 admitted 87b12444a10ed11acafc2a2d5a8e8065d5dd87c43fa2a4a4b4cfb9e1a2f5ab51 v6 9348 B fee 15000 from p2p 34.130.110.3; inv to 7 peers; mempool 14 txs
+19:36:02 admitted aba5c8995fffacff247de16ce0f3cee1bbcebc47f14669323f2b1f633b325232 v4 1274 B fee 73080 from p2p 51.250.116.186; inv to 7 peers; mempool 15 txs
+19:36:09 admitted ffcb97d2814dc3ac337e9c74eb491ccbe2d1f2a9bf81c753f81f434f96d46847 v6 611 B fee 65000 from p2p 34.130.110.3; inv to 7 peers; mempool 16 txs
+19:36:12 rejected 0a4834bb9eb98082d4885740a400dbe4be62ec7186bb5bc04d8d6e075566e35b from p2p 34.92.10.23: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+19:36:26 rejected b09444ceefc5604bca4cb24268c09a1fe61238272dea8101b18886c93f534956 from p2p 34.91.248.94: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+19:36:27 recheck: removed 12 mined
+19:36:27 tip 3532483 (000000000043eaea): mempool 4 txs 12789 B, removed 12
+19:36:36 admitted 2c679c13ba309077d6b5bdeb6515d00dfd53f1e9925e16f4d51ccb4e8ef5072b v6 6339 B fee 15000 from p2p 34.92.10.23; inv to 7 peers; mempool 5 txs
+19:36:37 stats: mempool 5 txs 19128 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 794, 'admitted': 1007, 'removed mined': 1002, 'duplicate': 5}
+19:36:48 admitted 0a4834bb9eb98082d4885740a400dbe4be62ec7186bb5bc04d8d6e075566e35b v6 9166 B fee 10000 from p2p 34.91.248.94; inv to 5 peers; mempool 6 txs
+19:36:48 admitted b09444ceefc5604bca4cb24268c09a1fe61238272dea8101b18886c93f534956 v6 9313 B fee 15000 from p2p 34.91.248.94; inv to 6 peers; mempool 7 txs
+19:36:50 admitted c9db38217b7f0da3ebda3ed352e9ccac211dda5258cfea44f4e1f6b9bcdaa660 v4 392 B fee 18700 from p2p 34.151.153.36; inv to 7 peers; mempool 8 txs
+19:37:02 admitted 04c23137c33bf7435d470bce6098c55c615fc80e5afbc2d5d1a0add784f7811b v6 241 B fee 10000 from p2p 51.250.116.186; inv to 7 peers; mempool 9 txs
+19:37:07 admitted b8edbac5e9ca29038570adab98f010efe22928fca4efa740d225f99c328125ce v5 239 B fee 22800 from p2p 143.244.184.176; inv to 6 peers; mempool 10 txs
+19:37:17 admitted f6b6e1e351700943bbc1526e0cc99eeda32b8f62431c40c7951806b8629e8831 v6 16070 B fee 40000 from p2p 34.92.10.23; inv to 7 peers; mempool 11 txs
+19:37:19 admitted 2d4237fa3b63533b89eb22e34f7ec5d7b52240f1b3b39841cdcf650314db9c7e v6 9313 B fee 15000 from p2p 34.130.110.3; inv to 7 peers; mempool 12 txs
+19:37:34 admitted 969f15d3a61424d27748409ef68b49b2d6bf36542896c13c111d4c7db79f2cae v6 9166 B fee 10000 from p2p 34.151.153.36; inv to 7 peers; mempool 13 txs
+19:37:37 stats: mempool 13 txs 73028 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 801, 'admitted': 1015, 'removed mined': 1002, 'duplicate': 5}
+19:37:38 recheck: removed 6 mined
+19:37:38 tip 3532485 (0000000000666f43): mempool 7 txs 41760 B, removed 6
+19:38:03 admitted e955b0d58f0d81c542bd4324314038a9990f2e71ab8eab2ae7a71fbb47fce66d v5 342 B fee 25000 from p2p 34.92.10.23; inv to 5 peers; mempool 8 txs
+19:38:37 stats: mempool 8 txs 42102 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 802, 'admitted': 1016, 'removed mined': 1008, 'duplicate': 5}
+19:38:57 admitted 2f68d2c46513fdecc50620fc8388a387d1ec4a8640efec55f772f7ea764c6514 v6 9166 B fee 10000 from p2p 143.244.184.176; inv to 6 peers; mempool 9 txs
+19:39:09 tip 3532486 (0000000000023442): mempool 9 txs 51268 B, removed 0
+19:39:30 admitted aeb61a83fdab772e09279bb024306dcc8b9aab24b323510077487094c4c92d2e v6 9200 B fee 15000 from p2p 34.91.248.94; inv to 6 peers; mempool 10 txs
+19:39:37 stats: mempool 10 txs 60468 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 804, 'admitted': 1018, 'removed mined': 1008, 'duplicate': 5}
+19:39:43 admitted fba35e0286cafa6dae4b91481ae7724e468a661cb8ebb071ccb6d8a68d6f3961 v6 978 B fee 30000 from p2p 34.91.248.94; inv to 4 peers; mempool 11 txs
+19:40:24 admitted 7cf8891f80ac107acfee312672572d5e6f7485400fb85fcc353ff7554704d9a6 v6 6191 B fee 10000 from p2p 34.91.248.94; inv to 5 peers; mempool 12 txs
+19:40:37 stats: mempool 12 txs 67637 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 806, 'admitted': 1020, 'removed mined': 1008, 'duplicate': 5}
+19:41:24 admitted e4860e22a0ed1484b9acffa08439a7de9848db9c08280bdec9a2b2f9a45e0640 v5 354 B fee 10200 from p2p 34.91.248.94; inv to 5 peers; mempool 13 txs
+19:41:37 admitted effafe6298f5cb524d76eadd1e7595e59329c1dd0c73e2903989716e89821ea1 v6 9314 B fee 15000 from p2p 34.91.248.94; inv to 5 peers; mempool 14 txs
+19:41:37 stats: mempool 14 txs 77305 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 808, 'admitted': 1022, 'removed mined': 1008, 'duplicate': 5}
+19:42:15 recheck: removed 12 mined
+19:42:15 tip 3532488 (000000000027d665): mempool 2 txs 9668 B, removed 12
+19:42:25 admitted 0b71baa0b142ae74a6b6b5c671f6cef3dd5c559cab8d901226c2e13846af123b v6 12322 B fee 15000 from p2p 34.91.248.94; inv to 4 peers; mempool 3 txs
+19:42:37 stats: mempool 3 txs 21990 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 809, 'admitted': 1023, 'removed mined': 1020, 'duplicate': 5}
+19:42:42 admitted 2a094aa4033b93771eb03008205a9884c46b487323d9ed3ff8fadd346bddfdcc v5 240 B fee 10000 from p2p 34.130.110.3; inv to 6 peers; mempool 4 txs
+19:42:50 admitted 4184a5aa3062690a92b393d1a70a0573ee573d5f0914f1e8be8547f8700ae3dd v6 9166 B fee 10000 from p2p 34.130.110.3; inv to 6 peers; mempool 5 txs
+19:43:04 admitted 86d3e1bb99e643381ea9e3948e07b826182cdb687b0dc1b0dae1fdbd0afd895b v5 241 B fee 10000 from p2p 34.91.248.94; inv to 5 peers; mempool 6 txs
+19:43:09 admitted 8aad993bfd9942baba930df948dd0df8d1d9ad47c575f7992c43fc6c1d1a9798 v6 242 B fee 10000 from p2p 34.91.248.94; inv to 6 peers; mempool 7 txs
+19:43:37 admitted fd1e3f688ab44fd908dd7c50f4d68577ed4e9dd73155d69294969e805928b556 v4 392 B fee 30000 from p2p 143.244.184.176; inv to 7 peers; mempool 8 txs
+19:43:38 stats: mempool 8 txs 32271 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 813, 'admitted': 1028, 'removed mined': 1020, 'duplicate': 5}
+19:43:46 recheck: removed 1 mined
+19:43:46 tip 3532489 (00000000002609dd): mempool 7 txs 31917 B, removed 1
+19:43:59 admitted b1eb22185d40b605e993273c13c3ffe5c8f95e1c4792f5d99187c295923c5710 v6 15512 B fee 25000 from p2p 34.130.110.3; inv to 7 peers; mempool 8 txs
+19:44:05 admitted f7f6ee9e855fd49f6b5e46b7e22484d1f3f399431410bbbbdb7fb77bed673465 v6 12356 B fee 20000 from p2p 34.92.10.23; inv to 6 peers; mempool 9 txs
+19:44:19 admitted 81da78f55ee73f41366ab9adc56f1fae12aa7fde1021878a7e3d3a9ca6c9ee36 v6 9166 B fee 10000 from p2p 34.130.110.3; inv to 7 peers; mempool 10 txs
+19:44:38 stats: mempool 10 txs 68951 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 816, 'admitted': 1031, 'removed mined': 1021, 'duplicate': 5}
+19:44:51 admitted 36bde9be30d6718166dde4c529b3c2eebcc4faf934cc025463f09ae6ad3c85d1 v6 18634 B fee 25000 from p2p 34.151.153.36; inv to 7 peers; mempool 11 txs
+19:45:00 recheck: removed 10 mined
+19:45:00 tip 3532490 (000000000072c855): mempool 1 txs 18634 B, removed 10
+19:45:38 stats: mempool 1 txs 18634 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 817, 'admitted': 1032, 'removed mined': 1031, 'duplicate': 5}
+19:45:56 admitted 389c45bdd0d56a47547318391bfef3dab0b117821bf764827c2730a2a5916498 v4 210 B fee 10000 from p2p 34.92.10.23; inv to 5 peers; mempool 2 txs
+19:46:04 admitted ef4f3d48f6812e7a41e6cb2f9a5c419dc77721920eb7f7de49af4b8802f7ec26 v5 240 B fee 10000 from p2p 34.91.248.94; inv to 6 peers; mempool 3 txs
+19:46:09 admitted fff253a3f56fb9262fdede08fc912eb810b64c7abacbcc54d9e89ae65a8c80bd v6 9200 B fee 15000 from p2p 34.151.153.36; inv to 7 peers; mempool 4 txs
+19:46:11 admitted e47108f4af0efdf4323f45b3fd07fee8ca8e24bc0c71f29a1aa4f020937f68e9 v6 9166 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 5 txs
+19:46:19 admitted b023d5f3559d58c2ea44564b128d6567964c148b0df95e89e21d66f3198b21fc v5 207 B fee 10000 from p2p 34.91.248.94; inv to 6 peers; mempool 6 txs
+19:46:27 admitted b10403f89f06d6cf4edd3dbaa4cf47fde3e48f795999f732029e98669f1a4f39 v6 6191 B fee 10000 from p2p 51.250.116.186; inv to 5 peers; mempool 7 txs
+19:46:38 stats: mempool 7 txs 43848 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 822, 'admitted': 1038, 'removed mined': 1031, 'duplicate': 5}
+19:46:49 admitted c025d3c4c9650ec966178bdd52028833a2c62654c0fbe9c92e33ce96b71bd7d2 v6 9166 B fee 10000 from p2p 34.151.153.36; inv to 6 peers; mempool 8 txs
+19:47:10 admitted c2a3aa08664be9918bf562e6a6a6a68119ceb902dde46fcb8266e84948263a0f v4 211 B fee 25000 from p2p 51.250.116.186; inv to 5 peers; mempool 9 txs
+19:47:38 stats: mempool 9 txs 53225 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 823, 'admitted': 1040, 'removed mined': 1031, 'duplicate': 5}
+19:47:41 admitted 7abe589b9d4ed4c7b461fde6aa417e70237a38b70f9599da8697001b02822b4e v4 244 B fee 24331 from p2p 34.91.248.94; inv to 6 peers; mempool 10 txs
+19:48:19 admitted 1f01ec0fbc9894fd8ee964192f3ea78934eb57afe962401f6ac66792bf391928 v5 239 B fee 10000 from p2p 34.91.248.94; inv to 6 peers; mempool 11 txs
+19:48:38 stats: mempool 11 txs 53708 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 824, 'admitted': 1042, 'removed mined': 1031, 'duplicate': 5}
+19:49:06 admitted 1228186a0c0ee6ef62098985a109377377789daba04e8571a3a8e204c126bd82 v4 244 B fee 10000 from p2p 143.244.184.176; inv to 4 peers; mempool 12 txs
+19:49:12 recheck: removed 9 mined
+19:49:12 tip 3532491 (00000000003f63a4): mempool 3 txs 727 B, removed 9
+19:49:38 stats: mempool 3 txs 727 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 824, 'admitted': 1043, 'removed mined': 1040, 'duplicate': 5}
+19:50:11 admitted e20753a6d148f5ceeb9d3202d59a37412a59678cea518d44ce0adffa4d2dd51c v4 244 B fee 12031 from p2p 34.130.110.3; inv to 5 peers; mempool 4 txs
+19:50:18 admitted 1c8af7911cce5d5da0052b81de1936ce683040232f2f15ff19d29af4697835b8 v4 391 B fee 12032 from p2p 51.250.116.186; inv to 4 peers; mempool 5 txs
+19:50:34 admitted ffca687d1e5245db0729d3e86b1129daebe08131ba27f890f23a1f991871b214 v5 450 B fee 20000 from p2p 51.250.116.186; inv to 6 peers; mempool 6 txs
+19:50:35 admitted 6bc81b1df4f8b4ae08f1b21e899edb11c643d573ca2a851438ca2f0c55cb0516 v4 392 B fee 117600 from p2p 34.92.10.23; inv to 5 peers; mempool 7 txs
+19:50:38 stats: mempool 7 txs 2204 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 825, 'admitted': 1047, 'removed mined': 1040, 'duplicate': 5}
+19:50:47 admitted f82a59ca72537316b770e9573bcba21bbb52d0b196b76af9d41d4225b4270cb4 v6 12322 B fee 15000 from p2p 51.250.116.186; inv to 5 peers; mempool 8 txs
+19:50:47 recheck: removed 1 mined
+19:50:47 tip 3532493 (0000000000848cef): mempool 7 txs 14282 B, removed 1
+19:51:01 admitted 4286d8dfc826a0df17f7bf90343c277651330bb2568831d84d83dc843b864a80 v5 275 B fee 26200 from p2p 34.92.10.23; inv to 6 peers; mempool 8 txs
+19:51:06 admitted 575b3115f95fab835857de81c4cdbbafd0c5a98c118a78cb9b52c5e11d7c8e26 v4 245 B fee 50000 from p2p 143.244.184.176; inv to 6 peers; mempool 9 txs
+19:51:25 admitted f3fa0936642260b095cad7b32bb1e0bd04757470f983f6a31007ea185c688e91 v6 9166 B fee 10000 from p2p 34.91.248.94; inv to 3 peers; mempool 10 txs
+19:51:28 admitted ef035d05b5b3aa359a6bece7f50a5b77199947e8cc651a41efd9860fdf42148e v6 37604 B fee 60000 from p2p 34.130.110.3; inv to 5 peers; mempool 11 txs
+19:51:38 stats: mempool 11 txs 61572 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 829, 'admitted': 1052, 'removed mined': 1041, 'duplicate': 5}
+19:51:45 admitted c4129ca125d3d5a1210b087fbbdf3dcffd041c2aedc3c1c7f204245ad4aedd6c v6 9166 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 12 txs
+19:51:55 admitted 6e796a0970a63cfde45a77dcc1451722acc2b8517d9764191397fd0e49c56870 v6 9200 B fee 15000 from p2p 34.130.110.3; inv to 6 peers; mempool 13 txs
+19:52:04 admitted 7fdf9e3648efdd23c7fdde0556381d46778a641c4da67bfe2d97ab49a07e32cb v6 242 B fee 10000 from p2p 51.250.116.186; inv to 7 peers; mempool 14 txs
+19:52:12 admitted 889f586197b1dbbb2261dba85b768877209b79c0dc0b930bf5faef91da253816 v4 279 B fee 18009 from p2p 143.244.184.176; inv to 7 peers; mempool 15 txs
+19:52:38 stats: mempool 15 txs 80459 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 832, 'admitted': 1056, 'removed mined': 1041, 'duplicate': 5}
+19:52:40 admitted 811408c6a3c1cfa7b990fbe3f59c1bb6b79a1a7e41263af0e6e18414ef096bf0 v5 268 B fee 20000 from p2p 34.151.153.36; inv to 7 peers; mempool 16 txs
+19:53:05 admitted 224a01e53c594ccf587388f7fd1ac56abdfdb7f8626459923308673151ee1da4 v5 2730 B fee 35000 from p2p 51.250.116.186; inv to 5 peers; mempool 17 txs
+19:53:36 admitted d2a80f0afbcfb5a6f9659078c235535e6b85e8df0ca41203bdf452003aed88cf v6 6191 B fee 10000 from p2p 34.92.10.23; inv to 7 peers; mempool 18 txs
+19:53:38 stats: mempool 18 txs 89648 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 835, 'admitted': 1059, 'removed mined': 1041, 'duplicate': 5}
+19:53:49 admitted b95a4261e08b9b324fd1c500c0ad48badfa50f5a2ae4c49decbdbf453dcd92a7 v5 449 B fee 50000 from p2p 34.91.248.94; inv to 6 peers; mempool 19 txs
+19:54:11 admitted 2de663b9f6ea062c069fcca9d6cad7cf4a41346c2e80363890dd7b9c9cb5456a v4 279 B fee 18009 from p2p 34.151.153.36; inv to 6 peers; mempool 20 txs
+19:54:18 admitted 3013ae9c9ffec43a8b514de38e4f7b5bc1b8e4d573cf5d86857d1a5e7e2b1928 v5 267 B fee 20001 from p2p 34.91.248.94; inv to 6 peers; mempool 21 txs
+19:54:27 admitted 29eca31368fd603974435669a73d3cf1d625f611a264765c2a20c0f86c5298a5 v5 1555 B fee 50000 from p2p 34.91.248.94; inv to 7 peers; mempool 22 txs
+19:54:37 admitted b805e661dae90640d88d9329c2b6775f7d978ad9300e10e5395492f5b3c56365 v4 984 B fee 30000 from p2p 34.91.248.94; inv to 6 peers; mempool 23 txs
+19:54:38 stats: mempool 23 txs 93182 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 838, 'admitted': 1064, 'removed mined': 1041, 'duplicate': 5}
+19:54:38 recheck: removed 18 mined
+19:54:38 tip 3532494 (0000000000128c23): mempool 5 txs 3534 B, removed 18
+19:55:06 admitted 4bdf3bf0e26a8a41f91ecf125df0fb8234710a90ca0e39db193226d86b956b9a v4 245 B fee 20000 from p2p 34.130.110.3; inv to 5 peers; mempool 6 txs
+19:55:18 admitted 935f807b95d2acd002ede9d2ef8bfe291ddf9c02846b4d5d60c4a792503e2982 v6 241 B fee 10000 from p2p 34.91.248.94; inv to 5 peers; mempool 7 txs
+19:55:34 admitted a3c61db9c3daeab68f4ae1f8d682e311d348c6e42accb98d09c55cd5eba7604f v6 9166 B fee 10000 from p2p 51.250.116.186; inv to 7 peers; mempool 8 txs
+19:55:35 admitted 9a5a7075ef16efe6db0af380bfd0a3f1be25d8990f7bc1d8d05b7505f9fad8db v6 6340 B fee 15000 from p2p 143.244.184.176; inv to 7 peers; mempool 9 txs
+19:55:38 stats: mempool 9 txs 19526 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 841, 'admitted': 1068, 'removed mined': 1059, 'duplicate': 5}
+19:56:11 admitted 7e27fe049800d6a786dd2ad60dc69d2733933dbb6774f350172c9f3f7bb088fe v4 278 B fee 18009 from p2p 34.151.153.36; inv to 5 peers; mempool 10 txs
+19:56:19 admitted baa18203f3ee756334280b43059c4b6244de9f6ff93aef183fdad5f8fe287643 v6 18668 B fee 30000 from p2p 34.91.248.94; inv to 6 peers; mempool 11 txs
+19:56:20 admitted 4a82ab181c82a5c485a1f05328451466b3650b32249bd0ddffb954c2e9e0013b v5 449 B fee 50000 from p2p 143.244.184.176; inv to 5 peers; mempool 12 txs
+19:56:23 admitted cd219f4eb6de552b8793acf6eb020aa739aaa1deddbc02d0fff94f4834e3a2c4 v5 683 B fee 20000 from p2p 143.244.184.176; inv to 7 peers; mempool 13 txs
+19:56:26 admitted 5ad45cdc27694b600079cf15fcdddaf324bd0f54fc3f6e79612fd8b69e8e3f40 v4 244 B fee 10153 from p2p 34.92.10.23; inv to 7 peers; mempool 14 txs
+19:56:37 admitted 6cdc63e6579e0d21de3def67f6c4d3dfff95e6dc4c64ee6a6c31ee43b8b3ae39 v5 268 B fee 20001 from p2p 34.91.248.94; inv to 7 peers; mempool 15 txs
+19:56:38 stats: mempool 15 txs 40116 B; peers 8; counts {'rejected': 50, "wtxid: Bend auth digest == peer's MSG_WTX inv": 845, 'admitted': 1074, 'removed mined': 1059, 'duplicate': 5}
+19:56:41 admitted 0464744822b0fd51a05bc7afb3ee795b35c139e591006ba94d69cd866fdb3488 v6 12322 B fee 15000 from p2p 34.151.153.36; inv to 7 peers; mempool 16 txs
+19:56:58 admitted b7aef0aee023da7d7a56bca166718c2fe29b133d1d92bf90c30fc540406fc195 v6 12322 B fee 15000 from p2p 34.92.10.23; inv to 7 peers; mempool 17 txs
+19:57:19 admitted c98007e5360870ad612277da0be49ce8d9e75759f20bb1fa322f78a9d191b214 v5 449 B fee 50000 from p2p 34.130.110.3; inv to 6 peers; mempool 18 txs
+19:57:26 rejected 61bd8e51f677061817df3258b6b5128524a4c5c47b0a8aee41b810374ae61c8e from p2p 51.250.116.186: Ironwood anchor is not a root of any block up to this state's tip (invalid, or of a newer block); retried after the next block
+19:57:38 stats: mempool 18 txs 65209 B; peers 8; counts {'rejected': 51, "wtxid: Bend auth digest == peer's MSG_WTX inv": 849, 'admitted': 1077, 'removed mined': 1059, 'duplicate': 5}
+19:57:51 admitted 126c0e5fe6f855cb12cab5ebb1bfdd7577152763f5cb72802f9b079d905051fd v4 245 B fee 50000 from p2p 34.130.110.3; inv to 5 peers; mempool 19 txs
+19:57:58 admitted 5b38f06d325d8daca425da896d94be1e1e7feb383fcac326614bf2a21c185830 v6 9166 B fee 10000 from p2p 51.250.116.186; inv to 7 peers; mempool 20 txs
+19:58:05 admitted ffb89d0d4975d9775cabdc91b8e73d559e90caa02338ba4787b4dffcaee37881 v5 241 B fee 10000 from p2p 34.91.248.94; inv to 5 peers; mempool 21 txs
+19:58:12 rejected 0f1475d87ba0a78ab8602dd23a48b01da3158dd1850e48babedf5c9fc61f825b from p2p 34.91.248.94: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+19:58:18 recheck: removed 9 mined
+19:58:18 tip 3532495 (000000000060faa7): mempool 12 txs 55335 B, removed 9
+19:58:19 admitted 2c024229b7bdde8c6206e733b9b7ecf4d6802e16f90206fe64c03c6763d097f4 v6 535 B fee 15000 from p2p 34.91.248.94; inv to 7 peers; mempool 13 txs
+19:58:36 admitted 54fd39e7bd02d582c8bb737b4dcdd974c3e777b40cc39f85886a503976c7396f v6 9200 B fee 15000 from p2p 34.92.10.23; inv to 6 peers; mempool 14 txs
+19:58:38 stats: mempool 14 txs 65070 B; peers 8; counts {'rejected': 52, "wtxid: Bend auth digest == peer's MSG_WTX inv": 854, 'admitted': 1082, 'removed mined': 1068, 'duplicate': 5}
+19:58:54 admitted fc5f03ae4be068954646ced62f8cd9cf70b5dd88c8ecd1565ce114eeaeac9bbd v5 614 B fee 25000 from p2p 51.250.116.186; inv to 6 peers; mempool 15 txs
+19:59:17 admitted bf232dcafbe50c65a9ce810e61b45610aa546ab857ff07f799696762a6b3e279 v4 245 B fee 25000 from p2p 143.244.184.176; inv to 6 peers; mempool 16 txs
+19:59:28 recheck: removed 13 mined
+19:59:28 tip 3532498 (000000000015eb4b): mempool 3 txs 10059 B, removed 13
+19:59:38 stats: mempool 3 txs 10059 B; peers 8; counts {'rejected': 52, "wtxid: Bend auth digest == peer's MSG_WTX inv": 855, 'admitted': 1084, 'removed mined': 1081, 'duplicate': 5}
+19:59:42 admitted 0a7b517a548c242bce7612615c84b395bb43feddedcf8c4f92cf4d2dbf4cf34a v6 9166 B fee 10000 from p2p 34.130.110.3; inv to 5 peers; mempool 4 txs
+19:59:53 admitted 24c7a2e2c88848de59d6013bf63b6d503fc8eeebedd1469c4e0b1cf6f43ff5a0 v4 1243 B fee 61400 from p2p 51.250.116.186; inv to 6 peers; mempool 5 txs
+20:00:00 admitted 9580d9af7e8cc75b00d49114be79be7466c9b506764deb2f83301cd594cd8457 v6 9200 B fee 15000 from p2p 34.91.248.94; inv to 7 peers; mempool 6 txs
+20:00:02 admitted cbccae24abd95f571cc429162d91fc8c01ebfea22a4f24cfde6dcb238c7501bc v4 244 B fee 10000 from p2p 34.130.110.3; inv to 7 peers; mempool 7 txs
+20:00:14 admitted 547430c07a8d1d730045ab9659290ac9b05a638ba748c4a04f81edeba9105109 v4 278 B fee 18009 from p2p 51.250.116.186; inv to 6 peers; mempool 8 txs
+20:00:26 admitted a7c2a75054f8db242dfd9a90dbefc7eba49d4030387b350bafbb5ce49087e3ca v5 267 B fee 20000 from p2p 34.130.110.3; inv to 5 peers; mempool 9 txs
+20:00:31 admitted 0d5c24a012711f1647bfed164605ef7154f47d4f8708d670f94885dff8d22eba v6 6338 B fee 15000 from p2p 34.151.153.36; inv to 7 peers; mempool 10 txs
+20:00:35 admitted dac90e25f0fa48efba9e9df0dc2740189ed74506900b0d9ef1f717e00ddac656 v6 9166 B fee 10000 from p2p 143.244.184.176; inv to 5 peers; mempool 12 txs
+20:00:35 admitted a58ed0d17f4cbab8220150257deac2ad6ab606bea5ab8eb62d8b8321a19af90b v5 2763 B fee 15000 from p2p 34.91.248.94; inv to 6 peers; mempool 12 txs
+20:00:38 stats: mempool 12 txs 48724 B; peers 8; counts {'rejected': 52, "wtxid: Bend auth digest == peer's MSG_WTX inv": 861, 'admitted': 1093, 'removed mined': 1081, 'duplicate': 5}
+20:00:45 tip 3532499 (000000000006c83a): mempool 12 txs 48724 B, removed 0
+20:00:58 admitted 8e7216be50b5d7c19c9f631888a8fac15fd207faafc273c2ad2dbf83f51693e5 v4 536 B fee 15000 from p2p 34.91.248.94; inv to 6 peers; mempool 13 txs
+20:01:00 admitted fbc3a228cc902f53864f9aae2f5c2831b84f05c280e927637aea78e7186622dc v6 9166 B fee 10000 from p2p 34.151.153.36; inv to 7 peers; mempool 14 txs
+20:01:19 admitted d36e0dda29e0bab43fd24d7e558fddce047ea3752f141244dd85968e31567d0b v6 9166 B fee 10000 from p2p 34.91.248.94; inv to 6 peers; mempool 15 txs
+20:01:38 stats: mempool 15 txs 67592 B; peers 8; counts {'rejected': 52, "wtxid: Bend auth digest == peer's MSG_WTX inv": 863, 'admitted': 1096, 'removed mined': 1081, 'duplicate': 5}
+20:02:00 admitted 14404e5cc278fb8320c85da28d073343247b0964aff55a30ecce56bd2397d85c v6 9200 B fee 15000 from p2p 34.130.110.3; inv to 4 peers; mempool 16 txs
+20:02:08 admitted 770b85753f1a35ffd7bed677da999577d2e5b9c71c825879b928de757d519378 v4 244 B fee 15000 from p2p 51.250.116.186; inv to 6 peers; mempool 17 txs
+20:02:23 admitted 1069fe50f8d57b831565e443275be344fcacb4955d8ca0332c24663f0e5db66c v4 279 B fee 18009 from p2p 34.130.110.3; inv to 6 peers; mempool 18 txs
+20:02:38 stats: mempool 18 txs 77315 B; peers 8; counts {'rejected': 52, "wtxid: Bend auth digest == peer's MSG_WTX inv": 864, 'admitted': 1099, 'removed mined': 1081, 'duplicate': 5}
+20:02:57 rejected 5f825b3873574c64bdb6e7d65702bf50cf1a9659bf011c894a728653d8526804 from p2p 34.91.248.94: missing input: bd47c4daa7875677d17dbd1bf1a4feecb75da40bafa037bc9f6ad7e2787fc554:1 is not an unspent output of the chain or the mempool
+20:03:10 p2p: peer 34.92.10.23:8233 gone after 14871 s (ConnectionError: peer closed)
+20:03:21 p2p: peer 51.250.116.186:8233 gone after 14864 s (ConnectionError: peer closed)
+20:03:38 stats: mempool 18 txs 77315 B; peers 6; counts {'rejected': 53, "wtxid: Bend auth digest == peer's MSG_WTX inv": 864, 'admitted': 1099, 'removed mined': 1081, 'duplicate': 5}
+20:03:39 p2p: peer 34.91.248.94:8233 gone after 14802 s (ConnectionError: peer closed)
+20:04:21 p2p: peer 104.238.176.234:8233 gone after 15487 s (ConnectionError: peer closed)
+20:04:27 p2p: peer 143.244.184.176:8233 gone after 14295 s (ConnectionError: peer closed)
+20:04:38 stats: mempool 18 txs 77315 B; peers 3; counts {'rejected': 53, "wtxid: Bend auth digest == peer's MSG_WTX inv": 864, 'admitted': 1099, 'removed mined': 1081, 'duplicate': 5}
+20:04:40 p2p: outbound peer 2.58.82.178:8233 /MagicBean:6.12.1/ height 3364604
+20:05:06 p2p: outbound peer 185.66.91.106:8233 /Zebra:5.0.0/ height 3428142
+20:05:06 p2p: outbound peer 138.68.43.212:8233 /Zakura:1.7.0/ height 107885
+20:05:16 p2p: outbound peer 34.104.226.177:8233 /Zakura:1.7.0/ height 3532499
+20:05:17 admitted 36b5ab4e7c93077bcf063ee3cf3d78ef753d1fa405f487f5ab592d75ada58609 v4 507 B fee 16694 from p2p 34.104.226.177; inv to 6 peers; mempool 27 txs
+20:05:17 admitted c2347d45b0142cc4fc5ff7161e8af072fc70497bdfc65fd793756d786873b6fd v6 6340 B fee 15000 from p2p 34.104.226.177; inv to 6 peers; mempool 27 txs
+20:05:17 admitted 689ca7e3153cc4a2bf745002790752275cf40cbaed05622296c37a8993609e26 v6 9166 B fee 10000 from p2p 34.104.226.177; inv to 6 peers; mempool 27 txs
+20:05:17 admitted 7e1416ce076c71b30ac5ff5396d496fae6fe08a3008e2f716f43583a32818f24 v5 240 B fee 22800 from p2p 34.104.226.177; inv to 6 peers; mempool 27 txs
+20:05:17 admitted b539899ea1dab951167a647ba64f49fbbf4697191addbdc4002965f8177260f3 v6 9200 B fee 15000 from p2p 34.104.226.177; inv to 5 peers; mempool 27 txs
+20:05:17 admitted 1db5aff251be0c4f543229ac55a800fb4e1c7daf25f9d119c0c0572f7bab877b v6 9166 B fee 10000 from p2p 34.104.226.177; inv to 6 peers; mempool 27 txs
+20:05:17 admitted 0f9a1451484d1d29a0b17c327fcb0f421100ee1b48a1df92ff4d33f13e39c624 v6 9200 B fee 15000 from p2p 34.104.226.177; inv to 6 peers; mempool 27 txs
+20:05:17 admitted 7f56ff40f8cd58a1932dca98dbd011f346086b67d780bd418019d7a7c58cdd90 v5 268 B fee 20000 from p2p 34.104.226.177; inv to 6 peers; mempool 27 txs
+20:05:17 admitted 84d58ce5f49a482dbfb06942c444e99d3f2dac6c6ebc745de490a600a4ef77a3 v5 272 B fee 15000 from p2p 34.104.226.177; inv to 6 peers; mempool 27 txs
+20:05:18 admitted b4212a25a0048e9c197a45b5aa6f578561d2e64b2c9d481c68acbf0e6010bb53 v6 9166 B fee 10000 from p2p 34.104.226.177; inv to 6 peers; mempool 29 txs
+20:05:18 admitted 044d9a88e614f35a70374c76cf46c9816a5794c080b77c311b39712e7c1433fb v4 506 B fee 16694 from p2p 34.104.226.177; inv to 6 peers; mempool 29 txs
+20:05:20 p2p: peer 45.32.112.242:8233 gone after 14961 s (OSError: [Errno 49] Can't assign requested addres)
+20:05:29 admitted a5a198500fc23c5a53a1dd9fc179389729fbeaa30cd9454a19f5234d8ab6e7e6 v6 9166 B fee 10000 from p2p 34.104.226.177; inv to 5 peers; mempool 30 txs
+20:05:30 p2p: peer 34.151.153.36:8233 gone after 14925 s (OSError: [Errno 49] Can't assign requested addres)
+20:05:38 stats: mempool 30 txs 140512 B; peers 5; counts {'rejected': 53, "wtxid: Bend auth digest == peer's MSG_WTX inv": 874, 'admitted': 1111, 'removed mined': 1081, 'duplicate': 5}
+20:06:21 p2p: outbound peer 52.198.16.56:8233 /Zebra:4.3.0/ height 3364604
+20:06:38 stats: mempool 30 txs 140512 B; peers 6; counts {'rejected': 53, "wtxid: Bend auth digest == peer's MSG_WTX inv": 874, 'admitted': 1111, 'removed mined': 1081, 'duplicate': 5}
+20:06:40 p2p: outbound peer 34.92.10.23:8233 /Zakura:1.7.0/ height 3532499
+20:06:41 admitted c94ebd9e49fbeaf13c97604a6d3f6d2d381672714bf366060708887fdbd09e99 v5 268 B fee 20001 from p2p 34.92.10.23; inv to 6 peers; mempool 33 txs
+20:06:41 admitted d462c5d8d99196bf2157f6fadf0f6f6fbdec7f14ebb6c82d6536e21712087c55 v6 9166 B fee 10000 from p2p 34.92.10.23; inv to 6 peers; mempool 33 txs
+20:06:41 admitted b9cafe6c3496b0f3114520d8686201e27a7bf518f43882bafca72e823fe30834 v4 244 B fee 12031 from p2p 34.92.10.23; inv to 6 peers; mempool 33 txs
+20:06:43 admitted 78bd4fd20c8ce57d55147c085bb27babe57f94ce983ff546f32a9382922b10aa v4 244 B fee 50000 from p2p 34.104.226.177; inv to 5 peers; mempool 34 txs
+20:07:15 p2p: outbound peer 143.244.184.176:8233 /Zakura:1.7.0-rc1/ height 3532499
+20:07:21 admitted b644be265d57c9e93f4768c3f5dc2979e80ac3d3484106832b12fddc566922a7 v5 449 B fee 50000 from p2p 34.92.10.23; inv to 7 peers; mempool 35 txs
+20:07:28 admitted 57003c12ad2df4b649b3631f787496d61e6d097a9c7c751621dad14e35f41771 v6 12322 B fee 15000 from p2p 34.104.226.177; inv to 7 peers; mempool 36 txs
+20:07:38 stats: mempool 36 txs 163205 B; peers 8; counts {'rejected': 53, "wtxid: Bend auth digest == peer's MSG_WTX inv": 878, 'admitted': 1117, 'removed mined': 1081, 'duplicate': 5}
+20:07:42 admitted dbc3fe5252abae04b7207c70ec9cfe1f2d87f38186453981fe3a1ef9035e1202 v6 241 B fee 10000 from p2p 34.104.226.177; inv to 6 peers; mempool 37 txs
+20:07:54 admitted 7d40e45f9cbef8e99d5b35383604e591311cdb33a3a2c0c6854c9cc1a557d1ab v4 245 B fee 50000 from p2p 143.244.184.176; inv to 7 peers; mempool 38 txs
+20:08:06 admitted cc37034b04e8cf05298a584eefe469d5ea937dddf62477770f62aa451788c773 v6 9200 B fee 15000 from p2p 143.244.184.176; inv to 7 peers; mempool 40 txs
+20:08:06 admitted 4ce4bc32106033e3b046a424fef5960db67363491f39f3967cd54c939b1d9b5c v5 535 B fee 15000 from p2p 143.244.184.176; inv to 7 peers; mempool 40 txs
+20:08:14 admitted e0f36411b6114b0afa2e3a51a559bae7fc6b3764e34205333ea4e7c08a5d7153 v5 240 B fee 10000 from p2p 34.104.226.177; inv to 7 peers; mempool 41 txs
+20:08:23 admitted a1a991f5fce6b17d0ce6067c9dfc71f50752e0a945c10a464f11a5a34685892f v6 9166 B fee 10000 from p2p 34.104.226.177; inv to 6 peers; mempool 42 txs
+20:08:28 admitted 28d23453b10e035bbbfc0cf5f0b70b6ec28a877e05315cc08607e50295f0dd66 v4 210 B fee 10000 from p2p 34.92.10.23; inv to 6 peers; mempool 43 txs
+20:08:38 stats: mempool 43 txs 183042 B; peers 8; counts {'rejected': 53, "wtxid: Bend auth digest == peer's MSG_WTX inv": 883, 'admitted': 1124, 'removed mined': 1081, 'duplicate': 5}
+20:08:40 admitted de3665759031c6b53c486e8d68ef83bbb57f217e6e2aa5c051ffc58b7c9d8d02 v4 358 B fee 10000 from p2p 143.244.184.176; inv to 7 peers; mempool 44 txs
+20:08:55 admitted e4be0c7ec142206a24ed8ab1bf23e6a3873501907a21751f967ad3b4764cf7e8 v5 301 B fee 50000 from p2p 34.104.226.177; inv to 7 peers; mempool 45 txs
+20:09:18 admitted 16b3ee986b2f2d83de59b4280662a40d6ca11e1d497de67bd5e3f71235aa93a8 v5 239 B fee 10000 from p2p 34.92.10.23; inv to 7 peers; mempool 46 txs
+20:09:27 admitted 66c4313d4ab61b8f2f2b45c95f9a99442de45721b5aca0496e4124878ffea134 v4 393 B fee 10000 from p2p 34.92.10.23; inv to 6 peers; mempool 47 txs
+20:09:33 rejected bc3d2dee10c8734cbf2ebef9001a9a137c6ddfcc968406452297e5bdd877b20f from p2p 143.244.184.176: Ironwood anchor is not a root of any block up to this state's tip (invalid, or of a newer block); retried after the next block
+20:09:38 stats: mempool 47 txs 184333 B; peers 8; counts {'rejected': 54, "wtxid: Bend auth digest == peer's MSG_WTX inv": 886, 'admitted': 1128, 'removed mined': 1081, 'duplicate': 5}
+20:09:54 rejected 18246219703aac62b9340f0d1b7b10f7e1aa41a21f5360255d0f3474c865bb46 from p2p 143.244.184.176: missing input: 983d3870817ad8becbd267ec48dc12aff38d4bb4240d22aff941992783bef8e3:0 is not an unspent output of the chain or the mempool (mined above this state's tip: the state is behind the network)
+20:10:23 admitted cb7fd484f1793ca0eec36a5d2aeeb47c22f70824fdaabdc8ce8c2432041e8651 v5 268 B fee 20001 from p2p 34.104.226.177; inv to 7 peers; mempool 48 txs
+20:10:27 rejected 4125d440f34f3c1af8ae107c0d53744209392c634580e86a6dc0357325189181 from p2p 34.104.226.177: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:10:30 admitted e2af4c5af21cd5ae6dd36d37e3984626282dcc45cde0860f3f0dab1f28cbb2cb v4 211 B fee 16212 from p2p 34.104.226.177; inv to 7 peers; mempool 50 txs
+20:10:30 admitted 8da3331578f3f13360dd168a8bcc6d55b3d3a3407e02fad495425edb35777ee0 v5 240 B fee 10000 from p2p 143.244.184.176; inv to 5 peers; mempool 50 txs
+20:10:32 admitted 06844b8d3f8074a926dd8b189bf1f630ba6b64165ed49999994b20bd07e83c7f v4 392 B fee 31500 from p2p 143.244.184.176; inv to 7 peers; mempool 51 txs
+20:10:36 admitted 488927442ba41c2666aaa2e14fed7921a147e8d66bd5ece510bb9bfb71dbd541 v4 245 B fee 12031 from p2p 34.104.226.177; inv to 6 peers; mempool 52 txs
+20:10:36 recheck: removed 45 mined
+20:10:36 tip 3532503 (000000000055e79c): mempool 7 txs 1988 B, removed 45
+20:10:38 stats: mempool 7 txs 1988 B; peers 8; counts {'rejected': 56, "wtxid: Bend auth digest == peer's MSG_WTX inv": 889, 'admitted': 1133, 'removed mined': 1126, 'duplicate': 5}
+20:11:38 stats: mempool 7 txs 1988 B; peers 8; counts {'rejected': 56, "wtxid: Bend auth digest == peer's MSG_WTX inv": 889, 'admitted': 1133, 'removed mined': 1126, 'duplicate': 5}
+20:11:51 rejected 898ece83b351f8cd7fcf15936c7910b344cbce01f3426be404bc932fc606af52 from p2p 34.92.10.23: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:11:51 admitted 191e1c0710fb5d8560bbc77fe436f7d6c182ece8c19c2aa2863d73f70a401b3f v5 241 B fee 10000 from p2p 34.92.10.23; inv to 5 peers; mempool 10 txs
+20:11:51 admitted 4125d440f34f3c1af8ae107c0d53744209392c634580e86a6dc0357325189181 v6 9166 B fee 10000 from p2p 34.92.10.23; inv to 5 peers; mempool 10 txs
+20:11:51 admitted 4bd1ffcf3a5c8a356ad0a61b2ddc27567293162711c803070e96d03ee508da8b v4 211 B fee 10000 from p2p 34.92.10.23; inv to 5 peers; mempool 10 txs
+20:11:51 admitted 790b6d784d835b5350e19900e9dcec022c02e3804eb7533e7b02ee6af18bae8a v5 241 B fee 10000 from p2p 34.104.226.177; inv to 7 peers; mempool 11 txs
+20:12:08 admitted 5623e576fbd7792b708b7e91768158ab57d40579302750022b563c9bfa685ae8 v5 241 B fee 22800 from p2p 143.244.184.176; inv to 7 peers; mempool 12 txs
+20:12:28 p2p: peer 34.130.110.3:8233 gone after 15417 s (TimeoutError: idle 10 min)
+20:12:35 admitted 355662c8fd3c8d2cb5b1001b42edf423bc599f28665898100ade6b1603561c73 v5 267 B fee 20000 from p2p 34.92.10.23; inv to 6 peers; mempool 13 txs
+20:12:35 recheck: removed 4 mined
+20:12:35 tip 3532507 (0000000000734ecd): mempool 9 txs 11210 B, removed 4
+20:12:38 stats: mempool 9 txs 11210 B; peers 7; counts {'rejected': 57, "wtxid: Bend auth digest == peer's MSG_WTX inv": 895, 'admitted': 1139, 'removed mined': 1130, 'duplicate': 5}
+20:12:38 p2p: outbound peer 136.115.98.175:8233 /Zebra:7.0.0/ height 3532507
+20:12:40 admitted 7bb930eadc067d6e7a0180b99660281e3cc7d1174747cc7ceed002643e850223 v4 245 B fee 12031 from p2p 136.115.98.175; inv to 7 peers; mempool 11 txs
+20:12:40 admitted 898ece83b351f8cd7fcf15936c7910b344cbce01f3426be404bc932fc606af52 v6 9166 B fee 10000 from p2p 136.115.98.175; inv to 4 peers; mempool 11 txs
+20:12:53 admitted fe1d5dde17738d8f581c8ecfbe6b27810701d054dd219faa58790803f7e97cf1 v5 207 B fee 10000 from p2p 136.115.98.175; inv to 5 peers; mempool 12 txs
+20:13:01 admitted 9eb107cd1e819218c5662d1a2fa893c4bac449607d799e1c53e12083958ac7bb v6 9166 B fee 10000 from p2p 136.115.98.175; inv to 7 peers; mempool 13 txs
+20:13:09 block cache: 12 blocks [3532496]..[3532507]
+20:13:14 admitted 4e075315875dbdf3ca4ff9d55ff72e1b6e22e9f731100c00d2f8017f897e0a29 v6 9166 B fee 10000 from p2p 143.244.184.176; inv to 7 peers; mempool 14 txs
+20:13:23 admitted f915ca893ca0b1510057aa21b27977d3e9ac8fd9e6735b15eab085ada5a32c9b v6 12322 B fee 15000 from p2p 143.244.184.176; inv to 6 peers; mempool 15 txs
+20:13:38 stats: mempool 15 txs 51482 B; peers 8; counts {'rejected': 57, "wtxid: Bend auth digest == peer's MSG_WTX inv": 900, 'admitted': 1145, 'removed mined': 1130, 'duplicate': 5}
+20:14:11 recheck: removed 13 mined
+20:14:11 tip 3532508 (00000000008a74e3): mempool 2 txs 21488 B, removed 13
+20:14:11 admitted a8346485a76a40730b40b17d356b1f4e0f22af6d9be7cda70a152ed76717d9ad v4 310 B fee 23733 from p2p 34.92.10.23; inv to 5 peers; mempool 3 txs
+20:14:21 admitted 25e194f89f4e3b49df94faff8806e10daff680fe696a050a34c35e9e387ba1a6 v5 267 B fee 20001 from p2p 34.92.10.23; inv to 7 peers; mempool 4 txs
+20:14:38 stats: mempool 4 txs 22065 B; peers 8; counts {'rejected': 57, "wtxid: Bend auth digest == peer's MSG_WTX inv": 901, 'admitted': 1147, 'removed mined': 1143, 'duplicate': 5}
+20:14:47 admitted d6f24f852aae5e52127319af960504cdb17863966ea0d59b2b8de13b537a0fd0 v4 211 B fee 10000 from p2p 136.115.98.175; inv to 6 peers; mempool 5 txs
+20:15:09 admitted d4a74c10ab308d30a424b8d5e905448b9a9aabacc8b03519d69dacc23ab43fc9 v6 9314 B fee 15000 from p2p 34.92.10.23; inv to 7 peers; mempool 6 txs
+20:15:32 admitted 7a1b9bfec5797398c47dcd3dfcc2b1f3bb25ef28c770bf5aa39d51a5d75201b8 v6 6339 B fee 15000 from p2p 34.104.226.177; inv to 6 peers; mempool 7 txs
+20:15:37 admitted d75296e5c24e32ff9cc4f4ec0dec03727eb8843b8288edb146602da8f29f30bb v6 6339 B fee 15000 from p2p 136.115.98.175; inv to 7 peers; mempool 8 txs
+20:15:38 stats: mempool 8 txs 44268 B; peers 8; counts {'rejected': 57, "wtxid: Bend auth digest == peer's MSG_WTX inv": 904, 'admitted': 1151, 'removed mined': 1143, 'duplicate': 5}
+20:15:51 admitted 189fe8363e83d9576e1c1e2140e70ae3ccbbe50927c87927cd8c348b599ef0c3 v4 244 B fee 67800 from p2p 143.244.184.176; inv to 7 peers; mempool 9 txs
+20:16:05 admitted bfa8ccb4a8ffde3614eee23ef931823f1af3d95a42c46e795009d150c816c60d v6 9200 B fee 15000 from p2p 136.115.98.175; inv to 6 peers; mempool 10 txs
+20:16:21 admitted cc02b69d76db39cb477a348c5bbf62ac4b695ec2da2fdc0db08f615e68da1401 v6 9200 B fee 15000 from p2p 34.92.10.23; inv to 7 peers; mempool 11 txs
+20:16:23 admitted f6be6a832004b7c9943d8b2fd0b81180de624a139be5311f207692e8a07f0577 v6 207 B fee 10000 from p2p 34.104.226.177; inv to 7 peers; mempool 12 txs
+20:16:35 rejected 82d5f5a60f3482d189fac04cb3222b221ccfee7c961062875609fa2a85652ecc from p2p 34.104.226.177: missing input: 6e87191853ac584fa1442ed6bbdd907affab97fa02b668ca5298f5ddfa9785ef:0 is not an unspent output of the chain or the mempool (mined above this state's tip: the state is behind the network)
+20:16:38 stats: mempool 12 txs 63119 B; peers 8; counts {'rejected': 58, "wtxid: Bend auth digest == peer's MSG_WTX inv": 908, 'admitted': 1155, 'removed mined': 1143, 'duplicate': 5}
+20:16:44 admitted 89db366576aab330fa6faf6aa0d28097f38ac07bc4e4cb03a4fba7a9cda8e027 v6 536 B fee 15000 from p2p 34.104.226.177; inv to 7 peers; mempool 13 txs
+20:16:51 recheck: removed 10 mined
+20:16:51 tip 3532509 (00000000001eac4a): mempool 3 txs 9943 B, removed 10
+20:16:52 admitted 2a55d8b7b4c550e82d239c959a307a75bd1acd030751bcf1314a0ac74c0e5689 v6 12470 B fee 20000 from p2p 143.244.184.176; inv to 6 peers; mempool 6 txs
+20:16:52 admitted 82d5f5a60f3482d189fac04cb3222b221ccfee7c961062875609fa2a85652ecc v5 267 B fee 20001 from p2p 143.244.184.176; inv to 5 peers; mempool 6 txs
+20:16:52 admitted fd4bbb3fc81bb8041c0b69b27fcbe9ea2a72885db4c778704c3d06feea5c5650 v4 245 B fee 25000 from p2p 143.244.184.176; inv to 6 peers; mempool 6 txs
+20:16:53 admitted d417ba0f1272c45cb090658b7f8a62448225c03e33d43325d9e6d3151dea6dee v5 207 B fee 20700 from p2p 34.92.10.23; inv to 6 peers; mempool 7 txs
+20:17:18 admitted dcfdf85bbf817082a5955fde9d9abeb14240903e41d15ac31aa022b4408a964d v4 211 B fee 57600 from p2p 143.244.184.176; inv to 6 peers; mempool 8 txs
+20:17:25 admitted cb59c913d62f4dffd032270db6309269f118aa84fa1d87d7a464829248f3c53b v5 536 B fee 15138 from p2p 143.244.184.176; inv to 7 peers; mempool 9 txs
+20:17:38 stats: mempool 9 txs 23879 B; peers 8; counts {'rejected': 58, "wtxid: Bend auth digest == peer's MSG_WTX inv": 913, 'admitted': 1162, 'removed mined': 1153, 'duplicate': 5}
+20:17:51 admitted 522b30ac7e23d34036193cbbb8674733776bf286c22ec7c97d09e2aa6cb02063 v6 6192 B fee 10000 from p2p 143.244.184.176; inv to 7 peers; mempool 10 txs
+20:18:11 admitted dfee575fc5afcd1c72c5c57cff67c92a10d2cb3c3e226d71b84b219f9b0b759f v4 279 B fee 18009 from p2p 143.244.184.176; inv to 7 peers; mempool 11 txs
+20:18:35 admitted fdd48fe984ef80257f4170ee83323c85678535403451f5f6a0705b1acdeddb56 v5 1558 B fee 50000 from p2p 143.244.184.176; inv to 7 peers; mempool 12 txs
+20:18:38 stats: mempool 12 txs 31908 B; peers 8; counts {'rejected': 58, "wtxid: Bend auth digest == peer's MSG_WTX inv": 915, 'admitted': 1165, 'removed mined': 1153, 'duplicate': 5}
+20:18:53 recheck: removed 10 mined
+20:18:53 tip 3532510 (00000000009a66f5): mempool 2 txs 1837 B, removed 10
+20:19:07 admitted 2454df06bff7ede4f13ac213f75e325466c42ea28d059685682ae1e7c0453217 v6 9166 B fee 10000 from p2p 136.115.98.175; inv to 7 peers; mempool 3 txs
+20:19:14 admitted 24c44d3c98dc2b24a9dae26d869526166dd90f1b72da5dc96bf7ed7e5d4f74f1 v5 449 B fee 50000 from p2p 136.115.98.175; inv to 7 peers; mempool 4 txs
+20:19:38 stats: mempool 4 txs 11452 B; peers 8; counts {'rejected': 58, "wtxid: Bend auth digest == peer's MSG_WTX inv": 917, 'admitted': 1167, 'removed mined': 1163, 'duplicate': 5}
+20:19:42 admitted 5eed2e49223a2fbc73a2649e0de91dc3e3a540d7a39416e8c1684eb1cea8be88 v6 12356 B fee 20000 from p2p 34.104.226.177; inv to 7 peers; mempool 5 txs
+20:20:01 recheck: removed 3 mined
+20:20:01 tip 3532513 (0000000000445723): mempool 2 txs 12805 B, removed 3
+20:20:10 admitted faf35cf7e8d437135895b51be111d0e5311b1b7d200054870dd5439381aefafc v6 9166 B fee 10000 from p2p 34.92.10.23; inv to 6 peers; mempool 3 txs
+20:20:23 zebend mempool: state ../state tip 3532464 00000000000f7eeb; assumed-state no; cost limit 80000000
+20:20:23 p2p: listening on [::]:8233
+20:20:23 rpc on 127.0.0.1:18234 (other methods forwarded to http://127.0.0.1:18233/)
+20:20:39 p2p: outbound peer 2.58.82.178:8233 /MagicBean:6.12.1/ height 3364604
+20:20:40 p2p: outbound peer 34.39.40.194:8233 /Zakura:1.7.0/ height 3532515
+20:20:40 p2p: outbound peer 38.190.136.76:8233 /Zakura:1.7.0/ height 3532515
+20:20:41 rejected 9a9b6f8c0c9bfa7812aaa651c9fd312f6b17b9b320bacdf7ea083d0f6bd1b047 from p2p 34.39.40.194: missing input: ede14540c7ba6642a45f551e4d29e6866f2af8c6849e986c0988219732306954:1 is not an unspent output of the chain or the mempool
+20:20:41 rejected 7771e691e0d3bc946950778e3a1c76a4f4a1c6e6ee54f1bc8492d02c186f681d from p2p 34.39.40.194: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:20:41 rejected afffb361b020367b7b7ac82a10dbc917db7d51f045faf31eaee743ffbc6f9c7d from p2p 34.39.40.194: missing input: 24c44d3c98dc2b24a9dae26d869526166dd90f1b72da5dc96bf7ed7e5d4f74f1:1 is not an unspent output of the chain or the mempool
+20:20:41 rejected 86a06944c154240dddb22f12672f3bc31d71c3ad41506404361d4efa11471da4 from p2p 34.39.40.194: missing input: 5623e576fbd7792b708b7e91768158ab57d40579302750022b563c9bfa685ae8:0 is not an unspent output of the chain or the mempool
+20:20:42 p2p: outbound peer 34.185.255.47:8233 /Zakura:1.7.0/ height 3532515
+20:20:42 p2p: peer 38.190.136.76:8233 gone after 3 s (ConnectionError: peer closed)
+20:20:44 rejected 758e0389fad6445b615b2413e43413225507332f489f90d9afae50648384f863 from p2p 34.185.255.47: missing input: dcfdf85bbf817082a5955fde9d9abeb14240903e41d15ac31aa022b4408a964d:0 is not an unspent output of the chain or the mempool
+20:20:46 p2p: outbound peer 138.68.43.212:8233 /Zakura:1.7.0/ height 300390
+20:20:51 tip 3532514 (000000000012f5ce): mempool 0 txs 0 B, removed 0
+20:20:55 p2p: outbound peer 75.164.231.139:8233 /Zakura:1.7.0/ height 3532514
+20:20:55 p2p: peer 75.164.231.139:8233 gone after 2 s (ConnectionError: peer closed)
+20:21:10 p2p: outbound peer 34.91.248.94:8233 /Zebra:7.0.0/ height 3532517
+20:21:23 stats: mempool 0 txs 0 B; peers 5; counts {'rejected': 5, "wtxid: Bend auth digest == peer's MSG_WTX inv": 4, 'removed mined': 0}
+20:21:23 block cache: 12 blocks [3532503]..[3532514]
+20:21:24 p2p: outbound peer 153.75.248.181:8233 /Zebra:7.0.0-rc.0/ height 3532455
+20:21:27 rejected 889f586197b1dbbb2261dba85b768877209b79c0dc0b930bf5faef91da253816 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 24c7a2e2c88848de59d6013bf63b6d503fc8eeebedd1469c4e0b1cf6f43ff5a0 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 547430c07a8d1d730045ab9659290ac9b05a638ba748c4a04f81edeba9105109 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected d2a80f0afbcfb5a6f9659078c235535e6b85e8df0ca41203bdf452003aed88cf from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 8e7216be50b5d7c19c9f631888a8fac15fd207faafc273c2ad2dbf83f51693e5 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 488927442ba41c2666aaa2e14fed7921a147e8d66bd5ece510bb9bfb71dbd541 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 66c4313d4ab61b8f2f2b45c95f9a99442de45721b5aca0496e4124878ffea134 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected bf232dcafbe50c65a9ce810e61b45610aa546ab857ff07f799696762a6b3e279 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 7b7391ff41e7d417e2106687b547b96d781d10fda6dd5ded46b2108f708767c9 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 389c45bdd0d56a47547318391bfef3dab0b117821bf764827c2730a2a5916498 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 7f56ff40f8cd58a1932dca98dbd011f346086b67d780bd418019d7a7c58cdd90 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected a36d75b11ee6a33ce746fe21e29b6a62157eaf6132f4abd717d350c6a43d3d5d from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 189fe8363e83d9576e1c1e2140e70ae3ccbbe50927c87927cd8c348b599ef0c3 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 5d0caa75d34465f509527147dc954a820a94fd4636a65b9de234cfd8577616a4 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 1069fe50f8d57b831565e443275be344fcacb4955d8ca0332c24663f0e5db66c from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 41a083d232288b99b838a173bc0f6c7a4855b4731b3af4ab163efa0f99fb038e from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected cb59c913d62f4dffd032270db6309269f118aa84fa1d87d7a464829248f3c53b from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected b10403f89f06d6cf4edd3dbaa4cf47fde3e48f795999f732029e98669f1a4f39 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected e768037e69db307ae4bad8d6d3fa1a57e27eb95cc7ca5e3afa91f22bff6162aa from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected a7c2a75054f8db242dfd9a90dbefc7eba49d4030387b350bafbb5ce49087e3ca from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected c6953334099a5c80430decc275369ce085d464ce0f959279fa12b226a1f65cfa from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected c94ebd9e49fbeaf13c97604a6d3f6d2d381672714bf366060708887fdbd09e99 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 03389850826a5b1022597bb1af4c475f9e3ff2acb0f836ae4b56d56a48dfef07 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected c83b5a7571666c562cc8c73bfb842ce9fea844d8e8d1d6c031899bb238303173 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 83f06e4dd5f140a7d54fccb4b1dd3405bdbd05cb6913d4c1a46a52f6ba587f19 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 7e7fd5156b55b16d0b6d5dde5218893f9194daa3134845337c447b51e19467ab from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected c7266f42a89c9f5f1052ebedee0b376c1b91533951a656cb0ce04e5e845a5b55 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected a84d3cad8a775d1d69a6067ddd994ba7e7a08c77246b7f1f81c73e05b2eb81c4 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 811408c6a3c1cfa7b990fbe3f59c1bb6b79a1a7e41263af0e6e18414ef096bf0 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected d417ba0f1272c45cb090658b7f8a62448225c03e33d43325d9e6d3151dea6dee from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 99eb2b5cd847c6c976913321019023c0b9545848a8960b63de1f02fd4955c7fe from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 270589956a55f90452d62deda60e551b6e93e6e850603c5636e5781e1c75eb60 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 0f81bc1f7268acc69b0b1fb92e2777e6eb71fbbdf26d24e432424e41146ad58d from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 4f984484cec2970406aa230fc028d3342f14ddc18189aa2ee80a88fcd5b10098 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected d8b898af138fd36134f60092fb6365c2cab658130d294a9ff4cdee7a373c646d from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 2e4cc1ff378fba60ace82766ad04886e207ac6b43f3db1e408dbc410ddfe8ba5 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 78bd4fd20c8ce57d55147c085bb27babe57f94ce983ff546f32a9382922b10aa from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 89984ca70c57129b4c8c8618a474b077e8ab601b8b9ed9169aa2f1d07d34a459 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected f3d07f6132e05d3167a963560461e18589a57f2157e86045d2173e60717e900c from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 784bdd420be3a3792a4c8db535ddfe6e254b8308049c38865775d3e245010643 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 86d3e1bb99e643381ea9e3948e07b826182cdb687b0dc1b0dae1fdbd0afd895b from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 0493dee69b93d76658c65b2bbf77b2f54b777a1993c2565e4bcd7341808b88d9 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 64719a20554ec6cb91ad7a72af3a33555998de5d9bd5a60be48ec6bb274e18f6 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected ef4f3d48f6812e7a41e6cb2f9a5c419dc77721920eb7f7de49af4b8802f7ec26 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 1228186a0c0ee6ef62098985a109377377789daba04e8571a3a8e204c126bd82 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 1c8af7911cce5d5da0052b81de1936ce683040232f2f15ff19d29af4697835b8 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:27 rejected 575b3115f95fab835857de81c4cdbbafd0c5a98c118a78cb9b52c5e11d7c8e26 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:28 rejected e4860e22a0ed1484b9acffa08439a7de9848db9c08280bdec9a2b2f9a45e0640 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:28 rejected 58bf4f64adaee7d13632a044a0968f9ca88132ace1267ad699fdcc661198600e from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:28 rejected cdd1cb651a25ec9244ea7c4c39a5ec09d7dde3b774d427adc564506239731dfa from p2p 153.75.248.181: mined: transaction is in the best chain
+20:21:32 admitted b7e01e19c7d1163b55b6cac0bfe1cbd53c0b9308ddd8fded99936472b9307f17 v6 535 B fee 15000 from p2p 34.91.248.94; inv to 4 peers; mempool 1 txs
+20:21:48 p2p: outbound peer 99.56.151.125:8233 /Zebra:4.3.0/ height 3364604
+20:21:59 admitted db7658a234cf31227fd3fdf68b3aa205c9d49e7d63b514da776fb92156f7a0fa v5 273 B fee 15000 from p2p 34.39.40.194; inv to 6 peers; mempool 2 txs
+20:22:11 admitted adc37659ddae3ee005b6d08c5524232002584eb9e4acfab98292222dc9379b6e v4 244 B fee 12031 from p2p 34.91.248.94; inv to 6 peers; mempool 3 txs
+20:22:22 rejected 211e1fc8a8dae11188df43ae568c55c3a39127e415c411994e315d2b5a1d99de from p2p 34.91.248.94: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:22:23 stats: mempool 3 txs 1052 B; peers 7; counts {'rejected': 56, "wtxid: Bend auth digest == peer's MSG_WTX inv": 31, 'removed mined': 0, 'admitted': 3}
+20:22:43 admitted 1dc70c1a562b02c389e0183e2566360dac612f25387e9e2524d4018787654c66 v5 268 B fee 20000 from p2p 34.185.255.47; inv to 6 peers; mempool 4 txs
+20:22:50 admitted 1a91667d31901005492752a128a44555c27ffedcb85335f521fed8c55d57de66 v4 835 B fee 245400 from p2p 34.91.248.94; inv to 5 peers; mempool 5 txs
+20:22:57 admitted 90f16d9a1a8ae67cd4561a39889e91d9d845a134c9586d91f518d93f14fd2ae1 v4 3159 B fee 105000 from p2p 34.39.40.194; inv to 5 peers; mempool 6 txs
+20:23:13 admitted a05a354e941949089f115ae5f839d080f59c88e2a23f7ca25aba186f904a53c6 v6 6339 B fee 15000 from p2p 34.39.40.194; inv to 6 peers; mempool 7 txs
+20:23:15 rejected dd558df974148f0fe76411cd89ab71a6dcd2daee0a97f8d40d7a41ae5fcc9749 from p2p 34.39.40.194: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:23:23 stats: mempool 7 txs 11653 B; peers 7; counts {'rejected': 57, "wtxid: Bend auth digest == peer's MSG_WTX inv": 34, 'removed mined': 0, 'admitted': 7}
+20:23:26 admitted bacb1ae9b1f8f3ec3a9b17091586930f1fac63276ba9dd1cd5005218765b5ef9 v4 245 B fee 10000 from p2p 34.185.255.47; inv to 6 peers; mempool 8 txs
+20:23:47 rejected 07a29edbd4fc8ce51069d9a539007adaaaf1bff13d9b086755e6bbdf5bae3ce6 from p2p 34.39.40.194: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:23:56 admitted 0a3222ddba4f0f2efab0bdb1f19fd37a22816755168699e74f81deb86c27e1eb v6 9200 B fee 15000 from p2p 34.39.40.194; inv to 6 peers; mempool 9 txs
+20:23:56 p2p: outbound peer 107.217.236.100:8233 /Zebra:5.0.0/ height 3428142
+20:23:59 p2p: peer 107.217.236.100:8233 gone after 4 s (ConnectionError: peer closed)
+20:24:03 admitted c50377b72fc8758ee57445b788d71c18f33021ec92d6962136edd49a4ea02d43 v6 320 B fee 25000 from p2p 34.185.255.47; inv to 5 peers; mempool 10 txs
+20:24:04 rejected aba5574fbc1a1912dee28fd02f74e3bfea70816d728d39fa69ec81d733704e76 from p2p 34.185.255.47: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:24:10 admitted 5680fcf611e878ef28f2af286df102b8604fe375f078de661ae1bed59743108a v6 537 B fee 15000 from p2p 34.39.40.194; inv to 5 peers; mempool 11 txs
+20:24:17 admitted 89a474ffd72eae6204b0b52e58cdbf2f10b64c5fae89a8357f7861803a962555 v4 381 B fee 35937 from p2p 34.39.40.194; inv to 6 peers; mempool 12 txs
+20:24:19 rejected 4047f6e778abb180fe10774d3e09cc17dd1074a256f7027cb54b1862ec8da4c3 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 3013ae9c9ffec43a8b514de38e4f7b5bc1b8e4d573cf5d86857d1a5e7e2b1928 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 0c49d7c5fe7977d8bb698519d375f37c07eab1dbc6a7f8b1458da73becea4cc8 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected e306f0edb0d59055ca321425d9c92559e77528f2e1e9a03b97faee3a1782a116 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 6e1e63ed80b46a68657a8f465243b2927793b9a545293f2931162878a5309d99 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 7d26e516e95e04cc0dbdeb0c3950d51d26d504493e5e4f2c96ec8ef1637d2554 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected c42dc0baf812ec5f32e0ebb48881d9b7c14c832794708c560da24d17ddd91302 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 499ac1f2db1ae56bbda9395dfa4d595536e2df773811e4e0db23cb4b0483725d from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 84d58ce5f49a482dbfb06942c444e99d3f2dac6c6ebc745de490a600a4ef77a3 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 475e2e7c97cc1c4c8652b5a45368a303a7c96da3bc99b374ca04962f5ae91852 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected ca7af033959550beded1677aa0aa0fef3b401fdfbaf1fe2cdcdd62bafd1bbed3 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 6bc81b1df4f8b4ae08f1b21e899edb11c643d573ca2a851438ca2f0c55cb0516 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected c1059f536ee2d2362a4507b02d039fdef803dd243710d0becdb3263fa8a2682b from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected dfee575fc5afcd1c72c5c57cff67c92a10d2cb3c3e226d71b84b219f9b0b759f from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected e5b98b64db0e4c96fe7693ef74ac821291a9a4307dec6bd19688b3df2662fe1c from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected e7e84f42a6b374856ca1cc56e2bf436a62eedb9005f9f90f1b97cdf4f2b8ab44 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 044d9a88e614f35a70374c76cf46c9816a5794c080b77c311b39712e7c1433fb from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected b023d5f3559d58c2ea44564b128d6567964c148b0df95e89e21d66f3198b21fc from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 25e194f89f4e3b49df94faff8806e10daff680fe696a050a34c35e9e387ba1a6 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 412018367447016b6d59abf89291920ade6cb83e0b2b4be9be3d16d8cc72a9db from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 04c23137c33bf7435d470bce6098c55c615fc80e5afbc2d5d1a0add784f7811b from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected d0ebb7a7041a062790552e595626be61a26b811ff9689ff3888895d3a3fcf001 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected de3665759031c6b53c486e8d68ef83bbb57f217e6e2aa5c051ffc58b7c9d8d02 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected cbccae24abd95f571cc429162d91fc8c01ebfea22a4f24cfde6dcb238c7501bc from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 8aad993bfd9942baba930df948dd0df8d1d9ad47c575f7992c43fc6c1d1a9798 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected b9cafe6c3496b0f3114520d8686201e27a7bf518f43882bafca72e823fe30834 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected f74e28acf5d70df0e1901a57712c7ba7177b278ff2487e868951b6cbbe5744b7 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 2de663b9f6ea062c069fcca9d6cad7cf4a41346c2e80363890dd7b9c9cb5456a from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 09cfbbb7eb24c6e17a9589f12f6045397dfc6a9a1d12d8cc177fd8dc694d4cce from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected c1e7e42a4eeb456248da90021a81d04391996726c6a923e2e1ced08f6358f423 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected bed7b2294ba519b32a93f95e3d20620a3e8d6b3524dbd23174dd101498241521 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected f25a8f7d09ecb0012ec3a02b88108d45adfd03a125f7ac7dc431ea432fbc70f0 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 5f825b3873574c64bdb6e7d65702bf50cf1a9659bf011c894a728653d8526804 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected cb7fd484f1793ca0eec36a5d2aeeb47c22f70824fdaabdc8ce8c2432041e8651 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected d75296e5c24e32ff9cc4f4ec0dec03727eb8843b8288edb146602da8f29f30bb from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 7fdf9e3648efdd23c7fdde0556381d46778a641c4da67bfe2d97ab49a07e32cb from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 16b3ee986b2f2d83de59b4280662a40d6ca11e1d497de67bd5e3f71235aa93a8 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected fc3ace9d34a0e6453990155bd101a64c0f613350f55dc7afc5ca02355c5b1c76 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected fd1e3f688ab44fd908dd7c50f4d68577ed4e9dd73155d69294969e805928b556 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected fd5885182543107ec640af60495e9774f3f4e1bce428fc5253d1f0dd71230303 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected c9db38217b7f0da3ebda3ed352e9ccac211dda5258cfea44f4e1f6b9bcdaa660 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected f5cdabf15d071c3dcd794c5476e94af06ceabea4c898a1d6addb567e2cc5b2db from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 2a094aa4033b93771eb03008205a9884c46b487323d9ed3ff8fadd346bddfdcc from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 6c873a981c378257e5f5395b1494eeffe261dcc9837742d2be4c1e3a9823f03c from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected a8346485a76a40730b40b17d356b1f4e0f22af6d9be7cda70a152ed76717d9ad from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected fd4bbb3fc81bb8041c0b69b27fcbe9ea2a72885db4c778704c3d06feea5c5650 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected d6f24f852aae5e52127319af960504cdb17863966ea0d59b2b8de13b537a0fd0 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected bbcb389618f3c9a62ef4b07076937f4e2b44a3278d91bf69c95e61e5eefabdc7 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 5315c809ff20c348ab67816e6b6000873b81cc291bb743e17f6fb01bed54092e from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:19 rejected 8f06203450a424b11f1d2a641a1a890a827f279c12ec71a1640617ef5ff9a86e from p2p 153.75.248.181: mined: transaction is in the best chain
+20:24:23 stats: mempool 12 txs 22336 B; peers 7; counts {'rejected': 109, "wtxid: Bend auth digest == peer's MSG_WTX inv": 62, 'removed mined': 0, 'admitted': 12}
+20:24:26 recheck: removed 1 mined
+20:24:26 tip 3532519 (00000000002b4af8): mempool 11 txs 21801 B, removed 1
+20:24:39 admitted aa9c7307e9414c5a643096adbf44211668b6e455625c83699dbcc41fd676bedb v4 245 B fee 50000 from p2p 34.39.40.194; inv to 6 peers; mempool 12 txs
+20:25:12 p2p: outbound peer 5.9.94.238:8233 /MagicBean:6.20.0/ height 1715239
+20:25:17 rejected f4d43818d6c01a5401dcf1fe176f89198548d8e99981208f726a38c73e90e21f from p2p 34.91.248.94: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:25:19 admitted 0c7a6b0c0978ad938f42fb153a98668538c1d5a8b117fc1cb5a3fc1b9eac8b63 v5 240 B fee 10000 from p2p 34.39.40.194; inv to 7 peers; mempool 13 txs
+20:25:23 stats: mempool 13 txs 22286 B; peers 8; counts {'rejected': 110, "wtxid: Bend auth digest == peer's MSG_WTX inv": 64, 'removed mined': 1, 'admitted': 14}
+20:25:25 admitted aba5574fbc1a1912dee28fd02f74e3bfea70816d728d39fa69ec81d733704e76 v6 9313 B fee 15000 from p2p 34.91.248.94; inv to 5 peers; mempool 15 txs
+20:25:25 admitted a712d18428f68ce9e90f6f0c664473f83c1e7ab3b7a32a7baf657b4393af1a5f v4 244 B fee 67800 from p2p 34.91.248.94; inv to 6 peers; mempool 15 txs
+20:25:43 rejected c235fa90479a0aa75e01a3eed4145c1014b4cac4dac33fc85eb27a6c4f692869 from p2p 34.91.248.94: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:25:54 rejected 57f01da087c3214209c31fd26ba95ec3688c204ee353abea63c05bc2e5dc2d3f from p2p 34.39.40.194: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:26:02 rejected 33c810b077dac42b9661e9357d2f92f8fdf3bb6313a69b0d1dc848311ef01df4 from p2p 34.39.40.194: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:26:05 admitted 0783c299705ad30db8835f18507737d0898251fafce9b072ea1d3c8e38b565e6 v5 240 B fee 22800 from p2p 34.185.255.47; inv to 7 peers; mempool 16 txs
+20:26:14 admitted f68a91956ed68d232f972919dd1ef95dd798837c88cdc7c35eb2369e74927ae8 v4 245 B fee 12031 from p2p 34.39.40.194; inv to 6 peers; mempool 17 txs
+20:26:18 rejected dc9977e343ead801fa50bad3e159b4b1377f5cff09a54ce8c02052238edeca51 from p2p 34.185.255.47: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:26:21 recheck: removed 8 mined
+20:26:21 tip 3532524 (00000000003b5f22): mempool 9 txs 11765 B, removed 8
+20:26:23 stats: mempool 9 txs 11765 B; peers 8; counts {'rejected': 114, "wtxid: Bend auth digest == peer's MSG_WTX inv": 70, 'removed mined': 9, 'admitted': 18}
+20:26:40 admitted c235fa90479a0aa75e01a3eed4145c1014b4cac4dac33fc85eb27a6c4f692869 v6 9166 B fee 10000 from p2p 34.39.40.194; inv to 5 peers; mempool 14 txs
+20:26:40 admitted f4d43818d6c01a5401dcf1fe176f89198548d8e99981208f726a38c73e90e21f v6 10052 B fee 40000 from p2p 34.39.40.194; inv to 5 peers; mempool 14 txs
+20:26:40 admitted c93851b206b06b21236d9fa8f1d442ef1be247add42659bd3bb062f2a9485fde v6 9200 B fee 15000 from p2p 34.39.40.194; inv to 7 peers; mempool 14 txs
+20:26:40 admitted 4da69c5c7c8542e4badd7507e91dcf1049d4f8e7cb8e882aadfe33ed7298c4eb v6 208 B fee 10000 from p2p 34.39.40.194; inv to 7 peers; mempool 14 txs
+20:26:40 admitted 33c810b077dac42b9661e9357d2f92f8fdf3bb6313a69b0d1dc848311ef01df4 v6 9200 B fee 15000 from p2p 34.39.40.194; inv to 7 peers; mempool 14 txs
+20:26:41 admitted 57f01da087c3214209c31fd26ba95ec3688c204ee353abea63c05bc2e5dc2d3f v6 9314 B fee 15000 from p2p 34.39.40.194; inv to 7 peers; mempool 16 txs
+20:26:41 admitted dc9977e343ead801fa50bad3e159b4b1377f5cff09a54ce8c02052238edeca51 v6 9200 B fee 15000 from p2p 34.39.40.194; inv to 6 peers; mempool 16 txs
+20:26:50 admitted 5484c77c617eb9ac79643d8ee26d38ff80798f9b38659a301f8dbf21ada18a62 v5 206 B fee 20700 from p2p 34.91.248.94; inv to 6 peers; mempool 17 txs
+20:27:12 rejected 522b30ac7e23d34036193cbbb8674733776bf286c22ec7c97d09e2aa6cb02063 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:27:12 rejected 8dd53ca38327bc0d1cdcd13e529d3c0fce6bce34a2e4149d6676d8c16680c201 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:27:12 rejected 75d6b6e044e771597235b5a43a536b8048108b607275dc00f9939fcf6865bb07 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:27:12 rejected 3bc0c931d2412277df471c3f88482214399c94a253200945b4e26808c491e342 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:27:12 rejected 24ffa7829333f313cc31a55b36f07e3ea3f788b09ca4026fa3391b74a03edf78 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:27:12 rejected 6c568445c6dd78d9c95689854f719e6a2710a011760570e59f6ebb61d8ce0205 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:27:12 rejected aba5c8995fffacff247de16ce0f3cee1bbcebc47f14669323f2b1f633b325232 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:27:12 rejected e20753a6d148f5ceeb9d3202d59a37412a59678cea518d44ce0adffa4d2dd51c from p2p 153.75.248.181: mined: transaction is in the best chain
+20:27:12 rejected ffcb97d2814dc3ac337e9c74eb491ccbe2d1f2a9bf81c753f81f434f96d46847 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:27:12 rejected 770b85753f1a35ffd7bed677da999577d2e5b9c71c825879b928de757d519378 from p2p 153.75.248.181: mined: transaction is in the best chain
+20:27:12 rejected fac4de1a967cc17f8587a640599178dac1e60e5a6277af4694f8bd893b52aadf from p2p 153.75.248.181: mined: transaction is in the best chain
+20:27:23 stats: mempool 17 txs 68311 B; peers 8; counts {'rejected': 125, "wtxid: Bend auth digest == peer's MSG_WTX inv": 84, 'removed mined': 9, 'admitted': 26}
+20:27:33 admitted 44a39456a282974f4c34df84ecf58e6c0060fa283cb52cb587dda27835b1bb18 v6 9200 B fee 15000 from p2p 34.91.248.94; inv to 6 peers; mempool 18 txs
+20:28:12 admitted 7d5bc210550c2ffa41c5e6703c28e10902aba9e2ba4793d6ec06a15ee6b9c14e v6 9166 B fee 10000 from p2p 34.185.255.47; inv to 7 peers; mempool 19 txs
+20:28:15 admitted ae6b8d675a7846962eeff0f718f246398c68512c4dc671822cdce6dcfca09dfb v4 392 B fee 10000 from p2p 34.185.255.47; inv to 7 peers; mempool 20 txs
+20:28:23 stats: mempool 20 txs 87069 B; peers 8; counts {'rejected': 125, "wtxid: Bend auth digest == peer's MSG_WTX inv": 86, 'removed mined': 9, 'admitted': 29}
+20:29:15 admitted db91544eb1e55627cdcfcece6023ddcb9906e01c7954b653be0f9702a6da74b5 v5 448 B fee 50000 from p2p 34.39.40.194; inv to 6 peers; mempool 21 txs
+20:29:22 admitted 7ad7d98f031dc17433cad9b32b490f108c920454874643112f475cb1916c5841 v5 301 B fee 50000 from p2p 34.39.40.194; inv to 7 peers; mempool 22 txs
+20:29:23 stats: mempool 22 txs 87818 B; peers 8; counts {'rejected': 125, "wtxid: Bend auth digest == peer's MSG_WTX inv": 88, 'removed mined': 9, 'admitted': 31}
+20:29:24 admitted d8c160ec467bbf0508e94d0cef58a242908cd6aa4c19a1bce7149ea765377c8f v5 450 B fee 20000 from p2p 34.185.255.47; inv to 7 peers; mempool 23 txs
+20:29:37 rejected a338fb78fb9202af082574a754e843bfae89d94d10b94223c801bcb76caf6a66 from p2p 34.39.40.194: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:29:56 p2p: peer 153.75.248.181:8233 gone after 512 s (ConnectionError: peer closed)
+20:30:04 admitted 58e132ec01ccf793148144225886e2ec42ca8fc8b0f1184c0bb4521e880c1f40 v5 240 B fee 22800 from p2p 34.91.248.94; inv to 5 peers; mempool 24 txs
+20:30:11 admitted 3706d3509aeb36a25ee86b7901dfaca81f780bc23bd0ad19552aed8170b72202 v4 254 B fee 15000 from p2p 34.39.40.194; inv to 5 peers; mempool 25 txs
+20:30:18 admitted e836409ec98a241bfe991ded869c9a33d008a6ed3608e459cb0e58dac54562df v4 245 B fee 12031 from p2p 34.91.248.94; inv to 6 peers; mempool 26 txs
+20:30:23 stats: mempool 26 txs 89007 B; peers 7; counts {'rejected': 126, "wtxid: Bend auth digest == peer's MSG_WTX inv": 91, 'removed mined': 9, 'admitted': 35}
+20:30:31 admitted 7d58c1b784f0da4f6ac4413a91ed25ef864598eae453408fe531bb72c33145fa v6 9166 B fee 10000 from p2p 34.39.40.194; inv to 6 peers; mempool 27 txs
+20:30:33 p2p: outbound peer 51.210.221.19:8233 /Zakura:1.5.1/ height 3532525
+20:30:34 admitted bb621d163f73f60eac82031684acee0ec8496c116586b067c5bbf6c6d0cb0e4f v6 9200 B fee 15000 from p2p 34.185.255.47; inv to 6 peers; mempool 30 txs
+20:30:34 admitted 8f35e9e059c2deb1106ddfa0da22664615e1b0ffe51d6341e431fa930552cbdc v6 241 B fee 10000 from p2p 34.39.40.194; inv to 6 peers; mempool 30 txs
+20:30:34 admitted e05124970578229659dbb016e03985841389618eb3359b570c0b127a21f0060c v4 801 B fee 25000 from p2p 51.210.221.19; inv to 7 peers; mempool 30 txs
+20:30:34 admitted a1fadf35da96299c7846b81840c74d3a2bddb4e810d3a1b9f1143a5c9585c6b0 v4 210 B fee 16212 from p2p 51.210.221.19; inv to 7 peers; mempool 31 txs
+20:30:41 admitted 0f092ee8cf3aa60c68e6e1aef8f721670d3c0840f49266d1facc8680fc0953d5 v6 12322 B fee 15000 from p2p 34.91.248.94; inv to 7 peers; mempool 32 txs
+20:30:51 recheck: removed 19 mined
+20:30:51 tip 3532525 (00000000008c2e38): mempool 13 txs 34270 B, removed 19
+20:31:13 admitted 13d30d3ebd91e20d11aef63eaca90d4cbb03e414417ebe82e8fc417a7c6eb0f1 v6 9166 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 14 txs
+20:31:23 stats: mempool 14 txs 43436 B; peers 8; counts {'rejected': 126, "wtxid: Bend auth digest == peer's MSG_WTX inv": 96, 'removed mined': 28, 'admitted': 42}
+20:32:12 admitted 1a057e0e665638885dcea50c6d7d12fd29293f54fafaed561afb37ba7ca8fbad v4 245 B fee 12031 from p2p 34.185.255.47; inv to 7 peers; mempool 15 txs
+20:32:13 admitted f06d5fbe4a26a84b7704159b43605281c5c0cfc24c1de8a43009b423c6b77e37 v5 320 B fee 25000 from p2p 51.210.221.19; inv to 7 peers; mempool 16 txs
+20:32:23 stats: mempool 16 txs 44001 B; peers 8; counts {'rejected': 126, "wtxid: Bend auth digest == peer's MSG_WTX inv": 97, 'removed mined': 28, 'admitted': 44}
+20:32:25 admitted 595af73c232779dd348075cc6f49c163e011148246782f9167b2640a7c40e1ac v6 3911 B fee 75000 from p2p 34.91.248.94; inv to 7 peers; mempool 17 txs
+20:32:38 admitted d55f2e4b4b6768f27fd7807ee3aa44494944f792a7d16da920f904e5ca57054b v4 245 B fee 10000 from p2p 34.91.248.94; inv to 6 peers; mempool 18 txs
+20:32:55 admitted dc9b12c7fc00decc6e523b97fda2a0c912c37a2f1a50b8a17287346a88826801 v5 449 B fee 50000 from p2p 34.91.248.94; inv to 6 peers; mempool 19 txs
+20:33:02 admitted 36092a4edae6c1cf34e887448eefa06db532deda08cc9558c7ad59b0455c846d v6 2141 B fee 15000 from p2p 34.185.255.47; inv to 7 peers; mempool 20 txs
+20:33:09 admitted 43e3fd4d1b235a8893fa4749cd8ab92b8c015208ee08acf4c457b65df8a08609 v5 596 B fee 50000 from p2p 51.210.221.19; inv to 7 peers; mempool 21 txs
+20:33:17 admitted bcf795bc958eff43a0a1388bebd059c819491ab3373b71a870e84f313d647f58 v5 387 B fee 10000 from p2p 34.39.40.194; inv to 6 peers; mempool 22 txs
+20:33:23 admitted 14ef58f8f09a110fbdc256c7302ab51d23b9a649621f342d4ebd9665c16ada4e v4 245 B fee 25000 from p2p 51.210.221.19; inv to 6 peers; mempool 23 txs
+20:33:23 stats: mempool 23 txs 51975 B; peers 8; counts {'rejected': 126, "wtxid: Bend auth digest == peer's MSG_WTX inv": 102, 'removed mined': 28, 'admitted': 51}
+20:33:25 rejected ada546e3620a5eedc4af7f2e1ad0807c70484bc01091cffa7c0f8fdf7b0b2009 from p2p 34.39.40.194: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:33:36 admitted d8deffad5a45351181b494bfb1af86ddf138c72ec81b8b6e2712d48af0e75c76 v4 392 B fee 30000 from p2p 51.210.221.19; inv to 5 peers; mempool 24 txs
+20:33:45 admitted 6f85e3af91fcb0909e6b74c8c8704c3bbba106345ce38b958ff3f80016336404 v5 302 B fee 50000 from p2p 51.210.221.19; inv to 6 peers; mempool 25 txs
+20:33:51 admitted 81fcd69373d93b9b5d18ac38771add1ebd69c0e727bf77a3ac81ce1e214543b6 v6 2764 B fee 15000 from p2p 34.185.255.47; inv to 7 peers; mempool 26 txs
+20:33:56 recheck: removed 14 mined
+20:33:56 tip 3532526 (000000000021fa7f): mempool 12 txs 11997 B, removed 14
+20:34:10 admitted 13c1f5a5d87ded0bc3c13cace5925f732793edf510b10466286a6c96af68bcac v5 1557 B fee 50000 from p2p 34.91.248.94; inv to 7 peers; mempool 15 txs
+20:34:10 admitted ada546e3620a5eedc4af7f2e1ad0807c70484bc01091cffa7c0f8fdf7b0b2009 v6 9200 B fee 15000 from p2p 34.91.248.94; inv to 5 peers; mempool 15 txs
+20:34:10 admitted 8965eca4dafeb6171a037d40d1db77552ce5d7f4dddf64202be296623187beb6 v4 210 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 15 txs
+20:34:11 admitted 0ae68472582ebb3780c5c2fc0fcd7db770eb868c549a9e5ead238e7086ca8ecb v4 244 B fee 12031 from p2p 34.91.248.94; inv to 5 peers; mempool 16 txs
+20:34:23 stats: mempool 16 txs 23208 B; peers 8; counts {'rejected': 127, "wtxid: Bend auth digest == peer's MSG_WTX inv": 107, 'removed mined': 42, 'admitted': 58}
+20:34:30 admitted f58afd7c89a673be778f48054949496f3ba0e970dfa106d6ec000f74333cdf77 v6 9200 B fee 15000 from p2p 51.210.221.19; inv to 7 peers; mempool 17 txs
+20:34:51 admitted a4b50b25d018c8e7904c6d89587b98423f68205f6d0b399e27b813318d0209af v6 9313 B fee 15000 from p2p 34.91.248.94; inv to 5 peers; mempool 18 txs
+20:35:15 admitted a39c0546f350be1cb4219eb6f22773356e9f24a468be79fcef2ead54c2e7e6fc v5 206 B fee 10000 from p2p 34.185.255.47; inv to 6 peers; mempool 19 txs
+20:35:23 stats: mempool 19 txs 41927 B; peers 8; counts {'rejected': 127, "wtxid: Bend auth digest == peer's MSG_WTX inv": 110, 'removed mined': 42, 'admitted': 61}
+20:35:47 admitted fef6d4644d449b622376f7822b6a74eddbf242aca08d67616fc6e2d5f637dda0 v6 9200 B fee 15000 from p2p 51.210.221.19; inv to 6 peers; mempool 20 txs
+20:35:57 admitted c8471aca99186f8d50c0ebf349b2d781439d461a31da8ededb321135992725de v5 2220 B fee 95000 from p2p 34.91.248.94; inv to 7 peers; mempool 21 txs
+20:35:58 admitted eee24ca972cfe5f184f29a6a84154bb07b332ab89612a285dece553a19f1a79b v6 3360 B fee 470000 from p2p 34.91.248.94; inv to 7 peers; mempool 22 txs
+20:36:08 rejected 68831b69d33e493338a052b312a2cdb79241a4c1966dac0132788467baa66242 from p2p 34.91.248.94: missing input: c605a04cef5cf8bef20ff894b12f40fd5d086ee7364ecc7b8a403f5d4c055cda:1 is not an unspent output of the chain or the mempool
+20:36:23 stats: mempool 22 txs 56707 B; peers 8; counts {'rejected': 128, "wtxid: Bend auth digest == peer's MSG_WTX inv": 113, 'removed mined': 42, 'admitted': 64}
+20:36:25 rejected 229549cfb801fe23f25d4458ff8b159fde7e3798c8c665b87f79aa7d0ccfb9f8 from p2p 51.210.221.19: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:36:40 admitted ae8c32754dd6d859241b33f2d3686691cc593b9da3a672bd7669e161432c37f3 v5 206 B fee 10000 from p2p 51.210.221.19; inv to 7 peers; mempool 25 txs
+20:36:40 admitted df3f5328bb8ab3f627e59daf2edada4eb072964283134fa1a9dd50d7e304a7ec v4 244 B fee 12031 from p2p 51.210.221.19; inv to 7 peers; mempool 25 txs
+20:36:40 admitted 2444b3a9b80ead108b41206e065128ecb039011258ab3568ea39265bc023e4e3 v5 376 B fee 30000 from p2p 51.210.221.19; inv to 7 peers; mempool 25 txs
+20:37:03 admitted 095cd0d71a931b61f992288ecca7aa713ba9b815a894b1f7e6da28d8794d8fa4 v5 240 B fee 22800 from p2p 51.210.221.19; inv to 5 peers; mempool 26 txs
+20:37:09 rejected 114c0d42cdad033d605c21aecf809f06b3175cb35e0e6b500a8e10101c39a019 from p2p 34.91.248.94: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:37:17 admitted 1e04e751005319363453bdb54f58c70fb162f0fc691482db48d67f2a6dd2eff6 v5 241 B fee 10000 from p2p 34.39.40.194; inv to 7 peers; mempool 27 txs
+20:37:23 stats: mempool 27 txs 58014 B; peers 8; counts {'rejected': 130, "wtxid: Bend auth digest == peer's MSG_WTX inv": 119, 'removed mined': 42, 'admitted': 69}
+20:37:31 admitted 5e266609c776735dcea374a3990908a41860f21af4aae503601605fcc1d9ecce v4 391 B fee 20000 from p2p 34.39.40.194; inv to 6 peers; mempool 28 txs
+20:37:54 p2p: inbound peer 127.0.0.1:52757 /Zebend-fullnode:0.1/ height 0
+20:37:54 p2p: peer 127.0.0.1:52757 gone after 0 s (BrokenPipeError: [Errno 32] Broken pipe)
+20:37:56 rejected 110b95e1be4098876c8ed91defadc75a19c20d8c1ab0c173ad7b28e38bcfa47a from p2p 34.91.248.94: Ironwood anchor is not a root of any block up to this state's tip (invalid, or of a newer block); retried after the next block
+20:37:56 admitted 454240685b52a5c5be9761934c19a767e006389570c0b38c68c64de87f21706c v4 245 B fee 20000 from p2p 34.91.248.94; inv to 6 peers; mempool 30 txs
+20:37:56 rejected 9e603372d864b279fb025582f158d3c162dd111ebf3354980d8b43adc209ddde from p2p 34.91.248.94: missing input: 07d81d9863de0f6097fc75ad46f15e4f1e12ab218910278850ef7139e88b911e:1 is not an unspent output of the chain or the mempool
+20:37:56 admitted 03f04b416c4a4f6e4a76e92551fdcc5d241df9f4a5a832bc3dca7ad493d4af4f v6 5716 B fee 30000 from p2p 34.91.248.94; inv to 6 peers; mempool 30 txs
+20:38:13 recheck: removed 17 mined
+20:38:13 tip 3532531 (00000000002dac34): mempool 13 txs 31958 B, removed 17
+20:38:23 stats: mempool 13 txs 31958 B; peers 8; counts {'rejected': 132, "wtxid: Bend auth digest == peer's MSG_WTX inv": 122, 'removed mined': 59, 'admitted': 72}
+20:38:25 rejected cf6ecaf956d2566133e1411b11dc33ccb9bc78c6c5e0dc7c2e949a8425c23e62 from p2p 34.91.248.94: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:38:52 admitted 3a501ba1de624305f0f75f05cffca250760660d2423e8235ae4d02b13d33fc77 v5 468 B fee 25000 from p2p 34.39.40.194; inv to 7 peers; mempool 14 txs
+20:39:11 admitted 6fb01ef8bdb352a196675d52549a82c7e9413f669d5b6ae6badfdba0a10c4dbd v5 451 B fee 15000 from p2p 34.39.40.194; inv to 7 peers; mempool 15 txs
+20:39:11 rejected 2f120648ceff8a2170ed766d115347a690277e4124c34376f05b80b1618b4306 from p2p 34.185.255.47: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:39:19 admitted 7699cb085940966d41138e5914bd0aacc640be6d6bc2f042c7ce16889bef2642 v4 393 B fee 31500 from p2p 34.39.40.194; inv to 7 peers; mempool 16 txs
+20:39:21 rejected deff2f56bf3fc43303b71f7230adabd7ab683d4b80687aea4d90b4700da70598 from p2p 51.210.221.19: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:39:23 stats: mempool 16 txs 33270 B; peers 8; counts {'rejected': 135, "wtxid: Bend auth digest == peer's MSG_WTX inv": 127, 'removed mined': 59, 'admitted': 75}
+20:39:25 rejected f65445bdf0e477a54e01a64bfb3accd30a871e7d1e8831dd41009f18aa8f07fd from p2p 34.185.255.47: missing input: deff2f56bf3fc43303b71f7230adabd7ab683d4b80687aea4d90b4700da70598:0 is not an unspent output of the chain or the mempool
+20:39:52 recheck: removed 13 mined
+20:39:52 tip 3532539 (000000000078516f): mempool 3 txs 1312 B, removed 13
+20:39:57 admitted c35b26830c5101f786c00b317c23c71a5ceffa6602d9ad4a1d93242271962dbc v4 211 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 4 txs
+20:40:00 admitted ab66139c64106cac127e98db509520b241199949a25b0cf87f210f6517043948 v4 211 B fee 10000 from p2p 34.185.255.47; inv to 7 peers; mempool 5 txs
+20:40:00 admitted d4559a11676521e15d67f392ca5b2a273ecff255ba4a6c39c8a11c0c07c9e42f v4 210 B fee 10000 from p2p 34.185.255.47; inv to 7 peers; mempool 7 txs
+20:40:00 admitted 33896f33f93cb93a6d21ce9c839efa2fcc18c28ef3e9e2cd143e73c632ecfdbb v4 210 B fee 10000 from p2p 34.185.255.47; inv to 6 peers; mempool 7 txs
+20:40:12 admitted cbba2beac794cdaff251f20c2403c76912703cc7befd662673a48ef3b4dddf97 v4 278 B fee 18009 from p2p 34.39.40.194; inv to 6 peers; mempool 8 txs
+20:40:15 admitted 26cc0cde306c8e8539a9d993d839722341410693f6614c4ff44e84778d08c79b v6 9200 B fee 15000 from p2p 34.185.255.47; inv to 7 peers; mempool 9 txs
+20:40:23 stats: mempool 9 txs 11632 B; peers 8; counts {'rejected': 136, "wtxid: Bend auth digest == peer's MSG_WTX inv": 129, 'removed mined': 72, 'admitted': 81}
+20:40:26 admitted e1c76b6e3fa96b37df5a5aca08bb62c25b66999344a1113a9541fe8bf0df9aa7 v4 210 B fee 10000 from p2p 51.210.221.19; inv to 6 peers; mempool 10 txs
+20:40:30 admitted aa4fffcea6806c36029fab807efaa5390244147c3b99bad3d13d372afa96f000 v5 268 B fee 20001 from p2p 34.91.248.94; inv to 7 peers; mempool 11 txs
+20:41:23 stats: mempool 11 txs 12110 B; peers 8; counts {'rejected': 136, "wtxid: Bend auth digest == peer's MSG_WTX inv": 130, 'removed mined': 72, 'admitted': 83}
+20:41:41 admitted b88a891acc421fe634202907663b6c237c62e711da3d4b78bdb3e03b7e1dc36f v6 9166 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 12 txs
+20:41:42 admitted a29e6cbba736c8919c02d780c487401f3243ed8b30d1a7e0d527bacfa6dd2ca8 v6 9166 B fee 10000 from p2p 51.210.221.19; inv to 7 peers; mempool 13 txs
+20:42:01 rejected aa735511399b7843131e736382398f1cbec6f63bd75492b619a61620f92316d5 from p2p 51.210.221.19: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:42:11 admitted b3dbd837f8650581c5963be10f60d69ef729ef7770140c3304a5d8406c2edbf5 v4 245 B fee 12031 from p2p 51.210.221.19; inv to 7 peers; mempool 14 txs
+20:42:17 recheck: removed 3 mined
+20:42:17 tip 3532540 (00000000002f89bd): mempool 11 txs 29375 B, removed 3
+20:42:23 stats: mempool 11 txs 29375 B; peers 8; counts {'rejected': 137, "wtxid: Bend auth digest == peer's MSG_WTX inv": 133, 'removed mined': 75, 'admitted': 86}
+20:42:56 admitted 5df2dde76766bb5463bc982a3dcd1ae47725ed353538beae26f738cd361c3970 v6 12356 B fee 20000 from p2p 34.39.40.194; inv to 6 peers; mempool 13 txs
+20:42:56 admitted aa735511399b7843131e736382398f1cbec6f63bd75492b619a61620f92316d5 v6 9313 B fee 15000 from p2p 34.39.40.194; inv to 5 peers; mempool 13 txs
+20:43:01 admitted 9bb68654d0adfb35392d612e4acbbee40926e78d5a1c3baf10c9ce739a1e6052 v4 244 B fee 19068 from p2p 34.91.248.94; inv to 7 peers; mempool 14 txs
+20:43:02 admitted 6ef95687305d61e6faf4becc3bfcdab7864fceb1c4521ab735c036a70115db76 v6 9200 B fee 15000 from p2p 51.210.221.19; inv to 7 peers; mempool 15 txs
+20:43:23 stats: mempool 15 txs 60488 B; peers 8; counts {'rejected': 137, "wtxid: Bend auth digest == peer's MSG_WTX inv": 136, 'removed mined': 75, 'admitted': 90}
+20:43:39 admitted 928c01f0b8ffa64904df92ed4767e378d9444f67e27be6bb321c750e440b808b v6 9460 B fee 20000 from p2p 34.39.40.194; inv to 7 peers; mempool 16 txs
+20:43:44 admitted 8c6a1594ef37edc07f4f1c57b2bb553b93a22634b20fc0164b1404ad17c5f46a v5 448 B fee 50000 from p2p 51.210.221.19; inv to 7 peers; mempool 17 txs
+20:43:45 admitted e9d7b053a1e37af77162a94b22a51156ca00941928d753e344558f4bf7a7ce8b v6 9166 B fee 10000 from p2p 34.185.255.47; inv to 7 peers; mempool 18 txs
+20:43:50 admitted 448d10ba5221265cb93b35b22f14487a486740e3c1a411066d8a1cebbcb03e8f v4 245 B fee 10000 from p2p 51.210.221.19; inv to 5 peers; mempool 19 txs
+20:44:18 rejected 9a6d39c58a98ad4b51d7a0992da6b1d5fed8251218c8baf01359233e8db99254 from p2p 51.210.221.19: missing input: 3b5082bc51cded03de96e7e7023e6d4cc97d63c96e0159042ee7847616228bd0:1 is not an unspent output of the chain or the mempool
+20:44:23 stats: mempool 19 txs 79807 B; peers 8; counts {'rejected': 138, "wtxid: Bend auth digest == peer's MSG_WTX inv": 140, 'removed mined': 75, 'admitted': 94}
+20:44:24 recheck: removed 5 mined
+20:44:24 tip 3532541 (0000000000411ec1): mempool 14 txs 78755 B, removed 5
+20:44:26 admitted 8191a35b5ab2fa6bf3a4cccc9ff72f294e55b1121aca39c776431d3f96980304 v5 302 B fee 50000 from p2p 34.185.255.47; inv to 7 peers; mempool 15 txs
+20:44:28 admitted e39f40bc382b090b898dcabbe4434b43179ec38d678c3342fb6c140440a4d1c1 v5 207 B fee 10000 from p2p 34.39.40.194; inv to 7 peers; mempool 16 txs
+20:44:33 rejected 748c8d6f844e1a071674e272629c8817d02f3ba9c187498641054aa0166f6a04 from p2p 34.39.40.194: missing input: 3b5082bc51cded03de96e7e7023e6d4cc97d63c96e0159042ee7847616228bd0:0 is not an unspent output of the chain or the mempool
+20:44:40 admitted d3aa9adf6f7e61b64da88f7214f2ef705f9b5383e679cdb2fcc9c4b5c502d500 v6 9166 B fee 10000 from p2p 34.185.255.47; inv to 6 peers; mempool 17 txs
+20:45:03 admitted 0528ff78dda6dc8431712057b7e752d22f5d3472d69baa0ee3339ca63ee49186 v4 453 B fee 20000 from p2p 51.210.221.19; inv to 5 peers; mempool 18 txs
+20:45:23 stats: mempool 18 txs 88883 B; peers 8; counts {'rejected': 139, "wtxid: Bend auth digest == peer's MSG_WTX inv": 144, 'removed mined': 80, 'admitted': 98}
+20:45:39 rejected 9655d04e773658d6a2539c52902b0df7c8c5e4ef0b662bca562fcfe3986705ed from p2p 51.210.221.19: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:45:46 rejected 3c031a575e177ecd8c6112acca78c57641a3f48509d67701392b7575e3c5b6b2 from p2p 51.210.221.19: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:46:01 rejected a36e6896ae968cf51c5ac3e82843d6bba4723a38a9d41d193f820bfdf6faf34e from p2p 34.185.255.47: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:46:13 rejected 357bb1ba878915aba7b30ab9508da90eed698463ef8de08a45eb09eca102a9f7 from p2p 34.91.248.94: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:46:19 recheck: removed 17 mined
+20:46:19 tip 3532545 (000000000054a0ab): mempool 1 txs 453 B, removed 17
+20:46:20 admitted ffe74a9b42985c1cf4f79596ab7cdbf05844edbdfc633f1c67c7fb66aec653a5 v5 1556 B fee 50000 from p2p 34.91.248.94; inv to 7 peers; mempool 2 txs
+20:46:23 stats: mempool 2 txs 2009 B; peers 8; counts {'rejected': 143, "wtxid: Bend auth digest == peer's MSG_WTX inv": 149, 'removed mined': 97, 'admitted': 99}
+20:46:27 admitted 060fdde9c26f73d7d7c08711221de30a9fb6078c14edf07f306962fe7991511b v5 239 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 3 txs
+20:46:41 admitted 357bb1ba878915aba7b30ab9508da90eed698463ef8de08a45eb09eca102a9f7 v6 9313 B fee 15000 from p2p 51.210.221.19; inv to 4 peers; mempool 5 txs
+20:46:41 admitted a36e6896ae968cf51c5ac3e82843d6bba4723a38a9d41d193f820bfdf6faf34e v6 9166 B fee 10000 from p2p 51.210.221.19; inv to 4 peers; mempool 5 txs
+20:46:49 rejected 3178a16987ac0798bbaf5a6b1f0c18fd69d83a8dcafde7110586d0cbd4250c42 from p2p 34.185.255.47: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:46:56 admitted fffbc1eee33a24b31cc651a0bd2ce10e1b3a8dc629f7efe2bd747e745b1c8389 v6 9200 B fee 15000 from p2p 34.185.255.47; inv to 7 peers; mempool 6 txs
+20:47:23 stats: mempool 6 txs 29927 B; peers 8; counts {'rejected': 144, "wtxid: Bend auth digest == peer's MSG_WTX inv": 154, 'removed mined': 97, 'admitted': 103}
+20:47:39 recheck: removed 1 mined
+20:47:39 tip 3532548 (00000000004d2fd1): mempool 5 txs 29474 B, removed 1
+20:47:51 admitted 6cd79646a44ecfa498925f3f880e01799b79d9ebe2d84d10ebdd16c2236318a3 v5 388 B fee 10000 from p2p 34.91.248.94; inv to 6 peers; mempool 6 txs
+20:47:56 admitted 3178a16987ac0798bbaf5a6b1f0c18fd69d83a8dcafde7110586d0cbd4250c42 v6 9200 B fee 15000 from p2p 51.210.221.19; inv to 6 peers; mempool 8 txs
+20:47:56 admitted d4ede11efddc42edbb3990201ec7fce2174173484134511265fe23f029622d01 v4 245 B fee 25000 from p2p 51.210.221.19; inv to 6 peers; mempool 8 txs
+20:47:59 admitted 086e48b6203e16bca5100985483c084829ad963921d841b08063193d9aafa4e9 v5 389 B fee 38900 from p2p 51.210.221.19; inv to 6 peers; mempool 9 txs
+20:48:02 admitted aebfdbe053225a3c722e94d258b853ebbd4ea21576e81696a2d6220ab8f21b22 v6 9200 B fee 15000 from p2p 51.210.221.19; inv to 6 peers; mempool 10 txs
+20:48:23 stats: mempool 10 txs 48896 B; peers 8; counts {'rejected': 144, "wtxid: Bend auth digest == peer's MSG_WTX inv": 158, 'removed mined': 98, 'admitted': 108}
+20:48:32 admitted f43f65881a2abdf3ecae2f6ae343d888276457dbd2b40f4cab389f9d5b3395ee v6 15921 B fee 35000 from p2p 34.39.40.194; inv to 7 peers; mempool 11 txs
+20:48:53 admitted 97dc2c7f058b8d3df64d6506b93f8fc397a6313acebc0a93a65aab0e29b2e200 v4 244 B fee 19068 from p2p 34.91.248.94; inv to 6 peers; mempool 12 txs
+20:49:08 rejected e8c9c946667d7a528b7aa2b784403121bf8b37cfe50f3c71fea798e2448b3db8 from p2p 34.185.255.47: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:49:11 admitted 172053afcccb6061be48503511021d1d08742da4fe7b23cbbc15aad7d89e5845 v4 244 B fee 20000 from p2p 51.210.221.19; inv to 6 peers; mempool 14 txs
+20:49:11 admitted 8762623f0fb7c32bbaa5630e471e460af359f510151452ae6ba6395538cda87a v4 211 B fee 15000 from p2p 51.210.221.19; inv to 6 peers; mempool 14 txs
+20:49:23 stats: mempool 14 txs 65516 B; peers 8; counts {'rejected': 145, "wtxid: Bend auth digest == peer's MSG_WTX inv": 160, 'removed mined': 98, 'admitted': 112}
+20:49:23 recheck: removed 7 mined
+20:49:23 tip 3532549 (0000000000307324): mempool 7 txs 26597 B, removed 7
+20:49:23 admitted 9492a4d080d1aa6827d08a2fc86c072d1bf3c8c33142f1cc04143a60033db4b0 v4 245 B fee 11300 from p2p 51.210.221.19; inv to 7 peers; mempool 8 txs
+20:49:26 admitted 8b9e69affc1e57decbae7f8a4ec691f2699855ce93a2eb8d24cbb62780222045 v6 9166 B fee 10000 from p2p 34.185.255.47; inv to 6 peers; mempool 9 txs
+20:49:33 admitted 3a4b229da13b3d284235028262471a6b7a7ae21e2d3a1f6c35ec3221bcfb657c v5 387 B fee 10000 from p2p 34.39.40.194; inv to 6 peers; mempool 10 txs
+20:49:47 admitted 88131e701130a17bde65a3b2f65933874bf802995589f9d1164bd2b2a88bc16c v4 210 B fee 25000 from p2p 51.210.221.19; inv to 7 peers; mempool 11 txs
+20:49:54 admitted 0728d6473956b2a20d07408c6bb9b4f363bb13b68e5ea2566446b2d91c88980f v6 685 B fee 20000 from p2p 51.210.221.19; inv to 7 peers; mempool 12 txs
+20:50:11 admitted ce31ff399ef55b04f41810f8794b3d8e9ef16163163da95f173838d3c2b8121e v4 279 B fee 18009 from p2p 51.210.221.19; inv to 6 peers; mempool 13 txs
+20:50:23 stats: mempool 13 txs 37569 B; peers 8; counts {'rejected': 145, "wtxid: Bend auth digest == peer's MSG_WTX inv": 163, 'removed mined': 105, 'admitted': 118}
+20:50:26 admitted 266d2c49b10fc0d1dd7045e95d4301c43a63794847ccc203b347b12a2456c8e6 v6 6191 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 19 txs
+20:50:26 admitted e8c9c946667d7a528b7aa2b784403121bf8b37cfe50f3c71fea798e2448b3db8 v6 12470 B fee 20000 from p2p 34.91.248.94; inv to 4 peers; mempool 19 txs
+20:50:26 admitted d44d3b5a6e338f915d7d9b7fc20eeea14adbbfba957604b9d6a13129935eb8af v6 241 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 19 txs
+20:50:26 admitted 3793b07de6c7d012fb2cc2a3ffc4646df0691ff0f03e595ea667198c8a98a427 v6 6191 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 19 txs
+20:50:26 admitted a8e4509b14a573039aea224f631dad1e4834cf96ead67ba64baf3a0a5e3957bb v6 6192 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 19 txs
+20:50:26 admitted d2553e8cc39a7f3a492cbb068919998d979d010e9c6820e570e6ed41f529381f v6 242 B fee 10000 from p2p 34.91.248.94; inv to 7 peers; mempool 19 txs
+20:50:41 admitted 8f9768f2374726259f8d9ba9f1606cf4a8e2627fe66d24dfbdf6b40b287088ba v6 9314 B fee 15000 from p2p 51.210.221.19; inv to 6 peers; mempool 20 txs
+20:50:45 tip 3532550 (0000000000159885): mempool 20 txs 78410 B, removed 0
+20:50:50 admitted dabaa62b5a4338490903848d054fa3a280b90dca8d1ad8256ffb4d6e3fc4d1b0 v4 540 B fee 15000 from p2p 34.39.40.194; inv to 7 peers; mempool 21 txs
+20:50:56 admitted c9fb17d03234d7c448c90f29ae7505100ec0107cd4b7f544e367954ebb71a6cc v6 241 B fee 10000 from p2p 34.39.40.194; inv to 7 peers; mempool 22 txs
+20:51:03 admitted 95fd4d8d8c9f713ce61e54d73ff431e5a99c53bddee006134aef66646ed6a012 v5 275 B fee 26200 from p2p 34.39.40.194; inv to 7 peers; mempool 23 txs
+20:51:20 admitted 5d50fe8010cd6b7cfd7d7eb094fb2f324de6b9b93b9006ff3a50b7c55596b2ab v6 9200 B fee 15000 from p2p 34.185.255.47; inv to 7 peers; mempool 24 txs
+20:51:23 stats: mempool 24 txs 88666 B; peers 8; counts {'rejected': 145, "wtxid: Bend auth digest == peer's MSG_WTX inv": 173, 'removed mined': 105, 'admitted': 129}
+20:51:37 admitted 64e320db4dd60c19ae95528abc224f46208642b4b1d2f6085fc4aef3ae2244c3 v6 242 B fee 10000 from p2p 34.185.255.47; inv to 7 peers; mempool 25 txs
+20:51:41 admitted a7fb5ab61ee7c530a3f1dfbaf053746b534ddb478681369cafa1a0568257dc5a v5 206 B fee 20700 from p2p 34.185.255.47; inv to 7 peers; mempool 29 txs
+20:51:41 admitted 426ed2efa7475dad1938192329eac1cb4d2e8bb11ec26a2e98a38e405c34034b v5 596 B fee 50000 from p2p 34.185.255.47; inv to 7 peers; mempool 29 txs
+20:51:41 admitted f681b7c3dad382b68c28b0610ba1c12ecf30d1cdffa70b48d05c17237ec198bb v6 9200 B fee 15000 from p2p 34.185.255.47; inv to 7 peers; mempool 29 txs
+20:51:41 admitted 1d4a57f5ca87692e9819641d854aeee6fe0ca036ecc1e214b3c12175c42c9393 v6 242 B fee 10000 from p2p 34.185.255.47; inv to 7 peers; mempool 29 txs
+20:51:49 admitted 1e16f0a465e235c5f98219d26582cee8033d3b4f6a2f9dec670a0cfafe6ae74e v4 211 B fee 11000 from p2p 51.210.221.19; inv to 7 peers; mempool 30 txs
+20:52:08 admitted 3dd8c52ae2d66a33519e5bbf31455b0c91e1dd849e480d009ab7926c375261a5 v5 4643 B fee 100000 from p2p 51.210.221.19; inv to 6 peers; mempool 31 txs
+20:52:16 admitted aee39370b62097676077574d12c6e96dc915fe087224c943f856f93e473185c7 v4 244 B fee 12031 from p2p 34.185.255.47; inv to 7 peers; mempool 32 txs
+20:52:18 admitted 91be1be2e2d7d8186dd822334432e7f47845190f250befed6fec061b25d592c7 v4 244 B fee 10032 from p2p 34.39.40.194; inv to 7 peers; mempool 33 txs
+20:52:23 stats: mempool 33 txs 104494 B; peers 8; counts {'rejected': 145, "wtxid: Bend auth digest == peer's MSG_WTX inv": 179, 'removed mined': 105, 'admitted': 138}
+20:52:56 rejected 955e313ec3f1cf13c8f8bc3dd6bcb6fb622310af207706ac462dce9e51a6ccde from p2p 51.210.221.19: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:52:56 admitted 54d45f04a556eab0e41a0edeec15ece7f18dc6b039901d56c181bc3ffa916ddf v4 389 B fee 10000 from p2p 51.210.221.19; inv to 6 peers; mempool 35 txs
+20:52:56 admitted 06ddc8f74ffc6ab360ccd9e2f4551cc0e73dd3a86f4964d3d18abc5f7ceb70a2 v4 836 B fee 20000 from p2p 34.91.248.94; inv to 7 peers; mempool 35 txs
+20:52:56 rejected be85354a593eb2be0c5ebeb51797c4d1ce6e8d24a84964b208de785d5d313d96 from p2p 51.210.221.19: Ironwood anchor is a root of a block above this state's tip (the state is behind the network); retried after the next block
+20:53:00 recheck: removed 22 mined
+20:53:00 tip 3532551 (0000000000171b30): mempool 13 txs 26528 B, removed 22
+20:53:23 stats: mempool 13 txs 26528 B; peers 8; counts {'rejected': 147, "wtxid: Bend auth digest == peer's MSG_WTX inv": 181, 'removed mined': 127, 'admitted': 140}
+20:53:34 admitted 87e8f30a288e732b7d5c5650afacbe8dd45b55e0f06bf311c586e30085631f90 v5 647 B fee 20000 from p2p 34.185.255.47; inv to 6 peers; mempool 14 txs
+20:53:41 admitted a09927bf5782aa4c8db49a80180830d3214ed9b1136ab18aa5fb1e1988870501 v4 245 B fee 67800 from p2p 51.210.221.19; inv to 7 peers; mempool 15 txs
+20:53:44 admitted 61452e9de8b8e5a234eba76d77025065a0a9fed275316ffbed558591cbf04ea9 v6 9166 B fee 10000 from p2p 34.185.255.47; inv to 7 peers; mempool 16 txs
+20:54:11 admitted 955e313ec3f1cf13c8f8bc3dd6bcb6fb622310af207706ac462dce9e51a6ccde v6 9313 B fee 15000 from p2p 34.91.248.94; inv to 6 peers; mempool 18 txs
+20:54:11 admitted be85354a593eb2be0c5ebeb51797c4d1ce6e8d24a84964b208de785d5d313d96 v6 9200 B fee 15000 from p2p 34.91.248.94; inv to 6 peers; mempool 18 txs
+20:54:19 admitted 6914c01e95b1c274d906f84982c07424f45df39f5521a7d138f3d842371190f9 v4 210 B fee 10000 from p2p 51.210.221.19; inv to 6 peers; mempool 19 txs
+20:54:23 stats: mempool 19 txs 55309 B; peers 8; counts {'rejected': 147, "wtxid: Bend auth digest == peer's MSG_WTX inv": 185, 'removed mined': 127, 'admitted': 146}
+20:54:27 admitted 474a171cd938e01cde76622df2e488e4f57ac8b791fc02389452c5b4885e574b v6 9200 B fee 15000 from p2p 51.210.221.19; inv to 7 peers; mempool 20 txs
+20:54:58 admitted 37c35397a2d1589278c0e65379317e9c6050986adeaf3763b4574483da708e30 v5 301 B fee 50000 from p2p 34.185.255.47; inv to 7 peers; mempool 21 txs
+20:55:11 admitted a6a053596a72278d1402137b69f2f31a7e6c8d1b7392b29f82e9ee3bca29b2c8 v5 455 B fee 20000 from p2p 51.210.221.19; inv to 7 peers; mempool 22 txs
+20:55:23 stats: mempool 22 txs 65265 B; peers 8; counts {'rejected': 147, "wtxid: Bend auth digest == peer's MSG_WTX inv": 188, 'removed mined': 127, 'admitted': 149}
+20:55:26 admitted 0c41519dd11e0eed10da631b3ddfc082ca58ac62c2c5aeebeead715d5e36d86a v4 211 B fee 10000 from p2p 34.185.255.47; inv to 7 peers; mempool 23 txs
+20:55:26 admitted 962d2ac2aad87ab460ef58916942b027e4b83f1b779e611419adc3a6b1d5a26b v6 9313 B fee 15000 from p2p 34.91.248.94; inv to 7 peers; mempool 25 txs
+20:55:26 admitted d43f2128210a7de46150e390bd3e82907f588f838789dac9bcb56951a504b15d v5 302 B fee 50000 from p2p 34.91.248.94; inv to 7 peers; mempool 25 txs
+20:55:28 admitted c1d0d7057da290e69fa761e508148ac280c413ef6882af40938774646dc7b0df v5 241 B fee 10000 from p2p 34.185.255.47; inv to 7 peers; mempool 26 txs
+20:55:33 admitted 6aa583deeb9ba7a7d5af11edf519814aba4bb435407ed6000cc5ad444ce5e9b2 v4 392 B fee 18700 from p2p 51.210.221.19; inv to 6 peers; mempool 27 txs
+20:55:46 admitted d10714bb76185e179951965360076ca2acc15cbbb0f5d9feb7d674c52a3b1d8a v6 9166 B fee 10000 from p2p 34.91.248.94; inv to 6 peers; mempool 28 txs
+20:55:48 admitted 42a03fbe8e1b37cbcff4cfe04f83e32907b39f46f9279819d0fdc5608d463897 v6 12356 B fee 20000 from p2p 51.210.221.19; inv to 7 peers; mempool 29 txs
+20:55:57 admitted f3897b67f2232d9a5bccf95345e0624be4ac7468587a7852596bda484fca44dd v4 244 B fee 10000 from p2p 34.39.40.194; inv to 6 peers; mempool 30 txs
+20:56:00 admitted bad1c64ccd4378c88243ccf28cd68d011c7810499d33fee7616fe50359be4034 v5 206 B fee 10000 from p2p 51.210.221.19; inv to 7 peers; mempool 31 txs
+20:56:02 recheck: removed 20 mined
+20:56:02 tip 3532552 (00000000003c5eb8): mempool 11 txs 33187 B, removed 20
+20:56:14 admitted b0e9ade925be15341244d126f02fe1af98990972c9489526bb1d53d35aad6849 v4 245 B fee 12031 from p2p 34.91.248.94; inv to 7 peers; mempool 12 txs
+20:56:23 stats: mempool 12 txs 33432 B; peers 8; counts {'rejected': 147, "wtxid: Bend auth digest == peer's MSG_WTX inv": 194, 'removed mined': 147, 'admitted': 159}
+20:56:24 admitted 8c2b15999f0e9306a984862d57ef61ee90a07114376d17844ecfff6fc9e578d4 v6 6192 B fee 10000 from p2p 51.210.221.19; inv to 6 peers; mempool 13 txs
