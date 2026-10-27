@@ -146,7 +146,7 @@ pub async fn fetch(list: &str, raw: &str, conc: usize) -> Result<()> {
                     let r = tokio::time::timeout(std::time::Duration::from_secs(40), l.as_mut().unwrap().raw_tx(&id)).await;
                     match r.map_err(|_| anyhow!("timeout")).and_then(|x| x) {
                         Ok(r) => {
-                            tx.send((h, id, r.data)).await.ok();
+                            tx.send((if h == 0 { r.height } else { h }, id, r.data)).await.ok();
                             done = true;
                             break;
                         }

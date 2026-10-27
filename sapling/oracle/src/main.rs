@@ -1,6 +1,7 @@
 //! sapling-oracle: Rust ground truth for Zebend's Sapling work. See ../README.md.
 
 mod chain;
+mod ctxset;
 mod lwd;
 mod sigs;
 mod txs;
@@ -37,6 +38,7 @@ async fn main() -> Result<()> {
         Some("tampermix") => sigs::tampermix(arg(2)?.unwrap_or(4) as usize, arg(3)?.unwrap_or(2026)),
         Some("txs") => txs::txs(arg(2)?.unwrap_or(200) as usize).await,
         Some("parsetime") => txutil::parsetime(arg(2)?.unwrap_or(1) as usize),
+        Some("ctxset") => ctxset::ctxset().await,
         Some("rust") => sigs::rust(arg(2)?.unwrap_or(1) as usize),
         _ => Err(anyhow!(
             "usage: meta H | sync FROM TO [WORKERS] | subtrees | trees H.. | rebuild | vectors [SEED] | scan FROM TO WINDOW STRIDE | fetch [CONC] | build [MAXSIGS] | tamper K FIELD I [BYTE] [MASK] | tampermix [N] [SEED] | rust THREADS | txs"

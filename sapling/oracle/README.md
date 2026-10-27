@@ -132,3 +132,13 @@ Excluded: 20,431 v5 txs with transparent inputs (no prevouts fetched), 2,372 v6 
 **Tx sample** (`txs 200`): 400 txs (200 v4, 200 v5), heights 460290 … 3527005. v4: 30 with Sprout JoinSplits, 40 with transparent inputs, 30 transparent-out only, 20 spends-only, 30 outputs-only, 30 with ≥5 spends, 10 with ≥20 outputs, 10 fully shielded. v5: 40 with transparent inputs (prevouts in `.ctx`), 30 transparent-out, 20 spends-only, 30 outputs-only, 30 ≥5 spends, 10 ≥20 outputs, 20 with an Orchard bundle too, 20 fully shielded. All 730 spend-auth + 400 binding signatures verify; all 200 independent ZIP 243 sighashes equal zcash_primitives'.
 
 Not done: hashFinalSaplingRoot check after Heartwood (header field changes meaning; covered by the leaf rebuild instead); v5 transparent-input txs in the signature chunks; v6 txs.
+
+## ctxset (v6 txs and v5 txs with transparent inputs, with spent-output context)
+
+`ctxset`: from `sig_raw.bin`, selects every v6 tx and every v5 tx with non-coinbase transparent inputs, fetches the prev txs (GetTransaction, 32 concurrent, resumable cache `ctxset/prev.bin`, txids checked) and writes per part (`v6`, then `v5t`):
+
+* `ctxset/txs_<part>.bin`: `u32 count`, then per tx `u32 height | u32 len | raw tx | u32 ctx_len | ctx`; ctx = node/tx layout `u32 len | amounts i64 LE | u32 len | CompactSize-prefixed scriptPubKeys` in input order (both lengths 0 when there are no transparent inputs).
+* `ctxset/expected_<part>.txt`: `i height version txid sighash n_spends n_outputs verdicts`; verdicts = official per-signature results (spend-auth in order, then binding; empty if no Sapling bundle), with the sighash from `PrecomputedSighashData` + our `TransparentAuthorizingContext` carrying the fetched amounts/scripts.
+* Rust timing printed per part: parse + txid + sighash (contexts prebuilt, untimed), 1 and 18 threads.
+
+Results: v6: 2,372 txs, 5,046 Sapling signatures, 0 invalid, 90,163 prev txs; parse+txid+sighash 1 thread 0.607 s (3,905 tx/s), 18 threads 0.076 s (31,402 tx/s).
