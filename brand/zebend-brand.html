@@ -5,9 +5,9 @@
 <style>
 /* Layout: a specimen book. Wide ink hero, then left-aligned sections on a 12-col measure. */
 :root{
-  --ink:#2B100B; --violet:#C27400; --amber:#C8391F; --paper:#FBF6EC;
+  --ink:#2B100B; --violet:#C27400; --amber:#E0503A; --paper:#FBF6EC;
   --bg:#FBF6EC; --surface:#FFFDF8; --fg:#2B100B; --muted:#7A5145; --line:#EBDDCB;
-  --stroke-on-tile:#FFB627; --amber-on-tile:#FFF7E8; --tile:#B5301C;
+  --stroke-on-tile:#FFD04D; --amber-on-tile:#FFF7E8; --tile:#E4573D;
   --pass:#1E9E5A; --fail:#D63D42;
   --display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
   --body:"Instrument Sans", "Helvetica Neue", system-ui, sans-serif;
@@ -15,10 +15,10 @@
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --bg:#1E0A06; --surface:#2B100B; --fg:#FFF7E8; --muted:#E2B9A8; --line:#4A2016;
-  --violet:#FFB627; --amber:#FFF7E8; --pass:#3DD68C; --fail:#FF6B6F; color-scheme:dark } }
+  --violet:#FFD04D; --amber:#FFF7E8; --pass:#3DD68C; --fail:#FF6B6F; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1E0A06; --surface:#2B100B; --fg:#FFF7E8; --muted:#E2B9A8; --line:#4A2016;
-  --violet:#FFB627; --amber:#FFF7E8; --pass:#3DD68C; --fail:#FF6B6F; color-scheme:dark }
+  --violet:#FFD04D; --amber:#FFF7E8; --pass:#3DD68C; --fail:#FF6B6F; color-scheme:dark }
 
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font:400 16px/1.6 var(--body);margin:0}
@@ -37,7 +37,7 @@ p{margin:0;max-width:62ch}
 .word .sq{display:inline-block;width:.32em;height:.32em;background:#FFF7E8;margin-left:.06em;vertical-align:baseline}
 .tag{font:500 clamp(18px,2.4vw,24px)/1.3 var(--body);color:#FFD98A;margin-top:16px}
 .cli{margin-top:24px;font:400 14px/1.5 var(--mono);color:#F1C9B8;background:#1E0A06;border:1px solid #5A2418;border-radius:10px;padding:12px 14px;overflow-x:auto;white-space:nowrap}
-.cli b{color:#FFB627;font-weight:600}.cli .ok{color:#3DD68C}.cli .q{color:#FFF7E8}
+.cli b{color:#FFD04D;font-weight:600}.cli .ok{color:#3DD68C}.cli .q{color:#FFF7E8}
 @media (max-width:640px){.hero .wrap{grid-template-columns:1fr}}
 
 section{padding-block:clamp(40px,6vw,72px);border-bottom:1px solid var(--line)}
@@ -85,7 +85,7 @@ section .head{display:grid;gap:8px;margin-bottom:28px}
 .apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px}
 .app{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
 .app .cap{padding:10px 14px;font:600 12px/1.4 var(--mono);color:var(--muted);border-top:1px solid var(--line)}
-.social{background:#B5301C;color:#FFF7E8;aspect-ratio:1200/630;max-width:100%;padding:7%;display:grid;align-content:space-between}
+.social{background:#E4573D;color:#FFF7E8;aspect-ratio:1200/630;max-width:100%;padding:7%;display:grid;align-content:space-between}
 .social .top{display:flex;align-items:center;gap:12px}
 .social .top svg{width:44px;height:44px;border-radius:22%}
 .social .top span{font:800 26px/1 var(--display);letter-spacing:-.02em}
@@ -122,8 +122,8 @@ footer{padding-block:40px;color:var(--muted);font-size:14px}
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <symbol id="z-tile" viewBox="0 0 512 512">
-      <rect width="512" height="512" rx="116" fill="#B5301C"/>
-      <g transform="translate(-10 -3)"><path d="M124 150 H316 Q354 150 330 181 L198 337 Q174 368 214 368 H322" fill="none" stroke="#FFB627" stroke-width="64" stroke-linejoin="round"/>
+      <rect width="512" height="512" rx="116" fill="#E4573D"/>
+      <g transform="translate(-10 -3)"><path d="M124 150 H316 Q354 150 330 181 L198 337 Q174 368 214 368 H322" fill="none" stroke="#FFD04D" stroke-width="64" stroke-linejoin="round"/>
       <rect x="344" y="336" width="64" height="64" fill="#FFF7E8"/></g>
     </symbol>
   </defs>
@@ -132,8 +132,8 @@ footer{padding-block:40px;color:var(--muted);font-size:14px}
 <header class="hero">
   <div class="wrap">
     <svg class="icon" viewBox="0 0 512 512" role="img" aria-label="Zebend icon">
-      <rect width="512" height="512" rx="116" fill="#B5301C"/>
-      <g transform="translate(-10 -3)"><path d="M124 150 H316 Q354 150 330 181 L198 337 Q174 368 214 368 H322" fill="none" stroke="#FFB627" stroke-width="64" stroke-linejoin="round"/>
+      <rect width="512" height="512" rx="116" fill="#E4573D"/>
+      <g transform="translate(-10 -3)"><path d="M124 150 H316 Q354 150 330 181 L198 337 Q174 368 214 368 H322" fill="none" stroke="#FFD04D" stroke-width="64" stroke-linejoin="round"/>
       <rect class="q" x="344" y="336" width="64" height="64" fill="#FFF7E8"/></g>
     </svg>
     <div>
@@ -166,14 +166,14 @@ footer{padding-block:40px;color:var(--muted);font-size:14px}
 </div></section>
 
 <section><div class="wrap">
-  <div class="head"><div class="eyebrow">Colour</div><h2>Saffron, vermilion and pearl</h2>
+  <div class="head"><div class="eyebrow">Colour</div><h2>Saffron, coral and pearl</h2>
     <p>Saffron carries the Z, the warm red grounds it, and pearl is the square that ends every proof. Black and navy stay out of the lead.</p></div>
   <div class="sw">
-    <div class="chip"><div class="c" style="background:#B5301C"></div><div class="t"><b>Vermilion</b><span>#B5301C · tile, grounds</span></div></div>
-    <div class="chip"><div class="c" style="background:#FFB627"></div><div class="t"><b>Saffron</b><span>#FFB627 · the Z, on dark</span></div></div>
+    <div class="chip"><div class="c" style="background:#E4573D"></div><div class="t"><b>Coral</b><span>#E4573D · tile, grounds</span></div></div>
+    <div class="chip"><div class="c" style="background:#FFD04D"></div><div class="t"><b>Saffron</b><span>#FFD04D · the Z, on dark</span></div></div>
     <div class="chip"><div class="c" style="background:#C27400"></div><div class="t"><b>Saffron, deep</b><span>#C27400 · the Z, on light</span></div></div>
     <div class="chip"><div class="c" style="background:#FFF7E8;border-bottom:1px solid var(--line)"></div><div class="t"><b>Pearl</b><span>#FFF7E8 · the square, on dark</span></div></div>
-    <div class="chip"><div class="c" style="background:#C8391F"></div><div class="t"><b>Coral</b><span>#C8391F · the square, on light</span></div></div>
+    <div class="chip"><div class="c" style="background:#E0503A"></div><div class="t"><b>Coral</b><span>#E0503A · the square, on light</span></div></div>
     <div class="chip"><div class="c" style="background:#2B100B"></div><div class="t"><b>Ember dark</b><span>#2B100B · text, dark ground</span></div></div>
     <div class="chip"><div class="c" style="background:#2FBF71"></div><div class="t"><b>Pass</b><span>#2FBF71 · PASS, MATCH</span></div></div>
     <div class="chip"><div class="c" style="background:#E5484D"></div><div class="t"><b>Fail</b><span>#E5484D · FAIL, MISMATCH</span></div></div>

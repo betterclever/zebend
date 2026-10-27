@@ -8,7 +8,7 @@ what Zebend does with Zcash's chain: it doesn't trust it, it checks it to the en
 
 | File | Use |
 |---|---|
-| `icon.svg` | App icon, avatar, favicon (vermilion tile). Holds at 16 px. |
+| `icon.svg` | App icon, avatar, favicon (coral tile). Holds at 16 px. |
 | `mark.svg` | The mark on light backgrounds (saffron Z, coral square). |
 | `mark-mono.svg` | One colour; takes `currentColor` (print, terminals, embossing). |
 
@@ -16,11 +16,11 @@ what Zebend does with Zcash's chain: it doesn't trust it, it checks it to the en
 
 | Token | Hex | Use |
 |---|---|---|
-| Vermilion | `#B5301C` | Icon tile, brand grounds |
-| Saffron | `#FFB627` | The Z on dark |
+| Coral | `#E4573D` | Icon tile, brand grounds |
+| Saffron | `#FFD04D` | The Z on dark |
 | Saffron, deep | `#C27400` | The Z and links on light |
 | Pearl | `#FFF7E8` | The square on dark |
-| Coral | `#C8391F` | The square on light |
+| Coral | `#E0503A` | The square on light |
 | Ember dark | `#2B100B` | Text on light; dark ground |
 | Paper | `#FBF6EC` | Light ground |
 | Pass / Fail | `#2FBF71` / `#E5484D` | Verdicts only |
