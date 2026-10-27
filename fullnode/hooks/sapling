@@ -1,0 +1,4 @@
+#!/bin/sh
+# Sapling: txid, ZIP 243/244 sighash, description checks, RedJubjub and Groth16 proofs,
+# all in Bend (sapling/). Sprout JoinSplits are reported as FAIL unsupported-joinsplit.
+exec python3 /Users/betterclever/projects/zecathon/bend-zcash/sapling/hook.py "$1"
