@@ -1,11 +1,11 @@
 # Proofs of LAWS.bend.
 import Base
 import ./LAWS.bend as L
-import ../../node/p2p/bytes.bend as B
+import ../../zcash/p2p/bytes.bend as B
 import ./canon.bend as C
 import ./wordlemmas.bend as W
 import ./bits.bend as T
-import ../../node/headers/main.bend as M
+import ../../zcash/headers/main.bend as M
 
 # ---- small helpers ------------------------------------------------------------
 

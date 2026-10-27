@@ -4,7 +4,7 @@
 import Base
 import ./era.bend as E
 import ./differa.bend as X
-import ../../node/headers/diff.bend as D
+import ../../zcash/headers/diff.bend as D
 
 def le32(+a: U32, +b: U32, +c: U32, +d: U32) -> U32:
   (a .|. (b << 8n) .|. (c << 16n) .|. (d << 24n) : U32)

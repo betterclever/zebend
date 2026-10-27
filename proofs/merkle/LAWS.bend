@@ -5,7 +5,7 @@ import ./merkle.bend as M
 #
 # For every well-formed tree p of height D that is filled from the left and not
 # completely full (so it fits in a D-level frontier), pushing p's leaves one by one
-# into an empty D-level frontier (`push`, as node/state does block by block) and
+# into an empty D-level frontier (`push`, as zcash/state does block by block) and
 # taking the frontier's root (`froot`) gives exactly the root of the tree.
 #
 # Hn and Em are free constructors standing for the node hash and the empty-subtree

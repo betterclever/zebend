@@ -1,6 +1,6 @@
 import Base
-import ../../halo2/lib/words.bend as Wd
-import ../../halo2/lib/fp.bend as Fp
+import ../../zcash/halo2/lib/words.bend as Wd
+import ../../zcash/halo2/lib/fp.bend as Fp
 import ./limbs.bend as Lb
 import ./wordadd.bend as WA
 import ./LAWS.bend as Laws

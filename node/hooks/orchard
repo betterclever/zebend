@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+"""Verifier hook `orchard`: RedPallas spend-auth + binding signatures and Halo 2 proofs of
+every Orchard and Ironwood bundle, by follow's Bend binaries (read-only use of node/follow/bin):
+  txx          ZIP 244 txid + sighash, RedPallas spend-auth and binding sigs, Halo 2 public
+               inputs (node/follow/txx.bend over zcash/tx)
+  halo2_batch  batched Halo 2 verification (research/perf3/v64); halo2_one pinpoints a failing batch
+usage: orchard <list file>   (each line: a base path with .tx, .ctx (follow layout), .json)
+prints: verdict <height> <txidx> PASS|FAIL <reason>
+Mirrors node/follow/zebend_follow.py tx_job + halo2_check; this script only moves bytes.
+"""
+import json, re, struct, subprocess, sys
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+FB = ROOT / "node/follow/bin"
+PARAMS = ROOT / "zcash/halo2/verifier/data/params_g.bin"
+CHUNK = 512
+
+
+def run(*a):
+    for _ in range(3):  # empty output (known rare Bend runtime issue) is rerun
+        r = subprocess.run([str(x) for x in a], capture_output=True, text=True)
+        if (r.stdout + r.stderr).strip():
+            break
+    return r.stdout
+
+
+def one(base):
+    base = Path(base)
+    info = json.loads(base.with_suffix(".json").read_text())
+    ctx = base.with_suffix(".ctx")
+    c = ctx.read_bytes()
+    if c[:4] == b"\0\0\0\0":  # no transparent inputs: follow passes an empty ctx
+        ctx = base.with_suffix(".ectx")
+        ctx.write_bytes(b"")
+    out = run(FB / "txx", base.with_suffix(".tx"), ctx)
+    kd = dict(l.split(" ", 1) for l in out.splitlines() if " " in l)
+    h, i = info["height"], info["txidx"]
+    if out.startswith("INVALID") or kd.get("txid") not in (info["txid"], bytes.fromhex(info["txid"])[::-1].hex()):
+        return h, i, f"txx: txid {kd.get('txid')} != {info['txid']} or invalid", []
+    bundles = []
+    for pool in ("orchard", "ironwood"):
+        n = int(kd.get(f"{pool}.actions", "0"))
+        if not n:
+            continue
+        sigs = sum(kd.get(f"{pool}.a{k}.spend_auth_ok") == "1" for k in range(n))
+        if sigs != n or kd.get(f"{pool}.binding_ok") != "1":
+            return h, i, f"{pool} spend-auth {sigs}/{n} binding {kd.get(f'{pool}.binding_ok')}", []
+        proof = bytes.fromhex(kd[f"{pool}.proof"])
+        inst = b"".join(bytes.fromhex(kd[f"{pool}.a{k}.instance[{j}]"]) for k in range(n) for j in range(10))
+        bf = base.parent / f"{base.name}_{pool}.bundle"
+        bf.write_bytes(struct.pack("<III", n, 10, len(proof)) + proof + inst)
+        bundles.append(bf)
+    return h, i, None, bundles
+
+
+def main():
+    bases = [l.strip() for l in open(sys.argv[1]) if l.strip()]
+    with ThreadPoolExecutor(12) as ex:
+        res = list(ex.map(one, bases))
+    bad = {(h, i): why for h, i, why, _ in res if why}
+    owner = {b: (h, i) for h, i, why, bs in res if not why for b in bs}
+    allb = list(owner)
+    for k in range(0, len(allb), CHUNK):
+        chunk = allb[k:k + CHUNK]
+        m = re.search(r"^batch K \d+ result ([01])$", run(FB / "halo2_batch", PARAMS, *chunk), re.M)
+        if m and m.group(1) == "1":
+            continue
+        for b in chunk:  # pinpoint (or the batch gave no verdict): one at a time
+            m1 = re.search(r"^result ([01])$", run(FB / "halo2_one", PARAMS, b), re.M)
+            if not (m1 and m1.group(1) == "1"):
+                bad[owner[b]] = f"Halo 2 {b.name.split('_')[-1]} {'rejected' if m1 else 'no verdict'}"
+    for h, i, _, _ in res:
+        why = bad.get((h, i))
+        print(f"verdict {h} {i} {'FAIL ' + why if why else 'PASS'}")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,5 +1,5 @@
 //! Prints the post-NU6.3 Orchard circuit's gate names and constraint names, in the
-//! order halo2 stores them in the VerifyingKey (the order halo2/gen/orchard_cs.bend's
+//! order halo2 stores them in the VerifyingKey (the order zcash/halo2/gen/orchard_cs.bend's
 //! gate_<g>_<p> defs follow). Gate names are crate-private in halo2_proofs, so they
 //! are read from the VerifyingKey's Debug output.
 use orchard::circuit::{OrchardCircuitVersion, VerifyingKey};

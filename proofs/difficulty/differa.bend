@@ -1,8 +1,8 @@
-# Era-aware expected nBits: node/headers' target arithmetic (imported unchanged) with the
+# Era-aware expected nBits: zcash/headers' target arithmetic (imported unchanged) with the
 # proven era.bend timespan and the era's averaging window timespan.
 import Base
 import ./era.bend as E
-import ../../node/headers/diff.bend as D
+import ../../zcash/headers/diff.bend as D
 
 def bounded(+e: E.Era, d: D.SD) -> Nat:
   D.SD{neg, mag} = d

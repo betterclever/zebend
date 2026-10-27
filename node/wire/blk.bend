@@ -3,8 +3,8 @@
 # which Zebend requires to be the (200,9) length 1344: canonically fd 40 05, 1487 bytes total.
 # A block is a header, a CompactSize transaction count, the transactions, and nothing after.
 import Base
-import ./hb.bend as H
-import ./cs.bend as CS
+import ../../zcash/wire/hb.bend as H
+import ../../zcash/wire/cs.bend as CS
 import ./txv.bend as T
 
 def header_len() -> U32:

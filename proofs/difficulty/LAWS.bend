@@ -1,9 +1,9 @@
 # Laws about Zcash's difficulty timespan in BOTH mainnet eras (pre-Blossom 150 s
 # spacing, post-Blossom 75 s), stated over era.bend's functions, plus agreement with
-# the post-Blossom function node/headers' verifier runs on mainnet.
+# the post-Blossom function zcash/headers' verifier runs on mainnet.
 import Base
 import ./era.bend as E
-import ../../node/headers/diff.bend as D
+import ../../zcash/headers/diff.bend as D
 
 # For every era and every (signed) actual timespan, the bounded timespan is at least
 # MinActualTimespan (difficulty rises by at most PoWMaxAdjustUp = 16% per block) ...
@@ -47,7 +47,7 @@ law clamp_id:
   for hi: {Nat.is_lt(E.MAX_TS(e), x) == False{} : Bool}
   {E.clamp(e, x) == x : Nat}
 
-# The post-Blossom instance IS the function node/headers' verifier executes, so
+# The post-Blossom instance IS the function zcash/headers' verifier executes, so
 # everything above also holds for the code that checked 128,252 mainnet nBits.
 law post_agrees:
   for +neg: Bool

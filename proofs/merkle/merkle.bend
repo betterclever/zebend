@@ -1,6 +1,6 @@
 import Base
 
-# The incremental note-commitment-tree frontier from node/state/sinsemilla.bend
+# The incremental note-commitment-tree frontier from zcash/state/sinsemilla.bend
 # (push, fright, fstep, froot), copied with one change: the node hash
 # `crh(g, l, a, b)` is the free constructor Hn{l, a, b}, and the empty subtree root
 # `nth(es, l)` is Em{l}. A theorem that two expressions are equal as free terms
@@ -55,7 +55,7 @@ def fstep(m: Maybe<&2, HT>, acc: Maybe<&2, HT>, +l: Nat) -> Maybe<&2, HT>:
       fright(acc, l)
 
 # Root of the frontier: fold levels bottom-up; a missing right side is the empty root.
-# (node/state ends with nth(es, 32n); for its 32-level frontier that is Em{l} here.)
+# (zcash/state ends with nth(es, 32n); for its 32-level frontier that is Em{l} here.)
 def froot(lv: +List<Maybe<&2, HT>>, +l: Nat, acc: Maybe<&2, HT>) -> HT:
   match lv:
     case Nil{}:

@@ -1,0 +1,36 @@
+{
+ "start": 3522000,
+ "height": 3521999,
+ "sapling": {
+  "leaves": 73986770,
+  "chunks": 1128,
+  "partial": 62162,
+  "root": "15c6108a2df9e8499cdd5f6c8cd74ef3abdb1df0870382c377e224432043d354",
+  "chain_root_blockchair": "15c6108a2df9e8499cdd5f6c8cd74ef3abdb1df0870382c377e224432043d354",
+  "chain_size_blockchair": 73986770,
+  "root_match": true,
+  "size_match": true,
+  "frontier": "seeds/sapling_3521999.frontier"
+ },
+ "orchard": {
+  "leaves": 50476948,
+  "chunks": 770,
+  "partial": 14228,
+  "root": "0ce2d551d9244ce5a5662123f08670a19f9c1150c804072ea88242852772030b",
+  "chain_root_blockchair": "0ce2d551d9244ce5a5662123f08670a19f9c1150c804072ea88242852772030b",
+  "chain_size_blockchair": 50476948,
+  "root_match": true,
+  "size_match": true,
+  "frontier": "seeds/orchard_3521999.frontier"
+ },
+ "ironwood": {
+  "leaves": 800984,
+  "root": "41fb96393612725ad884a2cf3e60b76e3e509d6712eeae601c6d1648ad33d815",
+  "frontier": "seeds/ironwood_3521999.frontier",
+  "method": "orchard_frontier (Bend) over the first 800,984 Ironwood leaves of zcash/state/out/cmx.bin (lightwalletd), one block",
+  "root_match_header_authenticated": true,
+  "chain_root_blockchair": "41fb96393612725ad884a2cf3e60b76e3e509d6712eeae601c6d1648ad33d815",
+  "root_match": true,
+  "size_match": true
+ }
+}

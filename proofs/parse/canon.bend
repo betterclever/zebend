@@ -1,8 +1,8 @@
-# A canonical-checking CompactSize decoder over node/p2p's decoder: it accepts a
+# A canonical-checking CompactSize decoder over zcash/p2p's decoder: it accepts a
 # decoded value only if the bytes it consumed are exactly the minimal encoding,
 # as zcashd's ReadCompactSize requires ("non-canonical ReadCompactSize()").
 import Base
-import ../../node/p2p/bytes.bend as B
+import ../../zcash/p2p/bytes.bend as B
 
 def check(ok: Bool, c: B.Compact) -> Maybe<&2, B.Compact>:
   match ok:

@@ -2,7 +2,7 @@
 import Base
 import ./LAWS.bend as L
 import ./era.bend as E
-import ../../node/headers/diff.bend as D
+import ../../zcash/headers/diff.bend as D
 
 def IsTrue(b: Bool) -> Type:
   match b:
@@ -100,7 +100,7 @@ def id.lo(+e: E.Era, +x: Nat, b: Bool) -> {Nat.is_lt(x, E.MIN_TS(e)) == b : Bool
     case False{}:
       h => lo => hi => id.hi(e, x, Nat.is_lt(E.MAX_TS(e), x), {==}, hi)
 
-# ---- agreement with node/headers (post-Blossom) -------------------------------
+# ---- agreement with zcash/headers (post-Blossom) -------------------------------
 
 def agree.hi(b: Bool, x: Nat) -> {E.clamp.hi(E.Post{}, b, x) == D.clamp.hi(b, x) : Nat}:
   match b:

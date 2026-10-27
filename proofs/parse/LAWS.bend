@@ -1,9 +1,9 @@
-# Laws about node/p2p's byte codecs and CompactSize (node/p2p/bytes.bend, imported as is),
-# and about node/headers' splitting of a header stream (node/headers/main.bend).
+# Laws about zcash/p2p's byte codecs and CompactSize (zcash/p2p/bytes.bend, imported as is),
+# and about zcash/headers' splitting of a header stream (zcash/headers/main.bend).
 import Base
-import ../../node/p2p/bytes.bend as B
+import ../../zcash/p2p/bytes.bend as B
 import ./canon.bend as C
-import ../../node/headers/main.bend as M
+import ../../zcash/headers/main.bend as M
 
 # Little-endian 32-bit encode -> decode is the identity on every U32.
 law le32_roundtrip:
@@ -25,9 +25,9 @@ law compact_roundtrip:
   for h: {U32.is_le(n, 33554432) == True{} : Bool}
   {B.read_compact(B.append(B.compact(n), rest)) == B.Compact{n, B.length(B.compact(n))} : B.Compact}
 
-# Finding (fixed): node/p2p's decoder used to accept NON-canonical encodings, which zcashd
+# Finding (fixed): zcash/p2p's decoder used to accept NON-canonical encodings, which zcashd
 # rejects: [0xfd, 5, 0] decoded to 5, whose canonical encoding is the single byte [5].
-# The merged decoder (harden/lib/cs.bend) rejects it; width 0 means "malformed".
+# The merged decoder (tools/harden/lib/cs.bend) rejects it; width 0 means "malformed".
 law noncanonical_rejected:
   {B.read_compact([253, 5, 0]) == B.Compact{0, 0} : B.Compact}
 
@@ -60,7 +60,7 @@ law canon_sound:
   for h: {C.read_compact_canon(xs) == Some{B.Compact{v, w}} : Maybe<&2, B.Compact>}
   {B.is_eq(B.take_u(xs, w), B.compact(v)) == True{} : Bool}
 
-# node/headers' split of a header stream into 1487-byte headers loses and invents
+# zcash/headers' split of a header stream into 1487-byte headers loses and invents
 # nothing: concatenating the k pieces gives back the first k*1487 bytes.
 law header_split_concat:
   for +k: Nat

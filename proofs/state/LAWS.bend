@@ -1,13 +1,13 @@
-# The Merkle theorems of proofs/merkle, transferred to node/state's running code:
+# The Merkle theorems of proofs/merkle, transferred to zcash/state's running code:
 # its frontier (S.push / S.froot with Sinsemilla MerkleCRH), which rebuilt the real
 # mainnet Ironwood tree and matched the chain's roots at 6/6 checkpoints.
 import Base
-import ../../halo2/lib/words.bend as Wd
-import ../../node/state/sinsemilla.bend as S
+import ../../zcash/halo2/lib/words.bend as Wd
+import ../../zcash/state/sinsemilla.bend as S
 import ../merkle/merkle.bend as M
 import ./refine.bend as R
 
-# node/state's S.push commutes with interpretation.
+# zcash/state's S.push commutes with interpretation.
 law push_refines:
   for +g: S.Gens
   for +es: +List<Wd.W>
@@ -17,7 +17,7 @@ law push_refines:
   for +c: M.HT
   {S.push(R.imap(g, es, ls, lv), l, R.interp(g, es, ls, c), g) == R.imap(g, es, ls, M.push(lv, l, c)) : +List<Maybe<&2, Wd.W>>}
 
-# node/state's S.froot commutes with interpretation (for a 32-level frontier).
+# zcash/state's S.froot commutes with interpretation (for a 32-level frontier).
 law froot_refines:
   for +g: S.Gens
   for +es: +List<Wd.W>
@@ -29,7 +29,7 @@ law froot_refines:
   {S.froot(R.imap(g, es, ls, lv), l, R.imaybe(g, es, ls, acc), g, es) == R.interp(g, es, ls, M.froot(lv, l, acc)) : Wd.W}
 
 # frontier_root for the RUNNING code: appending the leaves of any well-formed,
-# left-filled, not-full 32-level tree p one by one with node/state's S.push, starting
+# left-filled, not-full 32-level tree p one by one with zcash/state's S.push, starting
 # from S.frontier_new(), and taking S.froot gives the Sinsemilla interpretation of
 # the full tree's root.
 law frontier_root_running:

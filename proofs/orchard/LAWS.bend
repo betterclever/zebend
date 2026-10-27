@@ -4,7 +4,7 @@ import ./fieldmodel.bend as F
 import ./gates_model.bend as G
 
 # Soundness of Orchard circuit gadgets, stated about the generated gate polynomials
-# (gates_model.bend, emitted by gates.py from halo2/gen/orchard_cs.bend, whose decoded
+# (gates_model.bend, emitted by gates.py from zcash/halo2/gen/orchard_cs.bend, whose decoded
 # trees reproduce halo2's gate values on a real proof). Fp = Z/p with p = 1 + pp.
 #
 # Hypotheses, all explicit:

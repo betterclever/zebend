@@ -1,16 +1,23 @@
+# node/fast: zcash/wire/txv.bend with the curve-point decodings DEFERRED. Identical to
+# zcash/wire/txv.bend except jpoint and ppoint: here they only consume the 32 bytes (H.word
+# needs exactly 32 to remain, as before) and do not decode. The caller (fast/bend/delta.bend)
+# decodes every such point separately (fast/bend/pts.bend, at the same positions, in one
+# batch: on the Metal GPU when available) and rejects the block if any fails. A point check
+# never moves the cursor, so  (this validator accepts) AND (every point decodes)  is exactly
+# zcash/wire's verdict. The original decoding functions are kept below as *_decode.
 # A well-formedness validator for Zcash transactions (v1/v2 Sprout, v3, v4, v5, v6) that
 # accepts exactly what zcash_primitives 0.31 Transaction::read accepts when it consumes the
 # whole input. Every rule below cites the reader it mirrors. Before any vector is read, its
 # CompactSize count is checked against the bytes that remain (count * minimum element size),
 # so a huge count is rejected without looping or allocating.
 import Base
-import ../../halo2/lib/words.bend as Wd
-import ../../halo2/lib/fp.bend as Fp
-import ../../halo2/lib/pallas.bend as P
-import ./hb.bend as H
-import ./cs.bend as CS
-import ./fr.bend as Fr
-import ./jj.bend as J
+import ../../zcash/halo2/lib/words.bend as Wd
+import ../../zcash/halo2/lib/fp.bend as Fp
+import ../../zcash/halo2/lib/pallas.bend as P
+import ../../zcash/wire/hb.bend as H
+import ../../zcash/wire/cs.bend as CS
+import ../../zcash/wire/fr.bend as Fr
+import ../../zcash/wire/jj.bend as J
 
 # ---------------------------------------------------------------- encoded values
 
@@ -47,6 +54,11 @@ def wcheck_ppoint(+allow_id: Bool, r: H.W) -> Maybe<&2, H.S>:
 def ppoint(+allow_id: Bool, +s: H.S) -> Maybe<&2, H.S>:
   do Maybe<&2, H.S>:
     r : H.W <- H.word(s)
+    return H.wv_s(r)
+
+def ppoint_decode(+allow_id: Bool, +s: H.S) -> Maybe<&2, H.S>:
+  do Maybe<&2, H.S>:
+    r : H.W <- H.word(s)
     s2 : H.S <- wcheck_ppoint(allow_id, r)
     return s2
 
@@ -74,6 +86,11 @@ def wcheck_jj(+nso: Bool, r: H.W) -> Maybe<&2, H.S>:
 
 # A Jubjub point encoding; nso = True also rejects small-order points (Sapling cv).
 def jpoint(+nso: Bool, +s: H.S) -> Maybe<&2, H.S>:
+  do Maybe<&2, H.S>:
+    r : H.W <- H.word(s)
+    return H.wv_s(r)
+
+def jpoint_decode(+nso: Bool, +s: H.S) -> Maybe<&2, H.S>:
   do Maybe<&2, H.S>:
     r : H.W <- H.word(s)
     s2 : H.S <- wcheck_jj(nso, r)

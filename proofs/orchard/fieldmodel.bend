@@ -3,7 +3,7 @@ import ../field/natlemmas.bend as N
 import ../prims/natlib.bend as L
 
 # Fp modelled as canonical Nats below p = 1 + pp, with exactly the operations the
-# generated Orchard gate code (halo2/gen/orchard_cs.bend) uses: Z.fadd, Z.fsub,
+# generated Orchard gate code (zcash/halo2/gen/orchard_cs.bend) uses: Z.fadd, Z.fsub,
 # Z.fmul and Z.FZERO. Z.fsub(x, y) = x - y mod p = (x + (p - y)) mod p for y <= p.
 # gates.py checks that the decoded gate trees reproduce halo2's gate values.
 

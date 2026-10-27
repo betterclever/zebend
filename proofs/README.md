@@ -12,7 +12,7 @@ cd merkle && bend PROOF.bend --verdict   # likewise field/, gadget/
 
 ## merkle/: the incremental note-commitment tree
 
-`merkle.bend` copies node/state's frontier (`push`, `fstep`, `fright`, `froot`) with one
+`merkle.bend` copies zcash/state's frontier (`push`, `fstep`, `fright`, `froot`) with one
 change: the node hash `crh(g, l, a, b)` becomes the free constructor `Hn{l, a, b}` and the
 empty-subtree roots `nth(es, l)` become `Em{l}`. Equal free terms stay equal under every
 interpretation, so these theorems hold for any hash, Sinsemilla included.
@@ -26,16 +26,16 @@ interpretation, so these theorems hold for any hash, Sinsemilla included.
 Supporting lemmas (`carry`, `shape`, `fold` in `PROOF.bend`; list and Nat lemmas in
 `lemmas.bend`) describe exactly what the frontier holds after each subtree.
 
-Scope: the theorems are about the frontier *algorithm* as written in node/state, with the
-hash abstracted. They do not prove Sinsemilla itself, or that node/state's Bend file is
-byte-identical to this copy (it is a copy, not an import, because node/state's version
+Scope: the theorems are about the frontier *algorithm* as written in zcash/state, with the
+hash abstracted. They do not prove Sinsemilla itself, or that zcash/state's Bend file is
+byte-identical to this copy (it is a copy, not an import, because zcash/state's version
 is hard-wired to its curve types).
 
 ## field/: the arithmetic under the Pasta field
 
 | Law | Statement |
 |---|---|
-| `raw_roundtrip` | About `halo2/lib/fp.bend` itself (imported): for **every** 256-bit input `w`, `Fp.unraw(Fp.raw(w)) == w`. The 16-bit limb layer every field operation enters and leaves through is lossless. |
+| `raw_roundtrip` | About `zcash/halo2/lib/fp.bend` itself (imported): for **every** 256-bit input `w`, `Fp.unraw(Fp.raw(w)) == w`. The 16-bit limb layer every field operation enters and leaves through is lossless. |
 | `adc_ok` | Bend's `Word.adc` (which every `U32` `+` and `-` uses) is binary addition with carry, at every width `n`: `to_nat(sum) + carry_out·2ⁿ == to_nat(a) + to_nat(b) + carry_in`. |
 | `u32_add_ok` | Corollary for `U32`: computed `x + y` plus the dropped carry times 2³² is the true sum, so a `U32` addition whose true sum is below 2³² is exact. |
 
@@ -108,7 +108,7 @@ MAX 3366 / 1683). For all `e`, `neg`, `mag`:
 | `on_schedule` | `timespan(e, False, AWT(e)) == AWT(e)` |
 | `clamp_ge_min`, `clamp_le_max` | the clamp's output lies in `[MIN_TS(e), MAX_TS(e)]` |
 | `clamp_id` | inside the bounds, the clamp is the identity |
-| `post_agrees` | `E.timespan(Post, neg, mag) == D.timespan(neg, mag)`: the model equals the running verifier's code in `node/headers/diff.bend` |
+| `post_agrees` | `E.timespan(Post, neg, mag) == D.timespan(neg, mag)`: the model equals the running verifier's code in `zcash/headers/diff.bend` |
 | `pre_awt_double` | `AWT(Pre) == 2 · AWT(Post)` |
 
 **Real data:** `check_era.bend` (era-aware expected nBits, reusing `diff.bend`'s target
@@ -116,7 +116,7 @@ arithmetic) over every mainnet height 29..3,528,279: pre-Blossom 653,571/653,571
 post-Blossom 2,874,680/2,874,680 nBits equal the headers, 0 mismatches (`check_all.log`).
 Heights 1–28 lack a full 28-header window and are not checked.
 
-## parse/: encode/decode round-trips about `node/p2p/bytes.bend` (11 laws)
+## parse/: encode/decode round-trips about `zcash/p2p/bytes.bend` (11 laws)
 
 | Law | Statement |
 |---|---|
@@ -130,22 +130,22 @@ Heights 1–28 lack a full 28-header window and are not checked.
 | `canon_rejects_example` | the canonical decoder `canon.bend` rejects `[253, 5, 0]` |
 | `canon_accepts` | for `n ≤ 0x02000000`, the canonical decoder accepts `compact(n) ++ rest` with the same result |
 | `canon_sound` | if the canonical decoder accepts `(v, w)` then the first `w` bytes are exactly `compact(v)` |
-| `header_split_concat` | `concat(split(k, bs)) == take(bs, k·1487)` for `node/headers/main.bend`'s `split` |
+| `header_split_concat` | `concat(split(k, bs)) == take(bs, k·1487)` for `zcash/headers/main.bend`'s `split` |
 
 The 32-bit round-trip is proved bit by bit: `gen_bits.py` asks Bend for the normalised goal
 and emits per-bit lemmas into `bits.bend` (~100 KB, imports the real `bytes.bend`).
 
-**Finding (fixed):** `node/p2p`'s CompactSize decoder used to accept non-canonical
+**Finding (fixed):** `zcash/p2p`'s CompactSize decoder used to accept non-canonical
 encodings (`[0xfd, 5, 0]` decoded to 5), which zcashd rejects. The decoder now in
-`bytes.bend` (merged from `harden/lib/cs.bend`) is canonical and capped at
+`bytes.bend` (merged from `tools/harden/lib/cs.bend`) is canonical and capped at
 `MAX_COMPACT_SIZE`; `noncanonical_rejected` proves the old counterexample is refused, and
 `compact_roundtrip` proves every in-range canonical encoding still decodes.
 
-## state/: the Merkle theorems transferred to the running `node/state` code (5 laws)
+## state/: the Merkle theorems transferred to the running `zcash/state` code (5 laws)
 
 `refine.bend` interprets `merkle/`'s symbolic tree into real Sinsemilla values
 (`interp`: leaves → `S.nth(ls, x)`, empty roots → `S.nth(es, k)`, nodes →
-`S.crh(g, k, a, b)`), with no change to `node/state`.
+`S.crh(g, k, a, b)`), with no change to `zcash/state`.
 
 | Law | Statement |
 |---|---|
@@ -161,7 +161,7 @@ implies a Sinsemilla collision"; collision resistance is an assumption, not a th
 
 ## fieldmul/: field multiplication correctness (2 laws; the chain stops early)
 
-Target: `field3/fp64.bend`'s `mul` (CIOS Montgomery over 4×64-bit limbs via
+Target: `crypto/field3/fp64.bend`'s `mul` (CIOS Montgomery over 4×64-bit limbs via
 `U32.mac64`, then a masked conditional subtraction). Proven so far:
 
 | Law | Statement |
@@ -231,9 +231,9 @@ expand `65536n` (2^16) once, in `words.bend`'s `e16`.
 ## orchard/: soundness of Orchard circuit gadgets on the generated gates (7 laws)
 
 Target: the exact gate polynomials of the generated Orchard circuit
-(`halo2/gen/orchard_cs.bend`). `gates.py` parses that file, decodes its Montgomery-form
+(`zcash/halo2/gen/orchard_cs.bend`). `gates.py` parses that file, decodes its Montgomery-form
 constants, and `--check` evaluates its parsed trees on the real proof evaluations of
-`halo2/vectors/orchard_verify.txt`: **386/386** gate values equal the generated code's
+`zcash/halo2/vectors/orchard_verify.txt`: **386/386** gate values equal the generated code's
 (193 polynomials × 2 proofs). `--emit` writes `gates_model.bend`: the selected gates over
 `F.fadd/fsub/fmul` (Nat mod p, `fieldmodel.bend`), with the gate's selector factor
 (checked identical for every polynomial of a gate) as a variable `sel`. Gate and

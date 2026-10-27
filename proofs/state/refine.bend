@@ -1,13 +1,13 @@
-# Interpreting proofs/merkle's free symbolic trees with node/state's REAL hash:
-#   Hn{k, a, b}  ->  S.crh(g, k, a, b)        (Sinsemilla MerkleCRH, node/state/sinsemilla.bend)
-#   Em{k}        ->  S.nth(es, k)             (node/state's table of empty roots)
+# Interpreting proofs/merkle's free symbolic trees with zcash/state's REAL hash:
+#   Hn{k, a, b}  ->  S.crh(g, k, a, b)        (Sinsemilla MerkleCRH, zcash/state/sinsemilla.bend)
+#   Em{k}        ->  S.nth(es, k)             (zcash/state's table of empty roots)
 #   Lf{i}        ->  i-th leaf word
-# LAWS.bend shows node/state's own frontier functions (S.push, S.fstep, S.froot), the
+# LAWS.bend shows zcash/state's own frontier functions (S.push, S.fstep, S.froot), the
 # code that matched mainnet, commute with this interpretation, so proofs/merkle's
 # theorems transfer to the running code.
 import Base
-import ../../halo2/lib/words.bend as Wd
-import ../../node/state/sinsemilla.bend as S
+import ../../zcash/halo2/lib/words.bend as Wd
+import ../../zcash/state/sinsemilla.bend as S
 import ../merkle/merkle.bend as M
 
 def interp(+g: S.Gens, +es: +List<Wd.W>, +ls: +List<Wd.W>, t: M.HT) -> Wd.W:
@@ -40,7 +40,7 @@ def imapl(+g: S.Gens, +es: +List<Wd.W>, +ls: +List<Wd.W>, xs: +List<M.HT>) -> +L
     case Con{x, rest}:
       interp(g, es, ls, x) <> imapl(g, es, ls, rest)
 
-# Appending words one at a time with node/state's S.push (what tree_main's frontier
+# Appending words one at a time with zcash/state's S.push (what tree_main's frontier
 # mode does between checkpoints).
 def spush_all(ws: +List<Wd.W>, f: +List<Maybe<&2, Wd.W>>, +g: S.Gens) -> +List<Maybe<&2, Wd.W>>:
   match ws:

@@ -2,7 +2,7 @@
 # and runs the Bend era-aware difficulty check in chunks overlapping by 28 records.
 import os, re, struct, subprocess, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
-G = os.path.join(HERE, "../../node/headers/data/genesis")
+G = os.path.join(HERE, "..", "..", "zcash", "headers", "data", "genesis")
 L = 1487
 lo_h, hi_h = int(sys.argv[1]), int(sys.argv[2])     # check heights [lo_h, hi_h)
 files = [(s, f"h_{s}.bin") for s in (1, 500001, 1000001, 1500001, 2000001, 2500001, 3000001)]

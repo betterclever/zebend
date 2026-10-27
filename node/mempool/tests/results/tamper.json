@@ -1,0 +1,280 @@
+{
+ "tip": 3532300,
+ "results": [
+  {
+   "case": "baseline v4-transparent 2e733385c95f",
+   "want": "admitted",
+   "want_reason": null,
+   "got": "admitted",
+   "reason": null,
+   "ok": true
+  },
+  {
+   "case": "baseline v5+-transparent 2548116a2e41",
+   "want": "admitted",
+   "want_reason": null,
+   "got": "admitted",
+   "reason": null,
+   "ok": true
+  },
+  {
+   "case": "baseline v5+-shielded ff625f6614da",
+   "want": "admitted",
+   "want_reason": null,
+   "got": "admitted",
+   "reason": null,
+   "ok": true
+  },
+  {
+   "case": "double spend (mempool) of v4-transparent 2e733385c95f",
+   "want": "rejected",
+   "want_reason": "spend conflict",
+   "got": "rejected",
+   "reason": "spend conflict: 863ae3b65fc3b554c611f22392002af4ccdc795d690fefb6d0ed5384f263f372:295 is spent by mempool tx 2e733385c95faa5b44ff7ded5e1d96384eaf221516a1d6ba4de502910a7af712",
+   "ok": true
+  },
+  {
+   "case": "double spend (mempool) of v5+-transparent 2548116a2e41",
+   "want": "rejected",
+   "want_reason": "spend conflict",
+   "got": "rejected",
+   "reason": "spend conflict: 85cf06e9148e2f75f9f6a8a4320ee5070242cecd0fa2eb07bcd045a5d79c8ce1:0 is spent by mempool tx 2548116a2e41a52afa3e48acb6a3af92f33fed43224472862ef4d911f9531ce5",
+   "ok": true
+  },
+  {
+   "case": "double spend (mempool) of v5+-shielded ff625f6614da",
+   "want": "rejected",
+   "want_reason": "spend conflict",
+   "got": "rejected",
+   "reason": "spend conflict: ironwood nullifier afb8ac080f110323 is spent in the mempool",
+   "ok": true
+  },
+  {
+   "case": "tampered scriptSig (signature byte) v4-transparent 2e733385c95f",
+   "want": "rejected",
+   "want_reason": "transparent",
+   "got": "rejected",
+   "reason": "consensus (hook): transparent FAIL transparent input(s) 0 of 1 invalid",
+   "ok": true
+  },
+  {
+   "case": "output +10,000 ZEC v4-transparent 2e733385c95f",
+   "want": "rejected",
+   "want_reason": "value_balance",
+   "got": "rejected",
+   "reason": "consensus: value_balance tx 1",
+   "ok": true
+  },
+  {
+   "case": "truncated v4-transparent 2e733385c95f",
+   "want": "rejected",
+   "want_reason": "malformed",
+   "got": "rejected",
+   "reason": "consensus: malformed transaction (zcash/wire validator: INVALID wire)",
+   "ok": true
+  },
+  {
+   "case": "tampered last byte v5+-transparent 2548116a2e41",
+   "want": "rejected",
+   "want_reason": null,
+   "got": "rejected",
+   "reason": "consensus (hook): orchard FAIL ironwood spend-auth 1/1 binding 0",
+   "ok": true
+  },
+  {
+   "case": "expiry = tip v5+-transparent 2548116a2e41",
+   "want": "rejected",
+   "want_reason": "expired",
+   "got": "rejected",
+   "reason": "consensus: expired tx 1",
+   "ok": true
+  },
+  {
+   "case": "wrong branch id (NU6.2) v5+-transparent 2548116a2e41",
+   "want": "rejected",
+   "want_reason": [
+    "branch_id",
+    "malformed"
+   ],
+   "got": "rejected",
+   "reason": "consensus: malformed transaction (zcash/wire validator: INVALID wire)",
+   "ok": true
+  },
+  {
+   "case": "tampered scriptSig (signature byte) v5+-transparent 2548116a2e41",
+   "want": "rejected",
+   "want_reason": "transparent",
+   "got": "rejected",
+   "reason": "consensus (hook): transparent FAIL transparent input(s) 0 of 2 invalid",
+   "ok": true
+  },
+  {
+   "case": "output +10,000 ZEC v5+-transparent 2548116a2e41",
+   "want": "rejected",
+   "want_reason": "value_balance",
+   "got": "rejected",
+   "reason": "consensus: value_balance tx 1",
+   "ok": true
+  },
+  {
+   "case": "truncated v5+-transparent 2548116a2e41",
+   "want": "rejected",
+   "want_reason": "malformed",
+   "got": "rejected",
+   "reason": "consensus: malformed transaction (zcash/wire validator: INVALID wire)",
+   "ok": true
+  },
+  {
+   "case": "tampered last byte v5+-shielded ff625f6614da",
+   "want": "rejected",
+   "want_reason": "consensus (hook)",
+   "got": "rejected",
+   "reason": "consensus (hook): orchard FAIL ironwood spend-auth 2/2 binding 0",
+   "ok": true
+  },
+  {
+   "case": "expiry = tip v5+-shielded ff625f6614da",
+   "want": "rejected",
+   "want_reason": "expired",
+   "got": "rejected",
+   "reason": "consensus: expired tx 1",
+   "ok": true
+  },
+  {
+   "case": "wrong branch id (NU6.2) v5+-shielded ff625f6614da",
+   "want": "rejected",
+   "want_reason": [
+    "branch_id",
+    "malformed"
+   ],
+   "got": "rejected",
+   "reason": "consensus: malformed transaction (zcash/wire validator: INVALID wire)",
+   "ok": true
+  },
+  {
+   "case": "output +10,000 ZEC v5+-shielded ff625f6614da",
+   "want": "rejected",
+   "want_reason": "value_balance",
+   "got": "rejected",
+   "reason": "consensus: value_balance tx 1",
+   "ok": true
+  },
+  {
+   "case": "truncated v5+-shielded ff625f6614da",
+   "want": "rejected",
+   "want_reason": "malformed",
+   "got": "rejected",
+   "reason": "consensus: malformed transaction (zcash/wire validator: INVALID wire)",
+   "ok": true
+  },
+  {
+   "case": "fee 49200 -> 1 zat v4-transparent 2e733385c95f",
+   "want": "rejected",
+   "want_reason": "ZIP 317",
+   "got": "rejected",
+   "reason": "policy (ZIP 317): unpaid_actions (fee 1, conventional 2000, unpaid actions 2)",
+   "ok": true
+  },
+  {
+   "case": "fee 15000 -> 1 zat v5+-transparent 2548116a2e41",
+   "want": "rejected",
+   "want_reason": "ZIP 317",
+   "got": "rejected",
+   "reason": "policy (ZIP 317): unpaid_actions (fee 1, conventional 3000, unpaid actions 3)",
+   "ok": true
+  },
+  {
+   "case": "fee 15000 -> 1 zat v5+-shielded ff625f6614da",
+   "want": "rejected",
+   "want_reason": "ZIP 317",
+   "got": "rejected",
+   "reason": "policy (ZIP 317): unpaid_actions (fee 1, conventional 3000, unpaid actions 3)",
+   "ok": true
+  },
+  {
+   "case": "already mined 3f247bfb0866",
+   "want": "rejected",
+   "want_reason": "mined",
+   "got": "rejected",
+   "reason": "mined: transaction is in the best chain",
+   "ok": true
+  },
+  {
+   "case": "double spend of a mined tx (same inputs/nullifiers, expiry+1) 3f247bfb0866",
+   "want": "rejected",
+   "want_reason": [
+    "duplicate spend",
+    "spent in the chain"
+   ],
+   "got": "rejected",
+   "reason": "missing input: d65018c00d1e29e0553b3e09580183f837205111a7fe7a9d2ad3b88232184116:0 is not an unspent output of the chain or the mempool (spent in the chain)",
+   "ok": true
+  },
+  {
+   "case": "already mined ef47d82d7190",
+   "want": "rejected",
+   "want_reason": "mined",
+   "got": "rejected",
+   "reason": "mined: transaction is in the best chain",
+   "ok": true
+  },
+  {
+   "case": "double spend of a mined tx (same inputs/nullifiers, expiry+1) ef47d82d7190",
+   "want": "rejected",
+   "want_reason": [
+    "duplicate spend",
+    "spent in the chain"
+   ],
+   "got": "rejected",
+   "reason": "missing input: de98cf178cda20b746e5e63657fceb8466cb271f89456221fa20dddba2448a4e:0 is not an unspent output of the chain or the mempool (spent in the chain)",
+   "ok": true
+  },
+  {
+   "case": "already mined b7478e05d56d",
+   "want": "rejected",
+   "want_reason": "mined",
+   "got": "rejected",
+   "reason": "mined: transaction is in the best chain",
+   "ok": true
+  },
+  {
+   "case": "double spend of a mined tx (same inputs/nullifiers, expiry+1) b7478e05d56d",
+   "want": "rejected",
+   "want_reason": [
+    "duplicate spend",
+    "spent in the chain"
+   ],
+   "got": "rejected",
+   "reason": "duplicate spend: ironwood nullifier a15b6534ca015e37 is in the chain",
+   "ok": true
+  },
+  {
+   "case": "already mined d65018c00d1e",
+   "want": "rejected",
+   "want_reason": "mined",
+   "got": "rejected",
+   "reason": "mined: transaction is in the best chain",
+   "ok": true
+  },
+  {
+   "case": "double spend of a mined tx (same inputs/nullifiers, expiry+1) d65018c00d1e",
+   "want": "rejected",
+   "want_reason": [
+    "duplicate spend",
+    "spent in the chain"
+   ],
+   "got": "rejected",
+   "reason": "duplicate spend: ironwood nullifier cb8e97e505c344de is in the chain",
+   "ok": true
+  },
+  {
+   "case": "already mined d374bb653714",
+   "want": "rejected",
+   "want_reason": "mined",
+   "got": "rejected",
+   "reason": "mined: transaction is in the best chain",
+   "ok": true
+  }
+ ],
+ "skipped": []
+}

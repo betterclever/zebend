@@ -5,7 +5,7 @@ import ./rows.bend as R
 
 # The base of variable-base scalar multiplication is anchored (NU6.2 fix), stated about the
 # generated base-constancy constraints of the real Orchard circuit (gates_model.bend, emitted
-# by gen.py from halo2/gen/orchard_cs.bend). Fp = Z/p, p = 1 + pp. See README.md for the
+# by gen.py from zcash/halo2/gen/orchard_cs.bend). Fp = Z/p, p = 1 + pp. See README.md for the
 # statement in words and its relation to the protocol's Action statement.
 
 # THEOREM (fixed circuit). If the first loop row's base coordinate x1 is copy-constrained

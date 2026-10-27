@@ -1,9 +1,9 @@
 import Base
-import ../../halo2/lib/words.bend as Wd
-import ../../halo2/lib/fp.bend as Fp
+import ../../zcash/halo2/lib/words.bend as Wd
+import ../../zcash/halo2/lib/fp.bend as Fp
 import ./wordadd.bend as WA
 
-# Laws about the arithmetic the Pasta field (halo2/lib/fp.bend) is built from.
+# Laws about the arithmetic the Pasta field (zcash/halo2/lib/fp.bend) is built from.
 
 # The limb layer is lossless: splitting any 256-bit value (8 LE words) into the
 # field's 16 limbs of 16 bits (Fp.raw) and reassembling them (Fp.unraw) returns

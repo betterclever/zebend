@@ -5,8 +5,8 @@
 #   post-Blossom (next height >= 653,600): PoWTargetSpacing  75 s, AWT = 17 *  75 = 1275 s
 #   MinActualTimespan = AWT * (100 - 16) / 100,  MaxActualTimespan = AWT * (100 + 32) / 100
 #
-# Same structure as node/headers/diff.bend's timespan, with the era as a parameter;
-# LAWS.bend proves the post-Blossom instance equals node/headers' function exactly.
+# Same structure as zcash/headers/diff.bend's timespan, with the era as a parameter;
+# LAWS.bend proves the post-Blossom instance equals zcash/headers' function exactly.
 import Base
 
 type Era is Data:

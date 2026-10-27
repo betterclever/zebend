@@ -44,10 +44,10 @@ Binaries are built from the `.bend` sources (see each directory's README; most n
 forked Bend compiler described under "Bend changes" below).
 
 ```sh
-./validate/zebend validate                 # one mainnet tx: header → block → tx → proof → state, all in Bend
-./validate/zebend validate --tamper proof  # same, with one bit flipped: rejected at the right step
-python3 follow/zebend_follow.py --live     # follow mainnet live
-./harden/ci.sh                             # 31 checks: every proof, every differential suite, fuzzing
+./node/validate/zebend validate                 # one mainnet tx: header → block → tx → proof → state, all in Bend
+./node/validate/zebend validate --tamper proof  # same, with one bit flipped: rejected at the right step
+python3 node/follow/zebend_follow.py --live     # follow mainnet live
+./tools/harden/ci.sh                             # 31 checks: every proof, every differential suite, fuzzing
 python3 -m http.server -d web 8000         # then open localhost:8000: real mainnet Halo 2 proofs verified in the tab (~1 s each)
 ```
 
@@ -55,28 +55,28 @@ python3 -m http.server -d web 8000         # then open localhost:8000: real main
 
 | Component | Real data? | How we know it is right | Status |
 |---|---|---|---|
-| **Halo 2 verifier for Orchard/Ironwood proofs** (`halo2/`) | **every bundle since NU6.3: 392,806**; plus 29 txs across all 3 circuit versions | 392,806/392,806 verdicts equal `halo2_proofs`; 2513/2513 intermediate values equal; 60/60 honest + tampered verdicts across circuit versions | ✅ tested |
-| **RedPallas signatures** (`sigbatch/`, `node/tx`) | **1,283,411 mainnet signatures** | all valid; 10/10 tamper files pinpoint the tampered signature | ✅ tested |
-| Transactions: v5/v6 parsing, ZIP 244 txid + sighash (`node/tx`) | 29 txs in detail; 276,675 txids in the signature run | txid 29/29, sighash 29/29, 1180/1180 Halo 2 public inputs; 12/12 tampers rejected | ✅ tested |
-| Header chain: Equihash, target, links, difficulty (`node/headers`) | **all 3,528,279 mainnet headers** | every check passes at every height (difficulty from height 29); 8 difficulty laws **proven**, one about the running verifier code | ✅ tested + proven |
-| Block inclusion: merkle root + ZIP 244 block commitments (`node/block`) | 10 blocks in detail; every block `follow` has seen | roots equal the verified headers; ZIP 221 history root is oracle-provided | ✅ tested |
-| Ironwood note commitment tree + nullifier set (`node/state`) | all 838,662 Ironwood notes | 6/6 chain roots; 0 duplicate nullifiers; frontier = full tree and path soundness **proven about the running code** | ✅ tested + proven |
-| Orchard note commitment tree (`consensus/orchard`) | **all 50,478,033 Orchard notes** | 770/770 subtree roots, 6/6 full roots equal the chain | ✅ tested |
-| Anchor validity (`consensus/anchors`, `consensus/orchard`) | 13 Ironwood + 16 Orchard real anchors | all valid; forged and tampered anchors rejected; 3 laws **proven** | ✅ tested + proven |
-| Issuance: subsidy, founders' reward, funding streams, lockbox, ZIP 271 (`consensus/issuance`) | 260 coinbase txs covering every era | 260/260 blocks, 410/410 outputs exact; 5 laws **proven** | ✅ tested + proven |
-| ZIP 209 turnstile, supply conservation, NU6.3/NU7 pool rules (`turnstile/`) | model | 9 laws | ✅ **proven** |
-| ZIP 318 migration planner (`migration/`) | model | 6 laws | ✅ **proven** |
+| **Halo 2 verifier for Orchard/Ironwood proofs** (`zcash/halo2/`) | **every bundle since NU6.3: 392,806**; plus 29 txs across all 3 circuit versions | 392,806/392,806 verdicts equal `halo2_proofs`; 2513/2513 intermediate values equal; 60/60 honest + tampered verdicts across circuit versions | ✅ tested |
+| **RedPallas signatures** (`research/sigbatch/`, `zcash/tx`) | **1,283,411 mainnet signatures** | all valid; 10/10 tamper files pinpoint the tampered signature | ✅ tested |
+| Transactions: v5/v6 parsing, ZIP 244 txid + sighash (`zcash/tx`) | 29 txs in detail; 276,675 txids in the signature run | txid 29/29, sighash 29/29, 1180/1180 Halo 2 public inputs; 12/12 tampers rejected | ✅ tested |
+| Header chain: Equihash, target, links, difficulty (`zcash/headers`) | **all 3,528,279 mainnet headers** | every check passes at every height (difficulty from height 29); 8 difficulty laws **proven**, one about the running verifier code | ✅ tested + proven |
+| Block inclusion: merkle root + ZIP 244 block commitments (`zcash/block`) | 10 blocks in detail; every block `follow` has seen | roots equal the verified headers; ZIP 221 history root is oracle-provided | ✅ tested |
+| Ironwood note commitment tree + nullifier set (`zcash/state`) | all 838,662 Ironwood notes | 6/6 chain roots; 0 duplicate nullifiers; frontier = full tree and path soundness **proven about the running code** | ✅ tested + proven |
+| Orchard note commitment tree (`zcash/consensus/orchard`) | **all 50,478,033 Orchard notes** | 770/770 subtree roots, 6/6 full roots equal the chain | ✅ tested |
+| Anchor validity (`zcash/consensus/anchors`, `zcash/consensus/orchard`) | 13 Ironwood + 16 Orchard real anchors | all valid; forged and tampered anchors rejected; 3 laws **proven** | ✅ tested + proven |
+| Issuance: subsidy, founders' reward, funding streams, lockbox, ZIP 271 (`zcash/consensus/issuance`) | 260 coinbase txs covering every era | 260/260 blocks, 410/410 outputs exact; 5 laws **proven** | ✅ tested + proven |
+| ZIP 209 turnstile, supply conservation, NU6.3/NU7 pool rules (`proofs/turnstile/`) | model | 9 laws | ✅ **proven** |
+| ZIP 318 migration planner (`proofs/migration/`) | model | 6 laws | ✅ **proven** |
 | Orchard circuit gate soundness (`proofs/orchard`) | 7 gates of the real circuit | on the generated polynomials (386/386 translator match); p prime and selector invertibility are hypotheses | ✅ **proven** |
 | Parsers reject malformed input (`proofs/parse`) | — | 11 laws incl. non-canonical encodings and over-cap lengths rejected | ✅ **proven** |
 | Bend arithmetic primitives (`mul`, `mul_hi`, `add_hi`, `mac_hi`, 64-bit lanes) | — | word splits equal the exact Nat product/sum for all inputs | ✅ **proven** |
 | Orchard circuit gates, generated (55 gates, 193 polynomials) | real proof's evaluations | 193/193 equal to `halo2_proofs` | ✅ tested |
 | Pasta fields and curves, MSM, square roots | — | 116/116 field, 136/136 curve, MSM equal to `best_multiexp`; square root equal to `pasta_curves` on 2,097,152 inputs per field | ✅ tested |
-| Wallet trial decryption on the GPU (`scan2/`) | generated outputs | hit lists equal to `orchard` at 4k–262k outputs; key handling constant-time | ✅ tested |
-| P2P handshake, header and block sync (`node/p2p`) | live Zebra 7.0 / Zakura 1.7 peers | 480/480 hashes, Zebra checkpoint matched; used by `follow` | ✅ tested |
-| **Live follower** (`follow/`) | mainnet, live | each block: PoW/difficulty, merkle, commitments, txids, sighash, signatures, Halo 2, nullifiers, anchors, Ironwood root vs chain; reorg handling | ✅ running |
-| Hardening (`harden/`) | — | 803,000 differential fuzz cases against the Rust crates, 0 mismatches for the hardened parsers (now merged; the bugs it found are fixed); 16/16 resource-limit probes | ✅ tested |
+| Wallet trial decryption on the GPU (`research/scan2/`) | generated outputs | hit lists equal to `orchard` at 4k–262k outputs; key handling constant-time | ✅ tested |
+| P2P handshake, header and block sync (`zcash/p2p`) | live Zebra 7.0 / Zakura 1.7 peers | 480/480 hashes, Zebra checkpoint matched; used by `follow` | ✅ tested |
+| **Live follower** (`node/follow/`) | mainnet, live | each block: PoW/difficulty, merkle, commitments, txids, sighash, signatures, Halo 2, nullifiers, anchors, Ironwood root vs chain; reorg handling | ✅ running |
+| Hardening (`tools/harden/`) | — | 803,000 differential fuzz cases against the Rust crates, 0 mismatches for the hardened parsers (now merged; the bugs it found are fixed); 16/16 resource-limit probes | ✅ tested |
 | In-browser verification (`web/`, Bend → JS) | 4 mainnet txs | headless Chrome: all valid, all tampered copies rejected, ~1 s each | ✅ tested |
-| `bend2wasm`: Bend → WebAssembly (`wasm/`) | — | small programs run; large ones hit a runtime heap-layout limit (the browser verifier uses Bend's JS target instead) | ⚠️ partial |
+| `bend2wasm`: Bend → WebAssembly (`web/wasm/`) | — | small programs run; large ones hit a runtime heap-layout limit (the browser verifier uses Bend's JS target instead) | ⚠️ partial |
 
 **"Tested"** means differential testing against the official implementation, not a proof.
 **"Proven"** means a Bend law that `bend PROOF.bend --verdict` accepts.
@@ -113,10 +113,10 @@ is fast enough to check the whole chain.
 
 GPU numbers are counted only from builds where every Metal helper is inlined, after at least 20
 runs with bit-identical output (see "Bend changes"). The GPU Halo 2 batch verifier works and
-agrees on all 392,806 bundles but is not faster than the CPU one (`gpuv/`).
+agrees on all 392,806 bundles but is not faster than the CPU one (`research/gpuv/`).
 Forcing the inlining costs the wallet scan 2.3× (the non-inlined build ran ~892k–958k outputs/s
 but is exposed to the compiler bug); Equihash on the GPU (~20,900 headers/s) and the Ironwood
-tree on the GPU (~21 s for 838,662 notes) did not slow down. Gate logs: `bench/metal_inline_gate.log`.
+tree on the GPU (~21 s for 838,662 notes) did not slow down. Gate logs: `research/bench/metal_inline_gate.log`.
 
 ## Bend changes
 
@@ -132,16 +132,16 @@ Some components use a local fork of the Bend compiler (`bend-fork`, not upstream
 
 | Directory | What |
 |---|---|
-| `halo2/` | Halo 2 verifier: `oracle/` (Rust ground truth), `gen/` (generated Orchard circuit), `lib/` (Pasta + MSM), `verifier/` |
-| `node/` | `p2p/`, `headers/` (+ `history/`: every header), `tx/`, `block/`, `state/`, `wire/` |
-| `consensus/` | anchors, the full Orchard tree, issuance |
-| `proofsets/` | every Orchard/Ironwood proof and signature since NU6.3, Bend vs official |
-| `follow/`, `validate/` | `zebend follow` (live daemon) and `zebend validate` (one tx, end to end) |
-| `proofs/`, `turnstile/`, `migration/` | theorems |
-| `harden/` | differential fuzzing, resource limits, constant-time scan, `ci.sh` |
-| `field3/`, `perf3/`, `algo/`, `decomp/`, `sigbatch/`, `blake3x/`, `gpuv/`, `bench/` | speed work: 64-bit fields, MSM, batching, square roots, Equihash, GPU |
-| `scan2/`, `gpu-scan/` | wallet trial decryption (GPU) |
-| `web/`, `wasm/` | in-browser verifier and `bend2wasm` |
+| `zcash/halo2/` | Halo 2 verifier: `oracle/` (Rust ground truth), `gen/` (generated Orchard circuit), `lib/` (Pasta + MSM), `verifier/` |
+| `zcash/` | `p2p/`, `headers/` (+ `history/`: every header), `tx/`, `block/`, `state/`, `wire/` |
+| `zcash/consensus/` | anchors, the full Orchard tree, issuance |
+| `research/proofsets/` | every Orchard/Ironwood proof and signature since NU6.3, Bend vs official |
+| `node/follow/`, `node/validate/` | `zebend follow` (live daemon) and `zebend validate` (one tx, end to end) |
+| `proofs/`, `proofs/turnstile/`, `proofs/migration/` | theorems |
+| `tools/harden/` | differential fuzzing, resource limits, constant-time scan, `ci.sh` |
+| `crypto/field3/`, `research/perf3/`, `research/algo/`, `research/decomp/`, `research/sigbatch/`, `research/blake3x/`, `research/gpuv/`, `research/bench/` | speed work: 64-bit fields, MSM, batching, square roots, Equihash, GPU |
+| `research/scan2/`, `research/gpu-scan/` | wallet trial decryption (GPU) |
+| `web/`, `web/wasm/` | in-browser verifier and `bend2wasm` |
 
 ## Related work
 

@@ -1,0 +1,36 @@
+live mempool: 12 txs; state tip 3532300
+  candidates: v4 transparent-input 3, v5+ transparent-input 8, v5+ shielded-only 1
+  PASS  baseline v4-transparent 2e733385c95f: admitted 
+  PASS  baseline v5+-transparent 2548116a2e41: admitted 
+  PASS  baseline v5+-shielded ff625f6614da: admitted 
+  PASS  double spend (mempool) of v4-transparent 2e733385c95f: rejected (spend conflict: 863ae3b65fc3b554c611f22392002af4ccdc795d690fefb6d0ed5384f263f372:295 is spent by mempool tx 2e733385c95faa5b44ff7ded5e1d96384eaf221516a1d6ba4de502910a7af712)
+  PASS  double spend (mempool) of v5+-transparent 2548116a2e41: rejected (spend conflict: 85cf06e9148e2f75f9f6a8a4320ee5070242cecd0fa2eb07bcd045a5d79c8ce1:0 is spent by mempool tx 2548116a2e41a52afa3e48acb6a3af92f33fed43224472862ef4d911f9531ce5)
+  PASS  double spend (mempool) of v5+-shielded ff625f6614da: rejected (spend conflict: ironwood nullifier afb8ac080f110323 is spent in the mempool)
+  PASS  tampered scriptSig (signature byte) v4-transparent 2e733385c95f: rejected (consensus (hook): transparent FAIL transparent input(s) 0 of 1 invalid)
+  PASS  output +10,000 ZEC v4-transparent 2e733385c95f: rejected (consensus: value_balance tx 1)
+  PASS  truncated v4-transparent 2e733385c95f: rejected (consensus: malformed transaction (zcash/wire validator: INVALID wire))
+  PASS  tampered last byte v5+-transparent 2548116a2e41: rejected (consensus (hook): orchard FAIL ironwood spend-auth 1/1 binding 0)
+  PASS  expiry = tip v5+-transparent 2548116a2e41: rejected (consensus: expired tx 1)
+  PASS  wrong branch id (NU6.2) v5+-transparent 2548116a2e41: rejected (consensus: malformed transaction (zcash/wire validator: INVALID wire))
+  PASS  tampered scriptSig (signature byte) v5+-transparent 2548116a2e41: rejected (consensus (hook): transparent FAIL transparent input(s) 0 of 2 invalid)
+  PASS  output +10,000 ZEC v5+-transparent 2548116a2e41: rejected (consensus: value_balance tx 1)
+  PASS  truncated v5+-transparent 2548116a2e41: rejected (consensus: malformed transaction (zcash/wire validator: INVALID wire))
+  PASS  tampered last byte v5+-shielded ff625f6614da: rejected (consensus (hook): orchard FAIL ironwood spend-auth 2/2 binding 0)
+  PASS  expiry = tip v5+-shielded ff625f6614da: rejected (consensus: expired tx 1)
+  PASS  wrong branch id (NU6.2) v5+-shielded ff625f6614da: rejected (consensus: malformed transaction (zcash/wire validator: INVALID wire))
+  PASS  output +10,000 ZEC v5+-shielded ff625f6614da: rejected (consensus: value_balance tx 1)
+  PASS  truncated v5+-shielded ff625f6614da: rejected (consensus: malformed transaction (zcash/wire validator: INVALID wire))
+  PASS  fee 49200 -> 1 zat v4-transparent 2e733385c95f: rejected (policy (ZIP 317): unpaid_actions (fee 1, conventional 2000, unpaid actions 2))
+  PASS  fee 15000 -> 1 zat v5+-transparent 2548116a2e41: rejected (policy (ZIP 317): unpaid_actions (fee 1, conventional 3000, unpaid actions 3))
+  PASS  fee 15000 -> 1 zat v5+-shielded ff625f6614da: rejected (policy (ZIP 317): unpaid_actions (fee 1, conventional 3000, unpaid actions 3))
+  PASS  already mined 3f247bfb0866: rejected (mined: transaction is in the best chain)
+  PASS  double spend of a mined tx (same inputs/nullifiers, expiry+1) 3f247bfb0866: rejected (missing input: d65018c00d1e29e0553b3e09580183f837205111a7fe7a9d2ad3b88232184116:0 is not an unspent output of the chain or the mempool (spent in the chain))
+  PASS  already mined ef47d82d7190: rejected (mined: transaction is in the best chain)
+  PASS  double spend of a mined tx (same inputs/nullifiers, expiry+1) ef47d82d7190: rejected (missing input: de98cf178cda20b746e5e63657fceb8466cb271f89456221fa20dddba2448a4e:0 is not an unspent output of the chain or the mempool (spent in the chain))
+  PASS  already mined b7478e05d56d: rejected (mined: transaction is in the best chain)
+  PASS  double spend of a mined tx (same inputs/nullifiers, expiry+1) b7478e05d56d: rejected (duplicate spend: ironwood nullifier a15b6534ca015e37 is in the chain)
+  PASS  already mined d65018c00d1e: rejected (mined: transaction is in the best chain)
+  PASS  double spend of a mined tx (same inputs/nullifiers, expiry+1) d65018c00d1e: rejected (duplicate spend: ironwood nullifier cb8e97e505c344de is in the chain)
+  PASS  already mined d374bb653714: rejected (mined: transaction is in the best chain)
+
+RESULT: 32 PASS, 0 FAIL; skipped: none

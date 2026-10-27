@@ -1,7 +1,7 @@
 # Proofs of LAWS.bend.
 import Base
-import ../../halo2/lib/words.bend as Wd
-import ../../node/state/sinsemilla.bend as S
+import ../../zcash/halo2/lib/words.bend as Wd
+import ../../zcash/state/sinsemilla.bend as S
 import ../merkle/merkle.bend as M
 import ./refine.bend as R
 import ./LAWS.bend as L

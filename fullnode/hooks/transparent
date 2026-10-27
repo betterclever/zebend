@@ -1,3 +1,0 @@
-#!/bin/sh
-# Transparent scripts, ECDSA and sighashes, checked by transparent/ (Bend).
-exec python3 /Users/betterclever/projects/zecathon/bend-zcash/transparent/hook.py "$@"

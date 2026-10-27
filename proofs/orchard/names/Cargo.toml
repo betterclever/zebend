@@ -9,5 +9,5 @@ orchard = { version = "0.16", features = ["circuit"] }
 halo2_proofs = "*"
 
 [patch.crates-io]
-halo2_proofs = { path = "../../../halo2/oracle/vendor/halo2_proofs" }
-orchard = { path = "../../../halo2/oracle/vendor/orchard" }
+halo2_proofs = { path = "../../../zcash/halo2/oracle/vendor/halo2_proofs" }
+orchard = { path = "../../../zcash/halo2/oracle/vendor/orchard" }
