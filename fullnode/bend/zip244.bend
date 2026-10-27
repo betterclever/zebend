@@ -1,3 +1,5 @@
+# fullnode/fast: as fullnode/bend/zip244.bend, with every cat(at(xs, p, n), rest) written
+# onto(xs, p, n, rest) (one copy of the bytes instead of two). Same digests.
 # fullnode: the ZIP 244 txid of v5/v6 transactions, from node/block/tx.bend (same code), with
 # the per-element loops made linear: each recursive step drops the element it consumed
 # instead of re-indexing the transaction from its start (node/block's loops are quadratic in
@@ -33,6 +35,19 @@ type TDig is Data:
 
 def cat(a: +List<U32>, b: +List<U32>) -> +List<U32>:
   List.append(&2, U32, a, b)
+
+# The n bytes at pos, followed by rest: one copy (cat(at(..), rest) copied them twice).
+def take_onto(n: Nat, xs: +List<U32>, rest: +List<U32>) -> +List<U32>:
+  match n xs:
+    case 0n _:
+      rest
+    case 1n+p Con{h, t}:
+      h <> take_onto(p, t, rest)
+    case 1n+p Nil{}:
+      rest
+
+def onto(+xs: +List<U32>, +pos: Nat, +n: Nat, rest: +List<U32>) -> +List<U32>:
+  take_onto(n, List.drop(&2, U32, xs, pos), rest)
 
 def at(+xs: +List<U32>, +pos: Nat, +n: Nat) -> +List<U32>:
   List.take(&2, U32, List.drop(&2, U32, xs, pos), n)
@@ -144,7 +159,7 @@ def prevouts(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
     case 0n:
       Nil{}
     case 1n+p:
-      cat(at(xs, pos, 36n), prevouts(p, List.drop(&2, U32, xs, txin_end(xs, pos)), 0n))
+      onto(xs, pos, 36n, prevouts(p, List.drop(&2, U32, xs, txin_end(xs, pos)), 0n))
 
 def sequences(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
   match n:
@@ -152,7 +167,7 @@ def sequences(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
       Nil{}
     case 1n+p:
       +e = txin_end(xs, pos)
-      cat(at(xs, Nat.sub(e, 4n), 4n), sequences(p, List.drop(&2, U32, xs, e), 0n))
+      onto(xs, Nat.sub(e, 4n), 4n, sequences(p, List.drop(&2, U32, xs, e), 0n))
 
 # TxOut: value (8) || script (CompactSize bytes); hashed exactly as serialized.
 def txout_end(+xs: +List<U32>, +pos: Nat) -> Nat:
@@ -172,7 +187,7 @@ def outputs(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
       Nil{}
     case 1n+p:
       +e = txout_end(xs, pos)
-      cat(at(xs, pos, Nat.sub(e, pos)), outputs(p, List.drop(&2, U32, xs, e), 0n))
+      onto(xs, pos, Nat.sub(e, pos), outputs(p, List.drop(&2, U32, xs, e), 0n))
 
 def all_zero(xs: +List<U32>) -> Bool:
   match xs:
@@ -208,7 +223,7 @@ def sap_nf(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
     case 0n:
       Nil{}
     case 1n+p:
-      cat(at(xs, (pos + 32n : Nat), 32n), sap_nf(p, List.drop(&2, U32, xs, (pos + 96n : Nat)), 0n))
+      onto(xs, (pos + 32n : Nat), 32n, sap_nf(p, List.drop(&2, U32, xs, (pos + 96n : Nat)), 0n))
 
 # v5 hashes (cv, anchor, rk) per spend; v6 (ZIP 229) hashes (cv, rk): pass anchor = [].
 def sap_spend_n(+n: Nat, +xs: +List<U32>, +pos: Nat, +anchor: +List<U32>) -> +List<U32>:
@@ -216,28 +231,28 @@ def sap_spend_n(+n: Nat, +xs: +List<U32>, +pos: Nat, +anchor: +List<U32>) -> +Li
     case 0n:
       Nil{}
     case 1n+p:
-      cat(at(xs, pos, 32n), cat(anchor, cat(at(xs, (pos + 64n : Nat), 32n), sap_spend_n(p, List.drop(&2, U32, xs, (pos + 96n : Nat)), 0n, anchor))))
+      onto(xs, pos, 32n, cat(anchor, onto(xs, (pos + 64n : Nat), 32n, sap_spend_n(p, List.drop(&2, U32, xs, (pos + 96n : Nat)), 0n, anchor))))
 
 def sap_out_c(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
   match n:
     case 0n:
       Nil{}
     case 1n+p:
-      cat(at(xs, (pos + 32n : Nat), 116n), sap_out_c(p, List.drop(&2, U32, xs, (pos + 756n : Nat)), 0n))
+      onto(xs, (pos + 32n : Nat), 116n, sap_out_c(p, List.drop(&2, U32, xs, (pos + 756n : Nat)), 0n))
 
 def sap_out_m(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
   match n:
     case 0n:
       Nil{}
     case 1n+p:
-      cat(at(xs, (pos + 148n : Nat), 512n), sap_out_m(p, List.drop(&2, U32, xs, (pos + 756n : Nat)), 0n))
+      onto(xs, (pos + 148n : Nat), 512n, sap_out_m(p, List.drop(&2, U32, xs, (pos + 756n : Nat)), 0n))
 
 def sap_out_n(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
   match n:
     case 0n:
       Nil{}
     case 1n+p:
-      cat(at(xs, pos, 32n), cat(at(xs, (pos + 660n : Nat), 96n), sap_out_n(p, List.drop(&2, U32, xs, (pos + 756n : Nat)), 0n)))
+      onto(xs, pos, 32n, onto(xs, (pos + 660n : Nat), 96n, sap_out_n(p, List.drop(&2, U32, xs, (pos + 756n : Nat)), 0n)))
 
 def sap_noncompact(v6: Bool, +ns: Nat, +xs: +List<U32>, +sp: Nat, +anchor: +List<U32>) -> +List<U32>:
   match v6:
@@ -312,21 +327,21 @@ def act_c(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
     case 0n:
       Nil{}
     case 1n+p:
-      cat(at(xs, (pos + 32n : Nat), 32n), cat(at(xs, (pos + 96n : Nat), 116n), act_c(p, List.drop(&2, U32, xs, (pos + 820n : Nat)), 0n)))
+      onto(xs, (pos + 32n : Nat), 32n, onto(xs, (pos + 96n : Nat), 116n, act_c(p, List.drop(&2, U32, xs, (pos + 820n : Nat)), 0n)))
 
 def act_m(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
   match n:
     case 0n:
       Nil{}
     case 1n+p:
-      cat(at(xs, (pos + 212n : Nat), 512n), act_m(p, List.drop(&2, U32, xs, (pos + 820n : Nat)), 0n))
+      onto(xs, (pos + 212n : Nat), 512n, act_m(p, List.drop(&2, U32, xs, (pos + 820n : Nat)), 0n))
 
 def act_n(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
   match n:
     case 0n:
       Nil{}
     case 1n+p:
-      cat(at(xs, pos, 32n), cat(at(xs, (pos + 64n : Nat), 32n), cat(at(xs, (pos + 724n : Nat), 96n), act_n(p, List.drop(&2, U32, xs, (pos + 820n : Nat)), 0n))))
+      onto(xs, pos, 32n, onto(xs, (pos + 64n : Nat), 32n, onto(xs, (pos + 724n : Nat), 96n, act_n(p, List.drop(&2, U32, xs, (pos + 820n : Nat)), 0n))))
 
 def p_bundle(f: Fmt) -> B.P4:
   match f:
@@ -405,7 +420,7 @@ def bnd_digest_any(any: Bool, +xs: +List<U32>, b: Bnd) -> +List<U32>:
     case True{}:
       Bnd{+f, +n, +acts, +tail, _, _} = b
       B.hash32(p_bundle(f), cat(B.hash32(p_c(f), act_c(n, xs, acts)), cat(B.hash32(p_m(f), act_m(n, xs, acts)),
-        cat(B.hash32(p_n(f), act_n(n, xs, acts)), cat(at(xs, tail, 9n), anchor_in_txid(f, at(xs, (tail + 9n : Nat), 32n)))))))
+        cat(B.hash32(p_n(f), act_n(n, xs, acts)), onto(xs, tail, 9n, anchor_in_txid(f, at(xs, (tail + 9n : Nat), 32n)))))))
     case False{}:
       Bnd{+f, _, _, _, _, _} = b
       B.hash32(p_bundle(f), Nil{})

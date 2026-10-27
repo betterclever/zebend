@@ -4,6 +4,10 @@
 # byte-identical to the verified header at its height, and the txids hash to its merkle root.
 #
 # Usage: blockdelta <window.bin>
+#   (fullnode/fast: node/wire's curve-point decodings are deferred: ../wire/txv.bend only
+#   consumes the 32 bytes, pts.bend lists the same fields and checks them in one batch per
+#   part without square roots; SHA-256 and ZIP 244 copy each byte once (sha.bend,
+#   zip244.bend). Output is identical to fullnode/bend/delta.bend's, see fast/README.md.)
 #   window.bin: records until EOF: u32 LE height | 1487-byte verified header | u32 LE length | block
 # Every block first goes through node/wire's hardened validator (blk.bend parse_capped:
 # header form, canonical capped CompactSizes, every tx well-formed for its version, exact
@@ -11,10 +15,12 @@
 import Base
 import ./parse.bend as P
 import ../../node/wire/hb.bend as H
-import ../../node/wire/blk.bend as KB
+import ../wire/blk.bend as KB
+import ./pts.bend as T
 import ../../node/block/block.bend as K
 import ./zip244.bend as Z
 import ../../node/block/sha256.bend as S
+import ./sha.bend as S2
 import ../../node/block/bytes.bend as Y
 import ../../node/block/util.bend as U
 import ../../halo2/lib/words.bend as Wd
@@ -30,7 +36,7 @@ type QR is Data:
   QR{q: L4, r: U32}
 
 type BR is Data:
-  BR{ids: List<&2, +List<U32>>, out: String}
+  BR{ids: List<&2, +List<U32>>, out: String, pts: +List<T.Pt>}
 
 # A record header: height, verified header, block length, at offset off.
 type Hd is Data:
@@ -329,49 +335,226 @@ def txid_sel(v5: Bool, +c: P.C, +size: U32) -> +List<U32>:
     case True{}:
       Z.txid56(P.c_xs(c))
     case False{}:
-      S.hash_d(P.take(c, size))
+      S2.hash_d_n(P.c_xs(c), size)
 
 def br_ids(r: BR) -> List<&2, +List<U32>>:
-  BR{+i, _} = r
+  BR{+i, _, _} = r
   i
 
 def br_out(r: BR) -> String:
-  BR{_, +o} = r
+  BR{_, +o, _} = r
   o
 
-def txs(n: Nat, +k: U32, +c: P.C) -> BR:
+def br_pts(r: BR) -> +List<T.Pt>:
+  BR{_, _, +p} = r
+  p
+
+# Also collects the transaction's curve points (pts.bend) for the batched check.
+def txs(n: Nat, +b: U32, +k: U32, +c: P.C) -> BR:
   match n:
     case 0n:
-      BR{Nil{}, ""}
+      BR{Nil{}, "", Nil{}}
     case 1n+m:
       +t = P.tx(c)
       +size = P.tx_size(t)
       +id = txid_sel(U32.is_ge(P.tx_ver(t), 5), c, size)
-      +rest = txs(m, (k + 1 : U32), P.skip(c, size))
-      BR{id <> br_ids(rest), tx_lines(k, id, t) ++ br_out(rest)}
+      +rest = txs(m, b, (k + 1 : U32), P.skip(c, size))
+      BR{id <> br_ids(rest), tx_lines(k, id, t) ++ br_out(rest), T.tx(b, c, br_pts(rest))}
 
-def report(+h: U32, +expected: +List<U32>, +blk: +List<U32>) -> String:
+# A block the (structural) wire validator accepted: its lines and its curve points.
+type Rep is Data:
+  Rep{out: String, pts: +List<T.Pt>}
+
+def report(+b: U32, +h: U32, +expected: +List<U32>, +blk: +List<U32>) -> Rep:
   +hdr = H.take(blk, 1487)
   +c = P.skip(P.start(blk), 1487)
   +n = P.cs(c)
-  +r = txs(U32.to_nat(P.cs_v(n)), 0, P.cs_c(n))
+  +r = txs(U32.to_nat(P.cs_v(n)), b, 0, P.cs_c(n))
   +mr = K.merkle_root(br_ids(r))
-  "block " ++ U32.show(h) ++ " " ++ hexd(S.hash_d(hdr)) ++ " " ++ hexd(H.take(H.drop(hdr, 4), 32))
+  Rep{"block " ++ U32.show(h) ++ " " ++ hexd(S2.hash_d_n(hdr, 1487)) ++ " " ++ hexd(H.take(H.drop(hdr, 4), 32))
     ++ " time " ++ U32.show(H.le32(H.drop(hdr, 100))) ++ " bits " ++ hex8(H.le32(H.drop(hdr, 104)))
     ++ " size " ++ U32.show(H.length(blk)) ++ " txs " ++ U32.show(P.cs_v(n))
     ++ " header " ++ verdict(Y.is_eq(hdr, expected))
     ++ " merkle " ++ verdict(Y.is_eq(mr, H.take(H.drop(hdr, 36), 32))) ++ "\n"
-    ++ br_out(r) ++ "end " ++ U32.show(h)
+    ++ br_out(r) ++ "end " ++ U32.show(h), br_pts(r)}
 
-def gated(m: Maybe<&2, U32>, +h: U32, +expected: +List<U32>, +blk: +List<U32>) -> String:
+def invalid(+h: U32) -> String:
+  "block " ++ U32.show(h) ++ " INVALID wire\nend " ++ U32.show(h)
+
+# One block's result before the point check: ok = the structural validator accepted it.
+type Blk is Data:
+  Blk{h: U32, ok: Bool, out: String}
+
+type Acc is Data:
+  Acc{bs: +List<Blk>, pts: +List<T.Pt>, n: U32}
+
+def acc_ok(r: Rep, +h: U32, a: Acc) -> Acc:
+  Rep{+out, +p} = r
+  Acc{+bs, +ps, +n} = a
+  Acc{Blk{h, True{}, out} <> bs, List.append(&2, T.Pt, p, ps), (n + 1 : U32)}
+
+def acc_bad(+h: U32, a: Acc) -> Acc:
+  Acc{+bs, +ps, +n} = a
+  Acc{Blk{h, False{}, ""} <> bs, ps, (n + 1 : U32)}
+
+def acc_n(a: Acc) -> U32:
+  Acc{_, _, +n} = a
+  n
+
+def acc_add(m: Maybe<&2, U32>, +h: U32, +expected: +List<U32>, +blk: +List<U32>, +a: Acc) -> Acc:
   match m:
     case Some{_}:
-      report(h, expected, blk)
+      acc_ok(report(acc_n(a), h, expected, blk), h, a)
     case None{}:
-      "block " ++ U32.show(h) ++ " INVALID wire\nend " ++ U32.show(h)
+      acc_bad(h, a)
 
-def block_out(+h: U32, +expected: +List<U32>, +blk: +List<U32>) -> String:
-  gated(KB.parse_capped(blk), h, expected, blk)
+# ---------------------------------------------------------------- the batched point check
+
+type PT is Data:
+  Leaf{ps: +List<T.Pt>}
+  Node{l: PT, r: PT}
+
+type RT is Data:
+  RLeaf{bs: +List<U32>}
+  RNode{l: RT, r: RT}
+
+def bad_sel(ok: Bool, +b: U32, acc: +List<U32>) -> +List<U32>:
+  match ok:
+    case True{}:
+      acc
+    case False{}:
+      b <> acc
+
+# Indexes of the blocks owning a point that fails (tail-recursive: GPU lane stacks).
+def leaf_check(ps: +List<T.Pt>, acc: +List<U32>) -> +List<U32>:
+  match ps:
+    case Nil{}:
+      acc
+    case Con{p, t}:
+      T.Pt{+b, k, +w} = p
+      leaf_check(t, bad_sel(T.pt_ok(k, w), b, acc))
+
+def check(+k: Nat, t: PT) -> RT:
+  match k t:
+    case _ Leaf{ps}:
+      RLeaf{leaf_check(ps, Nil{})}
+    case 1n+j Node{l, r}:
+      a b = check(j, l) check(j, r)
+      RNode{a, b}
+    case _ _:
+      RLeaf{Nil{}}
+
+def flatten(t: RT, acc: +List<U32>) -> +List<U32>:
+  match t:
+    case RLeaf{bs}:
+      List.append(&2, U32, bs, acc)
+    case RNode{l, r}:
+      flatten(l, flatten(r, acc))
+
+def leaf_size(c: Bool, +base: Nat) -> Nat:
+  match c:
+    case True{}:
+      1n+base
+    case False{}:
+      base
+
+def leaves(k: Nat, +base: Nat, +extra: Nat, ps: +List<T.Pt>) -> +List<PT>:
+  match k:
+    case 0n:
+      Nil{}
+    case 1n+p:
+      +p2 = ps
+      +sz = leaf_size(Nat.is_lt(0n, extra), base)
+      Leaf{List.take(&2, T.Pt, p2, sz)} <> leaves(p, base, Nat.sub(extra, 1n), List.drop(&2, T.Pt, p2, sz))
+
+def pair_up(xs: +List<PT>) -> +List<PT>:
+  match xs:
+    case Con{a, Con{b, rest}}:
+      Node{a, b} <> pair_up(rest)
+    case Con{a, Nil{}}:
+      [a]
+    case Nil{}:
+      Nil{}
+
+def levels(k: Nat, xs: +List<PT>) -> +List<PT>:
+  match k:
+    case 0n:
+      xs
+    case 1n+p:
+      levels(p, pair_up(xs))
+
+def root(xs: +List<PT>) -> PT:
+  match xs:
+    case Con{t, _}:
+      t
+    case Nil{}:
+      Leaf{Nil{}}
+
+# Depth: the largest d <= dmax with 2^(d+1) <= n (at least 2 points per leaf); more: d + 1 fits.
+def depth_of(fuel: Nat, more: Bool, +d: Nat, +n: Nat) -> Nat:
+  match fuel more:
+    case 0n _:
+      d
+    case 1n+p False{}:
+      d
+    case 1n+p True{}:
+      depth_of(p, Nat.is_le(Nat.pow(2n, 1n+(1n+(1n+d))), n), 1n+d, n)
+
+# The batch, sequentially on the CPU (one process per window part is the parallelism).
+# gpu_variant.py writes delta_gpu.bend, which runs it as a balanced tree under `check!`.
+def bad_blocks(any: Bool, +dmax: Nat, +ps: +List<T.Pt>) -> +List<U32>:
+  match any:
+    case False{}:
+      Nil{}
+    case True{}:
+      leaf_check(ps, Nil{})
+
+def member(xs: +List<U32>, +x: U32) -> Bool:
+  match xs:
+    case Nil{}:
+      False{}
+    case Con{+y, t}:
+      U32.is_eq(x, y) || member(t, x)
+
+def nil_pts(xs: +List<T.Pt>) -> Bool:
+  match xs:
+    case Nil{}:
+      True{}
+    case Con{_, _}:
+      False{}
+
+def line_sel(ok: Bool, +h: U32, +out: String) -> String:
+  match ok:
+    case True{}:
+      out
+    case False{}:
+      invalid(h)
+
+def blk_line(b: Blk, +ok_pts: Bool) -> String:
+  Blk{+h, +ok, +out} = b
+  line_sel(ok && ok_pts, h, out)
+
+# Blocks in window order (bs is newest first); i counts from the last block's index down.
+def emit(bs: +List<Blk>, +bad: +List<U32>, +i: U32, acc: +List<String>) -> +List<String>:
+  match bs:
+    case Nil{}:
+      acc
+    case Con{b, t}:
+      emit(t, bad, (i - 1 : U32), blk_line(b, Bool.not(member(bad, i))) <> acc)
+
+def print_all(xs: +List<String>) -> IO(Unit):
+  match xs:
+    case Nil{}:
+      IO.pure(Unit, Unit{})
+    case Con{s, t}:
+      do IO<Unit>:
+        IO.print(s)
+        print_all(t)
+
+def finish(a: Acc, +dmax: Nat) -> IO(Unit):
+  Acc{+bs, +ps, +n} = a
+  +bad = bad_blocks(Bool.not(nil_pts(ps)), dmax, ps)
+  print_all(emit(bs, bad, (n - 1 : U32), Nil{}))
 
 # ---------------------------------------------------------------- the window file
 
@@ -404,33 +587,45 @@ def hd_sel(full: Bool, +bs: +List<U32>, +off: U32) -> Hd:
 def head_of(+bs: +List<U32>, +off: U32) -> Hd:
   hd_sel(U32.is_eq(H.length(bs), 1495), bs, off)
 
-def loop(fuel: Nat, st: Hd, +path: String) -> IO(Unit):
+def block_in(+h: U32, +expected: +List<U32>, +blk: +List<U32>, +a: Acc) -> Acc:
+  acc_add(KB.parse_capped(blk), h, expected, blk, a)
+
+def loop(fuel: Nat, st: Hd, +path: String, a: Acc, +dmax: Nat) -> IO(Unit):
   match fuel st:
     case 0n _:
-      IO.pure(Unit, Unit{})
+      finish(a, dmax)
     case 1n+p Stop{}:
-      IO.pure(Unit, Unit{})
+      finish(a, dmax)
     case 1n+p Rec{+h, +exp, +blen, +off}:
       +next = (off + 1495 + blen : U32)
       do IO<Unit>:
         blk : +List<U32> <- read_at(path, (off + 1495 : U32), blen)
-        IO.print(block_out(h, exp, blk))
+        a2 : Acc = block_in(h, exp, blk, a)
         nh : +List<U32> <- read_at(path, next, 1495)
-        loop(p, head_of(nh, next), path)
+        loop(p, head_of(nh, next), path, a2, dmax)
 
-def path_of(xs: List<String>) -> String:
+type Args is Data:
+  Args{path: String, d: Nat}
+
+def num(s: String) -> U32:
+  Maybe.default(&2, U32, U32.read(s), 14)
+
+def args_of(xs: List<String>) -> Args:
   match xs:
+    case Con{_, Con{p, Con{d, _}}}:
+      Args{p, U32.to_nat(num(d))}
     case Con{_, Con{p, _}}:
-      p
+      Args{p, 14n}
     case _:
-      ""
+      Args{"", 14n}
 
-def run(+path: String) -> IO(Unit):
+def run(a: Args) -> IO(Unit):
+  Args{+path, +d} = a
   do IO<Unit>:
     h0 : +List<U32> <- read_at(path, 0, 1495)
-    loop(1000000n, head_of(h0, 0), path)
+    loop(1000000n, head_of(h0, 0), path, Acc{Nil{}, Nil{}, 0}, d)
 
 def main() -> IO(Unit):
   do IO<Unit>:
     xs : List<String> <- IO.args()
-    run(path_of(xs))
+    run(args_of(xs))
