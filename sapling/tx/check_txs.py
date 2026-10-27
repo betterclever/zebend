@@ -92,8 +92,9 @@ def sighashes_from_chunks():
 
 def raw(start, count, slice_=2000):
     recs = read_raw(D / "sig_raw.bin", start, count)
-    skipped = [r for r in recs if r[2][:4] == b"\x05\x00\x00\x80" and has_tin(r[2])]
-    recs = [r for r in recs if not (r[2][:4] == b"\x05\x00\x00\x80" and has_tin(r[2]))]
+    v56 = (b"\x05\x00\x00\x80", b"\x06\x00\x00\x80")
+    skipped = [r for r in recs if r[2][:4] in v56 and has_tin(r[2])]
+    recs = [r for r in recs if not (r[2][:4] in v56 and has_tin(r[2]))]
     rust_sh = sighashes_from_chunks()
     st = dict(n=0, v4=0, v5=0, txid=0, sh_cmp=0, sh_ok=0, cons=0, sa=0, sa_ok=0, bd=0, bd_ok=0)
     feat = dict(v4_joinsplit=0, v4_tin=0, v4_spends_ge2=0, v4_outputs_ge3=0)
@@ -116,8 +117,8 @@ def raw(start, count, slice_=2000):
             if p is None:
                 bad.append(("no output", h, txid.hex()))
                 continue
-            _, ver, btxid, bsh, ns, no, vlo, vhi, cons, verd = (p + [""])[:10]
-            st["v" + ver] += 1
+            _, ver, btxid, bsh, ns, no, vlo, vhi, cons, nj, verd = (p + [""])[:11]
+            st["v" + ver] = st.get("v" + ver, 0) + 1
             if btxid in (txid.hex(), txid[::-1].hex()):
                 st["txid"] += 1
             else:
@@ -164,7 +165,7 @@ def sample():
         if p is None:
             bad.append(("no output", r[0]))
             continue
-        _, ver, btxid, bsh, ns, no, vlo, vhi, cons, verd = (p + [""])[:10]
+        _, ver, btxid, bsh, ns, no, vlo, vhi, cons, nj, verd = (p + [""])[:11]
         n, h, v, br, txid, sh, ens, eno, evb = r[:9]
         ok["txid"] += btxid in (txid, bytes.fromhex(txid)[::-1].hex())
         ok["sighash"] += bsh == sh
@@ -237,7 +238,7 @@ def tamper(start, count):
     tot = {"enc": 0, "sig0": 0, "vb": 0}
     for i, (kind, h, txid, b, q) in enumerate(cases):
         p = lines[i]
-        btxid, bsh, verd = p[2], p[3], p[9]
+        btxid, bsh, verd = p[2], p[3], p[10]
         tot[kind] += 1
         changed_id = btxid not in (txid.hex(), txid[::-1].hex())
         if kind in ("enc", "vb"):

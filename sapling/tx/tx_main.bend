@@ -1,3 +1,4 @@
+# tx_main TXS [RECS]: (RECS: also write the Groth16 raw-field proof records, see stx.bend)
 # tx_main TXS: every transaction of a batch file, in parallel. TXS = u32 count, then per tx:
 #   u32 height | u32 len | raw tx | u32 ctx_len | ctx
 # ctx (v5 with transparent inputs only, else empty) = node/tx's format: u32 len || spent
@@ -69,12 +70,16 @@ def ctx_scripts(+c: +List<U32>) -> +List<U32>:
   +spos = (alen + 4n : Nat)
   NT.at(c, (spos + 4n : Nat), U32.to_nat(NT.u32_at(c, spos)))
 
-def one(+i: Nat, r: Rec) -> String:
+type Out is Data:
+  Out{line: String, recs: +List<U32>}
+
+def one(+i: Nat, r: Rec) -> Out:
   Rec{+h, +tx, +ctx} = r
-  Nat.show(i) ++ " " ++ X.line(X.run(tx, h, ctx_amounts(ctx), ctx_scripts(ctx)))
+  +res = X.run(tx, h, ctx_amounts(ctx), ctx_scripts(ctx))
+  Out{Nat.show(i) ++ " " ++ X.line(res), X.recs_of(res)}
 
 # Balanced fork-join over the records: lines in input order.
-def all(+fuel: Nat, +cnt: Nat, +i0: Nat, +xs: +List<Rec>) -> +List<String>:
+def all(+fuel: Nat, +cnt: Nat, +i0: Nat, +xs: +List<Rec>) -> +List<Out>:
   match fuel cnt xs:
     case _ 0n _:
       Nil{}
@@ -83,18 +88,44 @@ def all(+fuel: Nat, +cnt: Nat, +i0: Nat, +xs: +List<Rec>) -> +List<String>:
     case 1n+f _ _:
       +h = Nat.div(cnt, 2n)
       a b = all(f, h, i0, List.take(&2, Rec, xs, h)) all(f, Nat.sub(cnt, h), (i0 + h : Nat), List.drop(&2, Rec, xs, h))
-      List.append(&2, String, a, b)
+      List.append(&2, Out, a, b)
     case _ _ _:
       Nil{}
 
-def show(xs: +List<String>) -> IO(Unit):
+def out_line(o: Out) -> String:
+  Out{l, _} = o
+  l
+
+def show(xs: +List<Out>) -> IO(Unit):
   match xs:
     case Nil{}:
       IO.pure(Unit, Unit{})
-    case Con{s, t}:
+    case Con{o, t}:
       do IO<Unit>:
-        IO.print(s)
+        IO.print(out_line(o))
         show(t)
+
+def all_recs(xs: +List<Out>) -> +List<U32>:
+  match xs:
+    case Nil{}:
+      Nil{}
+    case Con{Out{_, r}, t}:
+      List.append(&2, U32, r, all_recs(t))
+
+def close_w(r: File & Result<&1, &1, U32 & String, Unit>) -> IO(Unit):
+  (g, _) = r
+  File.close(g)
+
+
+def write_recs(xs: List<String>, +out: +List<Out>) -> IO(Unit):
+  match xs:
+    case Con{q, _}:
+      do IO<Unit>:
+        g : File <- IO.try(File, File.open(q, "w"))
+        r : File & Result<&1, &1, U32 & String, Unit> <- File.write_bytes(g, all_recs(out))
+        close_w(r)
+    case _:
+      IO.pure(Unit, Unit{})
 
 def bytes_of(r: File & Result<&1, &1, U32 & String, List<&2, U32>>) -> +List<U32>:
   (_, res) = r
@@ -106,7 +137,7 @@ def bytes_of(r: File & Result<&1, &1, U32 & String, List<&2, U32>>) -> +List<U32
 
 def go(xs: List<String>) -> IO(Unit):
   match xs:
-    case Con{_, Con{p, _}}:
+    case Con{_, Con{p, rest}}:
       do IO<Unit>:
         f : File <- IO.try(File, File.open(p, "r"))
         r : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_bytes(f, 268435456)
@@ -115,11 +146,12 @@ def go(xs: List<String>) -> IO(Unit):
         +rs : +List<Rec> = recs(n, RR{None{}, List.drop(&2, U32, bs, 4n)}, Nil{})
         t0x : Nat <- IO.now()
         +t0 : Nat = t0x
-        +out : +List<String> = all(32n, n, 0n, rs)
-        +len : Nat = List.length(&2, String, out)
+        +out : +List<Out> = all(32n, n, 0n, rs)
+        +len : Nat = List.length(&2, Out, out)
         t1x : Nat <- IO.now()
         +t1 : Nat = t1x
         show(out)
+        write_recs(rest, out)
         IO.print("TOTAL txs " ++ Nat.show(len) ++ " ms " ++ Nat.show(Nat.sub(t1, t0)))
     case _:
       IO.print("usage: tx_main TXS")

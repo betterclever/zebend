@@ -292,17 +292,67 @@ def cons5(+xs: +List<U32>, s: V5) -> Bool:
   V5{+ns, +sp, +no, +op, _} = s
   spends_ok(ns, adv(xs, sp), 96n, 64n) && outs_ok(no, adv(xs, op), 756n)
 
+# ------------------------------------------------------------------ Groth16 records
+
+# Proof records for sapling/groth16's verify_raw_main / batch_main (raw-field format):
+# u32 kind (0 spend, 1 output) | u32 tag (0) | proof[192] | spend: cv anchor nf rk /
+# output: cv cmu epk (32 bytes each), in transaction order (spends, then outputs).
+def hdr(+kind: U32, tail: +List<U32>) -> +List<U32>:
+  B.b2_w4(kind, B.b2_w4(0, tail))
+
+# v4 spend (384): cv anchor nf rk at 0..128, proof at 128.
+def sp_recs4(+n: Nat, +seg: +List<U32>) -> +List<U32>:
+  match n:
+    case 0n:
+      Nil{}
+    case 1n+p:
+      hdr(0, cat(at(seg, 128n, 192n), cat(at(seg, 0n, 128n), sp_recs4(p, adv(seg, 384n)))))
+
+# v4 output (948): cv cmu epk at 0..96, proof at 756.
+def out_recs4(+n: Nat, +seg: +List<U32>) -> +List<U32>:
+  match n:
+    case 0n:
+      Nil{}
+    case 1n+p:
+      hdr(1, cat(at(seg, 756n, 192n), cat(at(seg, 0n, 96n), out_recs4(p, adv(seg, 948n)))))
+
+def recs4(+xs: +List<U32>, v: V4) -> +List<U32>:
+  V4{_, _, _, _, _, +ns, +sp, +no, +op, _, _, _} = v
+  cat(sp_recs4(ns, adv(xs, sp)), out_recs4(no, adv(xs, op)))
+
+# v5 spend (96: cv nf rk), shared anchor, proofs contiguous (192 each).
+def sp_recs5(+n: Nat, +seg: +List<U32>, +anchor: +List<U32>, +prf: +List<U32>) -> +List<U32>:
+  match n:
+    case 0n:
+      Nil{}
+    case 1n+p:
+      hdr(0, cat(at(prf, 0n, 192n), cat(at(seg, 0n, 32n), cat(anchor, cat(at(seg, 32n, 64n), sp_recs5(p, adv(seg, 96n), anchor, adv(prf, 192n)))))))
+
+# v5 output (756: cv cmu epk ...), proofs contiguous.
+def out_recs5(+n: Nat, +seg: +List<U32>, +prf: +List<U32>) -> +List<U32>:
+  match n:
+    case 0n:
+      Nil{}
+    case 1n+p:
+      hdr(1, cat(at(prf, 0n, 192n), cat(at(seg, 0n, 96n), out_recs5(p, adv(seg, 756n), adv(prf, 192n)))))
+
+def recs5(+xs: +List<U32>, s: V5) -> +List<U32>:
+  V5{+ns, +sp, +no, +op, +ae} = s
+  +sprf = (ae + 8n + if_pos(ns, 32n) : Nat)
+  +oprf = (sprf + (ns * 256n : Nat) : Nat)
+  cat(sp_recs5(ns, adv(xs, sp), at(xs, (ae + 8n : Nat), 32n), adv(xs, sprf)), out_recs5(no, adv(xs, op), adv(xs, oprf)))
+
 # ------------------------------------------------------------------ one transaction
 
 # What a transaction yields: version, txid, sighash, spend/output counts, valueBalance
 # (lo, hi words), RedJubjub items (spend-auth first, then binding).
 type R is Data:
-  R{ver: U32, txid: +List<U32>, sighash: +List<U32>, ns: Nat, no: Nat, vlo: U32, vhi: U32, cons: Bool, items: +List<G.It>}
+  R{ver: U32, txid: +List<U32>, sighash: +List<U32>, ns: Nat, no: Nat, vlo: U32, vhi: U32, cons: Bool, nj: Nat, items: +List<G.It>, recs: +List<U32>}
 
 def run4v(+xs: +List<U32>, +height: U32, +v: V4) -> R:
-  V4{_, _, _, _, +lt, +ns, _, +no, _, _, _, _} = v
+  V4{_, _, _, _, +lt, +ns, _, +no, _, +nj, _, _} = v
   +sh = sighash4(xs, v, digests4(xs, v), branch_of(height))
-  R{4, txid4(xs, v), sh, ns, no, NT.u32_at(xs, (lt + 8n : Nat)), NT.u32_at(xs, (lt + 12n : Nat)), cons4(xs, v), items4(xs, v, w(sh))}
+  R{4, txid4(xs, v), sh, ns, no, NT.u32_at(xs, (lt + 8n : Nat)), NT.u32_at(xs, (lt + 12n : Nat)), cons4(xs, v), nj, items4(xs, v, w(sh)), recs4(xs, v)}
 
 def run4(+xs: +List<U32>, +height: U32) -> R:
   run4v(xs, height, parse4(xs))
@@ -316,15 +366,54 @@ def vb5(any: Bool, +xs: +List<U32>, +ae: Nat, +hi: Bool) -> U32:
     case _ _:
       0
 
-def txid5(+xs: +List<U32>, +tx: NT.Tx) -> +List<U32>:
-  NT.Tx{+v6, +branch, _, _, _, _, +sap, +orch, +iron} = tx
-  +hd = B.hash32(B.P.ZTxIdHeadersHash(), at(xs, 0n, 20n))
-  NT.root(v6, branch, hd, NT.t_txid(NT.t_digests(xs, tx)), NT.sap_digest(sap), NT.bnd_digest(xs, orch), NT.bnd_digest(xs, iron))
+# Linear transparent digests (node/tx's prevouts/sequences/outputs index the whole byte list
+# per input, quadratic for transactions with hundreds of inputs). The input and output
+# lists are walked as segments, once each.
+def txin_len(+seg: +List<U32>) -> Nat:
+  (36n + NT.cs_size(seg, 36n) + NT.cs_val(seg, 36n) + 4n : Nat)
 
-def sighash5(+xs: +List<U32>, +tx: NT.Tx, +amounts: +List<U32>, +scripts: +List<U32>) -> +List<U32>:
+def pv_lin(+n: Nat, +seg: +List<U32>) -> +List<U32>:
+  match n:
+    case 0n:
+      Nil{}
+    case 1n+p:
+      cat(at(seg, 0n, 36n), pv_lin(p, adv(seg, txin_len(seg))))
+
+def sq_lin(+n: Nat, +seg: +List<U32>) -> +List<U32>:
+  match n:
+    case 0n:
+      Nil{}
+    case 1n+p:
+      +l = txin_len(seg)
+      cat(at(seg, Nat.sub(l, 4n), 4n), sq_lin(p, adv(seg, l)))
+
+def txout_len(+seg: +List<U32>) -> Nat:
+  (8n + NT.cs_size(seg, 8n) + NT.cs_val(seg, 8n) : Nat)
+
+def out_lin(+n: Nat, +seg: +List<U32>) -> +List<U32>:
+  match n:
+    case 0n:
+      Nil{}
+    case 1n+p:
+      +l = txout_len(seg)
+      cat(at(seg, 0n, l), out_lin(p, adv(seg, l)))
+
+def t_digests_lin(+xs: +List<U32>, tx: NT.Tx) -> NT.TDig:
+  NT.Tx{_, _, +nvin, +vin0, +nvout, +vout0, _, _, _} = tx
+  NT.TDig{NT.nat_pos((nvin + nvout : Nat)),
+       B.hash32(B.P.ZTxIdPrevoutHash(), pv_lin(nvin, adv(xs, vin0))),
+       B.hash32(B.P.ZTxIdSequencHash(), sq_lin(nvin, adv(xs, vin0))),
+       B.hash32(B.P.ZTxIdOutputsHash(), out_lin(nvout, adv(xs, vout0)))}
+
+def txid5(+xs: +List<U32>, +tx: NT.Tx, +td: NT.TDig) -> +List<U32>:
   NT.Tx{+v6, +branch, _, _, _, _, +sap, +orch, +iron} = tx
   +hd = B.hash32(B.P.ZTxIdHeadersHash(), at(xs, 0n, 20n))
-  +ts = NT.t_sig(NT.has_t_inputs(xs, tx), NT.t_digests(xs, tx), amounts, scripts)
+  NT.root(v6, branch, hd, NT.t_txid(td), NT.sap_digest(sap), NT.bnd_digest(xs, orch), NT.bnd_digest(xs, iron))
+
+def sighash5(+xs: +List<U32>, +tx: NT.Tx, +td: NT.TDig, +amounts: +List<U32>, +scripts: +List<U32>) -> +List<U32>:
+  NT.Tx{+v6, +branch, _, _, _, _, +sap, +orch, +iron} = tx
+  +hd = B.hash32(B.P.ZTxIdHeadersHash(), at(xs, 0n, 20n))
+  +ts = NT.t_sig(NT.has_t_inputs(xs, tx), td, amounts, scripts)
   NT.root(v6, branch, hd, ts, NT.sap_digest(sap), NT.bnd_digest(xs, orch), NT.bnd_digest(xs, iron))
 
 def sap_start(+xs: +List<U32>, t: NT.Tx) -> Nat:
@@ -334,8 +423,9 @@ def sap_start(+xs: +List<U32>, t: NT.Tx) -> Nat:
 def run5s(+xs: +List<U32>, +tx: NT.Tx, +s: V5, +amounts: +List<U32>, +scripts: +List<U32>) -> R:
   V5{+ns, _, +no, _, +ae} = s
   +any = NT.nat_pos((ns + no : Nat))
-  +sh = sighash5(xs, tx, amounts, scripts)
-  R{5, txid5(xs, tx), sh, ns, no, vb5(any, xs, ae, False{}), vb5(any, xs, ae, True{}), cons5(xs, s), items5(xs, s, w(sh))}
+  +td = t_digests_lin(xs, tx)
+  +sh = sighash5(xs, tx, td, amounts, scripts)
+  R{(NT.u32_at(xs, 0n) .&. 255 : U32), txid5(xs, tx, td), sh, ns, no, vb5(any, xs, ae, False{}), vb5(any, xs, ae, True{}), cons5(xs, s), 0n, items5(xs, s, w(sh)), recs5(xs, s)}
 
 def run5t(+xs: +List<U32>, +tx: NT.Tx, +amounts: +List<U32>, +scripts: +List<U32>) -> R:
   run5s(xs, tx, sap5(xs, sap_start(xs, tx)), amounts, scripts)
@@ -372,8 +462,12 @@ def verdicts(xs: +List<G.It>) -> +List<Bool>:
     case Con{+x, t}:
       G.verify1(x) <> verdicts(t)
 
-# "v txid sighash ns no vb_lo vb_hi cons verdicts" (cons = 1: every description passes the
-# checks above; verdicts: RedJubjub, spend-auth then binding, 1 = valid).
+# "v txid sighash ns no vb_lo vb_hi cons nj verdicts" (cons = 1: every description passes the
+# checks above; nj: Sprout JoinSplits (v4); verdicts: RedJubjub, spend-auth then binding, 1 = valid).
 def line(r: R) -> String:
-  R{+ver, txid, sighash, +ns, +no, +vlo, +vhi, cons, items} = r
-  U32.show(ver) ++ " " ++ U.bhex(txid) ++ " " ++ U.bhex(sighash) ++ " " ++ Nat.show(ns) ++ " " ++ Nat.show(no) ++ " " ++ U32.show(vlo) ++ " " ++ U32.show(vhi) ++ " " ++ bits(cons <> Nil{}) ++ " " ++ bits(verdicts(items))
+  R{+ver, txid, sighash, +ns, +no, +vlo, +vhi, cons, +nj, items, _} = r
+  U32.show(ver) ++ " " ++ U.bhex(txid) ++ " " ++ U.bhex(sighash) ++ " " ++ Nat.show(ns) ++ " " ++ Nat.show(no) ++ " " ++ U32.show(vlo) ++ " " ++ U32.show(vhi) ++ " " ++ bits(cons <> Nil{}) ++ " " ++ Nat.show(nj) ++ " " ++ bits(verdicts(items))
+
+def recs_of(r: R) -> +List<U32>:
+  R{_, _, _, _, _, _, _, _, _, _, rs} = r
+  rs
