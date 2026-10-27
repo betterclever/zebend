@@ -24,7 +24,7 @@ import json, os, pickle, sqlite3, struct, time
 from pathlib import Path
 
 POOLS = ["sprout", "sapling", "orchard", "ironwood"]
-UNDO_DEPTH = 200
+UNDO_DEPTH = 600  # ZIP 218: nodes SHOULD support rollback of at least 600 blocks after NU7
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY, v TEXT);
