@@ -1,0 +1,16 @@
+# binaries (build with ./build.sh; see README)
+v/batch_main
+v/bundle_ba
+v/bundle_ba_nu62
+v/bundle_ba_prenu62
+v/loop_ba
+v/loop_bt
+v/loop_batch
+v/gtab_gen
+t/msm_main
+t/gtab_test
+t/smul_cmp
+# regenerable data: params copy + optional fixed-base table, MSM vectors, per-bundle verdict dumps
+data/
+t/vec/
+t/full_*.txt

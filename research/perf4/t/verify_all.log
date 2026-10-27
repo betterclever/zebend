@@ -1,0 +1,19 @@
+== batch: 42-bundle set, honest/tampered (no table, then with the .gtab table)
+CHECK PASS
+CHECK PASS
+== single verifier vs halo2 (run_bundles.py): post-NU6.3, NU6.2, pre-NU6.2 circuits
+42 bundles: bend accepts 21, rejects 21; agrees with halo2 on 42/42
+10 bundles: bend accepts 5, rejects 5; agrees with halo2 on 10/10
+8 bundles: bend accepts 4, rejects 4; agrees with halo2 on 8/8
+== -v traces (every intermediate) vs the deployed research/perf3/v64/bundle_ba
+traces identical: 42/42
+== MSM vs halo2 best_multiexp (random bases and scalars; t/vec from zcash/halo2/lib/vectors)
+T=1 batch-affine n 2048 c 9 mode 5 chunks 1 warm_ms 32 cold_ms 35 cold MATCH
+T=18 batch-affine n 2048 c 9 mode 5 chunks 1 warm_ms 5 cold_ms 4 cold MATCH
+T=1 batch-affine n 20000 c 9 mode 5 chunks 1 warm_ms 274 cold_ms 257 cold MATCH
+T=18 batch-affine n 20000 c 9 mode 5 chunks 1 warm_ms 35 cold_ms 27 cold MATCH
+T=1 batch-affine n 65536 c 9 mode 5 chunks 1 warm_ms 1012 cold_ms 871 cold MATCH
+T=18 batch-affine n 65536 c 9 mode 5 chunks 1 warm_ms 120 cold_ms 86 cold MATCH
+T=18 batch-affine n 262144 c 9 mode 5 chunks 1 warm_ms 510 cold_ms 369 cold MATCH
+msm9 batch-affine n 2048 c 9 mode 2 chunks 1 warm_ms 4 cold_ms 4 cold MATCH
+gtab n 2048 c 9 tasks 16 msm_ms_x10 37 match 10/10
