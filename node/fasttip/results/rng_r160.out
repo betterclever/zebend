@@ -1,0 +1,6 @@
+fast: fast: 160 blocks, latency median 0.080 s, p90 0.147 s, max 0.683 s  [load average at start [10.2, 17.2, 36.6]]
+DIGEST bbfc4f07c5884fb6cdf923bb313c317489934e499df522d538baf040f28f738c
+base: base: 160 blocks, latency median 4.581 s, p90 4.922 s, max 5.247 s  [load average at start [14.8, 15.6, 32.0]]
+DIGEST bbfc4f07c5884fb6cdf923bb313c317489934e499df522d538baf040f28f738c
+fast2: fast: 160 blocks, latency median 0.132 s, p90 0.223 s, max 1.187 s  [load average at start [40.4, 37.8, 32.3]]
+DIGEST bbfc4f07c5884fb6cdf923bb313c317489934e499df522d538baf040f28f738c

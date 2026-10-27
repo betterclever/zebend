@@ -1,0 +1,12 @@
+base: base: 40 blocks, latency median 4.889 s, p90 5.866 s, max 9.738 s
+DIGEST 652dbdcfb73594a2ebf8a2c453df70f465400f0e11010dc0cbd0891a9fa0f653
+fast: fast: 40 blocks, latency median 0.101 s, p90 0.266 s, max 0.347 s
+DIGEST 652dbdcfb73594a2ebf8a2c453df70f465400f0e11010dc0cbd0891a9fa0f653
+fast_noinproc: fast: 40 blocks, latency median 0.174 s, p90 0.394 s, max 1.778 s
+DIGEST 652dbdcfb73594a2ebf8a2c453df70f465400f0e11010dc0cbd0891a9fa0f653
+fast_noparallel: fast: 40 blocks, latency median 0.198 s, p90 0.439 s, max 0.687 s
+DIGEST 652dbdcfb73594a2ebf8a2c453df70f465400f0e11010dc0cbd0891a9fa0f653
+fast_nooverlap: fast: 40 blocks, latency median 0.224 s, p90 0.557 s, max 0.977 s
+DIGEST 652dbdcfb73594a2ebf8a2c453df70f465400f0e11010dc0cbd0891a9fa0f653
+fast_seq: fast: 40 blocks, latency median 0.232 s, p90 0.648 s, max 0.780 s
+DIGEST 652dbdcfb73594a2ebf8a2c453df70f465400f0e11010dc0cbd0891a9fa0f653

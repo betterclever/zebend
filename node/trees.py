@@ -27,7 +27,8 @@ Header check: for Sapling-era blocks before Heartwood (419,200 <= h < 903,000) t
 hashFinalSaplingRoot must equal the Bend root after the block. From Heartwood on the per-block
 Sapling/Orchard roots are committed through the ZIP 221 history tree (see history.py).
 """
-import json, re, struct, subprocess
+import json, os, re, struct, subprocess
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -37,6 +38,8 @@ TOOL = {"sapling": "sapling_frontier", "orchard": "orchard_frontier", "ironwood"
 DEPTH = {"sprout": 29, "sapling": 32, "orchard": 32, "ironwood": 32}
 SAPLING, HEARTWOOD = 419200, 903000
 EMPTY = {}  # pool -> empty tree root (printed by the Bend tools)
+PARALLEL_POOLS = os.environ.get("ZEBEND_PARALLEL_HOOKS", "1") == "1"  # fasttip (see advance)
+_POOL = ThreadPoolExecutor(len(TREE_POOLS), thread_name_prefix="trees")
 
 
 class AnchorFail(Exception):
@@ -88,13 +91,28 @@ class Trees:
         stores the window's Sprout JoinSplit verdicts in self.sprout_verdicts."""
         after = {}
         self.sprout_verdicts = None
-        for pool in TREE_POOLS:
-            if pool not in self.cur:
-                continue
-            if pool == "sprout":
-                after[pool] = self._advance_sprout(blocks, tag)
-            else:
-                after[pool] = self._advance(pool, blocks, tag)
+        pools = [p for p in TREE_POOLS if p in self.cur]
+        # fasttip: each pool's Bend tree program runs at the same time (each pool reads and writes
+        # only its own state, files and per-block keys); results and errors are taken in
+        # TREE_POOLS order, as the sequential loop did.
+        run = lambda pool: self._advance_sprout(blocks, tag) if pool == "sprout" else self._advance(pool, blocks, tag)
+        if PARALLEL_POOLS and len(pools) > 1:
+            futs = [(pool, _POOL.submit(run, pool)) for pool in pools]
+            errs = []
+            for pool, f in futs:
+                try:
+                    after[pool] = f.result()
+                except BaseException as e:
+                    errs.append(e)
+            if errs:
+                raise errs[0]
+            for b in blocks:  # per-block keys in the sequential insertion order (they are pickled into undo data)
+                for k in ("trees_before", "roots"):
+                    if k in b:
+                        b[k] = {p: b[k][p] for p in TREE_POOLS if p in b[k]}
+        else:
+            for pool in pools:
+                after[pool] = run(pool)
         for b in blocks:  # pre-Heartwood headers commit to the Sapling root directly
             h = b["height"]
             if "sapling" in after and SAPLING <= h < HEARTWOOD:

@@ -1,0 +1,172 @@
+--- a/node/sync.py
++++ b/node/sync.py
+@@ -34,6 +34,12 @@
+ HDR = 1487
+ BEND_TIMEOUT = int(os.environ.get("ZEBEND_BEND_TIMEOUT", 900))  # s per blockdelta part (<= 8 MB / 400 blocks)
+ VERIFIER_RETRIES = 3   # a window whose verifier gave no verdict (timeout, crash) is retried, not failed
++# node/fasttip: blocks pushed by peers, already header-checked in Bend and indexed (tipfeed.BlockBuffer),
++# read when the spool has nothing after the tip; its wait() replaces the idle 5 s sleep. None: as before.
++BLOCK_SOURCE = None
++# node/fasttip: at the tip (a window of fully validated blocks only) bin/rules + hooks run alongside the
++# note commitment trees, anchors and ZIP 221 history; errors are raised in the sequential order.
++OVERLAP = os.environ.get("ZEBEND_OVERLAP", "1") == "1"
+ 
+ 
+ def log(*a):
+@@ -349,6 +355,8 @@
+     """Read the next window after height `after` from the spool and run blockdelta on it.
+     Runs in a background thread while the previous window's rules and state commit run."""
+     recs, used = spool_records(after, args.window, args.window_mb << 20)
++    if not recs and BLOCK_SOURCE is not None:
++        recs = BLOCK_SOURCE.take(after, args.window, args.window_mb << 20)
+     if args.to is not None:
+         recs = [r for r in recs if r[0] <= args.to]
+     if recs and recs[0][0] <= last_cp < recs[-1][0]:
+@@ -439,6 +447,7 @@
+     # window's blockdelta parts (measured: 2 s of a 4.3 s spam window was that wait).
+     ex_rules = ThreadPoolExecutor(args.jobs)
+     prep = ThreadPoolExecutor(1)          # extraction of the next window
++    side = ThreadPoolExecutor(1)          # fasttip OVERLAP: bin/rules + hooks of the window being checked
+     wr = S.Writer(STATE, cache_mb=args.writer_cache_mb)
+     t0, done, nbytes, last_log = time.time(), 0, 0, 0
+     nxt = None
+@@ -525,7 +534,10 @@
+                 drain()
+                 if args.once:
+                     break
+-                time.sleep(5)
++                if BLOCK_SOURCE is not None:
++                    BLOCK_SOURCE.wait(5)
++                else:
++                    time.sleep(5)
+                 continue
+             if not (args.to is not None and recs[-1][0] >= args.to) and not args.once:
+                 nxt = (recs[-1][0], prep.submit(prepare, recs[-1][0], args, last_cp, ex))  # overlap: next window
+@@ -559,25 +571,59 @@
+             st.prefetch(want)
+             t_pre = time.time() - tr
+             raw = dict(recs)
+-            # note commitment trees (Bend): per-block roots, pre-Heartwood header check, undo state
+-            prev_root = {p: c["root"] for p, c in nct.cur.items()}
+-            tt = time.time()
+-            try:
+-                after = nct.advance(blocks, raw, recs[0][0])
+-            except T.AnchorFail as e:
+-                raise Fail(str(e))
+-            t_trees = time.time() - tt
+             full = [b for b in blocks if b["height"] > last_cp]
+-            if full:
+-                if not st.addr_index:
+-                    drain()
+-                    ta = time.time()
+-                    st.build_addr_index()
+-                    log(f"  address index rebuilt from the UTXO set ({time.time() - ta:.0f} s)")
+-                tt = time.time()
+-                anchor_checks(full, st, log, idx, nct, after, prev_root)
+-                t_trees += time.time() - tt
+             cp_part = [b for b in blocks if b["height"] <= last_cp]
++
++            def validate_full(pools_in):
++                for attempt in range(VERIFIER_RETRIES + 1):
++                    try:
++                        return rules.validate(full, st, raw, log, mode="full", pools=pools_in, jobs=args.jobs, ex=ex_rules)
++                    except rules.VerifierError as e:  # no verdict is not a verdict: retry, then halt
++                        if attempt == VERIFIER_RETRIES:
++                            raise
++                        log(f"  verifier error ({e}); retrying the window ({attempt + 1}/{VERIFIER_RETRIES})")
++                        time.sleep(10 * (attempt + 1))
++
++            # fasttip (OVERLAP): bin/rules + hooks need neither the trees nor the history, and the
++            # sequential code gives them the pools carried from the last window when there is no
++            # audit part: start them now. Their result is taken where it was before; if the trees,
++            # anchors or history fail first, that error is raised (after they finish), as before.
++            fut = side.submit(validate_full, pools_cur) if (OVERLAP and full and not cp_part and st.addr_index) else None
++            try:
++                # note commitment trees (Bend): per-block roots, pre-Heartwood header check, undo state
++                prev_root = {p: c["root"] for p, c in nct.cur.items()}
++                tt = time.time()
++                try:
++                    after = nct.advance(blocks, raw, recs[0][0])
++                except T.AnchorFail as e:
++                    raise Fail(str(e))
++                t_trees = time.time() - tt
++                if full:
++                    if not st.addr_index:
++                        drain()
++                        ta = time.time()
++                        st.build_addr_index()
++                        log(f"  address index rebuilt from the UTXO set ({time.time() - ta:.0f} s)")
++                    tt = time.time()
++                    anchor_checks(full, st, log, idx, nct, after, prev_root)
++                    t_trees += time.time() - tt
++                hist_err = None
++                if fut is not None and blocks[-1]["height"] >= args.history_from:
++                    # the history check runs before the rules verdict is read; its error (if any) is
++                    # raised after the rules', where the sequential code ran it
++                    tt = time.time()
++                    try:
++                        hs = hist.run([b for b in blocks if b["height"] >= args.history_from], raw, after, recs[0][0])
++                    except HI.HistoryFail as e:
++                        hist_err = e
++                    t_hist = time.time() - tt
++            except BaseException:
++                if fut is not None:
++                    try:
++                        fut.result()
++                    except BaseException:
++                        pass
++                raise
+             extra = {}
+             if cp_part:
+                 # Checkpointed blocks: the rules run in audit mode. They decide nothing (the checkpoint
+@@ -590,30 +636,25 @@
+                     extra["audit_disagreements"] = audit_n
+                     log(f"  AUDIT: rules disagree with checkpointed blocks: {dis[:3]} (total {audit_n})")
+             if full:
+-                for attempt in range(VERIFIER_RETRIES + 1):
+-                    try:
+-                        e2 = rules.validate(full, st, raw, log, mode="full", pools=extra.get("pools", pools_cur),
+-                                            jobs=args.jobs, ex=ex_rules)
+-                        break
+-                    except rules.VerifierError as e:  # no verdict is not a verdict: retry, then halt
+-                        if attempt == VERIFIER_RETRIES:
+-                            raise
+-                        log(f"  verifier error ({e}); retrying the window ({attempt + 1}/{VERIFIER_RETRIES})")
+-                        time.sleep(10 * (attempt + 1))
++                e2 = fut.result() if fut is not None else validate_full(extra.get("pools", pools_cur))
+                 rs = e2["rules"]
+                 log(f"  full validation {full[0]['height']}..{full[-1]['height']}: every consensus rule PASS "
+                     f"(turnstile {rs['turnstile']}); hooks: {rs['hooks']}")
+                 extra.update(e2)
+             if nct.cur:
+                 extra["trees"] = {p: dict(c) for p, c in nct.cur.items()}
+-            t_hist = 0.0
++            if fut is None:
++                t_hist = 0.0
+             if blocks[-1]["height"] >= args.history_from:
+-                tt = time.time()
+-                try:
+-                    hs = hist.run([b for b in blocks if b["height"] >= args.history_from], raw, after, recs[0][0])
+-                except HI.HistoryFail as e:
+-                    raise Fail(str(e))
+-                t_hist = time.time() - tt
++                if fut is None:
++                    tt = time.time()
++                    try:
++                        hs = hist.run([b for b in blocks if b["height"] >= args.history_from], raw, after, recs[0][0])
++                    except HI.HistoryFail as e:
++                        raise Fail(str(e))
++                    t_hist = time.time() - tt
++                elif hist_err is not None:
++                    raise Fail(str(hist_err))
+                 log(f"  history (ZIP 221): {hs['checked']} MATCH" + (f", {hs['skipped']} SKIPPED ({hs['why']})" if hs["skipped"] else "")
+                     + (f", {hs['n/a']} n/a (pre-Heartwood)" if hs.get("n/a") else "")
+                     + f"  [trees+anchors {t_trees:.2f} s, history {t_hist:.2f} s]")
+@@ -664,6 +705,7 @@
+         wr.close()  # an open (uncommitted) group is rolled back
+         ex.shutdown(wait=True)
+         ex_rules.shutdown(wait=True)
++        side.shutdown(wait=True)
+     el = time.time() - t0
+     if done:
+         log(f"stopped at committed tip {st.tip()['height']}: {done} blocks {nbytes / 1e6:.1f} MB in {el:.0f} s, "

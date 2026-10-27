@@ -1,0 +1,4 @@
+base 3532345+1: base: 1 blocks, latency median 5.681 s, p90 5.681 s, max 5.681 s  [load average at start [11.6, 27.7, 46.4]]
+fast 3532345+1: fast: 1 blocks, latency median 0.715 s, p90 0.715 s, max 0.715 s  [load average at start [10.5, 26.7, 45.7]]
+base 3532454+1: base: 1 blocks, latency median 5.231 s, p90 5.231 s, max 5.231 s  [load average at start [10.3, 26.3, 45.5]]
+fast 3532454+1: fast: 1 blocks, latency median 0.175 s, p90 0.175 s, max 0.175 s  [load average at start [9.9, 25.5, 44.9]]

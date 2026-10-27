@@ -1,0 +1,230 @@
+--- a/node/rules.py
++++ b/node/rules.py
+@@ -24,6 +24,7 @@
+                 script length | scriptPubKey bytes          (L = byte length after L)
+ """
+ import json, os, re, shutil, struct, subprocess, time
++from concurrent.futures import ThreadPoolExecutor
+ from pathlib import Path
+ 
+ import headers
+@@ -43,6 +44,15 @@
+ # zcash/consensus/nu7 test harness run its own build.
+ RULES_BIN = Path(os.environ.get("ZEBEND_RULES_BIN", BIN / "rules"))
+ HOOK_NAMES = ["transparent", "sapling", "orchard"]
++# node/fasttip: the hooks run at the same time (each on its own items, as before) and alongside
++# bin/rules; results are evaluated in HOOK_NAMES order, after bin/rules', so every verdict and
++# every error raised is the one the sequential code gives. HOOK_RUNNER (None: a subprocess, as
++# before) lets a long-lived process run Python hooks without starting an interpreter per call
++# (fasttip/inproc.py); it returns a CompletedProcess-like (stdout, stderr, returncode).
++PARALLEL_HOOKS = os.environ.get("ZEBEND_PARALLEL_HOOKS", "1") == "1"
++HOOK_RUNNER = None
++_HOOK_POOL = ThreadPoolExecutor(len(HOOK_NAMES), thread_name_prefix="hook")
++_HOOKS_BG = ThreadPoolExecutor(2, thread_name_prefix="hooks-bg")
+ 
+ 
+ class RuleFail(S.StateError):
+@@ -306,11 +316,51 @@
+     return jobs
+ 
+ 
++def _prepare_hook(name, items, by_h, made, slices, st, raw_by_height):
++    """Write one hook's item files and list (as before). Returns the list file."""
++    d = WORK / "hooks" / name
++    shutil.rmtree(d, ignore_errors=True)  # last window's files (they were never deleted: 2.2 GB)
++    d.mkdir(parents=True, exist_ok=True)
++    lst = []
++    for h, i in items:
++        b = by_h[h]
++        if h not in slices:
++            slices[h] = tx_slices(raw_by_height[h], [t["size"] for t in b["txs"]])
++        txs = slices[h]
++        t = b["txs"][i]
++        spent = []
++        for (ptxid, vout, _seq) in t["ins"]:
++            u = made.get((ptxid, vout)) or st.utxo(ptxid, vout)
++            if u is None:  # block_records raised already; never index None
++                raise RuleFail(f"block {h} tx {t['txid']}: spends {ptxid}:{vout}, which is not an unspent output")
++            spent.append((u[0], u[1]))
++        base = d / f"{h}_{i}"
++        base.with_suffix(".tx").write_bytes(txs[i])
++        base.with_suffix(".ctx").write_bytes(follow_ctx(spent))
++        base.with_suffix(".json").write_text(json.dumps({"height": h, "txidx": i, "txid": t["txid"],
++                                                         "version": t["v"], "branch_id": t["br"]}))
++        lst.append(str(base))
++    (d / "list.txt").write_text("\n".join(lst) + "\n")
++    return d / "list.txt"
++
++
++def _exec_hook(name, exe, lst, n_items):
++    try:
++        if HOOK_RUNNER is not None:
++            return HOOK_RUNNER(exe, lst, HOOK_TIMEOUT)
++        return subprocess.run([str(exe), str(lst)], capture_output=True, text=True, timeout=HOOK_TIMEOUT)
++    except subprocess.TimeoutExpired:
++        raise VerifierError(f"hook {name}: timed out after {HOOK_TIMEOUT} s on {n_items} tx")
++
++
+ def run_hooks(blocks, st, raw_by_height, log):
+     """Run each hook on its transactions. Returns {hook: {"pass": n, "skipped": n[, "skipped_reasons":
+     {reason: n}]}}; raises RuleFail on a FAIL or on a missing verdict from a hook that exists.
+     A hook may answer SKIPPED <reason> for an item it cannot check: counted as skipped, never
+-    as passed."""
++    as passed.
++    fasttip: every hook's input is written first, then the hooks run at the same time
++    (PARALLEL_HOOKS); their outputs are evaluated in HOOK_NAMES order exactly as before (the first
++    error in that order is the one raised), and every hook has finished before anything is raised."""
+     jobs = hook_jobs(blocks)
+     summary = {}
+     by_h = {b["height"]: b for b in blocks}
+@@ -319,58 +369,57 @@
+     # the block per item)
+     made = {(t["txid"], k): (v, sc) for b in blocks for t in b["txs"] for (k, v, sc) in t["outs"]}
+     slices = {}
++    plan = []  # (name, items, kind, payload), in HOOK_NAMES order
+     for name, items in jobs.items():
+         exe = HOOKS / name
+         if not items:
+-            summary[name] = {"pass": 0, "skipped": 0}
+-            continue
+-        if not (exe.exists() and os.access(exe, os.X_OK)):
+-            summary[name] = {"pass": 0, "skipped": len(items)}
+-            continue
+-        d = WORK / "hooks" / name
+-        shutil.rmtree(d, ignore_errors=True)  # last window's files (they were never deleted: 2.2 GB)
+-        d.mkdir(parents=True, exist_ok=True)
+-        lst = []
+-        for h, i in items:
+-            b = by_h[h]
+-            if h not in slices:
+-                slices[h] = tx_slices(raw_by_height[h], [t["size"] for t in b["txs"]])
+-            txs = slices[h]
+-            t = b["txs"][i]
+-            spent = []
+-            for (ptxid, vout, _seq) in t["ins"]:
+-                u = made.get((ptxid, vout)) or st.utxo(ptxid, vout)
+-                if u is None:  # block_records raised already; never index None
+-                    raise RuleFail(f"block {h} tx {t['txid']}: spends {ptxid}:{vout}, which is not an unspent output")
+-                spent.append((u[0], u[1]))
+-            base = d / f"{h}_{i}"
+-            base.with_suffix(".tx").write_bytes(txs[i])
+-            base.with_suffix(".ctx").write_bytes(follow_ctx(spent))
+-            base.with_suffix(".json").write_text(json.dumps({"height": h, "txidx": i, "txid": t["txid"],
+-                                                             "version": t["v"], "branch_id": t["br"]}))
+-            lst.append(str(base))
+-        (d / "list.txt").write_text("\n".join(lst) + "\n")
+-        try:
+-            r = subprocess.run([str(exe), str(d / "list.txt")], capture_output=True, text=True, timeout=HOOK_TIMEOUT)
+-        except subprocess.TimeoutExpired:
+-            raise VerifierError(f"hook {name}: timed out after {HOOK_TIMEOUT} s on {len(items)} tx")
+-        got = {(int(a), int(b)): (v, rest) for a, b, v, rest in
+-               re.findall(r"^verdict (\d+) (\d+) (PASS|FAIL|SKIPPED) ?(.*)$", r.stdout, re.M)}
+-        bad = [(k, v) for k, v in got.items() if v[0] == "FAIL"]
+-        if bad:
+-            raise RuleFail(f"hook {name}: {bad[:3]}")
+-        miss = [k for k in items if k not in got]
+-        if miss:
+-            raise VerifierError(f"hook {name}: no verdict for {miss[:3]} (exit {r.returncode}: {r.stderr.strip()[-200:]!r})")
+-        # SKIPPED <reason>: the hook could not check this item (e.g. a construction it does not
+-        # implement). Counted as skipped, never as passed; the window is not rejected for it.
+-        skipped = [(k, v[1]) for k, v in got.items() if v[0] == "SKIPPED" and k in set(items)]
+-        reasons = {}
+-        for _, why in skipped:
+-            reasons[why or "no reason given"] = reasons.get(why or "no reason given", 0) + 1
+-        summary[name] = {"pass": len(items) - len(skipped), "skipped": len(skipped)}
+-        if reasons:
+-            summary[name]["skipped_reasons"] = reasons
++            plan.append((name, items, "empty", None))
++        elif not (exe.exists() and os.access(exe, os.X_OK)):
++            plan.append((name, items, "absent", None))
++        else:
++            try:
++                plan.append((name, items, "run", (exe, _prepare_hook(name, items, by_h, made, slices, st, raw_by_height))))
++            except RuleFail as e:  # raised at this hook's turn, as the sequential code did
++                plan.append((name, items, "error", e))
++    futs = {}
++    if PARALLEL_HOOKS:
++        for name, items, kind, x in plan:
++            if kind == "run":
++                futs[name] = _HOOK_POOL.submit(_exec_hook, name, x[0], x[1], len(items))
++    try:
++        for name, items, kind, x in plan:
++            if kind == "empty":
++                summary[name] = {"pass": 0, "skipped": 0}
++                continue
++            if kind == "absent":
++                summary[name] = {"pass": 0, "skipped": len(items)}
++                continue
++            if kind == "error":
++                raise x
++            r = futs[name].result() if name in futs else _exec_hook(name, x[0], x[1], len(items))
++            got = {(int(a), int(b)): (v, rest) for a, b, v, rest in
++                   re.findall(r"^verdict (\d+) (\d+) (PASS|FAIL|SKIPPED) ?(.*)$", r.stdout, re.M)}
++            bad = [(k, v) for k, v in got.items() if v[0] == "FAIL"]
++            if bad:
++                raise RuleFail(f"hook {name}: {bad[:3]}")
++            miss = [k for k in items if k not in got]
++            if miss:
++                raise VerifierError(f"hook {name}: no verdict for {miss[:3]} (exit {r.returncode}: {r.stderr.strip()[-200:]!r})")
++            # SKIPPED <reason>: the hook could not check this item (e.g. a construction it does not
++            # implement). Counted as skipped, never as passed; the window is not rejected for it.
++            skipped = [(k, v[1]) for k, v in got.items() if v[0] == "SKIPPED" and k in set(items)]
++            reasons = {}
++            for _, why in skipped:
++                reasons[why or "no reason given"] = reasons.get(why or "no reason given", 0) + 1
++            summary[name] = {"pass": len(items) - len(skipped), "skipped": len(skipped)}
++            if reasons:
++                summary[name]["skipped_reasons"] = reasons
++    finally:
++        for f in futs.values():  # never leave a hook running into the next window's files
++            try:
++                f.result()
++            except BaseException:
++                pass
+     return summary
+ 
+ 
+@@ -388,7 +437,14 @@
+     t0 = time.time()
+     prev = st.get("pools") if pools is None else pools  # pools: carried from an earlier call in the same window
+     known = prev is not None
+-    res = run_rules(blocks, st, raw_by_height, prev or {}, jobs=jobs, ex=ex)
++    # fasttip: the hooks need nothing from bin/rules: they start with it (PARALLEL_HOOKS) and their
++    # result is used only where the sequential code ran them (no rule failed, mode "full")
++    hf = _HOOKS_BG.submit(run_hooks, blocks, st, raw_by_height, log) if mode == "full" and PARALLEL_HOOKS else None
++    try:
++        res = run_rules(blocks, st, raw_by_height, prev or {}, jobs=jobs, ex=ex)
++    except BaseException:
++        _settle(hf)
++        raise
+     fails, skipped_turnstile = [], 0
+     for b in blocks:
+         r = res[b["height"]]
+@@ -401,9 +457,10 @@
+     hooks = {}
+     if mode == "full":
+         if fails:
++            _settle(hf)
+             h, fs = fails[0]
+             raise RuleFail(f"block {h}: consensus rule violated: {'; '.join(fs)}")
+-        hooks = run_hooks(blocks, st, raw_by_height, log)
++        hooks = hf.result() if hf is not None else run_hooks(blocks, st, raw_by_height, log)
+     last = blocks[-1]["height"]
+     extra = {"rules": {"last": last, "mode": mode, "blocks": len(blocks), "secs": round(time.time() - t0, 2),
+                        "turnstile": "checked" if known else "SKIPPED (pools not tracked from genesis)",
+@@ -420,6 +477,15 @@
+     return extra
+ 
+ 
++def _settle(f):
++    """Wait for a background hooks run whose result is not used (it must not outlive the window)."""
++    if f is not None:
++        try:
++            f.result()
++        except BaseException:
++            pass
++
++
+ def _hook_status(v):
+     """PASS only if every item passed; a hook that is absent or skipped items says so."""
+     if not v["skipped"]:

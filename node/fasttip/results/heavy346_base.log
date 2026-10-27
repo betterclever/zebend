@@ -1,0 +1,107 @@
+rolled back to 3532340 in 7.2 s
+load average at start [97.2, 87.4, 62.1]
+03:22:26 history: no state (starts at the next activation); checked from 3428143
+03:22:26 trees: sprout size 1547344 root 92ea4f11169eeba7 (built from this instance's leaf logs since genesis); sapling size 73990466 root cfba14f1118897ba (built from this instance's leaf logs since genesis); orchard size 50478743 root ef7f6a3113d854d0 (built from this instance's leaf logs since genesis); ironwood size 946306 root 089e1fce96cbcb9c (built from this instance's leaf logs since genesis)
+03:22:26 sync: state tip 3532340, last checkpoint 3522460, verified headers to 3532820, 16 Bend jobs
+03:22:26   anchors: Ironwood 6/6 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:22:27   full validation 3532341..3532341: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 16, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 6, 'skipped': 0}"}
+03:22:27   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.09 s, history 0.00 s]
+03:22:27 tip 3532341  window 1 blocks 0.1 MB in 0.9 s (waited for bend 0.1 s [bend 0.1 s, overlapped]; lookups 0.0 s, rules 0.9 s; resolve 0.0 s)  avg 1.1 blocks/s 0.06 MB/s  rules parts 1 reruns 0
+03:22:27 committed tip 3532341: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:22:32   anchors: Ironwood 3/3 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:22:33   full validation 3532342..3532342: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 3, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 3, 'skipped': 0}"}
+03:22:33   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.09 s, history 0.00 s]
+03:22:33 tip 3532342  window 1 blocks 0.0 MB in 0.8 s (waited for bend 0.1 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.7 s; resolve 0.0 s)  avg 0.3 blocks/s 0.01 MB/s  rules parts 2 reruns 0
+03:22:33 committed tip 3532342: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:22:38   anchors: Ironwood 0/0 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:22:38   full validation 3532343..3532343: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 0, 'skipped': 0}"}
+03:22:38   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.00 s, history 0.00 s]
+03:22:38 tip 3532343  window 1 blocks 0.0 MB in 0.1 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.0 s; resolve 0.0 s)  avg 0.3 blocks/s 0.01 MB/s  rules parts 3 reruns 0
+03:22:38 committed tip 3532343: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:22:43   anchors: Ironwood 0/0 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:22:43   full validation 3532344..3532344: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 0, 'skipped': 0}"}
+03:22:43   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.00 s, history 0.00 s]
+03:22:43 tip 3532344  window 1 blocks 0.0 MB in 0.0 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.0 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 4 reruns 0
+03:22:43 committed tip 3532344: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:22:48   anchors: Ironwood 3/3 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:22:48   full validation 3532345..3532345: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 5, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 3, 'skipped': 0}"}
+03:22:48   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.11 s, history 0.00 s]
+03:22:48 tip 3532345  window 1 blocks 0.1 MB in 0.5 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.5 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 5 reruns 0
+03:22:48 committed tip 3532345: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:22:54   anchors: Ironwood 3/3 PASS; Sapling 1/1 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:22:56   full validation 3532346..3532346: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 8, 'skipped': 0}", 'sapling': "PASS {'pass': 1, 'skipped': 0}", 'orchard': "PASS {'pass': 3, 'skipped': 0}"}
+03:22:56   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.34 s, history 0.00 s]
+03:22:56 tip 3532346  window 1 blocks 0.3 MB in 2.6 s (waited for bend 0.1 s [bend 0.1 s, overlapped]; lookups 0.0 s, rules 2.5 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 6 reruns 0
+03:22:56 committed tip 3532346: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:23:01   anchors: Ironwood 1/1 PASS; Sapling 1/1 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:23:02   full validation 3532347..3532347: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 6, 'skipped': 0}", 'sapling': "PASS {'pass': 1, 'skipped': 0}", 'orchard': "PASS {'pass': 1, 'skipped': 0}"}
+03:23:02   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.33 s, history 0.00 s]
+03:23:02 tip 3532347  window 1 blocks 0.0 MB in 1.0 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.9 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 7 reruns 0
+03:23:02 committed tip 3532347: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:23:07   anchors: Ironwood 0/0 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:23:07   full validation 3532348..3532348: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 0, 'skipped': 0}"}
+03:23:07   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.00 s, history 0.00 s]
+03:23:07 tip 3532348  window 1 blocks 0.0 MB in 0.1 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.0 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 8 reruns 0
+03:23:07 committed tip 3532348: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:23:12   anchors: Ironwood 0/0 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:23:12   full validation 3532349..3532349: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 0, 'skipped': 0}"}
+03:23:12   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.00 s, history 0.00 s]
+03:23:12 tip 3532349  window 1 blocks 0.0 MB in 0.1 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.1 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 9 reruns 0
+03:23:12 committed tip 3532349: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:23:17   anchors: Ironwood 3/3 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:23:18   full validation 3532350..3532350: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 2, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 3, 'skipped': 0}"}
+03:23:18   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.12 s, history 0.00 s]
+03:23:18 tip 3532350  window 1 blocks 0.0 MB in 0.7 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.6 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 10 reruns 0
+03:23:18 committed tip 3532350: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:23:23   anchors: Ironwood 5/5 PASS; Sapling 0/0 PASS; Orchard 1/1 PASS; Sprout 0/0 PASS
+03:23:24   full validation 3532351..3532351: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 4, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 5, 'skipped': 0}"}
+03:23:24   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.18 s, history 0.00 s]
+03:23:24 tip 3532351  window 1 blocks 0.1 MB in 0.7 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.6 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 11 reruns 0
+03:23:24 committed tip 3532351: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:23:29   anchors: Ironwood 0/0 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:23:29   full validation 3532352..3532352: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 0, 'skipped': 0}"}
+03:23:29   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.00 s, history 0.00 s]
+03:23:29 tip 3532352  window 1 blocks 0.0 MB in 0.0 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.0 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 12 reruns 0
+03:23:29 committed tip 3532352: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:23:34   anchors: Ironwood 8/8 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:23:35   full validation 3532353..3532353: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 8, 'skipped': 0}", 'sapling': "PASS {'pass': 1, 'skipped': 0}", 'orchard': "PASS {'pass': 8, 'skipped': 0}"}
+03:23:35   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.27 s, history 0.00 s]
+03:23:35 tip 3532353  window 1 blocks 0.1 MB in 1.0 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 1.0 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 13 reruns 0
+03:23:35 committed tip 3532353: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:23:40   anchors: Ironwood 1/1 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:23:40   full validation 3532354..3532354: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 9, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 1, 'skipped': 0}"}
+03:23:40   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.06 s, history 0.00 s]
+03:23:40 tip 3532354  window 1 blocks 0.0 MB in 0.5 s (waited for bend 0.1 s [bend 0.1 s, overlapped]; lookups 0.0 s, rules 0.4 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 14 reruns 0
+03:23:40 committed tip 3532354: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:23:45   anchors: Ironwood 0/0 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:23:45   full validation 3532355..3532355: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 0, 'skipped': 0}"}
+03:23:45   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.00 s, history 0.00 s]
+03:23:45 tip 3532355  window 1 blocks 0.0 MB in 0.1 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.0 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 15 reruns 0
+03:23:45 committed tip 3532355: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:23:50   anchors: Ironwood 1/1 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:23:51   full validation 3532356..3532356: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 2, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 1, 'skipped': 0}"}
+03:23:51   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.07 s, history 0.00 s]
+03:23:51 tip 3532356  window 1 blocks 0.0 MB in 0.5 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.5 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 16 reruns 0
+03:23:51 committed tip 3532356: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:23:56   anchors: Ironwood 1/1 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:23:57   full validation 3532357..3532357: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 5, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 1, 'skipped': 0}"}
+03:23:57   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.09 s, history 0.00 s]
+03:23:57 tip 3532357  window 1 blocks 0.0 MB in 0.8 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.8 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 17 reruns 0
+03:23:57 committed tip 3532357: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:24:02   anchors: Ironwood 8/8 PASS; Sapling 0/0 PASS; Orchard 1/1 PASS; Sprout 0/0 PASS
+03:24:02   full validation 3532358..3532358: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 5, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 8, 'skipped': 0}"}
+03:24:02   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.18 s, history 0.00 s]
+03:24:02 tip 3532358  window 1 blocks 0.1 MB in 0.8 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.8 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 18 reruns 0
+03:24:02 committed tip 3532358: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:24:08   anchors: Ironwood 1/1 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:24:09   full validation 3532359..3532359: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 4, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 1, 'skipped': 0}"}
+03:24:09   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.12 s, history 0.00 s]
+03:24:09 tip 3532359  window 1 blocks 0.0 MB in 1.5 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 1.5 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 19 reruns 0
+03:24:09 committed tip 3532359: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:24:14   anchors: Ironwood 0/0 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:24:14   full validation 3532360..3532360: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 0, 'skipped': 0}"}
+03:24:14   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.00 s, history 0.00 s]
+03:24:14 tip 3532360  window 1 blocks 0.0 MB in 0.1 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.0 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 20 reruns 0
+03:24:14 committed tip 3532360: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:24:14 stopped at committed tip 3532360: 20 blocks 0.7 MB in 108 s, 0.2 blocks/s 0.01 MB/s
+base: 20 blocks, latency median 4.878 s, p90 5.568 s, max 6.973 s

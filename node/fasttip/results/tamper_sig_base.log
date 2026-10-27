@@ -1,0 +1,23 @@
+rolled back to 3532819 in 0.1 s
+load average at start [28.7, 41.3, 39.3]
+03:10:12 history: state at 3532819 (seeded at 3,521,999 (consensus/gaps/history/data/seed_3521999.st, NU6.3-epoch tree, validated by header 3,522,000); rolled forward with this instance genesis-built tree roots); checked from 3428143
+03:10:12 trees: sprout size 1547344 root 92ea4f11169eeba7 (built from this instance's leaf logs since genesis); sapling size 73990616 root 905756e199f2776c (built from this instance's leaf logs since genesis); orchard size 50478845 root 85d3a8d194976f41 (built from this instance's leaf logs since genesis); ironwood size 948982 root 15e2bf90f93133e2 (built from this instance's leaf logs since genesis)
+03:10:12 sync: state tip 3532819, last checkpoint 3522460, verified headers to 3532820, 16 Bend jobs
+03:10:12   anchors: Ironwood 4/4 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+Traceback (most recent call last):
+  File "/Users/betterclever/projects/zecathon/zebend/node/fasttip/tools/replay.py", line 119, in <module>
+    main()
+    ~~~~^^
+  File "/Users/betterclever/projects/zecathon/zebend/node/fasttip/tools/replay.py", line 94, in main
+    sync.main()
+    ~~~~~~~~~^^
+  File "/Users/betterclever/projects/zecathon/ftlab/base/node/sync.py", line 595, in main
+    e2 = rules.validate(full, st, raw, log, mode="full", pools=extra.get("pools", pools_cur),
+                        jobs=args.jobs, ex=ex_rules)
+  File "/Users/betterclever/projects/zecathon/ftlab/base/node/rules.py", line 406, in validate
+    hooks = run_hooks(blocks, st, raw_by_height, log)
+  File "/Users/betterclever/projects/zecathon/zebend/node/fasttip/prof.py", line 67, in w
+    return fn(*a, **k)
+  File "/Users/betterclever/projects/zecathon/ftlab/base/node/rules.py", line 361, in run_hooks
+    raise RuleFail(f"hook {name}: {bad[:3]}")
+rules.RuleFail: hook transparent: [((3532820, 1), ('FAIL', 'transparent input(s) 0 of 2 invalid'))]

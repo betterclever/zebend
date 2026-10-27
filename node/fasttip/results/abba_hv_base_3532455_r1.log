@@ -1,0 +1,12 @@
+rolled back to 3532454 in 5.0 s
+load average at start [10.3, 26.3, 45.5]
+03:46:38 history: no state (starts at the next activation); checked from 3428143
+03:46:38 trees: sprout size 1547344 root 92ea4f11169eeba7 (built from this instance's leaf logs since genesis); sapling size 73990506 root c68ad4ea760d4b4b (built from this instance's leaf logs since genesis); orchard size 50478776 root f4bc3fafd16bf0d9 (built from this instance's leaf logs since genesis); ironwood size 946943 root f1a354958f480cbc (built from this instance's leaf logs since genesis)
+03:46:38 sync: state tip 3532454, last checkpoint 3522460, verified headers to 3532820, 16 Bend jobs
+03:46:43   anchors: Ironwood 12/12 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+03:46:43   full validation 3532455..3532455: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 25, 'skipped': 0}", 'sapling': "PASS {'pass': 1, 'skipped': 0}", 'orchard': "PASS {'pass': 12, 'skipped': 0}"}
+03:46:43   history (ZIP 221): 0 MATCH, 1 SKIPPED (no history state (starts at the next activation))  [trees+anchors 0.14 s, history 0.00 s]
+03:46:43 tip 3532455  window 1 blocks 0.2 MB in 0.5 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.4 s; resolve 0.0 s)  avg 0.2 blocks/s 0.03 MB/s  rules parts 1 reruns 0
+03:46:43 committed tip 3532455: 1 windows, 0 MB in one transaction (writer 0.0 s)
+03:46:43 stopped at committed tip 3532455: 1 blocks 0.2 MB in 5 s, 0.2 blocks/s 0.03 MB/s
+base: 1 blocks, latency median 5.231 s, p90 5.231 s, max 5.231 s
