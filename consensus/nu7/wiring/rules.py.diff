@@ -1,0 +1,73 @@
+--- ../../../fullnode/rules.py	2026-10-27 12:24:42.412093779 +0400
++++ rules.py	2026-10-27 12:49:34.620359411 +0400
+@@ -16,8 +16,9 @@
+ anchors.
+ 
+ ctx.bin layout (all integers u32 little-endian):
+-  6 x (lo, hi)  value pools before the window's first block: sprout, sapling, orchard,
+-                ironwood, lockbox, transparent (two's complement 64-bit)
++  7 x (lo, hi)  value pools before the window's first block: sprout, sapling, orchard,
++                ironwood, lockbox, transparent, nsm (ZIP 237 NSM value balance; zero before
++                NU7, seeded by bin/rules at 3,543,405) (two's complement 64-bit)
+   per block:    L | height | nt | nt x time | per spent transparent input in block order
+                 (coinbase input excluded): value lo | value hi | height | from-coinbase |
+                 script length | scriptPubKey bytes          (L = byte length after L)
+@@ -33,7 +34,10 @@
+ HOOKS = HERE / "hooks"
+ WORK = HERE / "work" / "rules"
+ HDR = 1487
+-POOL_NAMES = ["sprout", "sapling", "orchard", "ironwood", "lockbox", "transparent"]
++POOL_NAMES = ["sprout", "sapling", "orchard", "ironwood", "lockbox", "transparent", "nsm"]
++# rules.bend with NU7 (consensus/nu7) reads/prints 7 pools; ZEBEND_RULES_BIN lets the
++# consensus/nu7 test harness run its own build.
++RULES_BIN = Path(os.environ.get("ZEBEND_RULES_BIN", BIN / "rules"))
+ HOOK_NAMES = ["transparent", "sapling", "orchard"]
+ 
+ 
+@@ -69,6 +73,7 @@
+ 
+ 
+ NU6, NU61, NU63_END = 2726400, 3146400, 4406400
++NU7, NU7_FS_END, NSM_SEED = 3543405, 6132390, 36858445520  # ZIP 259, ZIP 214 rev. 3, ZIP 237
+ 
+ 
+ def predicted_delta(b, tin):
+@@ -82,8 +87,18 @@
+     iw = sum(t["iw"]["vb"] for t in b["txs"] if t["iw"])
+     tout = sum(o[1] for t in b["txs"] for o in t["outs"])
+     h = b["height"]
+-    dfr = (9375000 if NU6 <= h < NU63_END else 0) - (7875000000000 if h == NU61 else 0)
+-    return [spr, -sap, -orch, -iw, dfr, tout - tin]
++    # FS_DEFERRED / FS_CCF_H3: 12% of 156,250,000 before NU7, of 52,083,333 from NU7 (ZIP 218,
++    # ZIP 214 rev. 3: the stream now ends at 6,132,390); 9,375,000 was a misprediction.
++    dfr = (18750000 if NU6 <= h < min(NU63_END, NU7) else 6249999 if NU7 <= h < NU7_FS_END else 0) \
++        - (7875000000000 if h == NU61 else 0)
++    nsm = 0
++    if h >= NU7:  # ZIP 235: floor(6 fees / 10); NSM reissuance (8,939,664 on) is not predicted
++        fees = tin + sum(
++            (t["sap"]["vb"] if t["sap"] else 0) + (t["orch"]["vb"] if t["orch"] else 0) + (t["iw"]["vb"] if t["iw"] else 0)
++            - sum(j["vpub_old"] - j["vpub_new"] for j in t["js"]) - sum(o[1] for o in t["outs"])
++            for t in b["txs"] if not t["cb"])
++        nsm = fees // 10 * 6 + fees % 10 * 6 // 10 + (NSM_SEED if h == NU7 else 0)
++    return [spr, -sap, -orch, -iw, dfr, tout - tin, nsm]
+ 
+ 
+ def block_records(blocks, st):
+@@ -148,7 +163,7 @@
+             r = res.setdefault(int(f[1]), {})
+             r["fees"], r["sigops"] = int(f[2]), int(f[4])
+         elif f[0] == "pools":
+-            res.setdefault(int(f[1]), {})["pools"] = dict(zip(POOL_NAMES, map(_signed, f[2:8])))
++            res.setdefault(int(f[1]), {})["pools"] = dict(zip(POOL_NAMES, map(_signed, f[2:2 + len(POOL_NAMES)])))
+         elif f[0] == "verdict":
+             res.setdefault(int(f[1]), {})["verdict"] = f[2]
+     return res
+@@ -160,7 +175,7 @@
+     wp.write_bytes(window_bytes(blocks, raw_by_height))
+     cp.write_bytes(ctx)
+     for _ in range(3):  # empty output (a known rare Bend runtime issue) is rerun
+-        r = subprocess.run([str(BIN / "rules"), str(wp), str(cp)], capture_output=True, text=True)
++        r = subprocess.run([str(RULES_BIN), str(wp), str(cp)], capture_output=True, text=True)
+         if r.stdout.strip():
+             break
+     res = parse_rules(r.stdout)

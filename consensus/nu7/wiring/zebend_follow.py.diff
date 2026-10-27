@@ -1,0 +1,57 @@
+--- ../../../follow/zebend_follow.py	2026-10-27 12:24:42.420428554 +0400
++++ zebend_follow.py.proposed	2026-10-27 12:25:02.177161192 +0400
+@@ -3,7 +3,8 @@
+ 
+ Every consensus check runs in a Bend binary (bin/):
+   zebend-p2p   header sync over P2P; SHA-256d block hashes and prev links   (node/p2p)
+-  equihash     Equihash (200,9), hash <= target, links, difficulty          (blake3x/eqv3)
++  equihash7    Equihash (200,9), hash <= target, links, difficulty by height (blake3x/eqv3 +
++               consensus/nu7/headers: ZIP 218 averaging window 102 and 25 s spacing from NU7)
+   block_main   wire validation, merkle root, ZIP 244 auth root and block
+                commitments                                                  (node/block, node/wire)
+   txx          wire validation, txid, ZIP 244 sighash, RedPallas spend-auth
+@@ -56,7 +57,10 @@
+ NFB = STATE / "nfb"
+ PARAMS = ROOT / "halo2/verifier/data/params_g.bin"
+ HDR = 1487
+-DIFF_WINDOW = 28
++# Headers kept for the difficulty check: PoWAveragingWindow + PoWMedianBlockSpan = 17 + 11
++# before NU7, 102 + 11 from NU7 (ZIP 218). A state written before this change keeps 29; it
++# grows to 114 with the next windows (pre-NU7 blocks need only 28).
++DIFF_WINDOW = 113
+ SNAPSHOTS = 10
+ EMPTY_ACTIONS = 0
+ HALO2_CHUNK = 512  # ~450 MB per halo2_batch run
+@@ -281,16 +285,25 @@
+ 
+ def check_headers(new_raw, heights):
+     hfile = WORK / "hdrs.bin"
+-    hfile.write_bytes((STATE / "headers.bin").read_bytes()[-DIFF_WINDOW * HDR:] + b"".join(new_raw))
+-    n = DIFF_WINDOW + len(new_raw)
+-    out, _ = run("equihash", hfile, n, n, 4, "+RTS", "--gpu", "off", "-RTS")
++    prev = (STATE / "headers.bin").read_bytes()[-DIFF_WINDOW * HDR:]
++    k = len(prev) // HDR
++    if heights[-1] >= 3543405 and k < DIFF_WINDOW:  # NU7 headers need the full 113 (ZIP 218)
++        raise Fail(f"headers {heights[0]}..{heights[-1]}: only {k} previous headers kept, NU7 needs {DIFF_WINDOW}")
++    hfile.write_bytes(prev + b"".join(new_raw))
++    n = k + len(new_raw)
++    # equihash7 takes the height of the file's first header: the difficulty rules depend on it.
++    out, _ = run("equihash7", hfile, n, n, 4, heights[0] - k, "main", "+RTS", "--gpu", "off", "-RTS")
+     got = dict((k, (int(a), int(b))) for k, a, b in re.findall(
+         r"^(equihash valid|hash <= target|prev-hash links|difficulty \(nBits == expected\)) (\d+)/(\d+)", out, re.M))
+-    want = {"equihash valid": n, "hash <= target": n, "prev-hash links": n - 1, "difficulty (nBits == expected)": len(new_raw)}
++    want = {"equihash valid": n, "hash <= target": n, "prev-hash links": n - 1}
++    # equihash7 checks the difficulty of every header with a full window in the file (28 before
++    # NU7, 113 from NU7), which can include some of the k context headers: every check must
++    # pass and they must cover at least the new headers (the last ones in the file).
++    dk, dn = got.pop("difficulty (nBits == expected)", (0, -1))
+     bad = {k: v for k, v in got.items() if v != (want[k], want[k])}
+-    if len(got) != 4 or bad:
+-        raise Fail(f"headers {heights[0]}..{heights[-1]}: {got}")
+-    return hfile, heights[0] - DIFF_WINDOW
++    if len(got) != 3 or bad or dk != dn or dn < len(new_raw):
++        raise Fail(f"headers {heights[0]}..{heights[-1]}: {got} {out.splitlines()[:3]}")
++    return hfile, heights[0] - k
+ 
+ 
+ def block_report(d, height, hist, hfile, h0):

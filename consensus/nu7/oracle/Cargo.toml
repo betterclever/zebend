@@ -1,0 +1,20 @@
+# NU7 differential-test oracle built on Zebra's public zebra-chain API.
+# Zebra checkout: ../data/src/zebra @ 1e03ee753fbc72d70882cdfd3c8bdd58b80f0f97 (no [patch] section there).
+# Cargo.lock is seeded from Zebra's own Cargo.lock so dependency versions match Zebra's.
+[package]
+name = "nu7-oracle"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[workspace]
+
+[dependencies]
+zebra-chain = { path = "../data/src/zebra/zebra-chain" }
+# Same requirements as Zebra's workspace Cargo.toml.
+chrono = { version = "0.4.40", default-features = false, features = ["clock", "std"] }
+hex = "0.4.3"
+serde_json = "1.0.140"
+
+[profile.release]
+panic = "unwind" # catch_unwind turns Zebra panics into "ERR:..." values
