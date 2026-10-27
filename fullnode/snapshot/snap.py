@@ -32,6 +32,9 @@ CHUNK = 1 << 14                     # records per Bend leaf process (a power of 
 PART_MAX = 1 << 30                  # bytes per section part file (Bend's read_at takes a U32)
 BLK_CONTEXT = 128                   # block-index rows kept below and at H
 LEAF_BATCH = 1_000_000              # leaves per tree-tool run (its reader caps at 200 MB; bounds RSS)
+CLONE_LEAVES = sys.platform == "darwin" and os.environ.get("ZEBEND_SNAP_CLONE_LEAVES", "1") != "0"
+PTREE = os.environ.get("ZEBEND_SNAP_PTREE", "1") != "0"   # big trees: parallel segments (ptree.py)
+PTREE_JOBS = int(os.environ.get("ZEBEND_SNAP_PTREE_JOBS", 14))
 MAGIC = b"ZEBENDSNAP1\n"
 VERSION = 1
 SECTIONS = (["meta", "blk", "utxo"] + [f"nf.{p}" for p in POOLS] + ["frontier"]
@@ -108,6 +111,14 @@ def iter_records(path):
         i += 4 + ln
 
 
+def last_record(path):
+    """Payload of the last record of a part file, with bounded memory (moves bytes)."""
+    offs = record_offsets(path)
+    with open(path, "rb") as f:
+        f.seek(offs[-2] + 4)
+        return f.read(offs[-1] - offs[-2] - 4)
+
+
 def record_offsets(path):
     """Offsets of every record start in a part file, plus the end offset (moves bytes)."""
     from array import array
@@ -178,7 +189,7 @@ def section_root(d, sec, ex, work):
                             f"n {kv.get('n')}/{j[3]} order {kv.get('order')} exact {kv.get('exact')}")
         roots.append(bytes.fromhex(kv["root"]))
     for a, b in bounds:
-        last = list(iter_records(a))[-1][1].tobytes()
+        last = last_record(a)   # not list(iter_records(a)): ~27M memoryviews of a 1 GiB nf part = GBs of RSS
         first = next(iter_records(b))[1].tobytes()
         tmp = work / f"bound_{name}.bin"
         tmp.write_bytes(struct.pack("<I", len(last)) + last + struct.pack("<I", len(first)) + first)
@@ -366,6 +377,14 @@ def export(state_dir, out_dir, height=None, external=None, jobs=16, db=None, log
             on_txn(H)
         assumed = meta.get("assumed_state") is not None
         lens = meta.get("leaf_lengths", {p: [0, 0] for p in POOLS})
+        leaf_src = state_dir
+        if CLONE_LEAVES and (Path(state_dir) / "leaves").is_dir():
+            # APFS clones (cp -c: instant, copy-on-write) of the append-only leaf logs, taken while
+            # the read transaction holds the tip: the trees never open the live store's files
+            leaf_src = out_dir / "leafclone"
+            (leaf_src / "leaves").mkdir(parents=True, exist_ok=True)
+            for f in sorted((Path(state_dir) / "leaves").iterdir()):
+                subprocess.run(["cp", "-c", str(f), str(leaf_src / "leaves" / f.name)], check=True)
         base = meta.get("snapshot_frontier") or {}
         sources = dict(meta.get("snapshot_sources") or {})
         plans, fronts, roots = {}, {}, {}
@@ -426,13 +445,17 @@ def export(state_dir, out_dir, height=None, external=None, jobs=16, db=None, log
 
     def tree_for(p):
         (levels0, size0), old, ext_h = plans[p]
-        lv, blocks = leaf_blocks(state_dir, p, lens[p])
+        lv, blocks = leaf_blocks(leaf_src, p, lens[p])
         if ext_h is not None:
             skip = sum(c for h, c in blocks if h <= ext_h)
             blocks = [(h, c) for h, c in blocks if h > ext_h]
             lv = LeafFile(lv.path, skip * 32)
         counts = [c for _, c in blocks] or [0]
-        rts, lv_out, empty = run_tree(p, levels0, lv, counts, out_dir)
+        if PTREE and p != "sprout" and ext_h is None and size0 == 0 and sum(counts) > 2 * LEAF_BATCH:
+            import ptree   # segments in parallel Bend processes, continuity-checked (ptree.py)
+            rts, lv_out, empty, ptree_stats[p] = ptree.build(p, lv, blocks, out_dir, pex, log)
+        else:
+            rts, lv_out, empty = run_tree(p, levels0, lv, counts, out_dir)
         size = size0 + sum(c for _, c in blocks)
         if not frontier_ok(lv_out, size):
             raise SnapError(f"{p}: Bend frontier does not match the tree size {size}")
@@ -440,10 +463,14 @@ def export(state_dir, out_dir, height=None, external=None, jobs=16, db=None, log
         root = rts[-1] if blocks else rts[0]
         return p, {"size": size, "root": root, "levels": lv_out}, old + new, sum(c for _, c in blocks)
 
-    pushed = {}
-    with ThreadPoolExecutor(4) as tex:
+    pushed, ptree_stats = {}, {}
+    with ThreadPoolExecutor(4) as tex, ThreadPoolExecutor(PTREE_JOBS) as pex:
         for p, fr, rs, n in tex.map(tree_for, list(plans)):
             fronts[p], roots[p], pushed[p] = fr, rs, n
+    if ptree_stats:
+        timing["ptree"] = ptree_stats
+    if leaf_src != state_dir:
+        shutil.rmtree(leaf_src, ignore_errors=True)
     w = SectionWriter(out_dir, "frontier")
     for p in POOLS:
         w.add(enc_frontier(p, fronts[p]))

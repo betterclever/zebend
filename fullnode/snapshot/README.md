@@ -1,10 +1,109 @@
 # zebend snapshot: assumeutxo-style fast start, with a Bend state digest
 
-**Status (Oct 27, first session): the pipeline works end to end. Produce, digest in Bend,
-consume with a pinned digest, check against the chain, sync from H+1, confirm, and RPC status
-have all been tested on real states. The pinned digest for the real checkpoint (3,522,460) is
-still `null`. The genesis instance has not reached that height yet (it was at 1,716,136 at
-15:02 and was doing ~20 blocks/s).**
+**Status (Oct 27, evening): a real pin exists.** `pinned.json` pins H = **3,532,588**:
+- hash `000000000018cb33…4e102a51`;
+- digest `2bfdabb6c4f774b567cae753760de40b589e25c6635a398e5ac13237e5512401`.
+
+It was produced from the genesis-synced node (`fullnode/state`) at its live tip, while the node
+kept running. A cold start from it reaches "validating at tip" in **4.1 min** (§0).
+
+The 3,522,460 checkpoint entry stays `null`, because it was never produced. The genesis
+instance passed that height before anyone captured its state there. It is now ~10k blocks
+past, beyond the 600-block rollback fallback.
+
+## 0. Fast start (measured Oct 27, H = 3,532,588)
+
+| | Zebend (this snapshot) | Zakura |
+|---|---|---|
+| snapshot size | **2.42 GB** zstd -3 (4.42 GB raw) | 11–12 GB pruned |
+| what the node checks on import | every byte: Bend digest == pinned; order; chain checks (§4), incl. ZIP 221 at H+1 | none (trusts the publisher) |
+| import (unpack + Bend verify ∥ SQLite import) | **171 s** (unpack 2.7, Bend verify 158, rest 10) | |
+| sync start → "validating at tip" | +76 s: address index rebuilt from 27.3M UTXOs (35 s), then 45 blocks fully validated (all rules and hooks PASS) | |
+| **total, file on disk → validating at tip** | **247.5 s (4.1 min)** | **< 2 min** |
+| peak RSS (whole process tree) | 6.3 GB (at 140 s, Bend digest ∥ import) | |
+
+How it was measured (`measure.py --download`, `work/fast/cold/{measure,sync,state.download}.log`):
+- **Timer and inputs.** The timer starts with the snapshot file already local. Blocks H..tip
+  are downloaded from P2P peers in parallel with the import (42 blocks in 4 s).
+- **Start.** consume.py ran with `--history-blocks`, then the committed `sync.py` started on a
+  fresh state directory.
+- **Stop.** "At tip" means the new node committed 3,532,633, which was the live node's
+  committed tip at that moment.
+- **Same result as the live node.** After 45 blocks, the new node's value pools equal the live
+  genesis node's per-block pools at 3,532,633, in all seven pools.
+
+**Assumed, not measured:**
+- The verified header chain (`state/hdr`, shared by instances, as sync.py and download.py
+  already do) was already present. A real cold node first syncs ~3.53M headers; Bend Equihash
+  verification of those is not part of this number.
+- The time to download 2.4 GB from a publisher.
+
+**Why it is slower than Zakura:**
+- Bend checks every byte (158 s of 171 s). Zakura's start checks nothing in the snapshot.
+- sync.py rebuilds the address index (35 s).
+- The first window's rules take 36 s for 41 blocks.
+
+The distance from H to the tip is no longer the problem: with a fresh pin, it is tens of blocks.
+
+**Production of the pin** (`produce.py` on the live node, `work/fast/produce.log`; under
+heavy.sh):
+- Read-only SQLite transaction: 91 s (UTXO, nullifier and block rows). The live writer kept
+  committing meanwhile.
+  - Before the run, two read transactions were held on `state/` for 6.5 and 25 min, and the
+    writer committed 3 windows during them in 0.0–0.1 s each. sync.py's store uses only
+    PASSIVE checkpoints, so a reader can never block it; the WAL only grows.
+- Trees in Bend: 52 min (`ptree.py`).
+- Digest in Bend: 208 s.
+- Total: 57 min. Peak RSS 4.3 GB.
+- The leaf logs were read from APFS clones (`cp -c`) taken inside the transaction.
+
+**Trees at H for reuse:** `work/trees_3532588/`, written by `dumptrees.py`:
+- `<pool>.frontier`;
+- `<pool>_history.txt` (one "height root" line per block that appended notes);
+- `trees.json`.
+
+| pool | leaves (tree size) | blocks with notes (roots) | root at H |
+|---|---|---|---|
+| Sprout | 1,547,344 | 317,275 | (Bend, `../bin/sprout`) |
+| Sapling | 73,990,540 | 1,100,063 | `b0c826e5…51eb211a` |
+| Orchard | 50,478,807 | 583,279 | `489f6894…ef49dbf39` |
+| Ironwood | 947,637 | 66,437 | `c8acf3f5…01b3cf88b09` |
+
+Cross-check against the gaps seeds: their Bend-built root histories in
+`consensus/gaps/trees/seeds/*_history.txt` come from lightwalletd leaves, independently of
+this node. They agree at every common height:
+
+| Pool | Common heights | Equal |
+|---|---|---|
+| Sapling | 15,414 | 15,414 |
+| Orchard | 23,383 | 23,383 |
+| Ironwood | 59,826 | 59,826 |
+
+**Which roots the consumer checks against the chain at this H:**
+- **Roots at H: Sapling, Orchard and Ironwood (the frontiers): CHECKED by ZIP 221.**
+  - Bend (`consensus/gaps/history` bin/history, via `histcheck.py`) builds block H's history
+    leaf from three inputs:
+    - raw block H: hash, time, nBits, and per-pool tx counts, which Bend parses;
+    - the three frontier roots;
+    - the MMR peaks of blocks ..H-1, an **untrusted** hint in the manifest.
+  - It must MATCH block H+1's `hashBlockCommitments`.
+  - Result: `hist 3532589 MATCH`.
+  - Tampering is rejected: changing the Sapling, Orchard or Ironwood root at H gives
+    MISMATCH, and flipping one byte of the hint gives MISMATCH.
+  - The producer built the hint by chaining bin/history from the gaps agent's NU6.3 state at
+    3,529,999 over blocks 3,530,000..3,532,587, with the snapshot's own root histories as side
+    roots: **2,588 / 2,588 MATCH**. So those ~2.6k blocks of the root histories are
+    chain-checked too, at production time.
+- **Sapling root history 419,200..902,999: CHECKED** against `hashFinalSaplingRoot` of every
+  verified header.
+- **Pin only, until confirmation:**
+  - all older root-history entries (Sapling ≥ 903,000, Orchard, and Ironwood below H);
+  - all Sprout roots;
+  - the UTXO and nullifier sets;
+  - the value pools.
+- **Covered after import:** new Ironwood anchors are checked against the imported history
+  plus follow's roots (sync.py). Orchard and Sapling anchors in new blocks are still SKIPPED
+  by sync.py (4 Sapling and 1 Orchard in this run), as in the live node.
 
 Zakura publishes ~11–12 GB pruned snapshots. Its nodes trust the publisher. A Zebend node trusts
 a digest **pinned in code** instead, as Bitcoin Core's assumeutxo does. It checks the snapshot
@@ -20,9 +119,13 @@ python3 consume.py out.zsnap NEWSTATE            # digest must equal pinned.json
 ZEBEND_STATE=NEWSTATE ZEBEND_SPOOL=... python3 ../sync.py
 # confirmation, when the genesis instance passes H (or watch it, read-only)
 python3 confirm.py --target NEWSTATE --genesis ../state --watch
-# the real pin: run before the genesis instance reaches the last checkpoint
-python3 confirm.py --pin-only 3522460 --genesis ../state --watch --pack checkpoint_3522460.zsnap
-python3 measure.py out.zsnap NEWSTATE --spool DIR --pin D --until-live REFSTATE   # timings
+# the pin at 3,532,588 (heavy.sh: ~1 h, 4.3 GB), then the ZIP 221 hint (MMR peaks of ..H-1)
+HEAVY_MAX_MIN=180 HEAVY_MAX_GB=8 ../../heavy.sh python3 produce.py ../state g.zsnap --jobs 12 --keep
+python3 histcheck.py hint work/export_H HISTSTATE_L SPOOL hint.json   # blocks L+1..H+1 in SPOOL
+python3 histcheck.py embed g.zsnap hint.json g.zsnap.h && mv g.zsnap.h g.zsnap
+python3 dumptrees.py work/export_H work/trees_H                       # frontiers + root histories
+# cold start, timed (downloads H..tip in parallel, ZIP 221 check at H+1)
+python3 measure.py g.zsnap NEWSTATE --spool DIR --download --until-live ../state
 ```
 
 ## 1. Format (`snap.py`)
@@ -181,22 +284,30 @@ comes from the sequential first run.
 **Not checked against the chain; covered only by the pinned digest until confirmation:**
 - the UTXO set, the nullifier sets and the value pools;
 - Sprout roots (no header commits to them);
-- Orchard and Ironwood roots, and Sapling roots at or above 903,000.
+- Orchard and Ironwood roots, and Sapling roots at or above 903,000. Exception: the three
+  roots at H, which the ZIP 221 check binds to block H+1's header (below and §0).
 
 From Heartwood on, the header commits to those roots only through the ZIP 221 history tree
 (`hashLightClientRoot`, and from NU5 `hashBlockCommitments = BLAKE2b("ZcashBlockCommit",
 historyRoot ‖ authDataRoot ‖ 0^32)`).
 
-**Next step (not built):** put the ZIP 221 MMR peaks of the current epoch (NU6.3, from
-3,428,143; ~17 nodes) at H into the snapshot. Bend would then:
-- build block H's history leaf from the verified header, `roots.sapling`/`roots.orchard` at H
-  and the tx counts;
-- append it and bag the peaks;
-- check the result against block H+1's `hashBlockCommitments`. follow's `block_main` already
-  combines a history root with the Bend auth-data root, so it can make that comparison.
-
-The ZIP 221 node encoding in Bend is the missing piece. Whether NU6.3 history nodes commit to
-Ironwood roots has to be checked against the spec.
+**Built (Oct 27 evening): ZIP 221 check of the roots at H** (`histcheck.py`, `consume.py
+--history-blocks SPOOL`).
+- **What travels with the snapshot.** The manifest carries `history_hint`: the NU6.3 MMR peaks
+  of blocks ..H-1, a ~3 KB bin/history state. It is untrusted and not part of the digest.
+- **What Bend builds.** `consensus/gaps/history` bin/history builds block H's leaf from:
+  - the verified header and raw block H (tx counts);
+  - the snapshot's Sapling, Orchard and Ironwood frontier roots. V3 node data carries Ironwood.
+- **The check.** Bend appends that leaf and checks the result against block H+1's
+  `hashBlockCommitments`. A MATCH binds the three roots at H to the chain, whatever the hint
+  was.
+- **Result at 3,532,588:** MATCH. Tampering with any root or with the hint gives MISMATCH (§0).
+- **When a MISMATCH rejects the snapshot.** Only with `--history-blocks` and blocks H, H+1
+  available. Without them the check is reported NOT CHECKED, never as a pass.
+- **Limits.**
+  - Older root-history entries are not covered: only the leaf at H is rebuilt by the consumer.
+  - The check needs H inside the NU6.3 epoch and before NU7 activation (3,543,405). An H in
+    the NU7 epoch needs a hint built from NU7 activation.
 
 **Checked after the import, by full validation from H+1 (sync.py):**
 - every new block's spends against the imported UTXO and nullifier sets;
@@ -287,20 +398,47 @@ removed on the next run.
 - An imported store's `tree_sizes`/leaf logs start at H (`meta.leaf_base`). A future
   `z_gettreestate` must add the base frontier.
 - `UNDO_DEPTH` is now 600 (`0c58276`). confirm.py's rollback fallback reads it from store.py.
-- Tree builds at the real checkpoint will be long, as an estimate from the measured per-leaf
-  costs: incremental Sapling (74M leaves) and Orchard (~50M) with per-block roots take ~1–1.5 h
-  in parallel. That cost hits the producer and the confirmation only, not the consumer, which
-  checks one root per pool. The leaves are read 1M at a time, so memory stays bounded.
-  Faster: subtree roots (`sapling/tree` `tree_main c`, GPU) for the leaf part.
-  That job runs longer than heavy.sh's 10-minute cap, so it needs an explicit decision on
-  how to run it (its RSS stayed at 5.0 GB at 548k; at the checkpoint it is not measured).
-- The pinned value for 3,522,460 must come from the genesis instance (`confirm.py --pin-only
-  3522460 --watch --pack …`) and be reviewed like any consensus constant.
+- **Tree builds at the tip: the earlier estimate was wrong.**
+  - Measured one-process speed: 1M Orchard leaves (with per-block roots) take 6.2 min, so
+    sequential Sapling plus Orchard would be ~10 h, not ~1–1.5 h.
+  - `ptree.py` cuts the leaves into segments of whole blocks (~2^18 leaves or 20k blocks) and
+    runs them as parallel Bend processes (14 jobs).
+  - Each segment's start frontier is built by the seed mode of
+    `consensus/gaps/trees/{sapling,orchard}_frontier` (another agent's Bend programs,
+    uncommitted at the time; the binaries used are hash-recorded in `work/fast/tools`). It
+    starts from level-16 chunk roots: hints from `sapling/data/bend_chunk_roots.bin` and
+    `consensus/orchard/logs`, or computed when missing.
+  - Every segment then runs the same `sapfront`/`sinfront` as the one-process build.
+  - **Continuity**: segment k's end frontier, pushed from the leaves, must equal segment k+1's
+    start frontier, built from the hints. If it holds at every boundary, the result is exactly
+    the one-process result, by induction from the empty tree. A wrong hint fails it.
+  - Tests on prefixes: identical roots, frontier and empty root to `run_tree` for Sapling
+    (132,432 blocks, 45 segments; 29.6 s against 195 s) and Orchard (3,807 blocks).
+  - At 3,532,588: Sapling 288 segments, 8.1 min; Orchard 181 segments, 52 min. Continuity
+    holds at every boundary, and all chunk roots came from hints.
+  - `ZEBEND_SNAP_PTREE=0` restores the one-process build.
+  - `snap.py` also no longer lists every record of a 1 GiB part to find its last one
+    (`last_record`), which would have used GBs of RSS on the 50M-record Orchard nullifier
+    section.
+- **The pinned value for 3,532,588 has not been re-derived independently.**
+  - It was produced once, by one run on the genesis instance.
+  - A second export at exactly that height is no longer possible from the live node (it moved
+    on).
+  - The consumer side re-verified it: Bend recomputed the same digest from the file, and the
+    chain checks passed.
+  - A future genesis re-sync with `confirm.py --pin-only 3532588 --watch` (plus the hold patch)
+    would be the independent check.
 
 ## 8. Files
 
 - `snap.py`: format, Bend driver, producer core, zstd container.
 - `produce.py`, `consume.py`, `confirm.py`, `measure.py`, `pinned.json`.
+- `ptree.py` (parallel tree build), `histcheck.py` (ZIP 221 hint, embed, check),
+  `dumptrees.py` (frontiers and root histories as plain files).
+- Kept in `work/`:
+  - `work/fast/g3532588.zsnap`, the pinned snapshot (2.42 GB) with its hint;
+  - `work/trees_3532588/`;
+  - `work/fast/*.log`.
 - `bend/{snapdigest,sapfront,sinfront}.bend` → `bin/`. Built with `../../heavy.sh
   ../../sapling/build.sh bend/X.bend bin/X`.
 - `tests/`.

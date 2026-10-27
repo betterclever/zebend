@@ -127,7 +127,7 @@ def verify(d, man, jobs, work, pin=None, unpinned=False, log=log):
             n += 1
         tree["sapling"] += (f"; hashFinalSaplingRoot of all {n} verified headers {lo}..{hi} == the snapshot's "
                             f"Sapling root history" + (" (incl. H: the frontier at H is chain-committed)" if H < snap.HEARTWOOD else
-                                                       "; roots above 902,999: ZIP 221 history tree check pending"))
+                                                       "; roots from 903,000 to H-1: covered only by the pinned digest (the root at H: history_zip221)"))
     elif H < lo:
         field = headers.header(H)[68:100] if H >= 1 else bytes(32)
         if field != bytes(32):
@@ -135,7 +135,8 @@ def verify(d, man, jobs, work, pin=None, unpinned=False, log=log):
         tree["sapling"] += "; not active at H (header field hashReserved == 0)"
     for p in ("orchard", "ironwood"):
         if fronts[p] is not None and H >= snap.ACTIVATION[p]:
-            tree[p] += "; chain commitment (ZIP 221 history tree in hashBlockCommitments) NOT checked: pending"
+            tree[p] += ("; chain commitment of the root at H: ZIP 221 check (history_zip221) if run with "
+                        "--history-blocks, otherwise NOT checked")
     if fronts["sprout"] is not None:
         tree["sprout"] += "; no header commits to Sprout roots: covered only by the pinned digest"
     checks["trees"] = tree
@@ -230,6 +231,9 @@ def main():
     ap.add_argument("--jobs", type=int, default=16)
     ap.add_argument("--work")
     ap.add_argument("--keep-work", action="store_true")
+    ap.add_argument("--history-blocks", help="spool dir that holds (or will hold) raw blocks H and H+1: run the "
+                    "ZIP 221 check of the frontier roots at H against block H+1's hashBlockCommitments")
+    ap.add_argument("--history-wait", type=float, default=300, help="seconds to wait for blocks H, H+1")
     a = ap.parse_args()
     t0 = time.time()
     man, _ = snap.read_header(a.snapshot)
@@ -267,6 +271,23 @@ def main():
         log(f"  {checks['blocks']}")
         for p, s in checks["trees"].items():
             log(f"  {p}: {s}")
+        if a.history_blocks:   # ZIP 221: the frontier roots at H against block H+1's header (histcheck.py)
+            t = time.time()
+            import histcheck
+            need = (man["height"], man["height"] + 1)
+            while True:
+                raw = histcheck.spool_blocks(a.history_blocks, *need)
+                if len(raw) == 2 or time.time() - t > a.history_wait:
+                    break
+                time.sleep(0.5)
+            hc = histcheck.check(work, man, man.get("history_hint"), raw, work)
+            hc["wait_secs"] = round(time.time() - t - hc.get("secs", 0), 1)
+            checks["history_zip221"] = hc
+            log(f"  ZIP 221 at H+1: {hc['result']} {hc.get('line', hc.get('why', ''))[:120]}")
+            if hc["result"] == "MISMATCH":
+                raise SnapError(f"ZIP 221: block {man['height'] + 1}'s hashBlockCommitments does not commit to "
+                                f"the snapshot's tree roots at {man['height']}: {hc['line']}")
+            timing["history_check"] = round(time.time() - t, 1)
         bulk.join()
         timing["bulk_import_done"] = round(time.time() - t, 1)
         if bulk.exitcode != 0:
