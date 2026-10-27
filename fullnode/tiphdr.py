@@ -22,6 +22,26 @@ HDRDIR = HERE / "state/hdr"
 EXTRA = HDRDIR / "extra.bin"
 HDR = 1487
 PEERS = ["136.115.98.175", "34.80.219.125", "54.39.196.12", "38.190.136.76"]
+# follow's zebend-p2p uses PEERS[0] (p2pblocks.KNOWN_PEERS[0]) for its own header sync; Zebra
+# accepts ONE connection per source IP, so tiphdr starting with the same peer collides with it
+# (one of the two is reset). tiphdr starts elsewhere and falls back to the address book.
+FOLLOW_HEADER_PEER = PEERS[0]
+MAX_PEERS_TRIED = 8
+
+
+def candidate_peers():
+    book = []
+    for p in (Path(os.environ.get("ZEBEND_STATE", HERE / "state")) / "peers.txt", HERE / "state/peers.txt"):
+        try:
+            book += [l.strip() for l in p.read_text().splitlines() if l.strip() and ":" not in l.strip()]  # IPv4 only:
+        except OSError:                                                                                  # zebend-p2p
+            pass
+    seen, out = set(), []
+    for ip in PEERS[1:] + book[:20] + [FOLLOW_HEADER_PEER]:
+        if ip not in seen:
+            seen.add(ip)
+            out.append(ip)
+    return out[:MAX_PEERS_TRIED]
 
 
 def main():
@@ -32,7 +52,8 @@ def main():
     top = idx.n - 1
     work = HERE / "work/tiphdr"
     r = None
-    for peer in ([a.peer] if a.peer else PEERS):
+    no_link = False
+    for peer in ([a.peer] if a.peer else candidate_peers()):
         shutil.rmtree(work, ignore_errors=True)
         (work / "out").mkdir(parents=True)
         try:
@@ -40,20 +61,27 @@ def main():
                                 str(top), idx.display(top)], cwd=work, capture_output=True, text=True, timeout=180)
         except subprocess.TimeoutExpired:
             continue
+        no_link |= "does not link" in (r.stdout + r.stderr)
         hp, bp = work / "out/heights.txt", work / "out/headers.bin"
-        if hp.exists() and bp.exists() and bp.stat().st_size:
-            break
-    else:
-        if r is not None and "does not link" in (r.stdout + r.stderr):
-            return drop_tip(top)  # peers do not know our tip: it lost a block race
-        print("no headers from any peer")
-        return 1
-    pairs = re.findall(r"^(\d+) ([0-9a-f]{64})$", hp.read_text(), re.M)
-    raw = bp.read_bytes()
-    assert len(raw) == len(pairs) * HDR and int(pairs[0][0]) == top + 1
-    if raw[4:36] != idx.internal(top):
-        return drop_tip(top)
-    return append(idx, top, pairs, raw, work)
+        if not (hp.exists() and bp.exists() and bp.stat().st_size):
+            continue
+        pairs = re.findall(r"^(\d+) ([0-9a-f]{64})$", hp.read_text(), re.M)
+        raw = bp.read_bytes()
+        if len(raw) != len(pairs) * HDR or int(pairs[0][0]) != top + 1:
+            print(f"peer {peer}: malformed header batch; trying another peer")
+            continue
+        if raw[4:36] != idx.internal(top):
+            return drop_tip(top)
+        rc = append(idx, top, pairs, raw, work)
+        if rc == 0:
+            return 0
+        # Headers that fail Bend's checks (e.g. a peer on a pre-NU7 fork, whose difficulty the NU7
+        # rules reject) are not ours: ask the next peer instead of retrying the same one forever.
+        print(f"peer {peer}: headers rejected by Bend; trying another peer")
+    if no_link:
+        return drop_tip(top)  # peers do not know our tip: it lost a block race
+    print("no headers from any peer")
+    return 1
 
 
 def drop_tip(top):

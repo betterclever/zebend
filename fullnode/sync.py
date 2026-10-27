@@ -32,6 +32,8 @@ SPOOL = Path(os.environ.get("ZEBEND_SPOOL", HERE / "spool"))
 WORK = HERE / "work"
 CHECKPOINTS = HERE / "checkpoints/main-checkpoints.txt"
 HDR = 1487
+BEND_TIMEOUT = int(os.environ.get("ZEBEND_BEND_TIMEOUT", 900))  # s per blockdelta part (<= 8 MB / 400 blocks)
+VERIFIER_RETRIES = 3   # a window whose verifier gave no verdict (timeout, crash) is retried, not failed
 
 
 def log(*a):
@@ -134,8 +136,13 @@ def run_blockdelta(recs, jobs, tag, ex=None):
     def one(k):
         p = WORK / f"win_{os.getpid()}_{tag}_{k}.bin"
         window_file(p, parts[k])
-        for _ in range(3):  # empty output (a known rare Bend runtime issue) is rerun
-            r = subprocess.run([str(BIN / "blockdelta"), str(p)], capture_output=True, text=True)
+        for _ in range(3):  # empty output (a known rare Bend runtime issue) or a hang is rerun
+            try:
+                r = subprocess.run([str(BIN / "blockdelta"), str(p)], capture_output=True, text=True,
+                                   timeout=BEND_TIMEOUT)
+            except subprocess.TimeoutExpired:
+                r = subprocess.CompletedProcess([], -9, "", f"blockdelta timed out after {BEND_TIMEOUT} s")
+                continue
             if r.stdout.strip():
                 break
         p.unlink(missing_ok=True)
@@ -248,45 +255,70 @@ def checkpoint_checks(blocks, idx, cps, tip):
 _ROOTS = {}
 
 
-def anchor_checks(full, st, log):
+def _follow_roots():
+    """Follow's committed Ironwood roots: {root: height} and follow's committed (height, hash).
+    Only the first tip.json["roots_bytes"] bytes of roots.txt are committed (follow appends
+    roots.txt before it replaces tip.json, and truncates the excess on restart), so a
+    half-written line or a root of an abandoned window is never read. Re-read on every miss:
+    a cache that is never invalidated kept roots of a branch follow had dropped (audit F3)."""
+    fs = Path(os.environ.get("ZEBEND_FOLLOW_STATE", HERE.parent / "follow/state"))
+    try:
+        tip = json.loads((fs / "tip.json").read_text())
+        with open(fs / "roots.txt", "rb") as f:
+            data = f.read(int(tip["roots_bytes"]))
+    except (OSError, ValueError, KeyError):
+        return {}, None
+    roots = {}
+    for l in data.decode(errors="replace").splitlines():
+        p = l.split()
+        if len(p) == 3:
+            roots.setdefault(p[2], int(p[0]))
+    return roots, (int(tip["height"]), tip.get("hash"))
+
+
+def anchor_checks(full, st, log, idx=None):
     """Each shielded bundle's anchor must be a tree root after a strictly earlier block.
 
-    Ironwood: roots from a Bend-computed tree. Until this node's own Orchard/Ironwood tree
-    builder runs, the root set is a snapshot of follow's Bend-computed Ironwood roots
-    (<state>/ironwood_roots.txt, copied from follow/state/roots.txt: every root since
-    activation, computed by follow/bin/frontier and cross-checked with the chain). Orchard,
-    Sapling, Sprout anchors: SKIPPED (tree builders pending) and reported as such."""
+    Ironwood: roots from a Bend-computed tree: the instance's snapshot
+    (<state>/ironwood_roots.txt, a copy of follow/state/roots.txt) plus follow's committed live
+    roots, re-read on a miss. An anchor that is not a known root fails only if follow has
+    committed a block at or above h-1 ON THE SAME CHAIN as ours (its tip hash equals our
+    verified header hash at that height); otherwise follow is behind or on another branch and
+    the anchor is SKIPPED (reported). Orchard, Sapling, Sprout anchors: SKIPPED (tree builders
+    pending) and reported as such."""
     p = st.dir / "ironwood_roots.txt"
-    if not _ROOTS and p.exists():
-        for l in p.read_text().splitlines():
-            h, _, r = l.split()
-            _ROOTS.setdefault(r, int(h))
+    if not _ROOTS:
+        if p.exists():
+            for l in p.read_text().splitlines():
+                q = l.split()
+                if len(q) == 3:
+                    _ROOTS.setdefault(q[2], int(q[0]))
+        _ROOTS.update(_follow_roots()[0])  # genesis instance: no snapshot, follow's roots still apply
     skipped = {"orchard": 0, "sapling": 0, "sprout": 0}
     checked = 0
     for b in full:
         for t in b["txs"]:
             for a in t["anchors"]["ironwood"]:
-                if not _ROOTS:
-                    skipped.setdefault("ironwood", 0)
-                    skipped["ironwood"] += 1
-                    continue
-                if a not in _ROOTS:  # refresh from follow's live Bend-computed roots (read-only)
-                    fr = HERE.parent / "follow/state/roots.txt"
-                    for l in fr.read_text().splitlines():
-                        hh, _, r = l.split()
-                        _ROOTS.setdefault(r, int(hh))
-                    ftip = max(_ROOTS.values())
-                    if a not in _ROOTS and ftip < b["height"] - 1:
-                        skipped.setdefault("ironwood (roots not computed yet)", 0)
-                        skipped["ironwood (roots not computed yet)"] += 1
-                        continue
-                if a not in _ROOTS or _ROOTS[a] >= b["height"]:
-                    raise Fail(f"block {b['height']} tx {t['txid']}: Ironwood anchor {a[:16]} is not a root of an earlier block")
+                h = b["height"]
+                if a not in _ROOTS or _ROOTS[a] >= h:
+                    fresh, ftip = _follow_roots()
+                    for r, rh in fresh.items():  # follow's committed view wins over the cache
+                        _ROOTS[r] = rh
+                    # same chain: follow's tip hash is our verified hash at that height (follow ahead of
+                    # our verified headers: its chain is the one tiphdr is about to extend; trusted)
+                    on_chain = ftip is not None and (idx is None or ftip[0] >= idx.n or idx.display(ftip[0]) == ftip[1])
+                    if a not in _ROOTS or _ROOTS[a] >= h:
+                        if ftip is None or ftip[0] < h - 1 or not on_chain:
+                            k = "ironwood (follow behind or on another branch)"
+                            skipped[k] = skipped.get(k, 0) + 1
+                            continue
+                        raise Fail(f"block {h} tx {t['txid']}: Ironwood anchor {a[:16]} is not a root of an earlier block "
+                                   f"(follow committed tip {ftip[0]}, same chain)")
                 checked += 1
             for pool in ("orchard", "sapling", "sprout"):
                 skipped[pool] += len(set(t["anchors"][pool]))
-    log(f"  anchors: Ironwood {checked}/{checked} PASS; SKIPPED (tree builder pending): "
-        + ", ".join(f"{k} {v}" for k, v in skipped.items() if v))
+    sk = ", ".join(f"{k} {v}" for k, v in skipped.items() if v)
+    log(f"  anchors: Ironwood {checked}/{checked} PASS" + (f"; SKIPPED: {sk}" if sk else ""))
 
 
 # ------------------------------------------------------------------ main loop
@@ -462,7 +494,15 @@ def main():
             st.new_window()
             if assumed_mode:
                 drain()  # prefill writes to the store: no group open
-                n_or = assumed.prefill(blocks, st, log)
+                while True:  # the oracle is a network service: wait for it, never exit the node
+                    try:
+                        n_or = assumed.prefill(blocks, st, log)
+                        break
+                    except ConnectionError as e:
+                        log(f"  oracle unavailable ({e}); retrying in 60 s")
+                        time.sleep(60)
+                        if _STOP:
+                            raise
                 if n_or:
                     log(f"  {n_or} spent outputs from before the start height taken from the oracle (Bend-checked txids)")
             # every spent output of the window not created inside it: one sorted batch lookup,
@@ -485,7 +525,7 @@ def main():
                     ta = time.time()
                     st.build_addr_index()
                     log(f"  address index rebuilt from the UTXO set ({time.time() - ta:.0f} s)")
-                anchor_checks(full, st, log)
+                anchor_checks(full, st, log, idx)
             raw = dict(recs)
             cp_part = [b for b in blocks if b["height"] <= last_cp]
             extra = {}
@@ -500,8 +540,16 @@ def main():
                     extra["audit_disagreements"] = audit_n
                     log(f"  AUDIT: rules disagree with checkpointed blocks: {dis[:3]} (total {audit_n})")
             if full:
-                e2 = rules.validate(full, st, raw, log, mode="full", pools=extra.get("pools", pools_cur),
-                                    jobs=args.jobs, ex=ex_rules)
+                for attempt in range(VERIFIER_RETRIES + 1):
+                    try:
+                        e2 = rules.validate(full, st, raw, log, mode="full", pools=extra.get("pools", pools_cur),
+                                            jobs=args.jobs, ex=ex_rules)
+                        break
+                    except rules.VerifierError as e:  # no verdict is not a verdict: retry, then halt
+                        if attempt == VERIFIER_RETRIES:
+                            raise
+                        log(f"  verifier error ({e}); retrying the window ({attempt + 1}/{VERIFIER_RETRIES})")
+                        time.sleep(10 * (attempt + 1))
                 rs = e2["rules"]
                 log(f"  full validation {full[0]['height']}..{full[-1]['height']}: every consensus rule PASS "
                     f"(turnstile {rs['turnstile']}); hooks: {rs['hooks']}")

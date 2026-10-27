@@ -13,11 +13,14 @@ the coinbase-maturity rule), and that the output was still unspent before the st
 Every such output is recorded in the `oracle_prevout` table, so nothing derived from it is
 ever presented as genesis-verified.
 """
-import re, struct, subprocess
+import os, re, struct, subprocess, time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 LWD = HERE.parent / "follow/bin/follow-lwd"
+ORACLE_TIMEOUT = int(os.environ.get("ZEBEND_ORACLE_TIMEOUT", 90))   # seconds per follow-lwd call
+ORACLE_BATCH = 50                                                     # txids per call
+ORACLE_TRIES = int(os.environ.get("ZEBEND_ORACLE_TRIES", 4))
 HDR = 1487
 
 
@@ -32,12 +35,28 @@ def fetch(txids, log=print):
     import sync
     want = sorted(set(txids))
     got = {}
-    for i in range(0, len(want), 200):
-        # follow-lwd takes and prints txids in internal byte order; blockdelta prints display order.
-        rev = lambda t: bytes.fromhex(t)[::-1].hex()
-        out = subprocess.run([str(LWD), "rawtx", *map(rev, want[i:i + 200])], capture_output=True, text=True).stdout
-        for m in re.finditer(r"^rawtx ([0-9a-f]{64}) height (\d+) hex ([0-9a-f]+)$", out, re.M):
-            got[rev(m.group(1))] = (int(m.group(2)), bytes.fromhex(m.group(3)))
+    # follow-lwd takes and prints txids in internal byte order; blockdelta prints display order.
+    rev = lambda t: bytes.fromhex(t)[::-1].hex()
+    # follow-lwd has no network timeout of its own: a lightwalletd that accepts the TLS session
+    # and never answers hung the sync for good (audit: 20+ min at 0% CPU on an ESTABLISHED
+    # connection). Each batch runs under a timeout and is retried; what is still missing after
+    # ORACLE_TRIES rounds raises ConnectionError (sync.py waits and retries the window).
+    for attempt in range(ORACLE_TRIES):
+        todo = [t for t in want if t not in got]
+        if not todo:
+            break
+        if attempt:
+            log(f"  oracle: {len(todo)} prevout txs still missing; retry {attempt}/{ORACLE_TRIES - 1}")
+            time.sleep(min(30, 5 * attempt))
+        for i in range(0, len(todo), ORACLE_BATCH):
+            try:
+                out = subprocess.run([str(LWD), "rawtx", *map(rev, todo[i:i + ORACLE_BATCH])], capture_output=True,
+                                     text=True, timeout=ORACLE_TIMEOUT).stdout
+            except subprocess.TimeoutExpired:
+                log(f"  oracle: follow-lwd rawtx ({len(todo[i:i + ORACLE_BATCH])} txids) timed out after {ORACLE_TIMEOUT} s")
+                continue
+            for m in re.finditer(r"^rawtx ([0-9a-f]{64}) height (\d+) hex ([0-9a-f]+)$", out, re.M):
+                got[rev(m.group(1))] = (int(m.group(2)), bytes.fromhex(m.group(3)))
     missing = [t for t in want if t not in got]
     if missing:
         raise ConnectionError(f"oracle did not return {len(missing)} prevout txs, e.g. {missing[0]}")
