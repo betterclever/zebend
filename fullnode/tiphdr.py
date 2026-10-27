@@ -2,9 +2,9 @@
 """Extend the verified header chain above node/headers' last height, to the live tip.
 
 Same Bend programs as follow (read-only use of follow/bin): zebend-p2p (node/p2p: P2P
-getheaders; SHA-256d hashes and prev links computed in Bend) and equihash (blake3x/eqv3:
-Equihash, hash <= target, links, difficulty, with the 28 previous headers for the difficulty
-window). Accepted headers are appended to state/hdr/extra.bin and their Bend-computed hashes
+getheaders; SHA-256d hashes and prev links computed in Bend) and equihash7 (blake3x/eqv3 +
+consensus/nu7/headers: Equihash, hash <= target, links, difficulty by height, with the 113
+previous headers for the difficulty window: 17 + 11 before NU7, 102 + 11 from NU7, ZIP 218). Accepted headers are appended to state/hdr/extra.bin and their Bend-computed hashes
 to state/hdr/hashes.bin (the index sync/download use). Run repeatedly; each run appends what
 peers have.
 
@@ -75,17 +75,23 @@ def drop_tip(top):
 
 
 def append(idx, top, pairs, raw, work):
-    prev28 = b"".join(headers.header(h) for h in range(top - 27, top + 1))
+    ctx = 113  # PoWAveragingWindow (102 from NU7) + PoWMedianBlockSpan
+    prev = b"".join(headers.header(h) for h in range(top - ctx + 1, top + 1))
     hfile = work / "chk.bin"
-    hfile.write_bytes(prev28 + raw)
-    n = 28 + len(pairs)
-    out = subprocess.run([str(FOLLOW_BIN / "equihash"), str(hfile), str(n), str(n), "4", "+RTS", "--gpu", "off", "-RTS"],
-                         capture_output=True, text=True).stdout
+    hfile.write_bytes(prev + raw)
+    n = ctx + len(pairs)
+    out = subprocess.run([str(FOLLOW_BIN / "equihash7"), str(hfile), str(n), str(n), "4", str(top - ctx + 1), "main",
+                          "+RTS", "--gpu", "off", "-RTS"], capture_output=True, text=True).stdout
     got = dict((k, (int(x), int(y))) for k, x, y in re.findall(
         r"^(equihash valid|hash <= target|prev-hash links|difficulty \(nBits == expected\)) (\d+)/(\d+)", out, re.M))
-    want = {"equihash valid": (n, n), "hash <= target": (n, n), "prev-hash links": (n - 1, n - 1),
-            "difficulty (nBits == expected)": (len(pairs), len(pairs))}
-    if got != want:
+    want = {"equihash valid": (n, n), "hash <= target": (n, n), "prev-hash links": (n - 1, n - 1)}
+    # The checker verifies difficulty for every header after its own context window, which
+    # may be shorter than ctx (113 covers NU7's window; the pre-NU7 window is 28), so it can
+    # check more than the new headers. All of its checks must pass, and they must cover at
+    # least the new headers (they are the last ones in the file).
+    dk, dn = got.pop("difficulty (nBits == expected)", (0, -1))
+    if got != want or dk != dn or dn < len(pairs):
+        got["difficulty (nBits == expected)"] = (dk, dn)
         print(f"Bend header checks failed: {got}")
         return 1
     with open(EXTRA, "ab") as f:
