@@ -1,0 +1,10 @@
+19:39:12 history: state at 3530888 (seeded at 3521999 from /Users/betterclever/projects/zecathon/bend-zcash/consensus/gaps/history/data/seed_3521999.st (NU6.3 epoch tree; validated by header 3522000)); checked from 3428143
+19:39:12 trees: sapling size 73989959 root b58954b93b0d7fb2 (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); orchard size 50478449 root 3b539e125506d3a5 (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); ironwood size 931486 root 693d368249468778 (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified)
+19:39:12 ASSUMED-STATE MODE from 3522000: not genesis-verified
+19:39:12 sync: state tip 3530888, last checkpoint 3522460, verified headers to 3532486, 8 Bend jobs
+19:39:12   anchors: Ironwood 201/201 PASS; Sapling 8/8 PASS; Orchard 5/5 PASS; Sprout 0/0 PASS
+19:39:15   full validation 3530889..3530999: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 276, 'skipped': 0}", 'sapling': "PASS {'pass': 20, 'skipped': 0}", 'orchard': "PASS {'pass': 206, 'skipped': 0}"}
+19:39:15   history (ZIP 221): 111 MATCH
+19:39:15 tip 3530999  window 111 blocks 3.1 MB in 3.7 s (waited for bend 0.3 s [bend 0.1 s, overlapped]; lookups 0.0 s, rules 3.4 s; resolve 0.0 s)  avg 30.4 blocks/s 0.84 MB/s  rules parts 7 reruns 0
+19:39:15 committed tip 3530999: 1 windows, 3 MB in one transaction (writer 0.0 s)
+19:39:15 stopped at committed tip 3530999: 111 blocks 3.1 MB in 4 s, 30.1 blocks/s 0.83 MB/s

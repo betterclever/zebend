@@ -1,0 +1,10 @@
+19:39:16 history: no state (starts at the next activation); checked from 3428143
+19:39:16 trees: sapling size 73989983 root 736858fac2699132 (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); orchard size 50478474 root 6e734f7507128fc8 (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); ironwood size 931806 root dac34c59bcb9b970 (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified)
+19:39:16 ASSUMED-STATE MODE from 3522000: not genesis-verified
+19:39:16 sync: state tip 3530950, last checkpoint 3522460, verified headers to 3532486, 8 Bend jobs
+19:39:16   anchors: Ironwood 80/80 PASS; Sapling 3/3 PASS; Orchard 2/2 PASS; Sprout 0/0 PASS
+19:39:18   full validation 3530951..3530999: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 97, 'skipped': 0}", 'sapling': "PASS {'pass': 8, 'skipped': 0}", 'orchard': "PASS {'pass': 82, 'skipped': 0}"}
+19:39:18   history (ZIP 221): 0 MATCH, 49 SKIPPED (no history state (starts at the next activation))
+19:39:18 tip 3530999  window 49 blocks 1.4 MB in 2.2 s (waited for bend 0.1 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 2.1 s; resolve 0.0 s)  avg 22.1 blocks/s 0.63 MB/s  rules parts 6 reruns 0
+19:39:18 committed tip 3530999: 1 windows, 1 MB in one transaction (writer 0.0 s)
+19:39:18 stopped at committed tip 3530999: 49 blocks 1.4 MB in 2 s, 21.8 blocks/s 0.62 MB/s

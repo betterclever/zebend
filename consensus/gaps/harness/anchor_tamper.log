@@ -1,0 +1,4 @@
+sapling (100, {'real-earlier': 100, 'random': 100, 'same-block': 100, 'later': 100})
+orchard (100, {'real-earlier': 100, 'random': 100, 'same-block': 100, 'later': 100})
+unknown anchor with history_from SKIPPED (0, 1, 'anchor not in the root history, which starts at 3428143')
+unknown anchor, full history FAIL (correct): block 3530000 tx x: sapling anchor 407dbb94fe145171 is not a root of an earlier block

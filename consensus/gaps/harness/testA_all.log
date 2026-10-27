@@ -1,0 +1,193 @@
+17:33:01 sapling: 0 blocks with leaves, 0 leaves; start root 15c6108a2df9e849
+17:33:01 orchard: 0 blocks with leaves, 0 leaves; start root 0ce2d551d9244ce5
+17:33:01 ironwood: 0 blocks with leaves, 0 leaves; start root 41fb96393612725a
+17:33:01 sapling: 15415 historical per-block roots imported from /Users/betterclever/projects/zecathon/bend-zcash/consensus/gaps/trees/seeds/sapling_history.txt
+17:33:01 orchard: 23384 historical per-block roots imported from /Users/betterclever/projects/zecathon/bend-zcash/consensus/gaps/trees/seeds/orchard_history.txt
+17:33:01 ironwood: 59827 historical per-block roots imported from /Users/betterclever/projects/zecathon/bend-zcash/consensus/gaps/trees/seeds/ironwood_history.txt
+17:33:01 final: sapling size 73986770 root 15c6108a2df9e849; orchard size 50476948 root 0ce2d551d9244ce5; ironwood size 800984 root 41fb96393612725a
+17:33:01 committed: 98629 anchor rows, tree state in 0 undo rows, meta trees
+17:33:01 meta history set at 3521999 (seeded at 3521999 from /Users/betterclever/projects/zecathon/bend-zcash/consensus/gaps/history/data/seed_3521999.st (NU6.3 epoch tree; validated by header 3522000))
+17:33:01 history: state at 3521999 (seeded at 3521999 from /Users/betterclever/projects/zecathon/bend-zcash/consensus/gaps/history/data/seed_3521999.st (NU6.3 epoch tree; validated by header 3522000)); checked from 3428143
+17:33:01 trees: sapling size 73986770 root 15c6108a2df9e849 (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); orchard size 50476948 root 0ce2d551d9244ce5 (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); ironwood size 800984 root 41fb96393612725a (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified)
+17:33:01 ASSUMED-STATE MODE from 3522000: not genesis-verified
+17:33:01 address index: deferred until the last checkpoint (emptied now, rebuilt from the UTXO set later)
+17:33:01 sync: state tip 3521999, last checkpoint 3522460, verified headers to 3532396, 8 Bend jobs
+17:33:34   1912 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:33:39   history (ZIP 221): 200 MATCH
+17:33:39 tip 3522199  window 200 blocks 7.7 MB in 37.5 s (waited for bend 0.6 s [bend 0.4 s, overlapped]; lookups 32.0 s, rules 4.8 s; resolve 0.0 s)  avg 5.3 blocks/s 0.21 MB/s  rules parts 8 reruns 0
+17:33:39 committed tip 3522199: 1 windows, 8 MB in one transaction (writer 0.0 s)
+17:34:22   1523 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:34:26   history (ZIP 221): 200 MATCH
+17:34:26 tip 3522399  window 200 blocks 6.6 MB in 47.5 s (waited for bend 0.0 s [bend 0.3 s, overlapped]; lookups 43.1 s, rules 4.3 s; resolve 0.0 s)  avg 4.7 blocks/s 0.17 MB/s  rules parts 16 reruns 0
+17:34:26 committed tip 3522399: 1 windows, 7 MB in one transaction (writer 0.0 s)
+17:34:32   294 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:34:34   history (ZIP 221): 61 MATCH
+17:34:34 tip 3522460  window 61 blocks 2.4 MB in 7.5 s (waited for bend 0.0 s [bend 0.1 s, overlapped]; lookups 6.0 s, rules 1.6 s; resolve 0.0 s)  avg 5.0 blocks/s 0.18 MB/s  rules parts 23 reruns 0
+17:34:34 committed tip 3522460: 1 windows, 2 MB in one transaction (writer 0.0 s)
+17:34:43   574 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:34:45   address index rebuilt from the UTXO set (0 s)
+17:34:45   anchors: Ironwood 365/365 PASS; Sapling 16/16 PASS; Orchard 4/4 PASS; Sprout 0/0 PASS
+17:34:48   full validation 3522461..3522600: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 442, 'skipped': 0}", 'sapling': "PASS {'pass': 25, 'skipped': 0}", 'orchard': "PASS {'pass': 366, 'skipped': 0}"}
+17:34:49   history (ZIP 221): 140 MATCH
+17:34:49 tip 3522600  window 140 blocks 4.6 MB in 14.9 s (waited for bend 0.0 s [bend 0.2 s, overlapped]; lookups 9.5 s, rules 5.3 s; resolve 0.0 s)  avg 5.6 blocks/s 0.20 MB/s  rules parts 31 reruns 0
+17:34:49 committed tip 3522600: 1 windows, 5 MB in one transaction (writer 0.0 s)
+17:34:49 stopped at committed tip 3522600: 601 blocks 21.3 MB in 107 s, 5.6 blocks/s 0.20 MB/s
+17:34:55 history: state at 3522600 (seeded at 3521999 from /Users/betterclever/projects/zecathon/bend-zcash/consensus/gaps/history/data/seed_3521999.st (NU6.3 epoch tree; validated by header 3522000)); checked from 3428143
+17:34:55 trees: sapling size 73986983 root 1c4f735e5c703e97 (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); orchard size 50477056 root b12e893b9547fc2a (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); ironwood size 805250 root 8c2520fa8e2ff7cb (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified)
+17:34:55 ASSUMED-STATE MODE from 3522000: not genesis-verified
+17:34:55 sync: state tip 3522600, last checkpoint 3522460, verified headers to 3532397, 8 Bend jobs
+17:35:27   2484 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:35:31   anchors: Ironwood 951/951 PASS; Sapling 47/47 PASS; Orchard 19/19 PASS; Sprout 0/0 PASS, 4 SKIPPED (no Sprout tree before the assumed start)
+17:35:41   full validation 3522601..3523000: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 1348, 'skipped': 0}", 'sapling': "PASS {'pass': 95, 'skipped': 0}", 'orchard': "PASS {'pass': 953, 'skipped': 0}"}
+17:35:47   history (ZIP 221): 400 MATCH
+17:35:47 tip 3523000  window 400 blocks 12.2 MB in 51.6 s (waited for bend 0.7 s [bend 0.5 s, overlapped]; lookups 30.8 s, rules 20.2 s; resolve 0.0 s)  avg 7.7 blocks/s 0.24 MB/s  rules parts 8 reruns 0
+17:35:47 committed tip 3523000: 1 windows, 12 MB in one transaction (writer 0.1 s)
+17:36:02   1296 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:36:06   anchors: Ironwood 1324/1324 PASS; Sapling 37/37 PASS; Orchard 22/22 PASS; Sprout 0/0 PASS
+17:36:18   full validation 3523001..3523400: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 1855, 'skipped': 0}", 'sapling': "PASS {'pass': 64, 'skipped': 0}", 'orchard': "PASS {'pass': 1324, 'skipped': 0}"}
+17:36:22   history (ZIP 221): 400 MATCH
+17:36:22 tip 3523400  window 400 blocks 15.6 MB in 34.5 s (waited for bend 0.0 s [bend 0.4 s, overlapped]; lookups 15.3 s, rules 19.1 s; resolve 0.0 s)  avg 9.3 blocks/s 0.32 MB/s  rules parts 16 reruns 0
+17:36:22 committed tip 3523400: 1 windows, 16 MB in one transaction (writer 0.1 s)
+17:36:41   1207 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:36:45   anchors: Ironwood 1061/1061 PASS; Sapling 30/30 PASS; Orchard 35/35 PASS; Sprout 0/0 PASS, 4 SKIPPED (no Sprout tree before the assumed start)
+17:36:51   full validation 3523401..3523800: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 1181, 'skipped': 0}", 'sapling': "PASS {'pass': 61, 'skipped': 0}", 'orchard': "PASS {'pass': 1069, 'skipped': 0}"}
+17:36:55   history (ZIP 221): 400 MATCH
+17:36:55 tip 3523800  window 400 blocks 12.3 MB in 33.2 s (waited for bend 0.0 s [bend 0.6 s, overlapped]; lookups 19.8 s, rules 13.3 s; resolve 0.0 s)  avg 10.1 blocks/s 0.34 MB/s  rules parts 24 reruns 0
+17:36:55 committed tip 3523800: 1 windows, 12 MB in one transaction (writer 0.1 s)
+17:36:59   291 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:37:01   anchors: Ironwood 399/399 PASS; Sapling 10/10 PASS; Orchard 5/5 PASS; Sprout 0/0 PASS
+17:37:04   full validation 3523801..3524000: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 556, 'skipped': 0}", 'sapling': "PASS {'pass': 26, 'skipped': 0}", 'orchard': "PASS {'pass': 400, 'skipped': 0}"}
+17:37:06   history (ZIP 221): 200 MATCH
+17:37:06 tip 3524000  window 200 blocks 4.7 MB in 11.2 s (waited for bend 0.0 s [bend 0.2 s, overlapped]; lookups 4.0 s, rules 7.2 s; resolve 0.0 s)  avg 10.7 blocks/s 0.34 MB/s  rules parts 32 reruns 0
+17:37:06 committed tip 3524000: 1 windows, 5 MB in one transaction (writer 0.1 s)
+17:37:06 stopped at committed tip 3524000: 1400 blocks 44.8 MB in 131 s, 10.7 blocks/s 0.34 MB/s
+17:37:14 history: state at 3524000 (seeded at 3521999 from /Users/betterclever/projects/zecathon/bend-zcash/consensus/gaps/history/data/seed_3521999.st (NU6.3 epoch tree; validated by header 3522000)); checked from 3428143
+17:37:14 trees: sapling size 73987487 root d1383442a54e690d (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); orchard size 50477272 root 8fd968e1755e49c1 (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); ironwood size 813918 root 5515043829a7145b (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified)
+17:37:14 ASSUMED-STATE MODE from 3522000: not genesis-verified
+17:37:14 sync: state tip 3524000, last checkpoint 3522460, verified headers to 3532397, 8 Bend jobs
+17:37:50   1400 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:37:53   anchors: Ironwood 971/971 PASS; Sapling 71/71 PASS; Orchard 12/12 PASS; Sprout 0/0 PASS
+17:38:01   full validation 3524001..3524400: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 1584, 'skipped': 0}", 'sapling': "PASS {'pass': 107, 'skipped': 0}", 'orchard': "PASS {'pass': 974, 'skipped': 0}"}
+17:38:06   history (ZIP 221): 400 MATCH
+17:38:06 tip 3524400  window 400 blocks 12.1 MB in 52.3 s (waited for bend 0.6 s [bend 0.4 s, overlapped]; lookups 35.3 s, rules 16.4 s; resolve 0.0 s)  avg 7.6 blocks/s 0.23 MB/s  rules parts 8 reruns 0
+17:38:07 committed tip 3524400: 1 windows, 12 MB in one transaction (writer 0.1 s)
+17:38:24   910 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:38:28   anchors: Ironwood 1122/1122 PASS; Sapling 41/41 PASS; Orchard 29/29 PASS; Sprout 0/0 PASS
+17:38:38   full validation 3524401..3524800: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 1864, 'skipped': 0}", 'sapling': "PASS {'pass': 86, 'skipped': 0}", 'orchard': "PASS {'pass': 1127, 'skipped': 0}"}
+17:38:43   history (ZIP 221): 400 MATCH
+17:38:43 tip 3524800  window 400 blocks 14.0 MB in 36.4 s (waited for bend 0.0 s [bend 0.4 s, overlapped]; lookups 17.5 s, rules 18.9 s; resolve 0.0 s)  avg 9.0 blocks/s 0.29 MB/s  rules parts 16 reruns 0
+17:38:43 committed tip 3524800: 1 windows, 14 MB in one transaction (writer 0.1 s)
+17:39:40   3232 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:39:43   anchors: Ironwood 829/829 PASS; Sapling 32/32 PASS; Orchard 20/20 PASS; Sprout 0/0 PASS
+17:40:08   full validation 3524801..3525200: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 1454, 'skipped': 0}", 'sapling': "PASS {'pass': 65, 'skipped': 0}", 'orchard': "PASS {'pass': 835, 'skipped': 0}"}
+17:40:42   history (ZIP 221): 400 MATCH
+17:40:42 tip 3525200  window 400 blocks 10.9 MB in 119.1 s (waited for bend 0.0 s [bend 0.8 s, overlapped]; lookups 57.5 s, rules 61.5 s; resolve 0.0 s)  avg 5.8 blocks/s 0.18 MB/s  rules parts 24 reruns 0
+17:40:42 committed tip 3525200: 1 windows, 11 MB in one transaction (writer 0.1 s)
+17:41:08   1167 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:41:12   anchors: Ironwood 1058/1058 PASS; Sapling 58/58 PASS; Orchard 31/31 PASS; Sprout 0/0 PASS
+17:41:20   full validation 3525201..3525600: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 1805, 'skipped': 0}", 'sapling': "PASS {'pass': 88, 'skipped': 0}", 'orchard': "PASS {'pass': 1064, 'skipped': 0}"}
+17:41:23   history (ZIP 221): 400 MATCH
+17:41:23 tip 3525600  window 400 blocks 12.9 MB in 40.6 s (waited for bend 0.0 s [bend 0.5 s, overlapped]; lookups 26.2 s, rules 14.4 s; resolve 0.0 s)  avg 6.4 blocks/s 0.20 MB/s  rules parts 32 reruns 0
+17:41:23 committed tip 3525600: 1 windows, 13 MB in one transaction (writer 0.1 s)
+17:41:45   1430 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:41:49   anchors: Ironwood 1248/1248 PASS; Sapling 42/42 PASS; Orchard 21/21 PASS; Sprout 0/0 PASS
+17:41:59   full validation 3525601..3526000: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 2075, 'skipped': 0}", 'sapling': "PASS {'pass': 79, 'skipped': 0}", 'orchard': "PASS {'pass': 1258, 'skipped': 0}"}
+17:42:03   history (ZIP 221): 400 MATCH
+17:42:03 tip 3526000  window 400 blocks 14.8 MB in 40.1 s (waited for bend 0.0 s [bend 0.7 s, overlapped]; lookups 22.3 s, rules 17.8 s; resolve 0.0 s)  avg 6.9 blocks/s 0.22 MB/s  rules parts 40 reruns 0
+17:42:03 committed tip 3526000: 1 windows, 15 MB in one transaction (writer 0.1 s)
+17:42:10   594 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:42:14   anchors: Ironwood 860/860 PASS; Sapling 30/30 PASS; Orchard 24/24 PASS; Sprout 0/0 PASS
+17:42:20   full validation 3526001..3526400: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 1290, 'skipped': 0}", 'sapling': "PASS {'pass': 61, 'skipped': 0}", 'orchard': "PASS {'pass': 862, 'skipped': 0}"}
+17:42:23   history (ZIP 221): 400 MATCH
+17:42:23 tip 3526400  window 400 blocks 10.5 MB in 20.4 s (waited for bend 0.0 s [bend 0.6 s, overlapped]; lookups 7.8 s, rules 12.6 s; resolve 0.0 s)  avg 7.8 blocks/s 0.24 MB/s  rules parts 48 reruns 0
+17:42:23 committed tip 3526400: 1 windows, 11 MB in one transaction (writer 0.0 s)
+17:42:39   923 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:42:43   anchors: Ironwood 982/982 PASS; Sapling 40/40 PASS; Orchard 13/13 PASS, 1 SKIPPED (anchor not in the root history, which starts at 3428143); Sprout 0/0 PASS
+17:42:50   full validation 3526401..3526800: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 1397, 'skipped': 0}", 'sapling': "PASS {'pass': 73, 'skipped': 0}", 'orchard': "PASS {'pass': 986, 'skipped': 0}"}
+17:42:53   history (ZIP 221): 400 MATCH
+17:42:53 tip 3526800  window 400 blocks 11.4 MB in 30.4 s (waited for bend 0.0 s [bend 0.5 s, overlapped]; lookups 15.6 s, rules 14.8 s; resolve 0.0 s)  avg 8.3 blocks/s 0.26 MB/s  rules parts 56 reruns 0
+17:42:53 committed tip 3526800: 1 windows, 11 MB in one transaction (writer 0.1 s)
+17:44:39   5854 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:44:42   anchors: Ironwood 731/731 PASS; Sapling 32/32 PASS; Orchard 9/9 PASS; Sprout 0/0 PASS
+17:45:30   full validation 3526801..3527200: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 1255, 'skipped': 0}", 'sapling': "PASS {'pass': 79, 'skipped': 0}", 'orchard': "PASS {'pass': 732, 'skipped': 0}"}
+17:47:19   history (ZIP 221): 400 MATCH
+17:47:19 tip 3527200  window 400 blocks 11.7 MB in 265.5 s (waited for bend 0.0 s [bend 0.9 s, overlapped]; lookups 105.3 s, rules 160.1 s; resolve 0.0 s)  avg 5.3 blocks/s 0.16 MB/s  rules parts 64 reruns 0
+17:47:19 committed tip 3527200: 1 windows, 12 MB in one transaction (writer 0.1 s)
+17:47:24   215 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:47:26   anchors: Ironwood 596/596 PASS; Sapling 13/13 PASS; Orchard 22/22 PASS; Sprout 0/0 PASS
+17:47:33   full validation 3527201..3527500: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 875, 'skipped': 0}", 'sapling': "PASS {'pass': 34, 'skipped': 0}", 'orchard': "PASS {'pass': 600, 'skipped': 0}"}
+17:47:36   history (ZIP 221): 300 MATCH
+17:47:36 tip 3527500  window 300 blocks 8.1 MB in 16.7 s (waited for bend 0.0 s [bend 0.5 s, overlapped]; lookups 4.7 s, rules 12.0 s; resolve 0.0 s)  avg 5.6 blocks/s 0.17 MB/s  rules parts 72 reruns 0
+17:47:36 committed tip 3527500: 1 windows, 8 MB in one transaction (writer 0.1 s)
+17:47:36 stopped at committed tip 3527500: 3500 blocks 106.4 MB in 621 s, 5.6 blocks/s 0.17 MB/s
+17:47:37 history: state at 3527500 (seeded at 3521999 from /Users/betterclever/projects/zecathon/bend-zcash/consensus/gaps/history/data/seed_3521999.st (NU6.3 epoch tree; validated by header 3522000)); checked from 3428143
+17:47:37 trees: sapling size 73988882 root 4dd046f69986ac8c (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); orchard size 50477893 root b01d3d235da38631 (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); ironwood size 833781 root ccaef61d563aa6cb (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified)
+17:47:37 ASSUMED-STATE MODE from 3522000: not genesis-verified
+17:47:37 sync: state tip 3527500, last checkpoint 3522460, verified headers to 3532402, 8 Bend jobs
+17:47:57   945 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:48:01   anchors: Ironwood 1094/1094 PASS; Sapling 28/28 PASS; Orchard 14/14 PASS; Sprout 0/0 PASS
+17:48:10   full validation 3527501..3527900: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 1717, 'skipped': 0}", 'sapling': "PASS {'pass': 62, 'skipped': 0}", 'orchard': "PASS {'pass': 1099, 'skipped': 0}"}
+17:48:13   history (ZIP 221): 400 MATCH
+17:48:13 tip 3527900  window 400 blocks 13.4 MB in 36.5 s (waited for bend 0.9 s [bend 0.6 s, overlapped]; lookups 18.6 s, rules 16.9 s; resolve 0.0 s)  avg 11.0 blocks/s 0.37 MB/s  rules parts 8 reruns 0
+17:48:14 committed tip 3527900: 1 windows, 13 MB in one transaction (writer 0.1 s)
+17:48:24   599 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:48:28   anchors: Ironwood 850/850 PASS; Sapling 21/21 PASS; Orchard 21/21 PASS; Sprout 0/0 PASS
+17:48:44   full validation 3527901..3528300: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 1251, 'skipped': 0}", 'sapling': "PASS {'pass': 58, 'skipped': 0}", 'orchard': "PASS {'pass': 857, 'skipped': 0}"}
+17:48:48   history (ZIP 221): 400 MATCH
+17:48:48 tip 3528300  window 400 blocks 11.6 MB in 34.3 s (waited for bend 0.0 s [bend 0.4 s, overlapped]; lookups 10.6 s, rules 23.7 s; resolve 0.0 s)  avg 11.3 blocks/s 0.35 MB/s  rules parts 16 reruns 0
+17:48:48 committed tip 3528300: 1 windows, 12 MB in one transaction (writer 0.1 s)
+17:48:55   446 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:49:01   anchors: Ironwood 2569/2569 PASS; Sapling 24/24 PASS; Orchard 22/22 PASS; Sprout 0/0 PASS
+17:49:25   full validation 3528301..3528700: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 1092, 'skipped': 0}", 'sapling': "PASS {'pass': 56, 'skipped': 0}", 'orchard': "PASS {'pass': 2573, 'skipped': 0}"}
+17:49:32   history (ZIP 221): 400 MATCH
+17:49:32 tip 3528700  window 400 blocks 41.3 MB in 43.9 s (waited for bend 0.0 s [bend 1.9 s, overlapped]; lookups 7.5 s, rules 36.4 s; resolve 0.0 s)  avg 10.5 blocks/s 0.58 MB/s  rules parts 23 reruns 0
+17:49:32 committed tip 3528700: 1 windows, 41 MB in one transaction (writer 0.1 s)
+17:49:38   269 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:49:46   anchors: Ironwood 7311/7311 PASS; Sapling 9/9 PASS; Orchard 10/10 PASS; Sprout 0/0 PASS
+17:50:46   full validation 3528701..3528888: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 650, 'skipped': 0}", 'sapling': "PASS {'pass': 25, 'skipped': 0}", 'orchard': "PASS {'pass': 7314, 'skipped': 0}"}
+17:50:58   history (ZIP 221): 188 MATCH
+17:50:58 tip 3528888  window 188 blocks 100.8 MB in 86.0 s (waited for bend 0.0 s [bend 5.3 s, overlapped]; lookups 6.4 s, rules 79.5 s; resolve 0.0 s)  avg 6.9 blocks/s 0.83 MB/s  rules parts 34 reruns 0
+17:50:58 committed tip 3528888: 1 windows, 101 MB in one transaction (writer 0.1 s)
+17:51:20   911 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:51:38   anchors: Ironwood 5782/5782 PASS; Sapling 20/20 PASS; Orchard 18/18 PASS; Sprout 0/0 PASS
+17:52:55   full validation 3528889..3529288: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 1340, 'skipped': 0}", 'sapling': "PASS {'pass': 54, 'skipped': 0}", 'orchard': "PASS {'pass': 5790, 'skipped': 0}"}
+17:53:11   history (ZIP 221): 400 MATCH
+17:53:11 tip 3529288  window 400 blocks 82.9 MB in 133.4 s (waited for bend 0.0 s [bend 4.5 s, overlapped]; lookups 21.9 s, rules 111.4 s; resolve 0.1 s)  avg 5.4 blocks/s 0.75 MB/s  rules parts 44 reruns 0
+17:53:11 committed tip 3529288: 1 windows, 83 MB in one transaction (writer 0.1 s)
+17:53:43   168 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:53:50   anchors: Ironwood 2112/2112 PASS; Sapling 23/23 PASS; Orchard 13/13 PASS; Sprout 0/0 PASS
+17:54:08   full validation 3529289..3529688: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 957, 'skipped': 0}", 'sapling': "PASS {'pass': 59, 'skipped': 0}", 'orchard': "PASS {'pass': 2121, 'skipped': 0}"}
+17:54:13   history (ZIP 221): 400 MATCH
+17:54:13 tip 3529688  window 400 blocks 25.9 MB in 62.4 s (waited for bend 0.0 s [bend 1.4 s, overlapped]; lookups 32.1 s, rules 30.3 s; resolve 0.0 s)  avg 5.5 blocks/s 0.70 MB/s  rules parts 51 reruns 0
+17:54:14 committed tip 3529688: 1 windows, 26 MB in one transaction (writer 0.1 s)
+17:56:02   1075 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:56:08   anchors: Ironwood 2695/2695 PASS; Sapling 32/32 PASS; Orchard 10/10 PASS; Sprout 0/0 PASS
+17:56:30   full validation 3529689..3530088: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 1268, 'skipped': 0}", 'sapling': "PASS {'pass': 68, 'skipped': 0}", 'orchard': "PASS {'pass': 2697, 'skipped': 0}"}
+17:56:39   history (ZIP 221): 400 MATCH
+17:56:39 tip 3530088  window 400 blocks 27.4 MB in 145.2 s (waited for bend 0.0 s [bend 1.7 s, overlapped]; lookups 108.7 s, rules 36.4 s; resolve 0.0 s)  avg 4.8 blocks/s 0.56 MB/s  rules parts 59 reruns 0
+17:56:39 committed tip 3530088: 1 windows, 27 MB in one transaction (writer 0.1 s)
+17:57:25   1164 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:57:38   anchors: Ironwood 10037/10037 PASS; Sapling 20/20 PASS; Orchard 24/24 PASS; Sprout 0/0 PASS
+heavy.sh: killing './run_A.sh 3530999' (rss 378592 KB, 601s)
+17:58:26 history: state at 3530088 (seeded at 3521999 from /Users/betterclever/projects/zecathon/bend-zcash/consensus/gaps/history/data/seed_3521999.st (NU6.3 epoch tree; validated by header 3522000)); checked from 3428143
+17:58:26 trees: sapling size 73989682 root 3967507fbe279c5f (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); orchard size 50478311 root 97cdfb1d3f4bf87b (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); ironwood size 906042 root 33a524e3ce2f7f7c (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified)
+17:58:26 ASSUMED-STATE MODE from 3522000: not genesis-verified
+17:58:26 sync: state tip 3530088, last checkpoint 3522460, verified headers to 3532403, 8 Bend jobs
+17:58:43   anchors: Ironwood 10037/10037 PASS; Sapling 20/20 PASS; Orchard 24/24 PASS; Sprout 0/0 PASS
+17:59:47   full validation 3530089..3530488: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 1397, 'skipped': 0}", 'sapling': "PASS {'pass': 53, 'skipped': 0}", 'orchard': "PASS {'pass': 10040, 'skipped': 0}"}
+18:00:05   history (ZIP 221): 400 MATCH
+18:00:05 tip 3530488  window 400 blocks 94.4 MB in 99.2 s (waited for bend 4.8 s [bend 4.6 s, overlapped]; lookups 0.1 s, rules 94.1 s; resolve 0.1 s)  avg 4.0 blocks/s 0.95 MB/s  rules parts 10 reruns 0
+18:00:06 committed tip 3530488: 1 windows, 94 MB in one transaction (writer 0.2 s)
+18:00:43   1194 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+18:00:54   anchors: Ironwood 2482/2482 PASS; Sapling 48/48 PASS; Orchard 11/11 PASS; Sprout 0/0 PASS
+18:01:16   full validation 3530489..3530888: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 887, 'skipped': 0}", 'sapling': "PASS {'pass': 82, 'skipped': 0}", 'orchard': "PASS {'pass': 2487, 'skipped': 0}"}
+18:01:27   history (ZIP 221): 400 MATCH
+18:01:27 tip 3530888  window 400 blocks 25.1 MB in 81.1 s (waited for bend 0.0 s [bend 1.6 s, overlapped]; lookups 37.6 s, rules 43.5 s; resolve 0.0 s)  avg 4.4 blocks/s 0.66 MB/s  rules parts 17 reruns 0
+18:01:27 committed tip 3530888: 1 windows, 25 MB in one transaction (writer 0.2 s)
+18:01:29   52 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+18:01:30   anchors: Ironwood 201/201 PASS; Sapling 8/8 PASS; Orchard 5/5 PASS; Sprout 0/0 PASS
+18:01:35   full validation 3530889..3530999: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 276, 'skipped': 0}", 'sapling': "PASS {'pass': 20, 'skipped': 0}", 'orchard': "PASS {'pass': 206, 'skipped': 0}"}
+18:01:35   history (ZIP 221): 111 MATCH
+18:01:35 tip 3530999  window 111 blocks 3.1 MB in 8.8 s (waited for bend 0.0 s [bend 0.3 s, overlapped]; lookups 2.2 s, rules 6.6 s; resolve 0.0 s)  avg 4.8 blocks/s 0.65 MB/s  rules parts 24 reruns 0
+18:01:35 committed tip 3530999: 1 windows, 3 MB in one transaction (writer 0.1 s)
+18:01:35 stopped at committed tip 3530999: 911 blocks 122.6 MB in 189 s, 4.8 blocks/s 0.65 MB/s

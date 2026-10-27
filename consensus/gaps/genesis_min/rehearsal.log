@@ -1,0 +1,6 @@
+19:49:22 sync: state tip 3522460, last checkpoint 3522460, verified headers to 3532491, 16 Bend jobs
+19:49:23   anchors: Ironwood 0/0 PASS; SKIPPED (tree builder pending): orchard 23, sapling 63, sprout 4, ironwood 1316
+19:49:30   full validation 3522461..3523000: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 1790, 'skipped': 0}", 'sapling': "PASS {'pass': 120, 'skipped': 0}", 'orchard': "PASS {'pass': 1319, 'skipped': 0}"}
+19:49:30 tip 3523000  window 540 blocks 16.8 MB in 7.7 s (waited for bend 0.3 s [bend 0.3 s, overlapped]; lookups 0.6 s, rules 6.7 s; resolve 0.1 s)  avg 69.9 blocks/s 2.17 MB/s  rules parts 16 reruns 0
+19:49:33 committed tip 3523000: 1 windows, 17 MB in one transaction (writer 3.5 s)
+19:49:33 stopped at committed tip 3523000: 540 blocks 16.8 MB in 11 s, 48.0 blocks/s 1.49 MB/s

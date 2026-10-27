@@ -1,0 +1,15 @@
+rolled back 3530999 -> 3530950; history after rollback: None
+19:39:16 history: no state (starts at the next activation); checked from 3428143
+19:39:16 trees: sapling size 73989983 root 736858fac2699132 (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); orchard size 50478474 root 6e734f7507128fc8 (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); ironwood size 931806 root dac34c59bcb9b970 (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified)
+19:39:16   anchors: Ironwood 80/80 PASS; Sapling 3/3 PASS; Orchard 2/2 PASS; Sprout 0/0 PASS
+19:39:18   history (ZIP 221): 0 MATCH, 49 SKIPPED (no history state (starts at the next activation))
+  utxo         equal
+  nf           equal
+  blk          equal
+  tx           equal
+  anchor       equal
+  tip          equal
+  trees        equal
+  history      DIFFERENT
+  leaf_lengths equal
+RESULT PASS

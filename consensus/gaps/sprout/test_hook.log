@@ -1,0 +1,14 @@
+157 real txs with JoinSplits (148 from sapling/data/sig_raw.bin, 9 from tip blocks), 168 JoinSplits; 628 items
+   ('FAIL:pk', True, 'redjubjub') 157
+   ('FAIL:proof', True, 'redjubjub') 157
+   ('FAIL:sig', True, 'joinsplitsig') 157
+   ('PASS:real', True, 'PASS') 148
+   ('PASS:tip', True, 'PASS') 9
+unexpected: 0 []
+  stage ('FAIL:pk', 'jsig 0, js proofs not all 1') 157
+  stage ('FAIL:proof', 'tampered js proof 0 rest ok') 157
+  stage ('FAIL:sig', 'jsig 0, proofs ok') 157
+  stage ('PASS:real', 'js proofs all 1') 148
+  stage ('PASS:real', 'jsig 1') 148
+  stage ('PASS:tip', 'js proofs all 1') 9
+  stage ('PASS:tip', 'jsig 1') 9

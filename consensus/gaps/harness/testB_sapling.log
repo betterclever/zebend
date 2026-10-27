@@ -1,0 +1,5 @@
+18:33:34 sapling: 175820 blocks with leaves, 409433 leaves; start root fbc2f4300c01f0b7
+18:36:25   sapling: through height 991497, size 399992, root e3290f54138d2f84
+18:36:29   sapling: through height 999999, size 409433, root a73e832f5b1c2d8d
+18:36:42 sapling: header hashFinalSaplingRoot == Bend root after the block for 483799/483799 blocks 419200..902999
+18:36:42 final: sapling size 409433 root a73e832f5b1c2d8d

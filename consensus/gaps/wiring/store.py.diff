@@ -1,0 +1,53 @@
+--- a/fullnode/store.py
++++ b/fullnode/store.py
+@@ -6,7 +6,7 @@
+ committed tip records on start-up, so a crash at any point leaves the last committed window.
+ 
+ Tables
+-  meta(k, v)                      tip, leaf-log lengths, value pools, tree frontiers
++  meta(k, v)                      tip, leaf-log lengths, value pools, tree frontiers ("trees", trees.py)
+   blk(height, hash, prev, time, size, ntx, sapling_root, orchard_root, ironwood_root, pools)
+   utxo(op = txid||vout, value, script, height, cb)       transparent unspent outputs
+   addr(script, op)                 address index (getaddressutxos / getaddressbalance)
+@@ -235,6 +235,10 @@
+             for pool, root in b.get("roots", {}).items():
+                 anchor_rows.append((POOLS.index(pool), bytes.fromhex(root), h))
+                 undo["anchor"].append((POOLS.index(pool), bytes.fromhex(root)))
++            if b.get("trees_before"):  # note commitment tree state before this block (trees.py)
++                undo["trees"] = b["trees_before"]
++            if "history_before" in b:  # ZIP 221 history state before this block (history.py)
++                undo["history"] = b["history_before"]
+             blk_rows.append((h, bytes.fromhex(b["hash"]), bytes.fromhex(b["prev"]), b["time"], b["size"],
+                              len(b["txs"]), b["bits"], json.dumps(b.get("info", {}))))
+             undo_rows.append((h, pickle.dumps(undo)))
+@@ -311,11 +315,17 @@
+         db = self.db
+         db.execute("BEGIN IMMEDIATE")
+         try:
++            trees = self.get("trees") or {}
++            hist_at = None  # (height, state before it) of the lowest rolled-back block that has one
+             for h in range(tip, height, -1):
+                 r = db.execute("SELECT data FROM undo WHERE height=?", (h,)).fetchone()
+                 if r is None:
+                     raise StateError(f"no undo data for block {h} (deeper than {UNDO_DEPTH} blocks)")
+                 u = pickle.loads(r[0])
++                for pool, before in (u.get("trees") or {}).items():
++                    trees[pool] = before  # the lowest rolled-back block that changed the pool wins
++                if "history" in u:
++                    hist_at = (h, u["history"])
+                 for (k, value, script, hh, cb) in u["spent"]:
+                     db.execute("INSERT INTO utxo VALUES(?,?,?,?,?)", (k, value, script, hh, cb))
+                     if self.addr_index:
+@@ -350,6 +360,12 @@
+             self.put("tip", {"height": height, "hash": hb[0].hex() if hb else "00" * 32})
+             info = db.execute("SELECT info FROM blk WHERE height=?", (height,)).fetchone()
+             pools = json.loads(info[0]).get("pools") if info and info[0] else None
++            if trees:
++                self.put("trees", trees)  # note commitment trees after `height`
++            if hist_at is not None or self.get("history") is not None:
++                # exact only if the lowest rolled-back block starts a window; else the history is
++                # dropped (SKIPPED until the next activation or history_init.py)
++                self.put("history", hist_at[1] if hist_at and hist_at[0] == height + 1 else None)
+             if pools is not None:
+                 self.put("pools", pools)  # value pools after `height` (bin/rules' per-block output)
+             elif self.get("pools") is not None:

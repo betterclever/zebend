@@ -1,0 +1,20 @@
+chunk 0 {'leaf log equal': 1, 'W': 1289, 'I': 2}
+chunk 20 {'leaf log equal': 21, 'W': 36557, 'I': 8, 'E': 172}
+chunk 40 {'leaf log equal': 41, 'W': 65824, 'I': 31, 'E': 226}
+chunk 60 {'leaf log equal': 61, 'W': 93607, 'I': 74, 'E': 278}
+chunk 80 {'leaf log equal': 81, 'W': 122500, 'I': 107, 'E': 364}
+chunk 100 {'leaf log equal': 101, 'W': 152036, 'I': 129, 'E': 415}
+chunk 120 {'leaf log equal': 121, 'W': 181781, 'I': 148, 'E': 483}
+chunk 140 {'leaf log equal': 141, 'W': 211636, 'I': 152, 'E': 572}
+chunk 160 {'leaf log equal': 161, 'W': 237769, 'I': 934, 'E': 641}
+chunk 180 {'leaf log equal': 181, 'W': 263776, 'I': 2443, 'E': 748}
+chunk 200 {'leaf log equal': 201, 'W': 286671, 'I': 5090, 'E': 853}
+chunk 220 {'leaf log equal': 221, 'W': 307098, 'I': 7012, 'E': 991}
+chunk 240 {'leaf log equal': 241, 'W': 333021, 'I': 10919, 'E': 1258}
+chunk 260 {'leaf log equal': 261, 'W': 364699, 'I': 15399, 'E': 1442}
+chunk 280 {'leaf log equal': 281, 'W': 396607, 'I': 19661, 'E': 1606}
+chunk 300 {'leaf log equal': 301, 'W': 429675, 'I': 25942, 'E': 1737}
+chunk 320 {'leaf log equal': 321, 'W': 462564, 'I': 31744, 'E': 1905}
+FINAL through height 323999 : 1004734 leaves; {'leaf log equal': 324, 'W': 467699, 'I': 32728, 'E': 1940}
+tampers: {'random anchor -> X': 33, 'interstitial over an ext root, ext frontier withheld: rejected (X)': 51}
+X/Z cases: 0 []

@@ -1,0 +1,19 @@
+[package]
+name = "histdata"
+version = "0.1.0"
+edition = "2021"
+description = "Per-block ZIP 221 leaf inputs (final Sapling/Orchard/Ironwood roots, per-pool tx counts) from lightwalletd compact blocks + tree states"
+
+[dependencies]
+orchard = { version = "0.16", default-features = false, features = ["std"] }
+sapling = { package = "sapling-crypto", version = "0.9", default-features = false, features = ["std"] }
+incrementalmerkletree = { version = "0.9", features = ["legacy-api"] }
+tonic = { version = "0.14", features = ["tls-ring", "tls-webpki-roots"] }
+tonic-prost = "0.14"
+prost = "0.14"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
+hex = "0.4"
+anyhow = "1"
+
+[profile.release]
+opt-level = 3

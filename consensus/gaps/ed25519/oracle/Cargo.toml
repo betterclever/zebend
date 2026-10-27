@@ -1,0 +1,15 @@
+[package]
+name = "ed25519-oracle"
+version = "0.1.0"
+edition = "2021"
+description = "Ground truth for the Bend Ed25519 (ZIP 215) verifier: ed25519-zebra 4.2.0 (what Zebra uses for joinSplitSig)"
+
+[dependencies]
+ed25519-zebra = "=4.2.0"
+curve25519-dalek = { version = "=4.1.3", default-features = false, features = ["digest", "precomputed-tables", "alloc"] }
+sha2 = "0.10"
+rand = "0.8"
+hex = "0.4"
+
+[profile.release]
+opt-level = 3

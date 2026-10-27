@@ -1,0 +1,2 @@
+18:02:21 sprout: 316799 blocks with leaves, 1545098 leaves; start root d7c612c817793191
+heavy.sh: killing 'python3 trees_init.py ../harness/testB --genesis --leaf-dir ../harness/genesis_leaves --pools sapling,sprout' (rss 424064 KB, 601s)

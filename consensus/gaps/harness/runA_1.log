@@ -1,0 +1,34 @@
+17:33:01 sapling: 0 blocks with leaves, 0 leaves; start root 15c6108a2df9e849
+17:33:01 orchard: 0 blocks with leaves, 0 leaves; start root 0ce2d551d9244ce5
+17:33:01 ironwood: 0 blocks with leaves, 0 leaves; start root 41fb96393612725a
+17:33:01 sapling: 15415 historical per-block roots imported from /Users/betterclever/projects/zecathon/bend-zcash/consensus/gaps/trees/seeds/sapling_history.txt
+17:33:01 orchard: 23384 historical per-block roots imported from /Users/betterclever/projects/zecathon/bend-zcash/consensus/gaps/trees/seeds/orchard_history.txt
+17:33:01 ironwood: 59827 historical per-block roots imported from /Users/betterclever/projects/zecathon/bend-zcash/consensus/gaps/trees/seeds/ironwood_history.txt
+17:33:01 final: sapling size 73986770 root 15c6108a2df9e849; orchard size 50476948 root 0ce2d551d9244ce5; ironwood size 800984 root 41fb96393612725a
+17:33:01 committed: 98629 anchor rows, tree state in 0 undo rows, meta trees
+17:33:01 meta history set at 3521999 (seeded at 3521999 from /Users/betterclever/projects/zecathon/bend-zcash/consensus/gaps/history/data/seed_3521999.st (NU6.3 epoch tree; validated by header 3522000))
+17:33:01 history: state at 3521999 (seeded at 3521999 from /Users/betterclever/projects/zecathon/bend-zcash/consensus/gaps/history/data/seed_3521999.st (NU6.3 epoch tree; validated by header 3522000)); checked from 3428143
+17:33:01 trees: sapling size 73986770 root 15c6108a2df9e849 (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); orchard size 50476948 root 0ce2d551d9244ce5 (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified); ironwood size 800984 root 41fb96393612725a (seeded at 3,521,999 (consensus/gaps/trees: Bend frontiers from chunk roots + leaves; root history from 3,428,143); not genesis-verified)
+17:33:01 ASSUMED-STATE MODE from 3522000: not genesis-verified
+17:33:01 address index: deferred until the last checkpoint (emptied now, rebuilt from the UTXO set later)
+17:33:01 sync: state tip 3521999, last checkpoint 3522460, verified headers to 3532396, 8 Bend jobs
+17:33:34   1912 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:33:39   history (ZIP 221): 200 MATCH
+17:33:39 tip 3522199  window 200 blocks 7.7 MB in 37.5 s (waited for bend 0.6 s [bend 0.4 s, overlapped]; lookups 32.0 s, rules 4.8 s; resolve 0.0 s)  avg 5.3 blocks/s 0.21 MB/s  rules parts 8 reruns 0
+17:33:39 committed tip 3522199: 1 windows, 8 MB in one transaction (writer 0.0 s)
+17:34:22   1523 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:34:26   history (ZIP 221): 200 MATCH
+17:34:26 tip 3522399  window 200 blocks 6.6 MB in 47.5 s (waited for bend 0.0 s [bend 0.3 s, overlapped]; lookups 43.1 s, rules 4.3 s; resolve 0.0 s)  avg 4.7 blocks/s 0.17 MB/s  rules parts 16 reruns 0
+17:34:26 committed tip 3522399: 1 windows, 7 MB in one transaction (writer 0.0 s)
+17:34:32   294 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:34:34   history (ZIP 221): 61 MATCH
+17:34:34 tip 3522460  window 61 blocks 2.4 MB in 7.5 s (waited for bend 0.0 s [bend 0.1 s, overlapped]; lookups 6.0 s, rules 1.6 s; resolve 0.0 s)  avg 5.0 blocks/s 0.18 MB/s  rules parts 23 reruns 0
+17:34:34 committed tip 3522460: 1 windows, 2 MB in one transaction (writer 0.0 s)
+17:34:43   574 spent outputs from before the start height taken from the oracle (Bend-checked txids)
+17:34:45   address index rebuilt from the UTXO set (0 s)
+17:34:45   anchors: Ironwood 365/365 PASS; Sapling 16/16 PASS; Orchard 4/4 PASS; Sprout 0/0 PASS
+17:34:48   full validation 3522461..3522600: every consensus rule PASS (turnstile SKIPPED (pools not tracked from genesis)); hooks: {'transparent': "PASS {'pass': 442, 'skipped': 0}", 'sapling': "PASS {'pass': 25, 'skipped': 0}", 'orchard': "PASS {'pass': 366, 'skipped': 0}"}
+17:34:49   history (ZIP 221): 140 MATCH
+17:34:49 tip 3522600  window 140 blocks 4.6 MB in 14.9 s (waited for bend 0.0 s [bend 0.2 s, overlapped]; lookups 9.5 s, rules 5.3 s; resolve 0.0 s)  avg 5.6 blocks/s 0.20 MB/s  rules parts 31 reruns 0
+17:34:49 committed tip 3522600: 1 windows, 5 MB in one transaction (writer 0.0 s)
+17:34:49 stopped at committed tip 3522600: 601 blocks 21.3 MB in 107 s, 5.6 blocks/s 0.20 MB/s

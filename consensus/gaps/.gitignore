@@ -1,0 +1,11 @@
+data/
+**/target/
+genesis_min/stateG/
+genesis_min/spoolG/
+genesis_min/state*/
+genesis_min/spool*/
+harness/work/
+harness/state*/
+harness/spool*/
+**/*.sqlite*
+trees/t/js/*.txt
