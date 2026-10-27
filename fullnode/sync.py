@@ -169,7 +169,8 @@ def parse_delta(text):
                 b = None
                 continue
             kv = dict(zip(f[4::2], f[5::2]))
-            b = {"height": int(f[1]), "hash": f[2], "prev": f[3], "time": int(kv["time"]), "bits": kv["bits"],
+            # gated: blockdelta's node/wire validator accepted this block (else it prints INVALID)
+            b = {"height": int(f[1]), "gated": True, "hash": f[2], "prev": f[3], "time": int(kv["time"]), "bits": kv["bits"],
                  "size": int(kv["size"]), "ntx": int(kv["txs"]), "header": kv["header"], "merkle": kv["merkle"],
                  "txs": [], "leaves": {p: [] for p in S.POOLS}}
             blocks.append(b)
@@ -367,7 +368,11 @@ def main():
     # into the open transaction of the current commit group. A group (windows up to --commit-mb)
     # is ONE SQLite transaction; groups commit in order. Windows are resolved against the
     # committed state plus the overlays of the groups not committed yet (Store.pending).
-    ex = ThreadPoolExecutor(args.jobs)    # every Bend process (blockdelta, bin/rules parts) runs here
+    ex = ThreadPoolExecutor(args.jobs)    # blockdelta parts (extraction of the next window) run here
+    # bin/rules parts get their own pool: they are on the critical path of the window being
+    # checked and short (~0.2 s each since --gated), so they must not queue behind the next
+    # window's blockdelta parts (measured: 2 s of a 4.3 s spam window was that wait).
+    ex_rules = ThreadPoolExecutor(args.jobs)
     prep = ThreadPoolExecutor(1)          # extraction of the next window
     wr = S.Writer(STATE, cache_mb=args.writer_cache_mb)
     t0, done, nbytes, last_log = time.time(), 0, 0, 0
@@ -488,7 +493,7 @@ def main():
                 # Checkpointed blocks: the rules run in audit mode. They decide nothing (the checkpoint
                 # does) but track the value pools from genesis, and any disagreement with the
                 # canonical chain is a bug in our rules: logged and counted, never hidden.
-                extra = rules.validate(cp_part, st, raw, log, mode="audit", pools=pools_cur, jobs=args.jobs, ex=ex)
+                extra = rules.validate(cp_part, st, raw, log, mode="audit", pools=pools_cur, jobs=args.jobs, ex=ex_rules)
                 dis = extra["rules"]["disagreements"]
                 if dis:
                     audit_n += len(dis)
@@ -496,7 +501,7 @@ def main():
                     log(f"  AUDIT: rules disagree with checkpointed blocks: {dis[:3]} (total {audit_n})")
             if full:
                 e2 = rules.validate(full, st, raw, log, mode="full", pools=extra.get("pools", pools_cur),
-                                    jobs=args.jobs, ex=ex)
+                                    jobs=args.jobs, ex=ex_rules)
                 rs = e2["rules"]
                 log(f"  full validation {full[0]['height']}..{full[-1]['height']}: every consensus rule PASS "
                     f"(turnstile {rs['turnstile']}); hooks: {rs['hooks']}")
@@ -546,6 +551,7 @@ def main():
                 pass
         wr.close()  # an open (uncommitted) group is rolled back
         ex.shutdown(wait=True)
+        ex_rules.shutdown(wait=True)
     el = time.time() - t0
     if done:
         log(f"stopped at committed tip {st.tip()['height']}: {done} blocks {nbytes / 1e6:.1f} MB in {el:.0f} s, "

@@ -169,13 +169,21 @@ def parse_rules(text):
     return res
 
 
+def gated_flag(blocks):
+    """bin/rules --gated skips node/wire's validator, which blockdelta already ran on the same
+    bytes: sync.py passes rules only blocks that blockdelta's gate accepted (checkpoint_checks
+    raises on `block <h> INVALID wire`). The wire gate was ~90% of bin/rules' time in the spam
+    era (Jubjub/Pallas point decoding). Blocks that did not come from blockdelta are gated."""
+    return ["--gated"] if blocks and all(b.get("gated") for b in blocks) else []
+
+
 def _run_part(blocks, ctx, raw_by_height, tag):
     WORK.mkdir(parents=True, exist_ok=True)
     wp, cp = WORK / f"win_{tag}.bin", WORK / f"ctx_{tag}.bin"
     wp.write_bytes(window_bytes(blocks, raw_by_height))
     cp.write_bytes(ctx)
     for _ in range(3):  # empty output (a known rare Bend runtime issue) is rerun
-        r = subprocess.run([str(RULES_BIN), str(wp), str(cp)], capture_output=True, text=True)
+        r = subprocess.run([str(RULES_BIN), str(wp), str(cp)] + gated_flag(blocks), capture_output=True, text=True)
         if r.stdout.strip():
             break
     res = parse_rules(r.stdout)
