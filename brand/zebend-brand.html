@@ -1,0 +1,249 @@
+<title>Zebend Brand</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a specimen book. Wide ink hero, then left-aligned sections on a 12-col measure. */
+:root{
+  --ink:#15123A; --violet:#5B47F0; --amber:#E08A12; --paper:#F5F4FB;
+  --bg:#F5F4FB; --surface:#FFFFFF; --fg:#15123A; --muted:#55527A; --line:#DAD7EC;
+  --stroke-on-tile:#A497FF; --amber-on-tile:#FFB547; --tile:#15123A;
+  --pass:#1E9E5A; --fail:#D63D42;
+  --display:"Unbounded", "Avenir Next", system-ui, sans-serif;
+  --body:"Instrument Sans", "Helvetica Neue", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0E0C26; --surface:#18153F; --fg:#ECEAFB; --muted:#A9A5CF; --line:#2C2860;
+  --violet:#A497FF; --amber:#FFB547; --pass:#3DD68C; --fail:#FF6B6F; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0E0C26; --surface:#18153F; --fg:#ECEAFB; --muted:#A9A5CF; --line:#2C2860;
+  --violet:#A497FF; --amber:#FFB547; --pass:#3DD68C; --fail:#FF6B6F; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:400 16px/1.6 var(--body);margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+h2{font-size:clamp(22px,3vw,30px);font-weight:700;letter-spacing:-.01em}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+p{margin:0;max-width:62ch}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* Hero: always ink, the brand's own ground */
+.hero{background:#15123A;color:#ECEAFB}
+.hero .wrap{display:grid;grid-template-columns:auto 1fr;gap:clamp(24px,5vw,64px);align-items:center;padding-block:clamp(40px,7vw,88px)}
+.hero svg.icon{width:clamp(120px,20vw,220px);height:auto;display:block;border-radius:22%;box-shadow:0 0 0 1px #2C2860}
+.word{font:800 clamp(52px,11vw,124px)/.9 var(--display);letter-spacing:-.03em;color:#ECEAFB}
+.word .sq{display:inline-block;width:.32em;height:.32em;background:#FFB547;margin-left:.06em;vertical-align:baseline}
+.tag{font:500 clamp(18px,2.4vw,24px)/1.3 var(--body);color:#C9C3FF;margin-top:16px}
+.cli{margin-top:24px;font:400 14px/1.5 var(--mono);color:#A9A5CF;background:#0E0C26;border:1px solid #2C2860;border-radius:10px;padding:12px 14px;overflow-x:auto;white-space:nowrap}
+.cli b{color:#A497FF;font-weight:600}.cli .ok{color:#3DD68C}.cli .q{color:#FFB547}
+@media (max-width:640px){.hero .wrap{grid-template-columns:1fr}}
+
+section{padding-block:clamp(40px,6vw,72px);border-bottom:1px solid var(--line)}
+section .head{display:grid;gap:8px;margin-bottom:28px}
+
+/* Mark anatomy */
+.anat{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:center}
+.anat .fig{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px;display:grid;place-items:center}
+.anat .fig svg{width:min(320px,100%);height:auto}
+.anat ol{margin:0;padding:0;list-style:none;display:grid;gap:18px}
+.anat li{display:grid;grid-template-columns:28px 1fr;gap:12px}
+.anat li .k{font:600 13px/28px var(--mono);color:var(--violet)}
+.anat li strong{font-family:var(--display);font-weight:700;font-size:17px;display:block;margin-bottom:2px}
+@media (max-width:760px){.anat{grid-template-columns:1fr}}
+
+/* Swatches */
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.chip{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.chip .c{height:84px}
+.chip .t{padding:10px 12px;display:grid;gap:2px}
+.chip .t b{font:600 14px/1.3 var(--body)}
+.chip .t span{font:400 12px/1.4 var(--mono);color:var(--muted)}
+
+/* Type */
+.type{display:grid;gap:14px}
+.spec{display:grid;grid-template-columns:180px minmax(0,1fr);gap:16px;align-items:baseline;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+.spec .lbl{font:600 12px/1.4 var(--mono);color:var(--muted)}
+.spec .s1{font:800 clamp(32px,5vw,48px)/1 var(--display);letter-spacing:-.02em}
+.spec .s2{font:400 18px/1.5 var(--body)}
+.spec .s3{font:400 15px/1.5 var(--mono);font-variant-numeric:tabular-nums;overflow-x:auto}
+@media (max-width:640px){.spec{grid-template-columns:1fr}}
+
+/* Voice */
+.voice{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.say{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--surface);display:grid;gap:8px}
+.say .v{font:600 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.say.yes .v{color:var(--pass)} .say.no .v{color:var(--fail)}
+.say q{quotes:none;font:500 17px/1.45 var(--body)}
+.lines{display:grid;gap:10px;margin-top:20px}
+.lines div{font:700 clamp(18px,2.6vw,24px)/1.25 var(--display);letter-spacing:-.01em}
+.lines div:first-child::after{content:"  primary";font:600 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--amber);vertical-align:middle}
+@media (max-width:640px){.voice{grid-template-columns:1fr}}
+
+/* Applications */
+.apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px}
+.app{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
+.app .cap{padding:10px 14px;font:600 12px/1.4 var(--mono);color:var(--muted);border-top:1px solid var(--line)}
+.social{background:#15123A;color:#ECEAFB;aspect-ratio:1200/630;max-width:100%;padding:7%;display:grid;align-content:space-between}
+.social .top{display:flex;align-items:center;gap:12px}
+.social .top svg{width:44px;height:44px;border-radius:22%}
+.social .top span{font:800 26px/1 var(--display);letter-spacing:-.02em}
+.social .big{font:700 clamp(20px,3.2vw,30px)/1.15 var(--display);letter-spacing:-.01em;text-wrap:balance}
+.social .nums{font:400 12px/1.5 var(--mono);color:#A9A5CF}
+.social .nums b{color:#FFB547;font-weight:600}
+.readme{padding:18px;display:grid;gap:10px}
+.readme .hd{display:flex;align-items:center;gap:10px}
+.readme .hd svg{width:32px;height:32px;border-radius:22%}
+.readme .hd span{font:800 22px/1 var(--display);letter-spacing:-.02em}
+.readme p{font-size:14px;color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.badge{font:600 11px/1 var(--mono);border-radius:6px;padding:6px 8px;border:1px solid var(--line)}
+.badge.p{color:var(--pass)} .badge.a{color:var(--amber)}
+.term{background:#0E0C26;color:#C9C3FF;font:400 13px/1.6 var(--mono);padding:16px;overflow-x:auto;white-space:pre}
+.term .ok{color:#3DD68C}.term .q{color:#FFB547}.term .d{color:#6F6A9E}
+
+/* Rules */
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}
+.rule{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--surface);display:grid;gap:10px}
+.rule .demo{height:96px;border-radius:10px;display:grid;place-items:center;background:var(--bg);position:relative}
+.rule .demo svg{height:56px;width:auto}
+.rule b{font:600 15px/1.3 var(--body)}
+.rule span{font-size:14px;color:var(--muted)}
+.x::after{content:"";position:absolute;inset:12px;border-radius:8px;background:linear-gradient(to top right,transparent calc(50% - 1.5px),var(--fail) 50%,transparent calc(50% + 1.5px))}
+footer{padding-block:40px;color:var(--muted);font-size:14px}
+@media (prefers-reduced-motion:no-preference){
+  .hero .icon path{stroke-dasharray:640;stroke-dashoffset:640;animation:draw 1.1s cubic-bezier(.6,0,.2,1) .15s forwards}
+  .hero .icon rect.q{transform-box:fill-box;transform-origin:center;transform:scale(0);animation:pop .35s cubic-bezier(.3,1.6,.5,1) 1.15s forwards}
+  @keyframes draw{to{stroke-dashoffset:0}} @keyframes pop{to{transform:scale(1)}}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="z-tile" viewBox="0 0 512 512">
+      <rect width="512" height="512" rx="116" fill="#15123A"/>
+      <g transform="translate(-10 -3)"><path d="M124 150 H316 Q354 150 330 181 L198 337 Q174 368 214 368 H322" fill="none" stroke="#A497FF" stroke-width="64" stroke-linejoin="round"/>
+      <rect x="344" y="336" width="64" height="64" fill="#FFB547"/></g>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="hero">
+  <div class="wrap">
+    <svg class="icon" viewBox="0 0 512 512" role="img" aria-label="Zebend icon">
+      <rect width="512" height="512" rx="116" fill="#15123A"/>
+      <g transform="translate(-10 -3)"><path d="M124 150 H316 Q354 150 330 181 L198 337 Q174 368 214 368 H322" fill="none" stroke="#A497FF" stroke-width="64" stroke-linejoin="round"/>
+      <rect class="q" x="344" y="336" width="64" height="64" fill="#FFB547"/></g>
+    </svg>
+    <div>
+      <div class="eyebrow" style="color:#A9A5CF">Brand book</div>
+      <h1 class="word">zebend<span class="sq" aria-hidden="true"></span></h1>
+      <p class="tag">Zcash, independently verified.</p>
+      <div class="cli" role="img" aria-label="Example node output"><b>zebend</b> ▸ block <span class="mono">3,532,556</span> · every rule <span class="ok">PASS</span> · turnstile checked <span class="q">∎</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section><div class="wrap">
+  <div class="head"><div class="eyebrow">The mark</div><h2>A Z that ends in a proof</h2></div>
+  <div class="anat">
+    <div class="fig">
+      <svg viewBox="96 112 340 300" role="img" aria-label="Zebend mark anatomy">
+        <path d="M124 150 H316 Q354 150 330 181 L198 337 Q174 368 214 368 H322" fill="none" stroke="var(--violet)" stroke-width="64" stroke-linejoin="round"/>
+        <rect x="344" y="336" width="64" height="64" fill="var(--amber)"/>
+        <circle cx="342" cy="166" r="9" fill="none" stroke="var(--fg)" stroke-width="2.5"/>
+        <circle cx="186" cy="352" r="9" fill="none" stroke="var(--fg)" stroke-width="2.5"/>
+      </svg>
+    </div>
+    <ol>
+      <li><span class="k">01</span><div><strong>One stroke</strong><span>A single continuous line, never two shapes. One codebase, from parsing to proof.</span></div></li>
+      <li><span class="k">02</span><div><strong>Two bends</strong><span>The circled corners are the only curves. Bend folds computation across CPU threads and the GPU; the mark folds a line.</span></div></li>
+      <li><span class="k">03</span><div><strong>The tombstone ∎</strong><span>The mark that closes a proof. It sits on the baseline, one stroke-width square, one stroke-width apart. Zebend doesn't trust the chain; it checks it to the end.</span></div></li>
+    </ol>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="head"><div class="eyebrow">Colour</div><h2>Ink, violet, and a rationed amber</h2>
+    <p>Amber marks only what is finished and proven: the square, a verified result. Violet carries everything else.</p></div>
+  <div class="sw">
+    <div class="chip"><div class="c" style="background:#15123A"></div><div class="t"><b>Shield ink</b><span>#15123A · grounds, text</span></div></div>
+    <div class="chip"><div class="c" style="background:#A497FF"></div><div class="t"><b>Bend violet</b><span>#A497FF · on ink</span></div></div>
+    <div class="chip"><div class="c" style="background:#5B47F0"></div><div class="t"><b>Bend violet</b><span>#5B47F0 · on paper</span></div></div>
+    <div class="chip"><div class="c" style="background:#FFB547"></div><div class="t"><b>QED amber</b><span>#FFB547 · on ink</span></div></div>
+    <div class="chip"><div class="c" style="background:#E08A12"></div><div class="t"><b>QED amber</b><span>#E08A12 · on paper</span></div></div>
+    <div class="chip"><div class="c" style="background:#F5F4FB;border-bottom:1px solid var(--line)"></div><div class="t"><b>Paper</b><span>#F5F4FB · light ground</span></div></div>
+    <div class="chip"><div class="c" style="background:#2FBF71"></div><div class="t"><b>Pass</b><span>#2FBF71 · PASS, MATCH</span></div></div>
+    <div class="chip"><div class="c" style="background:#E5484D"></div><div class="t"><b>Fail</b><span>#E5484D · FAIL, MISMATCH</span></div></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="head"><div class="eyebrow">Type</div><h2>Wide for the name, plain for the words, mono for the numbers</h2></div>
+  <div class="type">
+    <div class="spec"><div class="lbl">Unbounded 800<br>wordmark, headlines</div><div class="s1">zebend∎</div></div>
+    <div class="spec"><div class="lbl">Instrument Sans<br>body</div><div class="s2">A second, independent implementation of Zcash's core, written in a proof language, that agrees with the official one on real mainnet data.</div></div>
+    <div class="spec"><div class="lbl">JetBrains Mono<br>numbers, verdicts</div><div class="s3">392,806 / 392,806 agree · height 3,532,556 · 0x77190ad9</div></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="head"><div class="eyebrow">Voice</div><h2>Numbers first. Never round a claim up.</h2>
+    <p>Every sentence about Zebend should be checkable. Say what was tested, what is proven, and what is skipped.</p></div>
+  <div class="voice">
+    <div class="say yes"><span class="v">Write</span><q>Bend's verdict equals the official verifier's on 392,806 of 392,806 Orchard bundles.</q></div>
+    <div class="say no"><span class="v">Not</span><q>Fully compatible with Zcash and battle-tested.</q></div>
+    <div class="say yes"><span class="v">Write</span><q>Ironwood anchors 6/6 PASS. Sapling anchors SKIPPED until the tree builder is wired.</q></div>
+    <div class="say no"><span class="v">Not</span><q>All checks pass.</q></div>
+  </div>
+  <div class="lines">
+    <div>Zcash, independently verified.</div>
+    <div>Every block. Re-checked. Proven.</div>
+    <div>The second opinion for Zcash.</div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="head"><div class="eyebrow">In use</div><h2>Social card, README, terminal</h2></div>
+  <div class="apps">
+    <div class="app">
+      <div class="social">
+        <div class="top"><svg viewBox="0 0 512 512" aria-hidden="true"><use href="#z-tile"/></svg><span>zebend</span></div>
+        <div class="big">Every Zcash block, re-checked by an independent node written in a proof language.</div>
+        <div class="nums">synced from genesis · <b>∎</b> 76 + 15 proven laws · 0 disagreements on mainnet</div>
+      </div>
+      <div class="cap">Social card · 1200 × 630</div>
+    </div>
+    <div class="app">
+      <div class="readme">
+        <div class="hd"><svg viewBox="0 0 512 512" aria-hidden="true"><use href="#z-tile"/></svg><span>zebend</span></div>
+        <p>Zcash, independently verified. A full node written in Bend.</p>
+        <div class="badges"><span class="badge p">halo2 392,806/392,806</span><span class="badge p">sapling 61,168/61,168</span><span class="badge p">scripts 131,146/131,146</span><span class="badge a">∎ proven: 91 laws</span></div>
+      </div>
+      <div class="cap">README header</div>
+    </div>
+    <div class="app">
+      <div class="term"><span class="d">$</span> zebend status
+<span class="d">node   </span> synced from genesis
+<span class="d">tip    </span> 3,532,556  <span class="ok">every rule PASS</span>
+<span class="d">pools  </span> turnstile checked
+<span class="d">crypto </span> transparent · sapling · orchard <span class="ok">PASS</span>
+<span class="d">nu7    </span> activates at 3,543,405 <span class="q">∎ ready</span></div>
+      <div class="cap">Terminal</div>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="head"><div class="eyebrow">Rules</div><h2>Keep the mark intact</h2></div>
+  <div class="rules">
+    <div class="rule"><div class="demo"><svg viewBox="96 112 340 300" aria-hidden="true"><path d="M124 150 H316 Q354 150 330 181 L198 337 Q174 368 214 368 H322" fill="none" stroke="var(--violet)" stroke-width="64" stroke-linejoin="round"/><rect x="344" y="336" width="64" height="64" fill="var(--amber)"/></svg></div><b>Clear space</b><span>At least one square's width on every side. Minimum 16 px for the icon.</span></div>
+    <div class="rule"><div class="demo x"><svg viewBox="96 112 340 300" aria-hidden="true"><path d="M124 150 H316 Q354 150 330 181 L198 337 Q174 368 214 368 H322" fill="none" stroke="var(--violet)" stroke-width="64" stroke-linejoin="round"/><rect x="344" y="336" width="64" height="64" fill="var(--violet)"/></svg></div><b>Don't recolour the square</b><span>It is always amber, or one colour with the rest in mono.</span></div>
+    <div class="rule"><div class="demo x"><svg viewBox="96 112 340 300" aria-hidden="true"><path d="M124 150 H316 Q354 150 330 181 L198 337 Q174 368 214 368 H322" fill="none" stroke="var(--violet)" stroke-width="64" stroke-linejoin="round"/><rect x="380" y="200" width="64" height="64" fill="var(--amber)"/></svg></div><b>Don't move the square</b><span>It sits on the baseline, one stroke-width after the Z.</span></div>
+    <div class="rule"><div class="demo"><svg viewBox="96 112 340 300" aria-hidden="true" style="color:var(--fg)"><path d="M124 150 H316 Q354 150 330 181 L198 337 Q174 368 214 368 H322" fill="none" stroke="currentColor" stroke-width="64" stroke-linejoin="round"/><rect x="344" y="336" width="64" height="64" fill="currentColor"/></svg></div><b>One colour is fine</b><span>For print, terminals and embossing. Never pair with the Zcash logo or imply endorsement.</span></div>
+  </div>
+</div></section>
+</main>
+<footer><div class="wrap">Zebend brand · files in <span class="mono">brand/</span>: icon.svg, mark.svg, mark-mono.svg</div></footer>
