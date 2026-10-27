@@ -30,3 +30,172 @@
 04:13:39 tip 103999  window 2000 blocks 33.3 MB (bend 3.7 s, state 6.3 s)  avg 80.4 blocks/s 1.51 MB/s
 04:14:29 tip 105999  window 2000 blocks 34.8 MB (bend 4.3 s, state 25.3 s)  avg 78.7 blocks/s 1.48 MB/s
 04:20:30 tip 106285  window 286 blocks 102.4 MB (bend 6.8 s, state 17.2 s)  avg 60.9 blocks/s 1.21 MB/s
+04:22:48 tip 106488  window 203 blocks 101.0 MB (bend 8.1 s, state 11.6 s)  avg 56.1 blocks/s 1.17 MB/s
+04:24:48 tip 106625  window 137 blocks 102.3 MB (bend 6.9 s, state 13.7 s)  avg 52.6 blocks/s 1.15 MB/s
+04:26:43 tip 106765  window 140 blocks 101.6 MB (bend 6.5 s, state 13.7 s)  avg 49.5 blocks/s 1.13 MB/s
+04:28:45 tip 106981  window 216 blocks 102.6 MB (bend 6.8 s, state 15.0 s)  avg 46.7 blocks/s 1.11 MB/s
+04:30:37 tip 107156  window 175 blocks 101.3 MB (bend 6.5 s, state 13.7 s)  avg 44.4 blocks/s 1.10 MB/s
+04:32:33 tip 107310  window 154 blocks 102.2 MB (bend 6.7 s, state 13.2 s)  avg 42.2 blocks/s 1.09 MB/s
+04:35:10 tip 107451  window 141 blocks 101.5 MB (bend 6.6 s, state 23.6 s)  avg 39.6 blocks/s 1.06 MB/s
+04:38:02 tip 107591  window 140 blocks 102.6 MB (bend 11.7 s, state 14.1 s)  avg 37.1 blocks/s 1.03 MB/s
+04:40:29 tip 107759  window 168 blocks 100.7 MB (bend 6.8 s, state 24.4 s)  avg 35.2 blocks/s 1.02 MB/s
+04:42:41 tip 107891  window 132 blocks 101.5 MB (bend 7.4 s, state 13.0 s)  avg 33.6 blocks/s 1.00 MB/s
+04:44:37 tip 108048  window 157 blocks 101.6 MB (bend 6.6 s, state 11.4 s)  avg 32.4 blocks/s 1.00 MB/s
+04:47:01 tip 108333  window 285 blocks 101.1 MB (bend 11.4 s, state 10.5 s)  avg 31.0 blocks/s 0.99 MB/s
+04:49:07 tip 109832  window 1499 blocks 100.7 MB (bend 8.7 s, state 13.2 s)  avg 30.3 blocks/s 0.98 MB/s
+04:49:52 tip 113832  window 2000 blocks 33.5 MB (bend 5.8 s, state 4.9 s)  avg 31.1 blocks/s 0.99 MB/s
+04:50:27 tip 117832  window 2000 blocks 31.6 MB (bend 3.5 s, state 5.0 s)  avg 31.9 blocks/s 1.00 MB/s
+04:51:20 tip 121832  window 2000 blocks 34.3 MB (bend 4.8 s, state 9.2 s)  avg 32.6 blocks/s 1.00 MB/s
+04:51:52 tip 123832  window 2000 blocks 42.7 MB (bend 9.5 s, state 6.5 s)  avg 32.9 blocks/s 1.00 MB/s
+04:52:51 tip 127832  window 2000 blocks 57.9 MB (bend 7.5 s, state 7.7 s)  avg 33.5 blocks/s 1.02 MB/s
+04:53:22 tip 129832  window 2000 blocks 48.6 MB (bend 6.2 s, state 7.0 s)  avg 33.7 blocks/s 1.02 MB/s
+04:53:56 tip 131832  window 2000 blocks 57.2 MB (bend 7.6 s, state 8.4 s)  avg 34.0 blocks/s 1.03 MB/s
+04:54:34 tip 133832  window 2000 blocks 53.2 MB (bend 7.3 s, state 9.5 s)  avg 34.2 blocks/s 1.03 MB/s
+04:55:05 tip 135832  window 2000 blocks 47.6 MB (bend 7.8 s, state 7.4 s)  avg 34.4 blocks/s 1.04 MB/s
+04:55:39 tip 137832  window 2000 blocks 51.3 MB (bend 9.0 s, state 8.4 s)  avg 34.6 blocks/s 1.04 MB/s
+04:56:33 tip 141832  window 2000 blocks 45.4 MB (bend 5.8 s, state 6.8 s)  avg 35.2 blocks/s 1.05 MB/s
+04:57:31 tip 145832  window 2000 blocks 48.0 MB (bend 7.3 s, state 8.0 s)  avg 35.7 blocks/s 1.06 MB/s
+04:58:02 tip 147832  window 2000 blocks 52.1 MB (bend 7.1 s, state 7.5 s)  avg 36.0 blocks/s 1.06 MB/s
+04:58:53 tip 151832  window 2000 blocks 52.4 MB (bend 5.8 s, state 7.5 s)  avg 36.5 blocks/s 1.07 MB/s
+04:59:26 tip 153832  window 2000 blocks 57.8 MB (bend 7.5 s, state 8.1 s)  avg 36.7 blocks/s 1.08 MB/s
+05:00:20 tip 157832  window 2000 blocks 51.5 MB (bend 6.2 s, state 7.8 s)  avg 37.2 blocks/s 1.09 MB/s
+05:00:57 tip 159832  window 2000 blocks 58.4 MB (bend 9.1 s, state 9.8 s)  avg 37.4 blocks/s 1.10 MB/s
+05:01:31 tip 161832  window 2000 blocks 56.7 MB (bend 8.3 s, state 9.2 s)  avg 37.6 blocks/s 1.10 MB/s
+05:02:17 tip 163832  window 2000 blocks 68.8 MB (bend 11.3 s, state 12.4 s)  avg 37.6 blocks/s 1.11 MB/s
+05:03:58 tip 165832  window 2000 blocks 100.6 MB (bend 13.0 s, state 16.7 s)  avg 37.2 blocks/s 1.10 MB/s
+05:04:44 tip 167832  window 2000 blocks 71.7 MB (bend 9.0 s, state 10.1 s)  avg 37.3 blocks/s 1.11 MB/s
+05:05:49 tip 169775  window 1943 blocks 100.7 MB (bend 8.9 s, state 12.4 s)  avg 37.2 blocks/s 1.11 MB/s
+05:06:58 tip 171586  window 1811 blocks 100.7 MB (bend 9.1 s, state 12.7 s)  avg 37.0 blocks/s 1.12 MB/s
+05:07:41 tip 173586  window 2000 blocks 73.8 MB (bend 9.3 s, state 11.0 s)  avg 37.1 blocks/s 1.13 MB/s
+05:08:30 tip 175586  window 2000 blocks 73.3 MB (bend 9.5 s, state 11.5 s)  avg 37.1 blocks/s 1.13 MB/s
+05:09:14 tip 177586  window 2000 blocks 68.3 MB (bend 8.2 s, state 11.1 s)  avg 37.2 blocks/s 1.13 MB/s
+05:09:49 tip 179586  window 2000 blocks 57.9 MB (bend 7.9 s, state 10.3 s)  avg 37.4 blocks/s 1.14 MB/s
+05:10:29 tip 181586  window 2000 blocks 65.6 MB (bend 7.3 s, state 10.1 s)  avg 37.5 blocks/s 1.14 MB/s
+05:11:11 tip 183586  window 2000 blocks 73.0 MB (bend 9.0 s, state 10.6 s)  avg 37.6 blocks/s 1.15 MB/s
+05:11:56 tip 185586  window 2000 blocks 72.8 MB (bend 8.8 s, state 11.2 s)  avg 37.6 blocks/s 1.15 MB/s
+05:12:45 tip 187586  window 2000 blocks 76.9 MB (bend 8.3 s, state 12.6 s)  avg 37.7 blocks/s 1.16 MB/s
+05:14:37 tip 189521  window 1935 blocks 100.7 MB (bend 11.7 s, state 17.2 s)  avg 37.2 blocks/s 1.15 MB/s
+05:15:37 tip 191521  window 2000 blocks 90.7 MB (bend 7.6 s, state 12.9 s)  avg 37.1 blocks/s 1.15 MB/s
+05:18:11 tip 192745  window 1224 blocks 100.7 MB (bend 10.4 s, state 22.6 s)  avg 36.2 blocks/s 1.14 MB/s
+05:20:25 tip 193912  window 1167 blocks 102.5 MB (bend 9.9 s, state 24.1 s)  avg 35.5 blocks/s 1.13 MB/s
+05:21:39 tip 195912  window 2000 blocks 78.4 MB (bend 8.2 s, state 19.5 s)  avg 35.4 blocks/s 1.13 MB/s
+05:23:26 tip 197912  window 2000 blocks 76.7 MB (bend 17.3 s, state 26.0 s)  avg 35.1 blocks/s 1.12 MB/s
+05:24:52 tip 199912  window 2000 blocks 81.1 MB (bend 10.5 s, state 19.5 s)  avg 34.9 blocks/s 1.12 MB/s
+05:26:31 tip 201912  window 2000 blocks 92.1 MB (bend 9.6 s, state 20.6 s)  avg 34.6 blocks/s 1.11 MB/s
+05:28:30 tip 203899  window 1987 blocks 101.5 MB (bend 10.6 s, state 21.0 s)  avg 34.3 blocks/s 1.11 MB/s
+05:29:42 tip 205899  window 2000 blocks 77.3 MB (bend 7.9 s, state 20.8 s)  avg 34.2 blocks/s 1.11 MB/s
+05:32:07 tip 207752  window 1853 blocks 100.9 MB (bend 9.4 s, state 33.7 s)  avg 33.6 blocks/s 1.10 MB/s
+05:34:19 tip 209597  window 1845 blocks 101.1 MB (bend 12.3 s, state 27.3 s)  avg 33.2 blocks/s 1.09 MB/s
+05:36:21 tip 210917  window 1320 blocks 100.7 MB (bend 11.7 s, state 24.1 s)  avg 32.8 blocks/s 1.09 MB/s
+05:38:08 tip 212917  window 2000 blocks 95.9 MB (bend 13.9 s, state 27.3 s)  avg 32.5 blocks/s 1.08 MB/s
+05:39:27 tip 214917  window 2000 blocks 64.6 MB (bend 11.8 s, state 26.6 s)  avg 32.4 blocks/s 1.08 MB/s
+05:40:40 tip 216917  window 2000 blocks 70.5 MB (bend 10.7 s, state 25.0 s)  avg 32.4 blocks/s 1.08 MB/s
+05:42:12 tip 218917  window 2000 blocks 80.5 MB (bend 10.8 s, state 23.2 s)  avg 32.2 blocks/s 1.08 MB/s
+05:44:09 tip 220597  window 1680 blocks 100.8 MB (bend 9.7 s, state 22.4 s)  avg 31.9 blocks/s 1.07 MB/s
+05:46:03 tip 222597  window 2000 blocks 90.5 MB (bend 8.9 s, state 27.7 s)  avg 31.7 blocks/s 1.07 MB/s
+05:47:47 tip 224597  window 2000 blocks 97.9 MB (bend 12.0 s, state 25.4 s)  avg 31.5 blocks/s 1.06 MB/s
+05:49:16 tip 226597  window 2000 blocks 97.0 MB (bend 12.5 s, state 25.1 s)  avg 31.4 blocks/s 1.06 MB/s
+05:51:04 tip 228167  window 1570 blocks 100.7 MB (bend 10.1 s, state 26.7 s)  avg 31.1 blocks/s 1.06 MB/s
+05:52:59 tip 229807  window 1640 blocks 101.0 MB (bend 9.3 s, state 23.0 s)  avg 30.8 blocks/s 1.06 MB/s
+05:54:21 tip 231807  window 2000 blocks 76.4 MB (bend 11.5 s, state 26.4 s)  avg 30.8 blocks/s 1.06 MB/s
+05:56:17 tip 233655  window 1848 blocks 100.7 MB (bend 19.6 s, state 33.5 s)  avg 30.5 blocks/s 1.06 MB/s
+05:57:48 tip 235376  window 1721 blocks 101.1 MB (bend 16.9 s, state 22.0 s)  avg 30.4 blocks/s 1.06 MB/s
+05:59:11 tip 236763  window 1387 blocks 101.2 MB (bend 14.4 s, state 17.6 s)  avg 30.2 blocks/s 1.06 MB/s
+06:00:34 tip 238285  window 1522 blocks 100.7 MB (bend 12.5 s, state 17.5 s)  avg 30.1 blocks/s 1.06 MB/s
+06:01:44 tip 239799  window 1514 blocks 100.7 MB (bend 13.0 s, state 16.5 s)  avg 30.0 blocks/s 1.06 MB/s
+06:03:14 tip 241148  window 1349 blocks 100.7 MB (bend 12.7 s, state 18.6 s)  avg 29.8 blocks/s 1.06 MB/s
+06:04:50 tip 242746  window 1598 blocks 100.7 MB (bend 14.5 s, state 27.8 s)  avg 29.7 blocks/s 1.06 MB/s
+06:06:05 tip 244453  window 1707 blocks 101.9 MB (bend 14.6 s, state 20.0 s)  avg 29.6 blocks/s 1.07 MB/s
+06:08:20 tip 245017  window 564 blocks 100.7 MB (bend 7.2 s, state 19.9 s)  avg 29.2 blocks/s 1.06 MB/s
+06:10:10 tip 246120  window 1103 blocks 101.2 MB (bend 8.1 s, state 21.1 s)  avg 28.9 blocks/s 1.06 MB/s
+06:11:48 tip 247954  window 1834 blocks 100.7 MB (bend 17.9 s, state 29.1 s)  avg 28.8 blocks/s 1.06 MB/s
+06:13:31 tip 249954  window 2000 blocks 98.6 MB (bend 17.8 s, state 31.7 s)  avg 28.7 blocks/s 1.06 MB/s
+06:15:22 tip 251709  window 1755 blocks 101.3 MB (bend 15.0 s, state 35.5 s)  avg 28.5 blocks/s 1.06 MB/s
+06:19:02 tip 253287  window 1578 blocks 102.1 MB (bend 18.7 s, state 46.3 s)  avg 28.0 blocks/s 1.04 MB/s
+06:22:24 tip 254959  window 1672 blocks 100.7 MB (bend 23.4 s, state 48.1 s)  avg 27.5 blocks/s 1.03 MB/s
+06:26:09 tip 256735  window 1776 blocks 101.6 MB (bend 31.0 s, state 54.1 s)  avg 27.1 blocks/s 1.01 MB/s
+06:29:09 tip 258606  window 1871 blocks 100.7 MB (bend 23.7 s, state 43.4 s)  avg 26.7 blocks/s 1.01 MB/s
+06:31:55 tip 260492  window 1886 blocks 100.7 MB (bend 27.2 s, state 42.9 s)  avg 26.5 blocks/s 1.00 MB/s
+06:34:50 tip 262359  window 1867 blocks 100.7 MB (bend 20.6 s, state 40.2 s)  avg 26.2 blocks/s 0.99 MB/s
+06:37:37 tip 264154  window 1795 blocks 100.7 MB (bend 21.9 s, state 43.2 s)  avg 25.9 blocks/s 0.98 MB/s
+06:40:11 tip 265870  window 1716 blocks 100.7 MB (bend 24.7 s, state 37.6 s)  avg 25.7 blocks/s 0.98 MB/s
+06:43:03 tip 267743  window 1873 blocks 100.7 MB (bend 21.9 s, state 48.8 s)  avg 25.4 blocks/s 0.97 MB/s
+06:45:44 tip 269183  window 1440 blocks 100.7 MB (bend 19.4 s, state 37.8 s)  avg 25.2 blocks/s 0.97 MB/s
+06:47:48 tip 270676  window 1493 blocks 100.7 MB (bend 14.2 s, state 33.4 s)  avg 25.0 blocks/s 0.96 MB/s
+06:49:44 tip 272428  window 1752 blocks 100.8 MB (bend 13.3 s, state 32.9 s)  avg 24.9 blocks/s 0.96 MB/s
+06:51:31 tip 274264  window 1836 blocks 101.0 MB (bend 15.8 s, state 32.0 s)  avg 24.8 blocks/s 0.96 MB/s
+06:53:17 tip 276264  window 2000 blocks 98.6 MB (bend 15.6 s, state 33.7 s)  avg 24.8 blocks/s 0.96 MB/s
+06:54:38 tip 278264  window 2000 blocks 86.4 MB (bend 10.9 s, state 30.5 s)  avg 24.8 blocks/s 0.96 MB/s
+06:56:40 tip 279780  window 1516 blocks 100.7 MB (bend 9.1 s, state 34.2 s)  avg 24.6 blocks/s 0.96 MB/s
+06:58:27 tip 281780  window 2000 blocks 98.1 MB (bend 14.8 s, state 37.4 s)  avg 24.6 blocks/s 0.96 MB/s
+07:00:51 tip 282775  window 995 blocks 100.9 MB (bend 12.5 s, state 36.4 s)  avg 24.4 blocks/s 0.96 MB/s
+07:03:13 tip 284237  window 1462 blocks 100.7 MB (bend 16.7 s, state 41.1 s)  avg 24.2 blocks/s 0.96 MB/s
+07:04:27 tip 286237  window 2000 blocks 67.1 MB (bend 12.1 s, state 34.0 s)  avg 24.2 blocks/s 0.96 MB/s
+07:05:54 tip 288237  window 2000 blocks 71.3 MB (bend 11.7 s, state 39.5 s)  avg 24.2 blocks/s 0.95 MB/s
+07:07:24 tip 290237  window 2000 blocks 68.4 MB (bend 13.8 s, state 40.9 s)  avg 24.2 blocks/s 0.95 MB/s
+07:09:55 tip 291600  window 1363 blocks 100.9 MB (bend 15.2 s, state 42.6 s)  avg 24.0 blocks/s 0.95 MB/s
+07:12:17 tip 293600  window 2000 blocks 87.0 MB (bend 18.3 s, state 51.7 s)  avg 23.9 blocks/s 0.95 MB/s
+07:13:55 tip 295600  window 2000 blocks 66.6 MB (bend 12.8 s, state 37.3 s)  avg 23.8 blocks/s 0.94 MB/s
+07:16:38 tip 297123  window 1523 blocks 100.7 MB (bend 15.9 s, state 42.9 s)  avg 23.6 blocks/s 0.94 MB/s
+07:19:56 tip 298437  window 1314 blocks 102.5 MB (bend 11.0 s, state 48.9 s)  avg 23.4 blocks/s 0.93 MB/s
+07:22:26 tip 300241  window 1804 blocks 100.7 MB (bend 9.7 s, state 54.2 s)  avg 23.2 blocks/s 0.93 MB/s
+07:24:34 tip 302241  window 2000 blocks 84.2 MB (bend 8.9 s, state 58.3 s)  avg 23.1 blocks/s 0.93 MB/s
+07:26:10 tip 304241  window 2000 blocks 83.2 MB (bend 9.9 s, state 39.3 s)  avg 23.1 blocks/s 0.93 MB/s
+07:28:22 tip 306241  window 2000 blocks 85.9 MB (bend 10.4 s, state 64.3 s)  avg 23.0 blocks/s 0.92 MB/s
+07:37:38 tip 308241  window 2000 blocks 77.7 MB (bend 44.5 s, state 137.2 s)  avg 22.2 blocks/s 0.89 MB/s
+07:42:41 tip 310241  window 2000 blocks 88.3 MB (bend 30.5 s, state 109.1 s)  avg 21.9 blocks/s 0.88 MB/s
+07:46:37 tip 312241  window 2000 blocks 94.4 MB (bend 128.3 s, state 42.8 s)  avg 21.7 blocks/s 0.87 MB/s
+07:53:48 tip 314241  window 2000 blocks 86.3 MB (bend 15.4 s, state 82.6 s)  avg 21.2 blocks/s 0.85 MB/s
+07:56:33 tip 316241  window 2000 blocks 80.1 MB (bend 47.2 s, state 73.2 s)  avg 21.1 blocks/s 0.84 MB/s
+08:01:07 tip 316838  window 597 blocks 101.9 MB (bend 22.0 s, state 39.6 s)  avg 20.7 blocks/s 0.84 MB/s
+08:03:36 tip 318146  window 1308 blocks 100.8 MB (bend 14.1 s, state 39.8 s)  avg 20.6 blocks/s 0.83 MB/s
+08:05:46 tip 319805  window 1659 blocks 100.7 MB (bend 15.7 s, state 39.2 s)  avg 20.5 blocks/s 0.83 MB/s
+08:07:32 tip 321805  window 2000 blocks 98.9 MB (bend 17.0 s, state 41.3 s)  avg 20.5 blocks/s 0.83 MB/s
+08:09:59 tip 322219  window 414 blocks 100.9 MB (bend 7.2 s, state 33.8 s)  avg 20.3 blocks/s 0.83 MB/s
+08:12:43 tip 323304  window 1085 blocks 100.7 MB (bend 10.6 s, state 64.2 s)  avg 20.2 blocks/s 0.83 MB/s
+08:16:40 tip 324126  window 822 blocks 100.9 MB (bend 12.9 s, state 77.5 s)  avg 19.9 blocks/s 0.82 MB/s
+08:20:40 tip 324435  window 309 blocks 101.3 MB (bend 15.2 s, state 62.0 s)  avg 19.7 blocks/s 0.82 MB/s
+--- 14:04:02 switched to the pipelined sync (parallel rules parts, writer process); restarted without --keep-spool
+14:04:02 address index: deferred until the last checkpoint (emptied now, rebuilt from the UTXO set later)
+14:05:01 sync: state tip 324435, last checkpoint 3522460, verified headers to 3532222, 16 Bend jobs
+14:05:36 tip 324760  window 325 blocks 100.8 MB in 34.9 s (waited for bend 2.8 s [bend 2.6 s, overlapped]; lookups 27.2 s, rules 3.4 s; resolve 1.5 s)  avg 9.3 blocks/s 2.89 MB/s  rules parts 15 reruns 0
+14:06:54 committed tip 324760: 1 windows, 101 MB in one transaction (writer 77.9 s)
+14:06:54 tip 325345  window 585 blocks 101.6 MB in 78.6 s (waited for bend 0.0 s [bend 4.6 s, overlapped]; lookups 19.0 s, rules 4.4 s; resolve 2.6 s)  avg 8.0 blocks/s 1.78 MB/s  rules parts 30 reruns 0
+14:07:24 committed tip 325345: 1 windows, 102 MB in one transaction (writer 29.5 s)
+14:07:42 committed tip 327221: 1 windows, 101 MB in one transaction (writer 9.0 s)
+14:07:42 tip 328047  window 826 blocks 101.2 MB in 17.8 s (waited for bend 0.0 s [bend 4.8 s, overlapped]; lookups 12.0 s, rules 3.5 s; resolve 2.0 s)  avg 22.5 blocks/s 2.51 MB/s  rules parts 61 reruns 0
+14:08:04 committed tip 328047: 1 windows, 101 MB in one transaction (writer 16.3 s)
+14:08:25 committed tip 328567: 1 windows, 102 MB in one transaction (writer 20.4 s)
+14:08:25 tip 329007  window 440 blocks 101.9 MB in 20.6 s (waited for bend 0.0 s [bend 3.3 s, overlapped]; lookups 14.2 s, rules 3.7 s; resolve 2.1 s)  avg 22.4 blocks/s 2.98 MB/s  rules parts 90 reruns 0
+14:08:43 committed tip 329007: 1 windows, 102 MB in one transaction (writer 17.8 s)
+14:09:00 committed tip 330079: 1 windows, 101 MB in one transaction (writer 17.2 s)
+14:09:00 tip 332079  window 2000 blocks 80.9 MB in 17.4 s (waited for bend 0.0 s [bend 5.4 s, overlapped]; lookups 8.4 s, rules 2.9 s; resolve 2.3 s)  avg 31.9 blocks/s 3.30 MB/s  rules parts 122 reruns 0
+14:09:18 committed tip 332079: 1 windows, 81 MB in one transaction (writer 3.6 s)
+14:09:39 committed tip 333162: 1 windows, 101 MB in one transaction (writer 20.5 s)
+14:09:39 tip 334223  window 1061 blocks 101.2 MB in 20.7 s (waited for bend 0.0 s [bend 3.4 s, overlapped]; lookups 10.8 s, rules 3.5 s; resolve 2.1 s)  avg 35.2 blocks/s 3.57 MB/s  rules parts 153 reruns 0
+14:09:58 committed tip 334223: 1 windows, 101 MB in one transaction (writer 19.0 s)
+14:10:19 committed tip 335226: 1 windows, 101 MB in one transaction (writer 21.3 s)
+14:10:19 tip 336044  window 818 blocks 102.4 MB in 21.4 s (waited for bend 0.0 s [bend 3.9 s, overlapped]; lookups 13.5 s, rules 3.5 s; resolve 2.2 s)  avg 36.4 blocks/s 3.75 MB/s  rules parts 184 reruns 0
+14:10:58 committed tip 336044: 1 windows, 102 MB in one transaction (writer 38.7 s)
+14:10:58 tip 336926  window 882 blocks 100.7 MB in 38.9 s (waited for bend 0.0 s [bend 3.9 s, overlapped]; lookups 20.9 s, rules 3.6 s; resolve 2.0 s)  avg 34.9 blocks/s 3.62 MB/s  rules parts 200 reruns 0
+14:11:41 committed tip 336926: 1 windows, 101 MB in one transaction (writer 42.1 s)
+14:11:41 tip 337968  window 1042 blocks 100.7 MB in 42.4 s (waited for bend 0.0 s [bend 3.9 s, overlapped]; lookups 17.6 s, rules 3.8 s; resolve 2.2 s)  avg 33.8 blocks/s 3.49 MB/s  rules parts 216 reruns 0
+14:12:11 committed tip 337968: 1 windows, 101 MB in one transaction (writer 30.1 s)
+14:12:11 tip 338852  window 884 blocks 101.0 MB in 30.3 s (waited for bend 0.0 s [bend 3.5 s, overlapped]; lookups 15.1 s, rules 3.6 s; resolve 2.9 s)  avg 33.5 blocks/s 3.48 MB/s  rules parts 232 reruns 0
+14:12:25 committed tip 338852: 1 windows, 101 MB in one transaction (writer 11.4 s)
+14:12:37 committed tip 339867: 1 windows, 101 MB in one transaction (writer 8.1 s)
+14:12:47 committed tip 340678: 1 windows, 103 MB in one transaction (writer 8.1 s)
+14:12:47 tip 341656  window 978 blocks 100.7 MB in 9.9 s (waited for bend 0.0 s [bend 3.7 s, overlapped]; lookups 4.1 s, rules 4.0 s; resolve 1.5 s)  avg 36.9 blocks/s 3.86 MB/s  rules parts 279 reruns 0
+14:12:58 committed tip 341656: 1 windows, 101 MB in one transaction (writer 9.0 s)
+14:13:13 committed tip 342769: 1 windows, 101 MB in one transaction (writer 14.0 s)
+14:13:25 committed tip 343856: 1 windows, 101 MB in one transaction (writer 10.3 s)
+14:13:25 tip 344823  window 967 blocks 100.7 MB in 12.3 s (waited for bend 0.0 s [bend 4.1 s, overlapped]; lookups 6.4 s, rules 4.1 s; resolve 1.6 s)  avg 40.4 blocks/s 4.17 MB/s  rules parts 327 reruns 0
+14:13:40 committed tip 344823: 1 windows, 101 MB in one transaction (writer 15.0 s)
+14:13:55 committed tip 345793: 1 windows, 101 MB in one transaction (writer 12.6 s)
+14:14:11 committed tip 346891: 1 windows, 101 MB in one transaction (writer 16.2 s)
+14:14:11 tip 348891  window 2000 blocks 72.8 MB in 16.5 s (waited for bend 0.0 s [bend 4.4 s, overlapped]; lookups 7.6 s, rules 2.4 s; resolve 1.6 s)  avg 44.4 blocks/s 4.32 MB/s  rules parts 375 reruns 0
+14:14:20 committed tip 348891: 1 windows, 73 MB in one transaction (writer 8.2 s)
+14:14:25 committed tip 350891: 1 windows, 55 MB in one transaction (writer 4.7 s)
+14:14:31 committed tip 352891: 1 windows, 46 MB in one transaction (writer 4.7 s)
+14:14:44 committed tip 354891: 1 windows, 42 MB in one transaction (writer 1.0 s)
+14:14:44 tip 356738  window 1847 blocks 100.7 MB in 12.6 s (waited for bend 0.1 s [bend 6.5 s, overlapped]; lookups 6.9 s, rules 3.6 s; resolve 1.7 s)  avg 55.4 blocks/s 4.50 MB/s  rules parts 439 reruns 0
