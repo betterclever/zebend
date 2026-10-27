@@ -1,0 +1,19 @@
+[package]
+name = "orchard-constraints-extract"
+version = "0.1.0"
+edition = "2021"
+description = "Dumps the full Orchard constraint system + layout (gates, selectors, copies, lookups, fixed, regions, one honest witness) per circuit version"
+
+[dependencies]
+orchard = { path = "../../oracle/vendor/orchard", features = ["circuit"] }
+halo2_proofs = "0.4"
+pasta_curves = "0.6"
+ff = "0.14"
+group = "0.14"
+rand = { version = "0.10", features = ["std_rng"] }
+
+[patch.crates-io]
+halo2_proofs = { path = "../vendor/halo2_proofs" }
+
+[profile.release]
+debug = 0

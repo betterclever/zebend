@@ -1,0 +1,105 @@
+3548 survivors of 7289
+   1650/1660  copy   Full-width fixed-base mul (incomplete addition) <-> Full-width fixed-base mul (incomplete addition)
+    600/600   enable Witness element :: lookup 0
+    330/332   copy   Base-field elem fixed-base mul (incomplete addition) <-> Base-field elem fixed-base mul (incomplete addition)
+    134/134   enable Range check 5 bits :: lookup 0
+     84/116   copy   hash_to_point <-> witness message piece
+     78/80    copy   Short fixed-base mul (incomplete addition) <-> Short fixed-base mul (incomplete addition)
+     67/67    enable Range check 5 bits :: Short lookup bitshift
+     65/67    copy   FIXED/constant <-> Range check 5 bits
+     64/96    copy   Check piece decomposition <-> witness message piece
+     64/64    copy   Check piece decomposition <-> hash_to_point
+     64/64    copy   Check piece decomposition <-> Range check 5 bits
+     32/64    copy   Check piece decomposition <-> swap
+     32/32    copy   Check piece decomposition <-> FIXED/constant
+     26/26    enable 13 words range check :: lookup 0
+     22/22    enable Range check 4 bits :: lookup 0
+     18/32    copy   variable-base scalar mul <-> variable-base scalar mul
+     14/14    enable Range check 9 bits :: lookup 0
+     11/11    enable Range check 4 bits :: Short lookup bitshift
+      9/11    copy   FIXED/constant <-> Range check 4 bits
+      8/10    copy   Full-width fixed-base mul (last window, complete addition) <-> complete point addition
+      7/7     copy   FIXED/constant <-> Range check 9 bits
+      7/7     enable Range check 9 bits :: Short lookup bitshift
+      5/5     enable witness non-identity point :: witness non-identity point
+      4/4     copy   complete point addition <-> witness point
+      4/6     copy   complete point addition <-> hash_to_point
+      4/4     copy   Assign cells used in canonicity gate <-> witness message piece
+      4/4     copy   witness non-identity point <-> y canonicity
+      4/4     copy   Range check 4 bits <-> y canonicity
+      4/20    copy   Witness element <-> y canonicity
+      4/4     copy   NoteCommit MessagePiece b <-> Range check 4 bits
+      4/4     copy   Orchard circuit checks <-> load private
+      4/4     enable Range check 8 bits :: lookup 0
+      4/4     enable Range check 6 bits :: lookup 0
+      3/3     copy   FIXED/constant <-> initial state for domain ConstantLength<2>
+      3/415   enable Full-width fixed-base mul (incomplete addition) :: incomplete addition
+      2/2     copy   Short fixed-base mul (most significant word) <-> complete point addition
+      2/2     copy   Base-field elem fixed-base mul (complete addition) <-> complete point addition
+      2/2     copy   complete point addition <-> witness non-identity point
+      2/3     copy   overflow check <-> variable-base scalar mul
+      2/2     copy   NoteCommit MessagePiece b <-> witness message piece
+      2/2     copy   NoteCommit MessagePiece b <-> y canonicity
+      2/2     copy   NoteCommit MessagePiece d <-> witness message piece
+      2/2     copy   NoteCommit MessagePiece d <-> y canonicity
+      2/2     copy   NoteCommit MessagePiece d <-> Range check 8 bits
+      2/2     copy   NoteCommit MessagePiece d <-> hash_to_point
+      2/2     copy   NoteCommit MessagePiece e <-> witness message piece
+      2/2     copy   NoteCommit MessagePiece e <-> Range check 6 bits
+      2/2     copy   NoteCommit MessagePiece e <-> Range check 4 bits
+      2/2     copy   NoteCommit MessagePiece g <-> witness message piece
+      2/2     copy   NoteCommit MessagePiece g <-> Range check 9 bits
+      2/2     copy   NoteCommit MessagePiece g <-> hash_to_point
+      2/2     copy   NoteCommit MessagePiece h <-> witness message piece
+      2/2     copy   NoteCommit MessagePiece h <-> Range check 5 bits
+      2/2     copy   NoteCommit input g_d <-> witness non-identity point
+      2/2     copy   NoteCommit input g_d <-> Range check 4 bits
+      2/2     copy   NoteCommit MessagePiece b <-> NoteCommit input g_d
+      2/2     copy   NoteCommit input g_d <-> witness message piece
+      2/2     copy   NoteCommit input pk_d <-> witness non-identity point
+      2/2     copy   NoteCommit input pk_d <-> Range check 4 bits
+      2/2     copy   NoteCommit MessagePiece d <-> NoteCommit input pk_d
+      2/2     copy   NoteCommit input pk_d <-> witness message piece
+      2/2     copy   NoteCommit input value <-> load private
+      2/2     copy   NoteCommit input value <-> Range check 8 bits
+      2/2     copy   NoteCommit input value <-> hash_to_point
+      2/2     copy   NoteCommit input value <-> Range check 6 bits
+      2/2     copy   NoteCommit input rho <-> Range check 4 bits
+      2/2     copy   NoteCommit MessagePiece g <-> NoteCommit input rho
+      2/2     copy   NoteCommit input rho <-> witness message piece
+      2/2     copy   NoteCommit MessagePiece h <-> NoteCommit input psi
+      2/2     copy   FIXED/constant <-> Range check 8 bits
+      2/2     enable Range check 8 bits :: Short lookup bitshift
+      2/2     enable Range check 6 bits :: Short lookup bitshift
+      2/2     enable NoteCommit MessagePiece b :: NoteCommit MessagePiece b
+      2/2     enable NoteCommit MessagePiece d :: NoteCommit MessagePiece d
+      2/2     enable NoteCommit MessagePiece e :: NoteCommit MessagePiece e
+      2/2     enable NoteCommit MessagePiece g :: NoteCommit MessagePiece g
+      2/2     enable NoteCommit MessagePiece h :: NoteCommit MessagePiece h
+      2/2     enable NoteCommit input value :: NoteCommit input value
+      1/1     copy   Short fixed-base mul (incomplete addition) <-> load private
+      1/5     copy   Short fixed-base mul (incomplete addition) <-> Short fixed-base mul (most significant word)
+      1/1     copy   Short fixed-base mul (most significant word) <-> load private
+      1/1     copy   Base-field elem fixed-base mul (incomplete addition) <-> c = a + b
+      1/4     copy   Base-field elem fixed-base mul (incomplete addition) <-> Canonicity checks
+      1/1     copy   Assign cells used in canonicity gate <-> witness non-identity point
+      1/1     copy   Assign cells used in canonicity gate <-> Range check 4 bits
+      1/1     copy   Assign cells used in canonicity gate <-> Range check 5 bits
+      1/1     copy   Assign cells used in canonicity gate <-> load private
+      1/1     copy   Assign cells used in canonicity gate <-> Range check 9 bits
+      1/1     copy   complete point addition <-> overflow check
+      1/1     copy   NoteCommit input rho <-> load private
+      1/2     copy   NoteCommit input psi <-> load private
+      1/2     copy   NoteCommit input psi <-> Range check 5 bits
+      1/2     copy   NoteCommit input psi <-> Range check 9 bits
+      1/4     copy   NoteCommit input psi <-> hash_to_point
+      1/1     copy   NoteCommit input rho <-> complete point addition
+      1/1     copy   Orchard circuit checks <-> hash_to_point
+      1/1     copy   FIXED/constant <-> Short fixed-base mul (incomplete addition)
+      1/1     copy   Base-field elem fixed-base mul (incomplete addition) <-> FIXED/constant
+      1/1     enable Orchard circuit checks :: Orchard circuit checks
+      1/1     enable c = a + b :: Field element addition: c = a + b
+      1/1     enable witness point :: witness point
+      1/20    enable Short fixed-base mul (incomplete addition) :: incomplete addition
+      1/1     enable Short fixed-base mul (most significant word) :: Short fixed-base mul gate
+surviving copy mutants: {'non-redundant (a real link the checker does not see)': 554, 'self-copy (no-op)': 2076}

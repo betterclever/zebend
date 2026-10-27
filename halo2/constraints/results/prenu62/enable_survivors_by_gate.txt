@@ -1,0 +1,8 @@
+surviving enable mutants (both modes), by region :: gates the selector drives
+   600  Witness element :: lookup 0
+   134  Range check 5 bits :: lookup 0
+    26  13 words range check :: lookup 0
+    22  Range check 4 bits :: lookup 0
+    14  Range check 9 bits :: lookup 0
+     4  Range check 8 bits :: lookup 0
+     4  Range check 6 bits :: lookup 0

@@ -1,0 +1,6 @@
+prenu62: 7289 mutants in 1337 s; baseline full-pass kernel dim 71
+  recall overall: 3775/7289 flagged (51.8%)
+  copy: 345/2960 flagged
+  enable: 3427/4326 flagged
+  lookup: 3/3 flagged
+  flagged by criterion (a mutant can hit several): {'R': 3465, 'D': 3607, 'F': 3294, 'I': 9, 'G': 2804}

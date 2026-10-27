@@ -1,0 +1,111 @@
+[package]
+name = "halo2_proofs"
+version = "0.4.0"
+authors = [
+    "Sean Bowe",
+    "Ying Tong Lai",
+    "Daira Emma Hopwood <daira@jacaranda.org>",
+    "Jack Grigg <jack@zodl.com>",
+]
+edition.workspace = true
+rust-version.workspace = true
+description = """
+Fast PLONK-based zero-knowledge proving system with no trusted setup
+"""
+license.workspace = true
+repository.workspace = true
+documentation = "https://docs.rs/halo2_proofs"
+readme = "README.md"
+categories = ["cryptography"]
+keywords = ["halo", "proofs", "zkp", "zkSNARKs"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs", "--html-in-header", "katex-header.html"]
+
+[[bench]]
+name = "arithmetic"
+harness = false
+
+[[bench]]
+name = "hashtocurve"
+harness = false
+
+[[bench]]
+name = "msm"
+harness = false
+
+[[bench]]
+name = "plonk"
+harness = false
+
+[[bench]]
+name = "dev_lookup"
+harness = false
+
+[[bench]]
+name = "fft"
+harness = false
+
+[dependencies]
+backtrace = { workspace = true, optional = true }
+ff.workspace = true
+group.workspace = true
+indexmap.workspace = true
+pasta_curves.workspace = true
+rand = { workspace = true, optional = true }
+rand_core.workspace = true
+tracing.workspace = true
+blake2b_simd.workspace = true
+maybe-rayon.workspace = true
+
+# Developer tooling dependencies
+plotters = { workspace = true, optional = true }
+tabbycat = { workspace = true, features = ["attributes"], optional = true }
+
+# Legacy circuit compatibility
+halo2_legacy_pdqsort = { workspace = true, optional = true }
+
+[dev-dependencies]
+assert_matches.workspace = true
+criterion.workspace = true
+gumdrop.workspace = true
+proptest.workspace = true
+rand.workspace = true
+
+[features]
+default = ["batch", "multicore"]
+multicore = ["maybe-rayon/threads"]
+dev-graph = ["plotters", "tabbycat"]
+test-dev-graph = [
+    "dev-graph",
+    "plotters/bitmap_backend",
+    "plotters/bitmap_encoder",
+    "plotters/ttf",
+]
+gadget-traces = ["backtrace"]
+sanity-checks = []
+batch = ["dep:rand"]
+floor-planner-v1-legacy-pdqsort = ["halo2_legacy_pdqsort"]
+
+# In-development features
+# See https://zcash.github.io/halo2/dev/features.html
+beta = [
+]
+nightly = [
+    "beta",
+    "unstable-verifier-fingerprint",
+]
+# Capture-only tooling that exposes the assembled verifier MSM fingerprint and
+# exports it as a Lean fixture. Off by default; does not affect proof acceptance.
+unstable-verifier-fingerprint = []
+# Capture-only tooling for recording keygen layouts and rendering reproducible circuit fixtures.
+unstable-circuit-fixtures = []
+# Add flags for in-development features above this line.
+
+[lib]
+bench = false
+
+[[example]]
+name = "circuit-layout"
+required-features = ["test-dev-graph"]
