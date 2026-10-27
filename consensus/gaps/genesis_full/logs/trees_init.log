@@ -1,0 +1,40 @@
+21:55:48 sprout: reusing finished build from ../stateF/trees_init/sprout.done (size 1547344, root 92ea4f11169eeba7)
+21:55:48 sapling: 1100060 blocks with leaves, 73990534 leaves; start root fbc2f4300c01f0b7
+21:58:31   sapling: 20/288 segments, 162 s, eta 2177 s
+21:59:28   sapling: 40/288 segments, 219 s, eta 1360 s
+22:00:22   sapling: 60/288 segments, 274 s, eta 1040 s
+22:01:13   sapling: 80/288 segments, 325 s, eta 844 s
+22:01:59   sapling: 100/288 segments, 371 s, eta 697 s
+22:03:01   sapling: 120/288 segments, 432 s, eta 605 s
+22:03:50   sapling: 140/288 segments, 481 s, eta 509 s
+22:04:46   sapling: 160/288 segments, 537 s, eta 430 s
+22:05:27   sapling: 180/288 segments, 579 s, eta 347 s
+22:06:22   sapling: 200/288 segments, 634 s, eta 279 s
+22:07:10   sapling: 220/288 segments, 681 s, eta 211 s
+22:08:06   sapling: 240/288 segments, 737 s, eta 147 s
+22:09:25   sapling: 260/288 segments, 816 s, eta 88 s
+22:11:03   sapling: 280/288 segments, 914 s, eta 26 s
+22:11:40   sapling: {'leaves': 73990334, 'blocks': 1099985, 'segments': 288, 'continuity': '287/287 boundaries equal', 'chunk_roots': {'hints_used': 1128, 'computed': 0}, 'secs': {'chunk_roots': 0.1, 'segments': 951.7}}
+22:11:49   sapling: ptree through height 3531936, size 73990334, root 1e887c2b0e8b5185 (961 s; 287/287 boundaries equal); 75 blocks left (undo range)
+22:11:49   sapling: through height 3532556, size 73990534, root 8f995938c0e447a7 (1100060/1100060 blocks, 961 s, eta 0 s)
+22:11:50 orchard: 583276 blocks with leaves, 50478799 leaves; start root ae2935f1dfd8a24a
+22:18:22   orchard: 20/181 segments, 392 s, eta 3158 s
+22:23:19   orchard: 40/181 segments, 689 s, eta 2429 s
+22:27:51   orchard: 60/181 segments, 962 s, eta 1939 s
+22:32:06   orchard: 80/181 segments, 1216 s, eta 1535 s
+22:36:53   orchard: 100/181 segments, 1503 s, eta 1217 s
+22:40:59   orchard: 120/181 segments, 1749 s, eta 889 s
+22:44:13   orchard: 140/181 segments, 1943 s, eta 569 s
+22:48:25   orchard: 160/181 segments, 2196 s, eta 288 s
+22:54:42   orchard: 180/181 segments, 2572 s, eta 14 s
+22:55:04   orchard: {'leaves': 50478701, 'blocks': 583255, 'segments': 181, 'continuity': '180/180 boundaries equal', 'chunk_roots': {'hints_used': 769, 'computed': 0}, 'secs': {'chunk_roots': 0.1, 'segments': 2594.4}}
+22:55:04   orchard: ptree through height 3531829, size 50478701, root 27b69c1bffeaf4da (2595 s; 180/180 boundaries equal); 21 blocks left (undo range)
+22:55:04   orchard: through height 3532479, size 50478799, root 23959b6971f5491d (583276/583276 blocks, 2595 s, eta 0 s)
+22:55:05 ironwood: 66415 blocks with leaves, 947448 leaves; start root ae2935f1dfd8a24a
+22:55:05   ironwood: 0 chunk-root hints, computing 11 chunk roots in Bend
+22:58:01   ironwood: {'leaves': 941168, 'blocks': 66045, 'segments': 4, 'continuity': '3/3 boundaries equal', 'chunk_roots': {'hints_used': 0, 'computed': 11}, 'secs': {'chunk_roots': 25.4, 'segments': 151.0}}
+22:58:01   ironwood: ptree through height 3531956, size 941168, root ad04c17ed4215cbf (176 s; 3/3 boundaries equal); 370 blocks left (undo range)
+22:58:04   ironwood: through height 3532556, size 947448, root cdf34ea28b553635 (66415/66415 blocks, 179 s, eta 0 s)
+22:58:21 sapling: header hashFinalSaplingRoot == Bend root after the block for 483799/483799 blocks 419200..902999
+22:58:21 final: sprout size 1547344 root 92ea4f11169eeba7; sapling size 73990534 root 8f995938c0e447a7; orchard size 50478799 root 23959b6971f5491d; ironwood size 947448 root cdf34ea28b553635
+22:58:24 committed: 2067026 anchor rows, tree state in 376 undo rows, meta trees

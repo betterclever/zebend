@@ -36,6 +36,22 @@ class HistoryFail(Exception):
     pass
 
 
+def window_start_below(st, h):
+    """The highest g <= h such that block g+1 has the ZIP 221 state before it in its undo data
+    (it started a window), so store.rollback_to(g) restores the history state exactly. h itself
+    if there is none within the undo depth (the history is then dropped, as before)."""
+    import pickle
+    k = h + 1
+    while k > 0:
+        r = st.rdb.execute("SELECT data FROM undo WHERE height=?", (k,)).fetchone()
+        if r is None:
+            return h
+        if "history" in pickle.loads(r[0]):
+            return k - 1
+        k -= 1
+    return h
+
+
 class History:
     def __init__(self, st, work, log):
         self.st, self.work, self.log = st, Path(work), log

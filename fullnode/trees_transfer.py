@@ -1,0 +1,134 @@
+#!/usr/bin/env python3
+"""Copy the note commitment trees and the ZIP 221 history state from a CLONE of a node state
+(where trees_init.py / history_init.py ran and sync.py then advanced them) into the original
+state, both stopped at the SAME tip. This keeps the live node's downtime to minutes: the slow
+init (hours of Bend) runs on an APFS clone while the node keeps syncing; the clone follows the
+tip with the new sync.py; at the switch both stop at the same height and only the tree data
+moves.
+
+usage: trees_transfer.py SRC_STATE DST_STATE [--dry-run]
+
+What moves (ONE SQLite transaction on DST; DST's chain data is never touched):
+  anchor rows      every per-block Sprout/Sapling/Orchard/Ironwood root of SRC (height <= tip)
+  undo data        for each block DST still has undo data for: SRC's undo record, which is DST's
+                   plus the tree / history state before the block and the block's anchor roots
+  meta             "trees", "history", "trees_init" (+ "trees_transfer": provenance)
+
+Refused unless (all checked before writing):
+  - same tip height and hash; SRC has meta trees (4 pools) and a history state AT the tip;
+    DST has no meta trees yet (it must not silently overwrite a tracked tree)
+  - every leaf log: same committed length and identical bytes (SHA-256) in SRC and DST, and
+    SRC's tree size == the number of leaves in the log
+  - same undo heights; for each: same block hash, and SRC's undo record minus the tree keys
+    ("trees", "history", the added "anchor" roots) == DST's record
+  - DST's anchor table is a subset of SRC's
+"""
+import argparse, hashlib, json, pickle, sqlite3, sys, time
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+import store as S
+
+ap = argparse.ArgumentParser()
+ap.add_argument("src")
+ap.add_argument("dst")
+ap.add_argument("--dry-run", action="store_true")
+a = ap.parse_args()
+log = lambda *x: print(time.strftime("%H:%M:%S"), *x, flush=True)
+
+
+def die(msg):
+    log("REFUSED: " + msg)
+    sys.exit(2)
+
+
+src = sqlite3.connect(f"file:{Path(a.src) / 'chain.sqlite'}?mode=ro", uri=True)
+sget = lambda k: (lambda r: json.loads(r[0]) if r else None)(src.execute("SELECT v FROM meta WHERE k=?", (k,)).fetchone())
+dst = S.Store(Path(a.dst))  # opening recovers DST to its committed tip (truncates leaf logs)
+stip, dtip = sget("tip"), dst.tip()
+log(f"src tip {stip['height']} {stip['hash'][:16]}; dst tip {dtip['height']} {dtip['hash'][:16]}")
+if stip != dtip:
+    die("tips differ: stop both at the same height (sync.py --to H on the one behind)")
+trees, hist = sget("trees"), sget("history")
+if not trees or sorted(trees) != sorted(S.POOLS):
+    die(f"src meta trees has {sorted(trees or {})}, want {S.POOLS}")
+if not hist or hist["height"] != stip["height"]:
+    die(f"src history state at {hist and hist['height']}, want {stip['height']}")
+if dst.get("trees"):
+    die("dst already has meta trees")
+
+# leaf logs: same committed bytes
+sl, dl = sget("leaf_lengths"), dst.get("leaf_lengths")
+if sl != dl:
+    die(f"leaf_lengths differ: {sl} vs {dl}")
+for pool in S.POOLS:
+    hs = []
+    for st_dir in (Path(a.src), Path(a.dst)):
+        h = hashlib.sha256()
+        for k, suf in enumerate(("bin", "blk")):
+            n = sl[pool][k]
+            with open(st_dir / "leaves" / f"{pool}.{suf}", "rb") as f:
+                while n:
+                    b = f.read(min(n, 1 << 24))
+                    if not b:
+                        die(f"{st_dir}/leaves/{pool}.{suf} shorter than its committed length")
+                    h.update(b); n -= len(b)
+        hs.append(h.hexdigest())
+    if hs[0] != hs[1]:
+        die(f"{pool} leaf logs differ")
+    if trees[pool]["size"] != sl[pool][0] // 32:
+        die(f"{pool}: src tree size {trees[pool]['size']} != {sl[pool][0] // 32} leaves in the log")
+    log(f"{pool}: leaf logs identical ({sl[pool][0] // 32} leaves, sha256 {hs[0][:16]}); tree root {trees[pool]['root'][:16]}")
+
+# undo data
+su = dict(src.execute("SELECT height, data FROM undo"))
+du = dict(dst.db.execute("SELECT height, data FROM undo"))
+if sorted(su) != sorted(du):
+    die(f"undo heights differ: src {min(su)}..{max(su)} ({len(su)}), dst {min(du)}..{max(du)} ({len(du)})")
+nt = nh = 0
+for h in sorted(du):
+    sh = src.execute("SELECT hash FROM blk WHERE height=?", (h,)).fetchone()
+    dh = dst.db.execute("SELECT hash FROM blk WHERE height=?", (h,)).fetchone()
+    if sh != dh:
+        die(f"block {h}: hashes differ")
+    s_, d_ = pickle.loads(su[h]), pickle.loads(du[h])
+    s_core = {k: v for k, v in s_.items() if k not in ("trees", "history", "anchor")}
+    d_core = {k: v for k, v in d_.items() if k not in ("trees", "history", "anchor")}
+    if s_core != d_core or not set(d_.get("anchor", [])) <= set(s_.get("anchor", [])):
+        die(f"block {h}: undo data differs beyond the tree state")
+    nt += "trees" in s_
+    nh += "history" in s_
+log(f"undo: {len(du)} blocks {min(du)}..{max(du)} identical apart from the tree state "
+    f"(tree state in {nt}, history state in {nh})")
+
+n_src = src.execute("SELECT count(*) FROM anchor WHERE height<=?", (stip["height"],)).fetchone()[0]
+n_dst = dst.db.execute("SELECT count(*) FROM anchor").fetchone()[0]
+log(f"anchor rows: src {n_src}, dst {n_dst}")
+if a.dry_run:
+    log("dry run: nothing written")
+    sys.exit(0)
+
+db = dst.db
+db.execute("ATTACH DATABASE ? AS src", (f"file:{Path(a.src) / 'chain.sqlite'}?mode=ro",))
+db.execute("BEGIN IMMEDIATE")
+try:
+    if db.execute("SELECT count(*) FROM anchor WHERE (pool, root, height) NOT IN "
+                  "(SELECT pool, root, height FROM src.anchor)").fetchone()[0]:
+        raise SystemExit("REFUSED: dst has anchor rows src does not")
+    db.execute("INSERT OR IGNORE INTO anchor SELECT pool, root, height FROM src.anchor WHERE height<=?", (stip["height"],))
+    for h in sorted(du):
+        db.execute("UPDATE undo SET data=? WHERE height=?", (su[h], h))
+    dst.put("trees", trees)
+    dst.put("history", hist)
+    dst.put("trees_init", sget("trees_init"))
+    dst.put("trees_transfer", {"from": str(Path(a.src).resolve()), "tip": stip["height"],
+                               "time": time.strftime("%Y-%m-%d %H:%M:%S")})
+    n = db.execute("SELECT count(*) FROM anchor").fetchone()[0]
+    if n != n_src:
+        raise SystemExit(f"REFUSED: {n} anchor rows after the copy, want {n_src}")
+    db.execute("COMMIT")
+except BaseException:
+    db.execute("ROLLBACK")
+    raise
+log(f"committed: {n} anchor rows, {len(du)} undo records, meta trees/history at {stip['height']}")

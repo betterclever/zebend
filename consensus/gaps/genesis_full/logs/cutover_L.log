@@ -1,0 +1,32 @@
+23:19:00 history: state at 3532652 (seeded at 3,521,999 (consensus/gaps/history/data/seed_3521999.st, NU6.3-epoch tree, validated by header 3,522,000); rolled forward with this instance genesis-built tree roots); checked from 3428143
+23:19:00 trees: sprout size 1547344 root 92ea4f11169eeba7 (built from this instance's leaf logs since genesis); sapling size 73990562 root fe45faae864efe55 (built from this instance's leaf logs since genesis); orchard size 50478809 root 6387db5dd72e918c (built from this instance's leaf logs since genesis); ironwood size 948050 root 9b6c28d2737e87b1 (built from this instance's leaf logs since genesis)
+23:19:00 sync: state tip 3532652, last checkpoint 3522460, verified headers to 3532646, 16 Bend jobs
+23:19:00   history: rolling back to 3532556 instead (the ZIP 221 state before 3532557 is in its undo data)
+23:19:00 REORG: tip 3532652 is no longer on the verified header chain; rolling back to 3532556
+23:19:42   anchors: Ironwood 252/252 PASS; Sapling 6/6 PASS; Orchard 4/4 PASS; Sprout 0/0 PASS
+23:19:44   full validation 3532557..3532646: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 496, 'skipped': 0}", 'sapling': "PASS {'pass': 13, 'skipped': 0}", 'orchard': "PASS {'pass': 253, 'skipped': 0}"}
+23:19:44   history (ZIP 221): 90 MATCH  [trees+anchors 0.60 s, history 0.45 s]
+23:19:44 tip 3532646  window 90 blocks 3.0 MB in 2.5 s (waited for bend 0.1 s [bend 0.1 s, overlapped]; lookups 0.0 s, rules 2.4 s; resolve 0.0 s)  avg 2.1 blocks/s 0.07 MB/s  rules parts 14 reruns 0
+23:19:44 committed tip 3532646: 1 windows, 3 MB in one transaction (writer 0.1 s)
+23:21:24   anchors: Ironwood 49/49 PASS; Sapling 1/1 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+23:21:25   full validation 3532647..3532660: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 54, 'skipped': 0}", 'sapling': "PASS {'pass': 2, 'skipped': 0}", 'orchard': "PASS {'pass': 49, 'skipped': 0}"}
+23:21:25   history (ZIP 221): 14 MATCH  [trees+anchors 0.19 s, history 0.05 s]
+23:21:25 tip 3532660  window 14 blocks 0.6 MB in 0.9 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.8 s; resolve 0.0 s)  avg 0.7 blocks/s 0.02 MB/s  rules parts 22 reruns 0
+23:21:25 committed tip 3532660: 1 windows, 1 MB in one transaction (writer 0.0 s)
+23:22:55   anchors: Ironwood 0/0 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+23:22:55   full validation 3532661..3532662: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 0, 'skipped': 0}"}
+23:22:55   history (ZIP 221): 2 MATCH  [trees+anchors 0.00 s, history 0.01 s]
+23:22:55 tip 3532662  window 2 blocks 0.0 MB in 0.0 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.0 s; resolve 0.0 s)  avg 0.5 blocks/s 0.02 MB/s  rules parts 24 reruns 0
+23:22:55 committed tip 3532662: 1 windows, 0 MB in one transaction (writer 0.0 s)
+23:24:05   anchors: Ironwood 9/9 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+23:24:05   full validation 3532663..3532664: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 12, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 9, 'skipped': 0}"}
+23:24:05   history (ZIP 221): 2 MATCH  [trees+anchors 0.03 s, history 0.01 s]
+23:24:05 tip 3532664  window 2 blocks 0.1 MB in 0.2 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.2 s; resolve 0.0 s)  avg 0.4 blocks/s 0.01 MB/s  rules parts 26 reruns 0
+23:24:05 committed tip 3532664: 1 windows, 0 MB in one transaction (writer 0.0 s)
+23:26:31   anchors: Ironwood 9/9 PASS; Sapling 1/1 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+23:26:31   full validation 3532665..3532667: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 5, 'skipped': 0}", 'sapling': "PASS {'pass': 2, 'skipped': 0}", 'orchard': "PASS {'pass': 9, 'skipped': 0}"}
+23:26:31   history (ZIP 221): 3 MATCH  [trees+anchors 0.12 s, history 0.01 s]
+23:26:31 tip 3532667  window 3 blocks 0.1 MB in 0.3 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.3 s; resolve 0.0 s)  avg 0.2 blocks/s 0.01 MB/s  rules parts 29 reruns 0
+23:26:31 committed tip 3532667: 1 windows, 0 MB in one transaction (writer 0.0 s)
+23:27:41 stop requested: exiting after this window
+23:27:41 stopped at committed tip 3532667: 111 blocks 3.7 MB in 521 s, 0.2 blocks/s 0.01 MB/s

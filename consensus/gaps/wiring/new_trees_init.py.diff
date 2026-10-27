@@ -1,6 +1,6 @@
 --- a/fullnode/trees_init.py
 +++ b/fullnode/trees_init.py
-@@ -0,0 +1,219 @@
+@@ -0,0 +1,284 @@
 +#!/usr/bin/env python3
 +"""Start tracking the note commitment trees in an existing node state (run with the node
 +stopped, at a window boundary). Builds every pool's tree in Bend from the instance's own leaf
@@ -22,6 +22,7 @@
 +Options: --heavy (run each Bend call under ../heavy.sh), --dry-run (build and check, no writes).
 +"""
 +import argparse, json, pickle, re, struct, subprocess, sys, time
++from concurrent.futures import ThreadPoolExecutor
 +from pathlib import Path
 +
 +HERE = Path(__file__).resolve().parent
@@ -38,6 +39,10 @@
 +                     "Bend-built from activation or from a stated height): imported into the anchor index")
 +ap.add_argument("--origin", default="")
 +ap.add_argument("--chunk", type=int, default=400000, help="leaves per Bend run")
++ap.add_argument("--chunk-blocks", type=int, default=20000, help="blocks per Bend run")
++ap.add_argument("--parallel", action="store_true", help="build the pools concurrently (one Bend process each)")
++ap.add_argument("--ptree", type=int, default=0, metavar="JOBS", help="genesis: build Sapling/Orchard/Ironwood in JOBS "
++                "parallel continuity-checked Bend segments (ptree.py); pools then run one after the other")
 +ap.add_argument("--heavy", action="store_true")
 +ap.add_argument("--dry-run", action="store_true")
 +ap.add_argument("--pools", help="comma-separated subset of pools (tests)")
@@ -106,8 +111,23 @@
 +
 +state, anchors, before = {}, [], {}  # before[(pool, height)] = state before that block
 +undo_heights = set() if args.leaf_dir else {r[0] for r in st.db.execute("SELECT height FROM undo")}
-+for pool in pools:
++
++
++def build(pool):
++    """One pool's tree over its whole leaf log (Bend, chunk by chunk). Returns (final state,
++    anchor rows, {height: state before that block} for the blocks that still have undo data).
++    Pools are independent: they run concurrently (one Bend process each, ~0.2-0.6 GB RSS).
++    A finished pool is cached in work/<pool>.done (keyed by tip + leaf-log size): a rerun after
++    a crash redoes only the pools that had not finished."""
 +    blocks, leafp = leaf_blocks(pool)
++    key = [tip, leafp.stat().st_size, args.chunk, sorted(seeds.get(pool, [])), origin]
++    done = work / f"{pool}.done"
++    if done.exists():
++        k, res = pickle.loads(done.read_bytes())
++        if k == key:
++            log(f"{pool}: reusing finished build from {done} (size {res[0]['size']}, root {res[0]['root'][:16]})")
++            return res
++    anchors, before = [], {}
 +    fr = seeds.get(pool, ["-"] * T.DEPTH[pool])
 +    tool = HERE / "bin" / (T.TOOL.get(pool) or "sprout_js")
 +    # the seed's own root (and the empty root): via a run with no leaves
@@ -117,7 +137,7 @@
 +        lp.write_bytes(struct.pack("<I", 0)); cp.write_bytes(struct.pack("<I", 0))
 +    else:
 +        lp.write_bytes(b""); cp.write_bytes(struct.pack("<I", 0))
-+    o = run([tool, fi, lp, cp, fo]) if pool != "sprout" else run([tool, fi, lp, cp, fo])
++    o = run([tool, fi, lp, cp, fo])
 +    empty = re.search(r"^empty_root ([0-9a-f]{64})$", o, re.M).group(1)
 +    cur = {"frontier": fr, "size": 0, "root": None, "origin": origin}
 +    # root of the seed frontier: push nothing -> not printed; compute via a zero-leaf block is not
@@ -129,12 +149,35 @@
 +        anchors.append((T.TREE_POOLS.index(pool), bytes.fromhex(seed_root), args.seed_height))
 +    cur["root"] = seed_root or empty
 +    log(f"{pool}: {len(blocks)} blocks with leaves, {sum(c for _, c, _ in blocks)} leaves; start root {cur['root'][:16]}")
-+    i = 0
++    t0, i = time.time(), 0
++    # --ptree (genesis builds of Sapling/Orchard/Ironwood): every block below the undo range in
++    # parallel continuity-checked Bend segments (ptree.py); the blocks with undo data (<= 600,
++    # whose before-states the undo records need) then run sequentially below, from its frontier
++    k = next((bi for bi, (h, _, _) in enumerate(blocks) if h in undo_heights), len(blocks))
++    if args.ptree and pool != "sprout" and args.genesis and k > 0:
++        import ptree
++        with ThreadPoolExecutor(args.ptree) as pex:
++            rts, lv, stats = ptree.build(pool, leafp, [(h, c) for h, c, _ in blocks[:k]], work, pex, log)
++        if len(rts) != k:
++            raise SystemExit(f"{pool}: ptree gave {len(rts)} roots for {k} blocks")
++        for bi in range(k):
++            h, c, _ = blocks[bi]
++            anchors.append((T.TREE_POOLS.index(pool), bytes.fromhex(rts[bi]), h))
++            if pool == "sapling" and T.SAPLING <= h < T.HEARTWOOD:
++                hdr = headers.header(h)[68:100].hex()
++                if hdr != rts[bi]:
++                    raise SystemExit(f"sapling root after {h} != header hashFinalSaplingRoot: {rts[bi]} {hdr}")
++        cur = {"frontier": [x or "-" for x in lv], "size": sum(c for _, c, _ in blocks[:k]), "root": rts[-1],
++               "origin": origin}
++        i = k
++        log(f"  {pool}: ptree through height {blocks[k - 1][0]}, size {cur['size']}, root {cur['root'][:16]} "
++            f"({time.time() - t0:.0f} s; {stats['continuity']}); {len(blocks) - k} blocks left (undo range)")
 +    with open(leafp, "rb") as f:
 +        while i < len(blocks):
 +            j, n = i, 0
 +            lim = min(args.chunk, 4000) if pool == "sprout" else args.chunk  # sprout_js scans its window's roots per JoinSplit
-+            while j < len(blocks) and (n == 0 or n + blocks[j][1] <= lim):
++            # also at most --chunk-blocks blocks per run: every block prints its root and frontier
++            while j < len(blocks) and (n == 0 or (n + blocks[j][1] <= lim and j - i < args.chunk_blocks)):
 +                n += blocks[j][1]; j += 1
 +            part = blocks[i:j]
 +            f.seek(part[0][2] * 32)
@@ -152,23 +195,43 @@
 +                cp.write_bytes(b"".join(struct.pack("<I", c) for _, c, _ in part))
 +            o = run([tool, fi, lp, cp, fo])
 +            roots = {int(k): r for k, _s, r in re.findall(r"^root (\d+) (\d+) ([0-9a-f]{64})$", o, re.M)}
-+            fronts = {int(k): v.split(",") for k, v in re.findall(r"^front (\d+) (\S+)$", o, re.M)}
-+            if sorted(roots) != list(range(len(part))) or sorted(fronts) != list(range(len(part))):
-+                raise SystemExit(f"{pool}: {len(roots)} roots for {len(part)} blocks")
++            # frontiers: every block must print one; keep only the ones needed (undo data, last)
++            fr_idx = [int(m.group(1)) for m in re.finditer(r"^front (\d+) ", o, re.M)]
++            if sorted(roots) != list(range(len(part))) or sorted(fr_idx) != list(range(len(part))):
++                raise SystemExit(f"{pool}: {len(roots)} roots / {len(fr_idx)} frontiers for {len(part)} blocks")
++            # the state BEFORE block bi (undo data) is the state after block bi-1 of the pool's log
++            need = {bi - 1 for bi, (h, _, _) in enumerate(part) if bi and h in undo_heights} | {len(part) - 1}
++            fronts = {int(k): v.split(",") for k, v in re.findall(r"^front (\d+) (\S+)$", o, re.M) if int(k) in need}
++            del o
 +            for bi, (h, c, _) in enumerate(part):
 +                if h in undo_heights:
-+                    before[(pool, h)] = dict(cur)
-+                cur = {"frontier": fronts[bi], "size": cur["size"] + c, "root": roots[bi], "origin": origin}
++                    assert cur["frontier"] is not None, (pool, h)
++                    before[h] = dict(cur)
++                cur = {"frontier": fronts.get(bi), "size": cur["size"] + c, "root": roots[bi], "origin": origin}
 +                anchors.append((T.TREE_POOLS.index(pool), bytes.fromhex(roots[bi]), h))
 +                if pool == "sapling" and args.genesis and T.SAPLING <= h < T.HEARTWOOD:
 +                    hdr = headers.header(h)[68:100].hex()
 +                    if hdr != roots[bi]:
 +                        raise SystemExit(f"sapling root after {h} != header hashFinalSaplingRoot: {roots[bi]} {hdr}")
-+            log(f"  {pool}: through height {part[-1][0]}, size {cur['size']}, root {cur['root'][:16]}")
++            if fo.read_text().split("\n")[:T.DEPTH[pool]] != cur["frontier"]:
++                raise SystemExit(f"{pool}: final frontier of the run differs from the last block's")
++            el = time.time() - t0
++            log(f"  {pool}: through height {part[-1][0]}, size {cur['size']}, root {cur['root'][:16]} "
++                f"({j}/{len(blocks)} blocks, {el:.0f} s, eta {el / j * (len(blocks) - j):.0f} s)")
 +            i = j
 +    if not args.genesis:
 +        cur["history_from"] = args.seed_height  # no root before the seed unless --history adds them
-+    state[pool] = cur
++    res = (cur, anchors, before)
++    done.write_bytes(pickle.dumps((key, res)))
++    return res
++
++
++with ThreadPoolExecutor(len(pools) if args.parallel and not args.ptree else 1) as ex:
++    for pool, (cur, a_p, b_p) in zip(pools, ex.map(build, pools)):
++        state[pool] = cur
++        anchors += a_p
++        for h, s_ in b_p.items():
++            before[(pool, h)] = s_
 +
 +# pre-Heartwood Sapling blocks without new leaves keep the previous root: check their headers too
 +if args.genesis and "sapling" in state:
@@ -204,15 +267,17 @@
 +db = st.db
 +db.execute("BEGIN IMMEDIATE")
 +db.executemany("INSERT OR IGNORE INTO anchor VALUES(?,?,?)", anchors)
++by_ph = {(p, h): r for p, r, h in anchors}
 +for h in sorted({h for _, h in before}):
 +    r = db.execute("SELECT data FROM undo WHERE height=?", (h,)).fetchone()
 +    u = pickle.loads(r[0])
-+    u["trees"] = {p: before[(p, hh)] for p, hh in before if hh == h}
++    u.setdefault("trees", {}).update({p: before[(p, hh)] for p, hh in before if hh == h})
 +    u.setdefault("anchor", [])
 +    for p, hh in before:
 +        if hh == h:
-+            root = [a for a in anchors if a[0] == T.TREE_POOLS.index(p) and a[2] == h][0][1]
-+            u["anchor"].append((T.TREE_POOLS.index(p), root))
++            root = by_ph[(T.TREE_POOLS.index(p), h)]
++            if (T.TREE_POOLS.index(p), root) not in u["anchor"]:
++                u["anchor"].append((T.TREE_POOLS.index(p), root))
 +    db.execute("UPDATE undo SET data=? WHERE height=?", (pickle.dumps(u), h))
 +old = st.get("trees") or {}
 +old.update(state)

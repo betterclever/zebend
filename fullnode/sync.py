@@ -23,7 +23,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-import headers, store as S
+import headers, store as S, trees as T, history as HI
 
 BIN = HERE / "bin"
 STATE = Path(os.environ.get("ZEBEND_STATE", HERE / "state"))  # instance state dir
@@ -276,49 +276,71 @@ def _follow_roots():
     return roots, (int(tip["height"]), tip.get("hash"))
 
 
-def anchor_checks(full, st, log, idx=None):
+def anchor_checks(full, st, log, idx=None, tr=None, after=None, prev_root=None):
     """Each shielded bundle's anchor must be a tree root after a strictly earlier block.
 
-    Ironwood: roots from a Bend-computed tree: the instance's snapshot
+    Sprout, Sapling, Orchard, Ironwood: the node's own Bend trees (trees.py, meta "trees"; Sprout
+    with zcashd's interstitial roots), built from this instance's own leaf logs, advanced and
+    rolled back with the blocks, and from Heartwood on authenticated block by block by the ZIP 221
+    header commitments (history.py). They are the source of truth for every pool they track. A
+    pool this instance does not track: Sprout, Sapling, Orchard anchors are SKIPPED (never PASS);
+    Ironwood falls back to follow's Bend-computed roots (below).
+
+    Ironwood fallback (no own Ironwood tree): the instance's snapshot
     (<state>/ironwood_roots.txt, a copy of follow/state/roots.txt) plus follow's committed live
     roots, re-read on a miss. An anchor that is not a known root fails only if follow has
     committed a block at or above h-1 ON THE SAME CHAIN as ours (its tip hash equals our
     verified header hash at that height); otherwise follow is behind or on another branch and
-    the anchor is SKIPPED (reported). Orchard, Sapling, Sprout anchors: SKIPPED (tree builders
-    pending) and reported as such."""
-    p = st.dir / "ironwood_roots.txt"
-    if not _ROOTS:
-        if p.exists():
-            for l in p.read_text().splitlines():
-                q = l.split()
-                if len(q) == 3:
-                    _ROOTS.setdefault(q[2], int(q[0]))
-        _ROOTS.update(_follow_roots()[0])  # genesis instance: no snapshot, follow's roots still apply
-    skipped = {"orchard": 0, "sapling": 0, "sprout": 0}
+    the anchor is SKIPPED (reported)."""
+    own_iw = tr is not None and "ironwood" in tr.cur
+    skipped = {}
     checked = 0
-    for b in full:
-        for t in b["txs"]:
-            for a in t["anchors"]["ironwood"]:
-                h = b["height"]
-                if a not in _ROOTS or _ROOTS[a] >= h:
-                    fresh, ftip = _follow_roots()
-                    for r, rh in fresh.items():  # follow's committed view wins over the cache
-                        _ROOTS[r] = rh
-                    # same chain: follow's tip hash is our verified hash at that height (follow ahead of
-                    # our verified headers: its chain is the one tiphdr is about to extend; trusted)
-                    on_chain = ftip is not None and (idx is None or ftip[0] >= idx.n or idx.display(ftip[0]) == ftip[1])
+    if not own_iw:
+        p = st.dir / "ironwood_roots.txt"
+        if not _ROOTS:
+            if p.exists():
+                for l in p.read_text().splitlines():
+                    q = l.split()
+                    if len(q) == 3:
+                        _ROOTS.setdefault(q[2], int(q[0]))
+            _ROOTS.update(_follow_roots()[0])  # genesis instance: no snapshot, follow's roots still apply
+        for b in full:
+            for t in b["txs"]:
+                for a in t["anchors"]["ironwood"]:
+                    h = b["height"]
                     if a not in _ROOTS or _ROOTS[a] >= h:
-                        if ftip is None or ftip[0] < h - 1 or not on_chain:
-                            k = "ironwood (follow behind or on another branch)"
-                            skipped[k] = skipped.get(k, 0) + 1
-                            continue
-                        raise Fail(f"block {h} tx {t['txid']}: Ironwood anchor {a[:16]} is not a root of an earlier block "
-                                   f"(follow committed tip {ftip[0]}, same chain)")
-                checked += 1
-            for pool in ("orchard", "sapling", "sprout"):
-                skipped[pool] += len(set(t["anchors"][pool]))
-    sk = ", ".join(f"{k} {v}" for k, v in skipped.items() if v)
-    log(f"  anchors: Ironwood {checked}/{checked} PASS" + (f"; SKIPPED: {sk}" if sk else ""))
+                        fresh, ftip = _follow_roots()
+                        for r, rh in fresh.items():  # follow's committed view wins over the cache
+                            _ROOTS[r] = rh
+                        # same chain: follow's tip hash is our verified hash at that height (follow ahead of
+                        # our verified headers: its chain is the one tiphdr is about to extend; trusted)
+                        on_chain = ftip is not None and (idx is None or ftip[0] >= idx.n or idx.display(ftip[0]) == ftip[1])
+                        if a not in _ROOTS or _ROOTS[a] >= h:
+                            if ftip is None or ftip[0] < h - 1 or not on_chain:
+                                k = "ironwood (follow behind or on another branch)"
+                                skipped[k] = skipped.get(k, 0) + 1
+                                continue
+                            raise Fail(f"block {h} tx {t['txid']}: Ironwood anchor {a[:16]} is not a root of an earlier block "
+                                       f"(follow committed tip {ftip[0]}, same chain)")
+                    checked += 1
+    try:
+        res = tr.check_anchors(full, after or {}, prev_root or {}) if tr is not None else {
+            p: (0, sum(len(set(t["anchors"][p])) for b in full for t in b["txs"]), "tree not tracked in this instance")
+            for p in ("sprout", "sapling", "orchard")}
+    except T.AnchorFail as e:
+        raise Fail(str(e))
+    if own_iw:
+        n, sk, why = res["ironwood"]
+        parts = [f"Ironwood {n}/{n} PASS" + (f", {sk} SKIPPED ({why})" if sk else "")]
+    else:
+        parts = [f"Ironwood {checked}/{checked} PASS (follow's roots)"]
+    for pool in ("sapling", "orchard", "sprout"):
+        n, sk, why = res[pool]
+        parts.append(f"{pool.capitalize()} {n}/{n} PASS" + (f", {sk} SKIPPED ({why})" if sk else ""))
+    if skipped:
+        parts.append("SKIPPED: " + ", ".join(f"{k} {v}" for k, v in skipped.items()))
+    log("  anchors: " + "; ".join(parts))
+    return res
 
 
 # ------------------------------------------------------------------ main loop
@@ -360,6 +382,9 @@ def main():
                          "last committed group")
     ap.add_argument("--commit-secs", type=int, default=300, help="commit a group at least this often")
     ap.add_argument("--writer-cache-mb", type=int, default=2048, help="SQLite page cache of the writer process")
+    ap.add_argument("--history-from", type=int, default=3428143,
+                    help="run the ZIP 221 header-commitment check (bin/history) from this height (903000: from "
+                         "Heartwood; default: the NU6.3 activation, the epoch of the last checkpoint)")
     ap.add_argument("--addr-index", choices=["defer", "keep"], default="defer",
                     help="defer: below the last checkpoint the RPC-only address index is not maintained; it is "
                          "rebuilt from the UTXO set before the first fully validated window")
@@ -385,6 +410,14 @@ def main():
         st.db.execute("BEGIN IMMEDIATE")  # genesis: every value pool starts at zero (tracked by bin/rules)
         st.put("pools", {n: 0 for n in ("sprout", "sapling", "orchard", "ironwood", "lockbox", "transparent")})
         st.db.execute("COMMIT")
+    # work files per instance (as rules.py since audit F2): note commitment trees (meta "trees";
+    # empty: not tracked) and the ZIP 221 history tree (meta "history")
+    nct = T.Trees(st, WORK / "trees" / STATE.name, log)
+    hist = HI.History(st, WORK / "history" / STATE.name, log)
+    log(f"history: {'state at ' + str(hist.cur['height']) + ' (' + hist.cur['origin'] + ')' if hist.cur else 'no state (starts at the next activation)'}"
+        f"; checked from {args.history_from}")
+    if nct.cur:
+        log("trees: " + "; ".join(f"{p} size {c['size']} root {c['root'][:16]} ({c['origin']})" for p, c in nct.cur.items()))
     assumed_mode = st.get("assumed_state") is not None
     if assumed_mode:
         import assumed
@@ -468,10 +501,17 @@ def main():
                     if r and r[0].hex() == idx.display(h):
                         break
                     h -= 1
+                h2 = HI.window_start_below(st, h) if hist.cur is not None else h
+                if h2 != h:  # keep the ZIP 221 state: roll back to the start of a window (the blocks
+                    # between are on the main chain; they are downloaded and validated again)
+                    log(f"  history: rolling back to {h2} instead (the ZIP 221 state before {h2 + 1} is in its undo data)")
+                    h = h2
                 log(f"REORG: tip {tip['height']} is no longer on the verified header chain; rolling back to {h}")
                 st.rollback_to(h)
                 tip = st.tip()
                 pools_cur = st.get("pools")
+                nct.reload()
+                hist.reload()
                 for p in SPOOL.glob("*.blk"):  # blocks of the abandoned branch
                     p.unlink()
                 continue
@@ -518,6 +558,15 @@ def main():
                         made.add((t["txid"], k))
             st.prefetch(want)
             t_pre = time.time() - tr
+            raw = dict(recs)
+            # note commitment trees (Bend): per-block roots, pre-Heartwood header check, undo state
+            prev_root = {p: c["root"] for p, c in nct.cur.items()}
+            tt = time.time()
+            try:
+                after = nct.advance(blocks, raw, recs[0][0])
+            except T.AnchorFail as e:
+                raise Fail(str(e))
+            t_trees = time.time() - tt
             full = [b for b in blocks if b["height"] > last_cp]
             if full:
                 if not st.addr_index:
@@ -525,8 +574,9 @@ def main():
                     ta = time.time()
                     st.build_addr_index()
                     log(f"  address index rebuilt from the UTXO set ({time.time() - ta:.0f} s)")
-                anchor_checks(full, st, log, idx)
-            raw = dict(recs)
+                tt = time.time()
+                anchor_checks(full, st, log, idx, nct, after, prev_root)
+                t_trees += time.time() - tt
             cp_part = [b for b in blocks if b["height"] <= last_cp]
             extra = {}
             if cp_part:
@@ -554,6 +604,20 @@ def main():
                 log(f"  full validation {full[0]['height']}..{full[-1]['height']}: every consensus rule PASS "
                     f"(turnstile {rs['turnstile']}); hooks: {rs['hooks']}")
                 extra.update(e2)
+            if nct.cur:
+                extra["trees"] = {p: dict(c) for p, c in nct.cur.items()}
+            t_hist = 0.0
+            if blocks[-1]["height"] >= args.history_from:
+                tt = time.time()
+                try:
+                    hs = hist.run([b for b in blocks if b["height"] >= args.history_from], raw, after, recs[0][0])
+                except HI.HistoryFail as e:
+                    raise Fail(str(e))
+                t_hist = time.time() - tt
+                log(f"  history (ZIP 221): {hs['checked']} MATCH" + (f", {hs['skipped']} SKIPPED ({hs['why']})" if hs["skipped"] else "")
+                    + (f", {hs['n/a']} n/a (pre-Heartwood)" if hs.get("n/a") else "")
+                    + f"  [trees+anchors {t_trees:.2f} s, history {t_hist:.2f} s]")
+                extra["history"] = hist.cur
             for b in blocks:  # per-block pools go into the block index (rollback restores them)
                 pb = extra.get("pools_by_height", {})
                 if b["height"] in pb:

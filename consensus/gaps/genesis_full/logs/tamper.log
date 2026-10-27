@@ -1,0 +1,25 @@
+ok   A sprout: 317275 roots; 25 random real roots (heights 29920..828788): valid in h+1 25/25, rejected in h 25/25, in h-5 25/25, random rejected 25/25
+ok   A sapling: 1100060 roots; 25 random real roots (heights 428269..2877436): valid in h+1 25/25, rejected in h 25/25, in h-5 25/25, random rejected 25/25
+ok   A orchard: 583276 roots; 25 random real roots (heights 1708990..3453445): valid in h+1 25/25, rejected in h 25/25, in h-5 25/25, random rejected 25/25
+ok   A ironwood: 66415 roots; 25 random real roots (heights 3430650..3531178): valid in h+1 25/25, rejected in h 25/25, in h-5 25/25, random rejected 25/25
+ok   B sapling anchor = old real root (h 419212): PASS
+ok   B sapling anchor = random: FAIL
+ok   B orchard anchor = old real root (h 1687209): PASS
+ok   B orchard anchor = random: FAIL
+ok   B ironwood anchor = old real root (h 3428154): PASS
+ok   B ironwood anchor = random: FAIL
+ok   C sprout tree before 3,522,890 rebuilt in Bend from the leaf-log prefix: root 38000c369119415e (after 3522155, 1547328 leaves)
+ok   C real JoinSplits 3,522,890..892: 4 JoinSplits, anchors PASS (4, 0, '')
+ok   C block 3522890 tx 11 js 0 anchor := random: FAIL (block 3522890 tx 11: Sprout anchor e91457db7aa068f1 is neither a root of an earlier block nor an interstitial root of th)
+ok   C block 3522890 tx 11 js 0 anchor := root after its own block: FAIL (block 3522890 tx 11: Sprout anchor 24a60dd332a978d0 is neither a root of an earlier block nor an interstitial root of th)
+ok   C block 3522891 tx 1 js 0 anchor := random: FAIL (block 3522891 tx 1: Sprout anchor 32c32444a48c1d5c is neither a root of an earlier block nor an interstitial root of the)
+ok   C block 3522891 tx 1 js 0 anchor := root after its own block: FAIL (block 3522891 tx 1: Sprout anchor 3cb35e86f2978ff6 is neither a root of an earlier block nor an interstitial root of the)
+ok   C block 3522892 tx 1 js 0 anchor := random: FAIL (block 3522892 tx 1: Sprout anchor b16107f1be437c7b is neither a root of an earlier block nor an interstitial root of the)
+ok   C block 3522892 tx 1 js 0 anchor := root after its own block: FAIL (block 3522892 tx 1: Sprout anchor 3975b48866d6cb46 is neither a root of an earlier block nor an interstitial root of the)
+ok   C block 3522892 tx 3 js 0 anchor := random: FAIL (block 3522892 tx 3: Sprout anchor 7c5d42dc0f877ae3 is neither a root of an earlier block nor an interstitial root of the)
+ok   C block 3522892 tx 3 js 0 anchor := root after its own block: FAIL (block 3522892 tx 3: Sprout anchor 3975b48866d6cb46 is neither a root of an earlier block nor an interstitial root of the)
+ok   D ZIP 221 3,522,000..3,522,019 from the seed with genesis-built roots: 20 MATCH
+ok   D sapling root after 3522013 altered: FAIL block 3522014: ZIP 221 header commitment MISMATCH a2be40ea46eca3b8ace6e51d35b6603b6ae4c9373c118be15d28400f01ce
+ok   D orchard root after 3522004 altered: FAIL block 3522005: ZIP 221 header commitment MISMATCH 14902bdc1bad4996371724e65dd482496afb6958978110ff0f2e3fe67c42
+ok   D ironwood root after 3522006 altered: FAIL block 3522007: ZIP 221 header commitment MISMATCH 75575718171551606230e09abd5cc6f49e2ccb5386be256351c716158668
+RESULT 24/24 as expected

@@ -23,7 +23,7 @@ ctx.bin layout (all integers u32 little-endian):
                 (coinbase input excluded): value lo | value hi | height | from-coinbase |
                 script length | scriptPubKey bytes          (L = byte length after L)
 """
-import json, os, re, struct, subprocess, time
+import json, os, re, shutil, struct, subprocess, time
 from pathlib import Path
 
 import headers
@@ -32,7 +32,11 @@ import store as S
 HERE = Path(__file__).resolve().parent
 BIN = HERE / "bin"
 HOOKS = HERE / "hooks"
-WORK = HERE / "work" / "rules"
+# Per instance: the genesis (state/) and tip (state-tip/) syncs run from the same code dir and
+# used to share work/rules/hooks/<name>/list.txt and the hooks' batch files (audit F2).
+WORK = HERE / "work" / "rules" / Path(os.environ.get("ZEBEND_STATE", HERE / "state")).name
+RULES_TIMEOUT = int(os.environ.get("ZEBEND_RULES_TIMEOUT", 900))   # s per bin/rules part (<= 8 MB)
+HOOK_TIMEOUT = int(os.environ.get("ZEBEND_HOOK_TIMEOUT", 3600))    # s per hook call (one window)
 HDR = 1487
 POOL_NAMES = ["sprout", "sapling", "orchard", "ironwood", "lockbox", "transparent", "nsm"]
 # rules.bend with NU7 (consensus/nu7) reads/prints 7 pools; ZEBEND_RULES_BIN lets the
@@ -43,6 +47,11 @@ HOOK_NAMES = ["transparent", "sapling", "orchard"]
 
 class RuleFail(S.StateError):
     """A block violates a consensus rule (sync.py reports it like a state error: not committed)."""
+
+
+class VerifierError(RuleFail):
+    """A verifier could not give a verdict (timeout, crash, empty output, missing verdict lines).
+    Not a statement about the block: sync.py retries the window instead of halting on it."""
 
 
 # ------------------------------------------------------------------ inputs Bend needs
@@ -182,14 +191,20 @@ def _run_part(blocks, ctx, raw_by_height, tag):
     wp, cp = WORK / f"win_{tag}.bin", WORK / f"ctx_{tag}.bin"
     wp.write_bytes(window_bytes(blocks, raw_by_height))
     cp.write_bytes(ctx)
-    for _ in range(3):  # empty output (a known rare Bend runtime issue) is rerun
-        r = subprocess.run([str(RULES_BIN), str(wp), str(cp)] + gated_flag(blocks), capture_output=True, text=True)
+    r = None
+    for _ in range(3):  # empty output (a known rare Bend runtime issue) or a hang is rerun
+        try:
+            r = subprocess.run([str(RULES_BIN), str(wp), str(cp)] + gated_flag(blocks), capture_output=True, text=True,
+                               timeout=RULES_TIMEOUT)
+        except subprocess.TimeoutExpired:
+            r = subprocess.CompletedProcess([], -9, "", f"bin/rules timed out after {RULES_TIMEOUT} s")
+            continue
         if r.stdout.strip():
             break
     res = parse_rules(r.stdout)
     missing = [b["height"] for b in blocks if "verdict" not in res.get(b["height"], {})]
     if missing:
-        raise RuleFail(f"bin/rules gave no verdict for {missing[:3]}; stderr {r.stderr.strip()[-300:]!r}")
+        raise VerifierError(f"bin/rules gave no verdict for {missing[:3]}; stderr {r.stderr.strip()[-300:]!r}")
     wp.unlink(missing_ok=True)
     cp.unlink(missing_ok=True)
     return res
@@ -298,8 +313,12 @@ def run_hooks(blocks, st, raw_by_height, log):
     as passed."""
     jobs = hook_jobs(blocks)
     summary = {}
-    made = {}
     by_h = {b["height"]: b for b in blocks}
+    # outputs created in this window (an input may spend one: it is not in the store yet), and
+    # each block's tx slices once (was: a scan of the whole window per such input, and a copy of
+    # the block per item)
+    made = {(t["txid"], k): (v, sc) for b in blocks for t in b["txs"] for (k, v, sc) in t["outs"]}
+    slices = {}
     for name, items in jobs.items():
         exe = HOOKS / name
         if not items:
@@ -309,22 +328,20 @@ def run_hooks(blocks, st, raw_by_height, log):
             summary[name] = {"pass": 0, "skipped": len(items)}
             continue
         d = WORK / "hooks" / name
+        shutil.rmtree(d, ignore_errors=True)  # last window's files (they were never deleted: 2.2 GB)
         d.mkdir(parents=True, exist_ok=True)
         lst = []
         for h, i in items:
             b = by_h[h]
-            txs = tx_slices(raw_by_height[h], [t["size"] for t in b["txs"]])
+            if h not in slices:
+                slices[h] = tx_slices(raw_by_height[h], [t["size"] for t in b["txs"]])
+            txs = slices[h]
             t = b["txs"][i]
             spent = []
             for (ptxid, vout, _seq) in t["ins"]:
                 u = made.get((ptxid, vout)) or st.utxo(ptxid, vout)
-                if u is None:
-                    # an earlier tx of the same block: look it up in the window
-                    for bb in blocks:
-                        for tt in bb["txs"]:
-                            if tt["txid"] == ptxid:
-                                o = tt["outs"][vout]
-                                u = (o[1], o[2], bb["height"], tt["cb"])
+                if u is None:  # block_records raised already; never index None
+                    raise RuleFail(f"block {h} tx {t['txid']}: spends {ptxid}:{vout}, which is not an unspent output")
                 spent.append((u[0], u[1]))
             base = d / f"{h}_{i}"
             base.with_suffix(".tx").write_bytes(txs[i])
@@ -333,7 +350,10 @@ def run_hooks(blocks, st, raw_by_height, log):
                                                              "version": t["v"], "branch_id": t["br"]}))
             lst.append(str(base))
         (d / "list.txt").write_text("\n".join(lst) + "\n")
-        r = subprocess.run([str(exe), str(d / "list.txt")], capture_output=True, text=True)
+        try:
+            r = subprocess.run([str(exe), str(d / "list.txt")], capture_output=True, text=True, timeout=HOOK_TIMEOUT)
+        except subprocess.TimeoutExpired:
+            raise VerifierError(f"hook {name}: timed out after {HOOK_TIMEOUT} s on {len(items)} tx")
         got = {(int(a), int(b)): (v, rest) for a, b, v, rest in
                re.findall(r"^verdict (\d+) (\d+) (PASS|FAIL|SKIPPED) ?(.*)$", r.stdout, re.M)}
         bad = [(k, v) for k, v in got.items() if v[0] == "FAIL"]
@@ -341,7 +361,7 @@ def run_hooks(blocks, st, raw_by_height, log):
             raise RuleFail(f"hook {name}: {bad[:3]}")
         miss = [k for k in items if k not in got]
         if miss:
-            raise RuleFail(f"hook {name}: no verdict for {miss[:3]} (exit {r.returncode}: {r.stderr.strip()[-200:]!r})")
+            raise VerifierError(f"hook {name}: no verdict for {miss[:3]} (exit {r.returncode}: {r.stderr.strip()[-200:]!r})")
         # SKIPPED <reason>: the hook could not check this item (e.g. a construction it does not
         # implement). Counted as skipped, never as passed; the window is not rejected for it.
         skipped = [(k, v[1]) for k, v in got.items() if v[0] == "SKIPPED" and k in set(items)]

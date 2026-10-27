@@ -5,8 +5,8 @@ the store, and compares what Bend prints:
   bin/sapling_frontier  Sapling tree (MerkleCRH^Sapling, Pedersen; sapling/tree/stree.bend)
   bin/orchard_frontier  Orchard and Ironwood trees (MerkleCRH^Orchard, Sinsemilla; fast/state32,
                         as follow uses for Ironwood). The Ironwood tree feeds the ZIP 221 node
-                        data (history.py); Ironwood anchors are still checked by sync.py against
-                        follow's Bend roots.
+                        data (history.py) and, when tracked, decides Ironwood anchors (sync.py
+                        falls back to follow's Bend roots only for an instance without it).
   bin/sprout_js         Sprout tree (SHA256Compress) + the JoinSplit anchor rule with
                         zcashd's interstitial trees (Bend decides validity)
   bin/sprout            Sprout tree from a leaf prefix (the frontier of an older anchor)
@@ -267,7 +267,7 @@ class Trees:
     def check_anchors(self, full, after, prev_root):
         """Raise AnchorFail on an invalid anchor; returns {pool: (checked, skipped, why)}."""
         out = {}
-        for pool in ("sapling", "orchard"):
+        for pool in ("sapling", "orchard") + (("ironwood",) if "ironwood" in self.cur else ()):
             n = sk = old = 0
             first = {}
             if pool in self.cur:

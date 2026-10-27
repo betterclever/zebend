@@ -1,0 +1,180 @@
+"""Parallel note commitment tree build (Sapling, Orchard, Ironwood) for trees_init.py, in Bend.
+
+Copied from fullnode/snapshot/ptree.py (the snapshot producer's build, by the snapshot agent;
+byte-identical roots and frontiers to the sequential build on test prefixes), adapted to this
+directory: no snap.py import; the per-block pushes use the same tools as trees.py
+(bin/sapling_frontier, bin/orchard_frontier), which also have the seed mode used below.
+
+The leaves are cut into segments of whole blocks; every segment runs in its own Bend process:
+  start frontier of segment k (leaf offset s): seed mode of the same tool: the frontier of a
+      tree of q*2^16 + r leaves from q level-16 CHUNK ROOTS plus the r leaves of the partial
+      chunk (read from this instance's leaf log);
+  then the tool pushes the segment's leaves block by block from that frontier: one root per
+      block + end frontier.
+Chunk roots are HINTS (earlier Bend runs: sapling/data/bend_chunk_roots.bin,
+consensus/orchard/logs/chunks_*.log; computed in Bend here otherwise). They are not trusted:
+CONTINUITY must hold at every segment boundary (segment k's end frontier, pushed from leaves ==
+segment k+1's start frontier, built from hints). By induction from segment 0 (empty start)
+every start frontier is the frontier of this instance's own leaf log, so every per-block root is
+exactly what the one-process build prints. A wrong hint fails continuity: the build refuses.
+"""
+import re, struct, subprocess, time
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+REPO = next(d for d in HERE.parents if (d / "sapling/data").is_dir())  # bend-zcash/
+BIN = HERE / "bin"
+CH = 1 << 16
+SEG_LEAVES = 1 << 18          # leaves per segment (cut at the first block that crosses a chunk boundary after this)
+SEG_BLOCKS = 20000            # blocks per segment (bounds the Bend output held in memory)
+TOOL = {"sapling": BIN / "sapling_frontier", "orchard": BIN / "orchard_frontier", "ironwood": BIN / "orchard_frontier"}
+DEPTH = 32
+
+
+class PtreeError(Exception):
+    pass
+
+
+def _bend(args, tries=3):
+    for _ in range(tries):  # an empty output (rare Bend runtime issue under load) is rerun
+        r = subprocess.run([str(a) for a in args], capture_output=True, text=True)
+        if r.stdout.strip():
+            return r.stdout
+    raise PtreeError(f"Bend produced no output: {' '.join(map(str, args))[:200]} {r.stderr[-300:]}")
+
+
+def levels_text(levels):
+    return "".join((l or "-") + "\n" for l in levels)
+
+
+def parse_levels(text, depth=DEPTH):
+    lv = [l.strip() if l.strip() not in ("-", "") else None for l in text.splitlines()][:depth]
+    if len(lv) != depth:
+        raise PtreeError(f"frontier with {len(lv)} levels")
+    return lv
+
+
+class LeafFile:
+    def __init__(self, path):
+        self.path = path
+
+    def __getitem__(self, sl):
+        with open(self.path, "rb") as f:
+            f.seek(sl.start)
+            return f.read(sl.stop - sl.start)
+
+
+def hint_roots(pool):
+    """{chunk index: root bytes} from earlier Bend runs (untrusted; checked by continuity)."""
+    out = {}
+    try:
+        if pool == "sapling":
+            d = (REPO / "sapling/data/bend_chunk_roots.bin").read_bytes()
+            out = {k: d[k * 32:k * 32 + 32] for k in range(len(d) // 32)}
+        elif pool == "orchard":
+            for p in sorted((REPO / "consensus/orchard/logs").glob("chunks_*.log")):
+                for k, r in re.findall(r"^chunk (\d+) subtree root ([0-9a-f]{64}) MATCH$", p.read_text(), re.M):
+                    out[int(k)] = bytes.fromhex(r)
+    except OSError:
+        pass
+    return out
+
+
+def segments(blocks):
+    """[(first block idx, end block idx (excl), first leaf, end leaf)]"""
+    segs, i0, s, off, nb = [], 0, 0, 0, 0
+    for j, (_h, c) in enumerate(blocks):
+        end = off + c
+        nb += 1
+        crossed = end // CH != off // CH
+        if nb >= SEG_BLOCKS or (end - s >= SEG_LEAVES and crossed):
+            segs.append((i0, j + 1, s, end))
+            i0, s, nb = j + 1, end, 0
+        off = end
+    if i0 < len(blocks):
+        segs.append((i0, len(blocks), s, off))
+    return segs
+
+
+def build(pool, leaf_path, blocks, work, ex, log):
+    """blocks: [(height, count)] of the pool's leaf log from genesis (a prefix of it is fine).
+    Returns (per-block roots [hex], final levels [hex|None], stats)."""
+    tool = TOOL[pool]
+    lf = LeafFile(leaf_path)
+    work = Path(work) / f"pt_{pool}"
+    work.mkdir(parents=True, exist_ok=True)
+    t0 = time.time()
+    segs = segments(blocks)
+    N = segs[-1][3] if segs else 0
+    need = max((s // CH for _, _, s, _ in segs), default=0)
+    hints = hint_roots(pool)
+    have = {k: hints[k] for k in range(need) if k in hints}
+    missing = [k for k in range(need) if k not in have]
+
+    def chunk_root(k):
+        d = work / f"c{k}"
+        fin, lfp, cf, fo = (Path(f"{d}.{x}") for x in ("in", "leaves", "counts", "out"))
+        fin.write_text(levels_text([None] * DEPTH))
+        lfp.write_bytes(lf[k * CH * 32:(k + 1) * CH * 32])
+        cf.write_bytes(struct.pack("<I", CH))
+        _bend([tool, fin, lfp, cf, fo])
+        lv = parse_levels(fo.read_text())
+        for x in (fin, lfp, cf, fo):
+            x.unlink(missing_ok=True)
+        if [i for i, v in enumerate(lv) if v] != [16]:
+            raise PtreeError(f"{pool} chunk {k}: frontier after 2^16 leaves is not one level-16 node")
+        return k, bytes.fromhex(lv[16])
+
+    if missing:
+        log(f"  {pool}: {len(have)} chunk-root hints, computing {len(missing)} chunk roots in Bend")
+        for k, r in ex.map(chunk_root, missing):
+            have[k] = r
+    croots = b"".join(have[k] for k in range(need))
+    t1 = time.time()
+    done = [0]
+
+    def seg(k):
+        i0, i1, s, e = segs[k]
+        d = work / f"s{k}"
+        if s == 0:
+            start = [None] * DEPTH
+        else:
+            q = s // CH
+            rp, pp, so = (Path(f"{d}.{x}") for x in ("croots", "partial", "start"))
+            rp.write_bytes(croots[:q * 32])
+            pp.write_bytes(lf[q * CH * 32:s * 32])
+            out = _bend([tool, rp, pp, so])
+            if "seed chunks" not in out:
+                raise PtreeError(f"{pool} segment {k}: seed mode failed: {out[-200:]}")
+            start = parse_levels(so.read_text())
+            for x in (rp, pp, so):
+                x.unlink(missing_ok=True)
+        fin, lfp, cf, fo = (Path(f"{d}.{x}") for x in ("in", "leaves", "counts", "out"))
+        fin.write_text(levels_text(start))
+        lfp.write_bytes(lf[s * 32:e * 32])
+        cf.write_bytes(b"".join(struct.pack("<I", c) for _, c in blocks[i0:i1]))
+        out = _bend([tool, fin, lfp, cf, fo])
+        got = [l.split() for l in out.splitlines() if l.startswith("root ")]
+        if len(got) != i1 - i0 or [int(g[1]) for g in got] != list(range(i1 - i0)):
+            raise PtreeError(f"{pool} segment {k}: {len(got)} roots for {i1 - i0} blocks")
+        end = parse_levels(fo.read_text())
+        for x in (fin, lfp, cf, fo):
+            x.unlink(missing_ok=True)
+        done[0] += 1
+        if done[0] % 20 == 0:
+            el = time.time() - t1
+            log(f"  {pool}: {done[0]}/{len(segs)} segments, {el:.0f} s, eta {el / done[0] * (len(segs) - done[0]):.0f} s")
+        return start, end, [g[3] for g in got]
+
+    res = list(ex.map(seg, range(len(segs))))
+    bad = [k for k in range(len(segs) - 1) if res[k][1] != res[k + 1][0]]
+    if bad:
+        raise PtreeError(f"{pool}: continuity FAILS at {len(bad)} segment boundaries (first after segment {bad[0]}, "
+                         f"leaf {segs[bad[0]][3]}): a chunk-root hint is wrong")
+    roots = [r for x in res for r in x[2]]
+    stats = {"leaves": N, "blocks": len(blocks), "segments": len(segs),
+             "continuity": f"{len(segs) - 1}/{len(segs) - 1} boundaries equal",
+             "chunk_roots": {"hints_used": len(have) - len(missing), "computed": len(missing)},
+             "secs": {"chunk_roots": round(t1 - t0, 1), "segments": round(time.time() - t1, 1)}}
+    log(f"  {pool}: {stats}")
+    return roots, res[-1][1], stats

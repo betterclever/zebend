@@ -1,0 +1,26 @@
+23:10:31 history: state at 3532556 (seeded at 3,521,999 (consensus/gaps/history/data/seed_3521999.st, NU6.3-epoch tree, validated by header 3,522,000); rolled forward with this instance genesis-built tree roots); checked from 3428143
+23:10:31 trees: sprout size 1547344 root 92ea4f11169eeba7 (built from this instance's leaf logs since genesis); sapling size 73990534 root 8f995938c0e447a7 (built from this instance's leaf logs since genesis); orchard size 50478799 root 23959b6971f5491d (built from this instance's leaf logs since genesis); ironwood size 947448 root cdf34ea28b553635 (built from this instance's leaf logs since genesis)
+23:10:31 sync: state tip 3532556, last checkpoint 3522460, verified headers to 3532655, 16 Bend jobs
+23:10:32   anchors: Ironwood 259/259 PASS; Sapling 6/6 PASS; Orchard 4/4 PASS; Sprout 0/0 PASS
+23:10:33   full validation 3532557..3532649: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 508, 'skipped': 0}", 'sapling': "PASS {'pass': 14, 'skipped': 0}", 'orchard': "PASS {'pass': 260, 'skipped': 0}"}
+23:10:34   history (ZIP 221): 93 MATCH  [trees+anchors 0.65 s, history 0.50 s]
+23:10:34 tip 3532649  window 93 blocks 3.1 MB in 2.7 s (waited for bend 0.1 s [bend 0.1 s, overlapped]; lookups 0.0 s, rules 2.6 s; resolve 0.0 s)  avg 34.8 blocks/s 1.14 MB/s  rules parts 15 reruns 0
+23:10:34 committed tip 3532649: 1 windows, 3 MB in one transaction (writer 0.1 s)
+23:10:34 stopped at committed tip 3532649: 93 blocks 3.1 MB in 3 s, 32.9 blocks/s 1.08 MB/s
+23:10:34 history: state at 3532649 (seeded at 3,521,999 (consensus/gaps/history/data/seed_3521999.st, NU6.3-epoch tree, validated by header 3,522,000); rolled forward with this instance genesis-built tree roots); checked from 3428143
+23:10:34 trees: sprout size 1547344 root 92ea4f11169eeba7 (built from this instance's leaf logs since genesis); sapling size 73990562 root fe45faae864efe55 (built from this instance's leaf logs since genesis); orchard size 50478809 root 6387db5dd72e918c (built from this instance's leaf logs since genesis); ironwood size 948042 root 467934c91cc97500 (built from this instance's leaf logs since genesis)
+23:10:34 sync: state tip 3532649, last checkpoint 3522460, verified headers to 3532655, 16 Bend jobs
+23:10:34   anchors: Ironwood 2/2 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+23:10:34   full validation 3532650..3532650: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 1, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 2, 'skipped': 0}"}
+23:10:34   history (ZIP 221): 1 MATCH  [trees+anchors 0.03 s, history 0.01 s]
+23:10:34 tip 3532650  window 1 blocks 0.0 MB in 0.3 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.3 s; resolve 0.0 s)  avg 3.5 blocks/s 0.06 MB/s  rules parts 1 reruns 0
+23:10:34   anchors: Ironwood 2/2 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+23:10:35   full validation 3532651..3532651: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 2, 'skipped': 0}"}
+23:10:35   history (ZIP 221): 1 MATCH  [trees+anchors 0.02 s, history 0.01 s]
+23:10:35 tip 3532651  window 1 blocks 0.0 MB in 0.1 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.1 s; resolve 0.0 s)  avg 5.2 blocks/s 0.10 MB/s  rules parts 2 reruns 0
+23:10:35   anchors: Ironwood 0/0 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+23:10:35   full validation 3532652..3532652: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 0, 'skipped': 0}"}
+23:10:35   history (ZIP 221): 1 MATCH  [trees+anchors 0.00 s, history 0.01 s]
+23:10:35 tip 3532652  window 1 blocks 0.0 MB in 0.0 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.0 s; resolve 0.0 s)  avg 7.6 blocks/s 0.11 MB/s  rules parts 3 reruns 0
+23:10:35 committed tip 3532652: 3 windows, 0 MB in one transaction (writer 0.0 s)
+23:10:35 stopped at committed tip 3532652: 3 blocks 0.0 MB in 0 s, 7.4 blocks/s 0.10 MB/s

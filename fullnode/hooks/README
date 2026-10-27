@@ -16,18 +16,26 @@ The hook prints exactly one line per item:
 
     verdict <height> <txidx> PASS
     verdict <height> <txidx> FAIL <reason>
+    verdict <height> <txidx> SKIPPED <reason>
 
 Any FAIL, or an item without a verdict line, rejects the window (nothing is committed).
+SKIPPED <reason> means the hook could not check that item (a construction it does not
+implement): it is counted as skipped, never as passed, and does not reject the window. rules.py
+records the counts per reason in the window's meta (rules.hooks, "skipped_reasons") and logs
+them. A hook must use it only for items it genuinely cannot check, never for a failed check.
 If hooks/<name> does not exist (or is not executable), rules.py reports
 "<name>: SKIPPED (component pending) for N tx" and records it in the window's meta
 (rules.hooks) — it is never counted as a pass.
 
 Which transactions go to which hook (rules.hook_jobs):
   transparent  every tx with transparent inputs: scripts, ECDSA, ZIP 243/244 sighash
-               (component: transparent/)                              -> PENDING (absent)
-  sapling      every tx with Sapling spends/outputs or Sprout JoinSplits: Groth16 / BCTV14
-               proofs, spend-auth and binding sigs, joinSplitSig
-               (components: sapling/, sapling/groth16/)               -> PENDING (absent)
+               (component: transparent/)                              -> PRESENT (hooks/transparent)
+  sapling      every tx with Sapling spends/outputs or Sprout JoinSplits: Groth16 proofs
+               (Sapling spends/outputs and v4 JoinSplits), spend-auth and binding sigs,
+               joinSplitSig (Ed25519, ZIP 215)
+               (components: sapling/, sapling/groth16/, consensus/gaps/sprout,
+               consensus/gaps/ed25519)                                -> PRESENT (hooks/sapling)
+               v2/v3 JoinSplits (BCTV14, pre-Sapling) -> SKIPPED bctv14-joinsplit-v<n>
   orchard      every tx with an Orchard or Ironwood bundle (coinbase included): RedPallas
                spend-auth + binding sigs and Halo 2 proofs, via follow/bin/txx and
                follow/bin/halo2_batch (+ halo2_one to pinpoint)       -> PRESENT (hooks/orchard)

@@ -1,0 +1,40 @@
+tip 3532667; asked rollback to 3532655, aligned to 3532646; after rollback: tip 3532646, history state at 3532646, tree sizes {'sprout': 1547344, 'sapling': 73990560, 'orchard': 50478809, 'ironwood': 948021}
+23:30:04 history: state at 3532646 (seeded at 3,521,999 (consensus/gaps/history/data/seed_3521999.st, NU6.3-epoch tree, validated by header 3,522,000); rolled forward with this instance genesis-built tree roots); checked from 3428143
+23:30:04   anchors: Ironwood 49/49 PASS; Sapling 1/1 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+23:30:05   history (ZIP 221): 14 MATCH  [trees+anchors 0.19 s, history 0.05 s]
+23:30:05 stopped at committed tip 3532660: 14 blocks 0.6 MB in 1 s, 20.7 blocks/s 0.84 MB/s
+23:30:05 history: state at 3532660 (seeded at 3,521,999 (consensus/gaps/history/data/seed_3521999.st, NU6.3-epoch tree, validated by header 3,522,000); rolled forward with this instance genesis-built tree roots); checked from 3428143
+23:30:05   anchors: Ironwood 0/0 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+23:30:05   history (ZIP 221): 2 MATCH  [trees+anchors 0.00 s, history 0.00 s]
+23:30:05 stopped at committed tip 3532662: 2 blocks 0.0 MB in 0 s, 42.0 blocks/s 0.07 MB/s
+23:30:05 history: state at 3532662 (seeded at 3,521,999 (consensus/gaps/history/data/seed_3521999.st, NU6.3-epoch tree, validated by header 3,522,000); rolled forward with this instance genesis-built tree roots); checked from 3428143
+23:30:05   anchors: Ironwood 9/9 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+23:30:05   history (ZIP 221): 2 MATCH  [trees+anchors 0.03 s, history 0.01 s]
+23:30:05 stopped at committed tip 3532664: 2 blocks 0.1 MB in 0 s, 9.8 blocks/s 0.50 MB/s
+23:30:06 history: state at 3532664 (seeded at 3,521,999 (consensus/gaps/history/data/seed_3521999.st, NU6.3-epoch tree, validated by header 3,522,000); rolled forward with this instance genesis-built tree roots); checked from 3428143
+23:30:06   anchors: Ironwood 9/9 PASS; Sapling 1/1 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+23:30:06   history (ZIP 221): 3 MATCH  [trees+anchors 0.12 s, history 0.01 s]
+23:30:06 stopped at committed tip 3532667: 3 blocks 0.1 MB in 0 s, 9.2 blocks/s 0.27 MB/s
+  utxo                     equal  (27285521, '413b11ed915630da')
+  nf                       equal  (55122589, 'c446abd4826e02a9')
+  tx                       equal  (18740497, 'bed5e2d521667d41')
+  addr                     equal  (27285521, '3d18e655ae837980')
+  blk                      equal  (3532668, '6350a982a8b8ff05')
+  anchor                   equal  (2067122, '0b63498df1a05d94')
+  undo                     equal  (600, '6880a5667601c4df')
+  tip                      equal  {'height': 3532667, 'hash': '00000000003c32d8cbe851c3e67e6a4bcf0b3527c
+  pools                    equal  {'sprout': 2226334162335, 'sapling': 41988609644119, 'orchard': 345286
+  leaf_lengths             equal  {'sprout': [49515008, 2538200], 'sapling': [2367698176, 8800592], 'orc
+  audit_disagreements      equal  None
+  addr_deferred            equal  False
+  leaves/ironwood.bin      equal  775ed6acd0cb8ea2
+  leaves/ironwood.blk      equal  0c32edbc39bf773b
+  leaves/orchard.bin       equal  c99d5a08b4cada62
+  leaves/orchard.blk       equal  3fc1da3446542658
+  leaves/sapling.bin       equal  801d3899972c6640
+  leaves/sapling.blk       equal  7c745a8d75efd2b6
+  leaves/sprout.bin        equal  6aeb8f4093555a79
+  leaves/sprout.blk        equal  e2b77fa1cfcc6bc7
+  trees                    equal  1047681fa96c4242 {'sprout': (1547344, '92ea4f11169eeba7'), 'sapling': 
+  history                  equal  61a0f7d8859cb4f3 3532667
+RESULT PASS: identical state digest

@@ -13,7 +13,7 @@ cmp -s $G/fullnode/orig/hooks_README $L/hooks/README || echo "WARNING: live hook
 cmp -s $G/fullnode/orig/hooks_sapling $L/hooks/sapling || echo "WARNING: live hooks/sapling changed"
 diff -u --label a/fullnode/hooks/README --label b/fullnode/hooks/README $G/fullnode/orig/hooks_README $G/fullnode/hooks/README > hooks_README.diff || true
 diff -u --label a/fullnode/hooks/sapling --label b/fullnode/hooks/sapling $G/fullnode/orig/hooks_sapling $G/fullnode/hooks/sapling > hooks_sapling.diff || true
-for f in trees.py trees_init.py history.py history_init.py; do
+for f in trees.py trees_init.py history.py history_init.py ptree.py trees_transfer.py; do
   [ -f $G/fullnode/$f ] && (diff -u --label a/fullnode/$f --label b/fullnode/$f /dev/null $G/fullnode/$f > new_$f.diff || true)
 done
 wc -l *.diff
