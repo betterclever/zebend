@@ -1,0 +1,17 @@
+{
+ "global": {"root": "/Users/betterclever/projects/zecathon/bend-zcash", "dir": "/Users/betterclever/projects/zecathon/bend-zcash/ops/supervisor",
+            "python": "/opt/homebrew/bin/python3", "disk_min_gb": 40, "mem_min_free_pct": 5,
+            "headers": "fullnode/state/hdr/hashes.bin", "headers_stall_min": 30, "notify": true},
+ "services": [
+  {"name": "sync", "cwd": "fullnode", "argv": ["{python}", "-u", "sync.py"], "log": "fullnode/logs/sync.log",
+   "env": {"BEND_NO_TELEMETRY": "1"}, "watch": ["fullnode/*.py", "fullnode/bin/*", "fullnode/hooks/*"],
+   "progress": {"db": "fullnode/state/chain.sqlite", "headers": "fullnode/state/hdr/hashes.bin", "stall_min": 20}},
+  {"name": "live", "cwd": "fullnode", "argv": ["{python}", "-u", "live.py", "--every", "60"], "log": "fullnode/logs/live.log",
+   "env": {"BEND_NO_TELEMETRY": "1"}},
+  {"name": "rpc", "cwd": "fullnode", "argv": ["{python}", "-u", "rpc.py", "--port", "18233"], "log": "fullnode/logs/rpc.log"},
+  {"name": "mempool", "cwd": "fullnode/mempool", "argv": ["{python}", "-u", "mempool.py", "--state", "../state"], "log": "fullnode/mempool/logs/mempool.log",
+   "env": {"BEND_NO_TELEMETRY": "1"}},
+  {"name": "follow", "argv": ["{python}", "-u", "follow/zebend_follow.py", "--live", "--profile"], "log": "follow/logs/run.log",
+   "env": {"BEND_NO_TELEMETRY": "1"}}
+ ]
+}
