@@ -1,0 +1,11 @@
+# native builds
+*.c
+*.js
+*.gpu
+hash_bench
+tx_bench
+words_t
+read_list
+read_words
+arr_u32_micro
+arr_rec8_micro
