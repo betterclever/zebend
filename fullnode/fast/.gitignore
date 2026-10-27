@@ -1,0 +1,7 @@
+bin/
+base/bin/
+orig/blockdelta
+orig/rules
+bench/mirror/
+state/
+work/

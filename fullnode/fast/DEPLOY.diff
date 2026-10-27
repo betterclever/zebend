@@ -1,0 +1,2011 @@
+--- sync.py	2026-10-27 12:24:29.428313111 +0400
++++ sync.py (new)	2026-10-27 16:22:46.425836083 +0400
+@@ -169,7 +169,8 @@
+                 b = None
+                 continue
+             kv = dict(zip(f[4::2], f[5::2]))
+-            b = {"height": int(f[1]), "hash": f[2], "prev": f[3], "time": int(kv["time"]), "bits": kv["bits"],
++            # gated: blockdelta's node/wire validator accepted this block (else it prints INVALID)
++            b = {"height": int(f[1]), "gated": True, "hash": f[2], "prev": f[3], "time": int(kv["time"]), "bits": kv["bits"],
+                  "size": int(kv["size"]), "ntx": int(kv["txs"]), "header": kv["header"], "merkle": kv["merkle"],
+                  "txs": [], "leaves": {p: [] for p in S.POOLS}}
+             blocks.append(b)
+@@ -367,7 +368,11 @@
+     # into the open transaction of the current commit group. A group (windows up to --commit-mb)
+     # is ONE SQLite transaction; groups commit in order. Windows are resolved against the
+     # committed state plus the overlays of the groups not committed yet (Store.pending).
+-    ex = ThreadPoolExecutor(args.jobs)    # every Bend process (blockdelta, bin/rules parts) runs here
++    ex = ThreadPoolExecutor(args.jobs)    # blockdelta parts (extraction of the next window) run here
++    # bin/rules parts get their own pool: they are on the critical path of the window being
++    # checked and short (~0.2 s each since --gated), so they must not queue behind the next
++    # window's blockdelta parts (measured: 2 s of a 4.3 s spam window was that wait).
++    ex_rules = ThreadPoolExecutor(args.jobs)
+     prep = ThreadPoolExecutor(1)          # extraction of the next window
+     wr = S.Writer(STATE, cache_mb=args.writer_cache_mb)
+     t0, done, nbytes, last_log = time.time(), 0, 0, 0
+@@ -488,7 +493,7 @@
+                 # Checkpointed blocks: the rules run in audit mode. They decide nothing (the checkpoint
+                 # does) but track the value pools from genesis, and any disagreement with the
+                 # canonical chain is a bug in our rules: logged and counted, never hidden.
+-                extra = rules.validate(cp_part, st, raw, log, mode="audit", pools=pools_cur, jobs=args.jobs, ex=ex)
++                extra = rules.validate(cp_part, st, raw, log, mode="audit", pools=pools_cur, jobs=args.jobs, ex=ex_rules)
+                 dis = extra["rules"]["disagreements"]
+                 if dis:
+                     audit_n += len(dis)
+@@ -496,7 +501,7 @@
+                     log(f"  AUDIT: rules disagree with checkpointed blocks: {dis[:3]} (total {audit_n})")
+             if full:
+                 e2 = rules.validate(full, st, raw, log, mode="full", pools=extra.get("pools", pools_cur),
+-                                    jobs=args.jobs, ex=ex)
++                                    jobs=args.jobs, ex=ex_rules)
+                 rs = e2["rules"]
+                 log(f"  full validation {full[0]['height']}..{full[-1]['height']}: every consensus rule PASS "
+                     f"(turnstile {rs['turnstile']}); hooks: {rs['hooks']}")
+@@ -546,6 +551,7 @@
+                 pass
+         wr.close()  # an open (uncommitted) group is rolled back
+         ex.shutdown(wait=True)
++        ex_rules.shutdown(wait=True)
+     el = time.time() - t0
+     if done:
+         log(f"stopped at committed tip {st.tip()['height']}: {done} blocks {nbytes / 1e6:.1f} MB in {el:.0f} s, "
+--- rules.py	2026-10-27 13:04:40.553372117 +0400
++++ rules.py (new)	2026-10-27 14:42:27.022159263 +0400
+@@ -169,13 +169,21 @@
+     return res
+ 
+ 
++def gated_flag(blocks):
++    """bin/rules --gated skips node/wire's validator, which blockdelta already ran on the same
++    bytes: sync.py passes rules only blocks that blockdelta's gate accepted (checkpoint_checks
++    raises on `block <h> INVALID wire`). The wire gate was ~90% of bin/rules' time in the spam
++    era (Jubjub/Pallas point decoding). Blocks that did not come from blockdelta are gated."""
++    return ["--gated"] if blocks and all(b.get("gated") for b in blocks) else []
++
++
+ def _run_part(blocks, ctx, raw_by_height, tag):
+     WORK.mkdir(parents=True, exist_ok=True)
+     wp, cp = WORK / f"win_{tag}.bin", WORK / f"ctx_{tag}.bin"
+     wp.write_bytes(window_bytes(blocks, raw_by_height))
+     cp.write_bytes(ctx)
+     for _ in range(3):  # empty output (a known rare Bend runtime issue) is rerun
+-        r = subprocess.run([str(RULES_BIN), str(wp), str(cp)], capture_output=True, text=True)
++        r = subprocess.run([str(RULES_BIN), str(wp), str(cp)] + gated_flag(blocks), capture_output=True, text=True)
+         if r.stdout.strip():
+             break
+     res = parse_rules(r.stdout)
+--- rules/rules.bend	2026-10-27 13:04:40.548878418 +0400
++++ rules/rules.bend (new)	2026-10-27 16:31:37.838421676 +0400
+@@ -88,8 +88,10 @@
+   Stop{}
+   Rec{h: U32, blen: U32, off: U32}
+ 
++# g: the caller asserts every block of the window already passed node/wire's validator
++# (blockdelta's gate on the same bytes), so the gate is not run again (argument --gated).
+ type Paths is Type:
+-  Paths{w: String, c: String}
++  Paths{w: String, c: String, g: Bool}
+ 
+ type CR is Data:
+   CR{ctx: +List<U32>, co: U32}
+@@ -923,11 +925,18 @@
+     lb : +List<U32> <- read_at(cp, coff, 4)
+     rd_ctx2(coff, lb, cp)
+ 
+-def with_cr(+blk: +List<U32>, +h: U32, cr: CR, p: Pools) -> BW:
++def gate_sel(pre: Bool, +blk: +List<U32>) -> Maybe<&2, U32>:
++  match pre:
++    case True{}:
++      Some{0}
++    case False{}:
++      KB.parse_capped(blk)
++
++def with_cr(+pre: Bool, +blk: +List<U32>, +h: U32, cr: CR, p: Pools) -> BW:
+   CR{+ctx, +co} = cr
+-  BW{gated(KB.parse_capped(blk), h, blk, ctx, p), co}
++  BW{gated(gate_sel(pre, blk), h, blk, ctx, p), co}
+ 
+-def loop(fuel: Nat, st: Hd, r: BW, +wp: String, +cp: String) -> IO(Unit):
++def loop(fuel: Nat, st: Hd, r: BW, +wp: String, +cp: String, +pre: Bool) -> IO(Unit):
+   match fuel st:
+     case 0n _:
+       BW{+b, _} = r
+@@ -943,21 +952,28 @@
+         blk : +List<U32> <- read_at(wp, (off + 1495 : U32), blen)
+         cr : CR <- rd_ctx(cp, coff)
+         nh : +List<U32> <- read_at(wp, next, 1495)
+-        loop(q, head_of(nh, next), with_cr(blk, h, cr, bout_p(b)), wp, cp)
++        loop(q, head_of(nh, next), with_cr(pre, blk, h, cr, bout_p(b)), wp, cp, pre)
++
++def is_gated_flag(xs: List<String>) -> Bool:
++  match xs:
++    case Con{f, _}:
++      String.eq(f, "--gated")
++    case Nil{}:
++      False{}
+ 
+ def paths_of(xs: List<String>) -> Paths:
+   match xs:
+-    case Con{_, Con{a, Con{b, _}}}:
+-      Paths{a, b}
++    case Con{_, Con{a, Con{b, t}}}:
++      Paths{a, b, is_gated_flag(t)}
+     case _:
+-      Paths{"", ""}
++      Paths{"", "", False{}}
+ 
+ def run(ps: Paths) -> IO(Unit):
+-  Paths{+wp, +cp} = ps
++  Paths{+wp, +cp, +pre} = ps
+   do IO<Unit>:
+     h0 : +List<U32> <- read_at(wp, 0, 1495)
+     pb : +List<U32> <- read_at(cp, 0, 56)
+-    loop(1000000n, head_of(h0, 0), BW{BOut{"", pools_of(pb)}, 56}, wp, cp)
++    loop(1000000n, head_of(h0, 0), BW{BOut{"", pools_of(pb)}, 56}, wp, cp, pre)
+ 
+ def main() -> IO(Unit):
+   do IO<Unit>:
+--- bend/delta.bend	2026-10-26 01:14:05.141375220 +0400
++++ bend/delta.bend (new)	2026-10-27 16:31:37.800563871 +0400
+@@ -4,6 +4,10 @@
+ # byte-identical to the verified header at its height, and the txids hash to its merkle root.
+ #
+ # Usage: blockdelta <window.bin>
++#   (fullnode/fast: node/wire's curve-point decodings are deferred: ../wire/txv.bend only
++#   consumes the 32 bytes, pts.bend lists the same fields and checks them in one batch per
++#   part without square roots; SHA-256 and ZIP 244 copy each byte once (sha.bend,
++#   zip244.bend). Output is identical to fullnode/bend/delta.bend's, see fast/README.md.)
+ #   window.bin: records until EOF: u32 LE height | 1487-byte verified header | u32 LE length | block
+ # Every block first goes through node/wire's hardened validator (blk.bend parse_capped:
+ # header form, canonical capped CompactSizes, every tx well-formed for its version, exact
+@@ -11,10 +15,12 @@
+ import Base
+ import ./parse.bend as P
+ import ../../node/wire/hb.bend as H
+-import ../../node/wire/blk.bend as KB
++import ../wire/blk.bend as KB
++import ./pts.bend as T
+ import ../../node/block/block.bend as K
+ import ./zip244.bend as Z
+ import ../../node/block/sha256.bend as S
++import ./sha.bend as S2
+ import ../../node/block/bytes.bend as Y
+ import ../../node/block/util.bend as U
+ import ../../halo2/lib/words.bend as Wd
+@@ -30,7 +36,7 @@
+   QR{q: L4, r: U32}
+ 
+ type BR is Data:
+-  BR{ids: List<&2, +List<U32>>, out: String}
++  BR{ids: List<&2, +List<U32>>, out: String, pts: +List<T.Pt>}
+ 
+ # A record header: height, verified header, block length, at offset off.
+ type Hd is Data:
+@@ -329,49 +335,226 @@
+     case True{}:
+       Z.txid56(P.c_xs(c))
+     case False{}:
+-      S.hash_d(P.take(c, size))
++      S2.hash_d_n(P.c_xs(c), size)
+ 
+ def br_ids(r: BR) -> List<&2, +List<U32>>:
+-  BR{+i, _} = r
++  BR{+i, _, _} = r
+   i
+ 
+ def br_out(r: BR) -> String:
+-  BR{_, +o} = r
++  BR{_, +o, _} = r
+   o
+ 
+-def txs(n: Nat, +k: U32, +c: P.C) -> BR:
++def br_pts(r: BR) -> +List<T.Pt>:
++  BR{_, _, +p} = r
++  p
++
++# Also collects the transaction's curve points (pts.bend) for the batched check.
++def txs(n: Nat, +b: U32, +k: U32, +c: P.C) -> BR:
+   match n:
+     case 0n:
+-      BR{Nil{}, ""}
++      BR{Nil{}, "", Nil{}}
+     case 1n+m:
+       +t = P.tx(c)
+       +size = P.tx_size(t)
+       +id = txid_sel(U32.is_ge(P.tx_ver(t), 5), c, size)
+-      +rest = txs(m, (k + 1 : U32), P.skip(c, size))
+-      BR{id <> br_ids(rest), tx_lines(k, id, t) ++ br_out(rest)}
++      +rest = txs(m, b, (k + 1 : U32), P.skip(c, size))
++      BR{id <> br_ids(rest), tx_lines(k, id, t) ++ br_out(rest), T.tx(b, c, br_pts(rest))}
++
++# A block the (structural) wire validator accepted: its lines and its curve points.
++type Rep is Data:
++  Rep{out: String, pts: +List<T.Pt>}
+ 
+-def report(+h: U32, +expected: +List<U32>, +blk: +List<U32>) -> String:
++def report(+b: U32, +h: U32, +expected: +List<U32>, +blk: +List<U32>) -> Rep:
+   +hdr = H.take(blk, 1487)
+   +c = P.skip(P.start(blk), 1487)
+   +n = P.cs(c)
+-  +r = txs(U32.to_nat(P.cs_v(n)), 0, P.cs_c(n))
++  +r = txs(U32.to_nat(P.cs_v(n)), b, 0, P.cs_c(n))
+   +mr = K.merkle_root(br_ids(r))
+-  "block " ++ U32.show(h) ++ " " ++ hexd(S.hash_d(hdr)) ++ " " ++ hexd(H.take(H.drop(hdr, 4), 32))
++  Rep{"block " ++ U32.show(h) ++ " " ++ hexd(S2.hash_d_n(hdr, 1487)) ++ " " ++ hexd(H.take(H.drop(hdr, 4), 32))
+     ++ " time " ++ U32.show(H.le32(H.drop(hdr, 100))) ++ " bits " ++ hex8(H.le32(H.drop(hdr, 104)))
+     ++ " size " ++ U32.show(H.length(blk)) ++ " txs " ++ U32.show(P.cs_v(n))
+     ++ " header " ++ verdict(Y.is_eq(hdr, expected))
+     ++ " merkle " ++ verdict(Y.is_eq(mr, H.take(H.drop(hdr, 36), 32))) ++ "\n"
+-    ++ br_out(r) ++ "end " ++ U32.show(h)
++    ++ br_out(r) ++ "end " ++ U32.show(h), br_pts(r)}
++
++def invalid(+h: U32) -> String:
++  "block " ++ U32.show(h) ++ " INVALID wire\nend " ++ U32.show(h)
++
++# One block's result before the point check: ok = the structural validator accepted it.
++type Blk is Data:
++  Blk{h: U32, ok: Bool, out: String}
++
++type Acc is Data:
++  Acc{bs: +List<Blk>, pts: +List<T.Pt>, n: U32}
++
++def acc_ok(r: Rep, +h: U32, a: Acc) -> Acc:
++  Rep{+out, +p} = r
++  Acc{+bs, +ps, +n} = a
++  Acc{Blk{h, True{}, out} <> bs, List.append(&2, T.Pt, p, ps), (n + 1 : U32)}
++
++def acc_bad(+h: U32, a: Acc) -> Acc:
++  Acc{+bs, +ps, +n} = a
++  Acc{Blk{h, False{}, ""} <> bs, ps, (n + 1 : U32)}
++
++def acc_n(a: Acc) -> U32:
++  Acc{_, _, +n} = a
++  n
+ 
+-def gated(m: Maybe<&2, U32>, +h: U32, +expected: +List<U32>, +blk: +List<U32>) -> String:
++def acc_add(m: Maybe<&2, U32>, +h: U32, +expected: +List<U32>, +blk: +List<U32>, +a: Acc) -> Acc:
+   match m:
+     case Some{_}:
+-      report(h, expected, blk)
++      acc_ok(report(acc_n(a), h, expected, blk), h, a)
+     case None{}:
+-      "block " ++ U32.show(h) ++ " INVALID wire\nend " ++ U32.show(h)
++      acc_bad(h, a)
++
++# ---------------------------------------------------------------- the batched point check
++
++type PT is Data:
++  Leaf{ps: +List<T.Pt>}
++  Node{l: PT, r: PT}
++
++type RT is Data:
++  RLeaf{bs: +List<U32>}
++  RNode{l: RT, r: RT}
++
++def bad_sel(ok: Bool, +b: U32, acc: +List<U32>) -> +List<U32>:
++  match ok:
++    case True{}:
++      acc
++    case False{}:
++      b <> acc
++
++# Indexes of the blocks owning a point that fails (tail-recursive: GPU lane stacks).
++def leaf_check(ps: +List<T.Pt>, acc: +List<U32>) -> +List<U32>:
++  match ps:
++    case Nil{}:
++      acc
++    case Con{p, t}:
++      T.Pt{+b, k, +w} = p
++      leaf_check(t, bad_sel(T.pt_ok(k, w), b, acc))
++
++def check(+k: Nat, t: PT) -> RT:
++  match k t:
++    case _ Leaf{ps}:
++      RLeaf{leaf_check(ps, Nil{})}
++    case 1n+j Node{l, r}:
++      a b = check(j, l) check(j, r)
++      RNode{a, b}
++    case _ _:
++      RLeaf{Nil{}}
++
++def flatten(t: RT, acc: +List<U32>) -> +List<U32>:
++  match t:
++    case RLeaf{bs}:
++      List.append(&2, U32, bs, acc)
++    case RNode{l, r}:
++      flatten(l, flatten(r, acc))
++
++def leaf_size(c: Bool, +base: Nat) -> Nat:
++  match c:
++    case True{}:
++      1n+base
++    case False{}:
++      base
++
++def leaves(k: Nat, +base: Nat, +extra: Nat, ps: +List<T.Pt>) -> +List<PT>:
++  match k:
++    case 0n:
++      Nil{}
++    case 1n+p:
++      +p2 = ps
++      +sz = leaf_size(Nat.is_lt(0n, extra), base)
++      Leaf{List.take(&2, T.Pt, p2, sz)} <> leaves(p, base, Nat.sub(extra, 1n), List.drop(&2, T.Pt, p2, sz))
++
++def pair_up(xs: +List<PT>) -> +List<PT>:
++  match xs:
++    case Con{a, Con{b, rest}}:
++      Node{a, b} <> pair_up(rest)
++    case Con{a, Nil{}}:
++      [a]
++    case Nil{}:
++      Nil{}
++
++def levels(k: Nat, xs: +List<PT>) -> +List<PT>:
++  match k:
++    case 0n:
++      xs
++    case 1n+p:
++      levels(p, pair_up(xs))
++
++def root(xs: +List<PT>) -> PT:
++  match xs:
++    case Con{t, _}:
++      t
++    case Nil{}:
++      Leaf{Nil{}}
++
++# Depth: the largest d <= dmax with 2^(d+1) <= n (at least 2 points per leaf); more: d + 1 fits.
++def depth_of(fuel: Nat, more: Bool, +d: Nat, +n: Nat) -> Nat:
++  match fuel more:
++    case 0n _:
++      d
++    case 1n+p False{}:
++      d
++    case 1n+p True{}:
++      depth_of(p, Nat.is_le(Nat.pow(2n, 1n+(1n+(1n+d))), n), 1n+d, n)
++
++# The batch, sequentially on the CPU (one process per window part is the parallelism).
++# gpu_variant.py writes delta_gpu.bend, which runs it as a balanced tree under `check!`.
++def bad_blocks(any: Bool, +dmax: Nat, +ps: +List<T.Pt>) -> +List<U32>:
++  match any:
++    case False{}:
++      Nil{}
++    case True{}:
++      leaf_check(ps, Nil{})
++
++def member(xs: +List<U32>, +x: U32) -> Bool:
++  match xs:
++    case Nil{}:
++      False{}
++    case Con{+y, t}:
++      U32.is_eq(x, y) || member(t, x)
++
++def nil_pts(xs: +List<T.Pt>) -> Bool:
++  match xs:
++    case Nil{}:
++      True{}
++    case Con{_, _}:
++      False{}
++
++def line_sel(ok: Bool, +h: U32, +out: String) -> String:
++  match ok:
++    case True{}:
++      out
++    case False{}:
++      invalid(h)
+ 
+-def block_out(+h: U32, +expected: +List<U32>, +blk: +List<U32>) -> String:
+-  gated(KB.parse_capped(blk), h, expected, blk)
++def blk_line(b: Blk, +ok_pts: Bool) -> String:
++  Blk{+h, +ok, +out} = b
++  line_sel(ok && ok_pts, h, out)
++
++# Blocks in window order (bs is newest first); i counts from the last block's index down.
++def emit(bs: +List<Blk>, +bad: +List<U32>, +i: U32, acc: +List<String>) -> +List<String>:
++  match bs:
++    case Nil{}:
++      acc
++    case Con{b, t}:
++      emit(t, bad, (i - 1 : U32), blk_line(b, Bool.not(member(bad, i))) <> acc)
++
++def print_all(xs: +List<String>) -> IO(Unit):
++  match xs:
++    case Nil{}:
++      IO.pure(Unit, Unit{})
++    case Con{s, t}:
++      do IO<Unit>:
++        IO.print(s)
++        print_all(t)
++
++def finish(a: Acc, +dmax: Nat) -> IO(Unit):
++  Acc{+bs, +ps, +n} = a
++  +bad = bad_blocks(Bool.not(nil_pts(ps)), dmax, ps)
++  print_all(emit(bs, bad, (n - 1 : U32), Nil{}))
+ 
+ # ---------------------------------------------------------------- the window file
+ 
+@@ -404,33 +587,45 @@
+ def head_of(+bs: +List<U32>, +off: U32) -> Hd:
+   hd_sel(U32.is_eq(H.length(bs), 1495), bs, off)
+ 
+-def loop(fuel: Nat, st: Hd, +path: String) -> IO(Unit):
++def block_in(+h: U32, +expected: +List<U32>, +blk: +List<U32>, +a: Acc) -> Acc:
++  acc_add(KB.parse_capped(blk), h, expected, blk, a)
++
++def loop(fuel: Nat, st: Hd, +path: String, a: Acc, +dmax: Nat) -> IO(Unit):
+   match fuel st:
+     case 0n _:
+-      IO.pure(Unit, Unit{})
++      finish(a, dmax)
+     case 1n+p Stop{}:
+-      IO.pure(Unit, Unit{})
++      finish(a, dmax)
+     case 1n+p Rec{+h, +exp, +blen, +off}:
+       +next = (off + 1495 + blen : U32)
+       do IO<Unit>:
+         blk : +List<U32> <- read_at(path, (off + 1495 : U32), blen)
+-        IO.print(block_out(h, exp, blk))
++        a2 : Acc = block_in(h, exp, blk, a)
+         nh : +List<U32> <- read_at(path, next, 1495)
+-        loop(p, head_of(nh, next), path)
++        loop(p, head_of(nh, next), path, a2, dmax)
++
++type Args is Data:
++  Args{path: String, d: Nat}
+ 
+-def path_of(xs: List<String>) -> String:
++def num(s: String) -> U32:
++  Maybe.default(&2, U32, U32.read(s), 14)
++
++def args_of(xs: List<String>) -> Args:
+   match xs:
++    case Con{_, Con{p, Con{d, _}}}:
++      Args{p, U32.to_nat(num(d))}
+     case Con{_, Con{p, _}}:
+-      p
++      Args{p, 14n}
+     case _:
+-      ""
++      Args{"", 14n}
+ 
+-def run(+path: String) -> IO(Unit):
++def run(a: Args) -> IO(Unit):
++  Args{+path, +d} = a
+   do IO<Unit>:
+     h0 : +List<U32> <- read_at(path, 0, 1495)
+-    loop(1000000n, head_of(h0, 0), path)
++    loop(1000000n, head_of(h0, 0), path, Acc{Nil{}, Nil{}, 0}, d)
+ 
+ def main() -> IO(Unit):
+   do IO<Unit>:
+     xs : List<String> <- IO.args()
+-    run(path_of(xs))
++    run(args_of(xs))
+--- bend/zip244.bend	2026-10-26 01:14:11.273771310 +0400
++++ bend/zip244.bend (new)	2026-10-27 16:31:37.808876836 +0400
+@@ -1,3 +1,5 @@
++# fullnode/fast: as fullnode/bend/zip244.bend, with every cat(at(xs, p, n), rest) written
++# onto(xs, p, n, rest) (one copy of the bytes instead of two). Same digests.
+ # fullnode: the ZIP 244 txid of v5/v6 transactions, from node/block/tx.bend (same code), with
+ # the per-element loops made linear: each recursive step drops the element it consumed
+ # instead of re-indexing the transaction from its start (node/block's loops are quadratic in
+@@ -34,6 +36,19 @@
+ def cat(a: +List<U32>, b: +List<U32>) -> +List<U32>:
+   List.append(&2, U32, a, b)
+ 
++# The n bytes at pos, followed by rest: one copy (cat(at(..), rest) copied them twice).
++def take_onto(n: Nat, xs: +List<U32>, rest: +List<U32>) -> +List<U32>:
++  match n xs:
++    case 0n _:
++      rest
++    case 1n+p Con{h, t}:
++      h <> take_onto(p, t, rest)
++    case 1n+p Nil{}:
++      rest
++
++def onto(+xs: +List<U32>, +pos: Nat, +n: Nat, rest: +List<U32>) -> +List<U32>:
++  take_onto(n, List.drop(&2, U32, xs, pos), rest)
++
+ def at(+xs: +List<U32>, +pos: Nat, +n: Nat) -> +List<U32>:
+   List.take(&2, U32, List.drop(&2, U32, xs, pos), n)
+ 
+@@ -144,7 +159,7 @@
+     case 0n:
+       Nil{}
+     case 1n+p:
+-      cat(at(xs, pos, 36n), prevouts(p, List.drop(&2, U32, xs, txin_end(xs, pos)), 0n))
++      onto(xs, pos, 36n, prevouts(p, List.drop(&2, U32, xs, txin_end(xs, pos)), 0n))
+ 
+ def sequences(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
+   match n:
+@@ -152,7 +167,7 @@
+       Nil{}
+     case 1n+p:
+       +e = txin_end(xs, pos)
+-      cat(at(xs, Nat.sub(e, 4n), 4n), sequences(p, List.drop(&2, U32, xs, e), 0n))
++      onto(xs, Nat.sub(e, 4n), 4n, sequences(p, List.drop(&2, U32, xs, e), 0n))
+ 
+ # TxOut: value (8) || script (CompactSize bytes); hashed exactly as serialized.
+ def txout_end(+xs: +List<U32>, +pos: Nat) -> Nat:
+@@ -172,7 +187,7 @@
+       Nil{}
+     case 1n+p:
+       +e = txout_end(xs, pos)
+-      cat(at(xs, pos, Nat.sub(e, pos)), outputs(p, List.drop(&2, U32, xs, e), 0n))
++      onto(xs, pos, Nat.sub(e, pos), outputs(p, List.drop(&2, U32, xs, e), 0n))
+ 
+ def all_zero(xs: +List<U32>) -> Bool:
+   match xs:
+@@ -208,7 +223,7 @@
+     case 0n:
+       Nil{}
+     case 1n+p:
+-      cat(at(xs, (pos + 32n : Nat), 32n), sap_nf(p, List.drop(&2, U32, xs, (pos + 96n : Nat)), 0n))
++      onto(xs, (pos + 32n : Nat), 32n, sap_nf(p, List.drop(&2, U32, xs, (pos + 96n : Nat)), 0n))
+ 
+ # v5 hashes (cv, anchor, rk) per spend; v6 (ZIP 229) hashes (cv, rk): pass anchor = [].
+ def sap_spend_n(+n: Nat, +xs: +List<U32>, +pos: Nat, +anchor: +List<U32>) -> +List<U32>:
+@@ -216,28 +231,28 @@
+     case 0n:
+       Nil{}
+     case 1n+p:
+-      cat(at(xs, pos, 32n), cat(anchor, cat(at(xs, (pos + 64n : Nat), 32n), sap_spend_n(p, List.drop(&2, U32, xs, (pos + 96n : Nat)), 0n, anchor))))
++      onto(xs, pos, 32n, cat(anchor, onto(xs, (pos + 64n : Nat), 32n, sap_spend_n(p, List.drop(&2, U32, xs, (pos + 96n : Nat)), 0n, anchor))))
+ 
+ def sap_out_c(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
+   match n:
+     case 0n:
+       Nil{}
+     case 1n+p:
+-      cat(at(xs, (pos + 32n : Nat), 116n), sap_out_c(p, List.drop(&2, U32, xs, (pos + 756n : Nat)), 0n))
++      onto(xs, (pos + 32n : Nat), 116n, sap_out_c(p, List.drop(&2, U32, xs, (pos + 756n : Nat)), 0n))
+ 
+ def sap_out_m(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
+   match n:
+     case 0n:
+       Nil{}
+     case 1n+p:
+-      cat(at(xs, (pos + 148n : Nat), 512n), sap_out_m(p, List.drop(&2, U32, xs, (pos + 756n : Nat)), 0n))
++      onto(xs, (pos + 148n : Nat), 512n, sap_out_m(p, List.drop(&2, U32, xs, (pos + 756n : Nat)), 0n))
+ 
+ def sap_out_n(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
+   match n:
+     case 0n:
+       Nil{}
+     case 1n+p:
+-      cat(at(xs, pos, 32n), cat(at(xs, (pos + 660n : Nat), 96n), sap_out_n(p, List.drop(&2, U32, xs, (pos + 756n : Nat)), 0n)))
++      onto(xs, pos, 32n, onto(xs, (pos + 660n : Nat), 96n, sap_out_n(p, List.drop(&2, U32, xs, (pos + 756n : Nat)), 0n)))
+ 
+ def sap_noncompact(v6: Bool, +ns: Nat, +xs: +List<U32>, +sp: Nat, +anchor: +List<U32>) -> +List<U32>:
+   match v6:
+@@ -312,21 +327,21 @@
+     case 0n:
+       Nil{}
+     case 1n+p:
+-      cat(at(xs, (pos + 32n : Nat), 32n), cat(at(xs, (pos + 96n : Nat), 116n), act_c(p, List.drop(&2, U32, xs, (pos + 820n : Nat)), 0n)))
++      onto(xs, (pos + 32n : Nat), 32n, onto(xs, (pos + 96n : Nat), 116n, act_c(p, List.drop(&2, U32, xs, (pos + 820n : Nat)), 0n)))
+ 
+ def act_m(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
+   match n:
+     case 0n:
+       Nil{}
+     case 1n+p:
+-      cat(at(xs, (pos + 212n : Nat), 512n), act_m(p, List.drop(&2, U32, xs, (pos + 820n : Nat)), 0n))
++      onto(xs, (pos + 212n : Nat), 512n, act_m(p, List.drop(&2, U32, xs, (pos + 820n : Nat)), 0n))
+ 
+ def act_n(+n: Nat, +xs: +List<U32>, +pos: Nat) -> +List<U32>:
+   match n:
+     case 0n:
+       Nil{}
+     case 1n+p:
+-      cat(at(xs, pos, 32n), cat(at(xs, (pos + 64n : Nat), 32n), cat(at(xs, (pos + 724n : Nat), 96n), act_n(p, List.drop(&2, U32, xs, (pos + 820n : Nat)), 0n))))
++      onto(xs, pos, 32n, onto(xs, (pos + 64n : Nat), 32n, onto(xs, (pos + 724n : Nat), 96n, act_n(p, List.drop(&2, U32, xs, (pos + 820n : Nat)), 0n))))
+ 
+ def p_bundle(f: Fmt) -> B.P4:
+   match f:
+@@ -405,7 +420,7 @@
+     case True{}:
+       Bnd{+f, +n, +acts, +tail, _, _} = b
+       B.hash32(p_bundle(f), cat(B.hash32(p_c(f), act_c(n, xs, acts)), cat(B.hash32(p_m(f), act_m(n, xs, acts)),
+-        cat(B.hash32(p_n(f), act_n(n, xs, acts)), cat(at(xs, tail, 9n), anchor_in_txid(f, at(xs, (tail + 9n : Nat), 32n)))))))
++        cat(B.hash32(p_n(f), act_n(n, xs, acts)), onto(xs, tail, 9n, anchor_in_txid(f, at(xs, (tail + 9n : Nat), 32n)))))))
+     case False{}:
+       Bnd{+f, _, _, _, _, _} = b
+       B.hash32(p_bundle(f), Nil{})
+--- /dev/null	2026-10-24 11:53:48.103801042 +0400
++++ bend/pts.bend (new file)	2026-10-27 16:31:37.814801996 +0400
+@@ -0,0 +1,256 @@
++# fullnode/fast: the curve points node/wire's validator decodes, collected per block and
++# checked in one batch (a balanced parallel tree: `check!` runs it on the Metal GPU).
++#
++# fast/wire/txv.bend is node/wire/txv.bend with jpoint/ppoint deferred (they only consume 32
++# bytes). This module lists the same 32-byte fields, at the same positions, for a block that
++# fast/wire accepted, and decodes them exactly as node/wire does:
++#   Sapling v4 spend (384 B):  cv @0 jpoint(nso)   rk @96 jpoint            (txv spend4)
++#   Sapling v4 output (948 B): cv @0 jpoint(nso)                            (txv out4)
++#   Sapling v5 spend (96 B):   cv @0 jpoint(nso)   rk @64 jpoint            (txv spend5)
++#   Sapling v5 output (756 B): cv @0 jpoint(nso)                            (txv out5)
++#   Orchard/Ironwood action (820 B): cv @0 ppoint(allow identity), rk @64 ppoint(no identity),
++#                                    epk @128 ppoint(no identity)           (txv action)
++# txv reads v4 Sapling only for an overwintered v4 tx (group checked by the validator), v5/v6
++# bundles only for overwintered v5/v6; a non-overwintered tx is read as Sprout (no points).
++# Sprout JoinSplits have no decoded points. The layouts are parse.bend's (fuzzed against
++# zcash_primitives through txv.bend).
++import Base
++import ./parse.bend as P
++import ../../node/wire/hb.bend as H
++import ../../node/wire/jj.bend as J
++import ../../halo2/lib/pallas.bend as Pa
++import ../../halo2/lib/words.bend as Wd
++import ../../node/wire/fr.bend as F
++import ../../halo2/lib/fp.bend as B
++
++# JN: Jubjub, not small order (cv); JA: Jubjub, any (rk); PI: Pallas, identity allowed (cv);
++# PN: Pallas, not the identity (rk, epk).
++type Kd is Data:
++  JN{}
++  JA{}
++  PI{}
++  PN{}
++
++# b: the block's index in the batch; w: the 32 bytes as 8 LE words.
++type Pt is Data:
++  Pt{b: U32, k: Kd, w: Wd.W}
++
++# ---------------------------------------------------------------- decoding (as txv.bend)
++
++# The reference: node/wire's decoders, as txv.bend calls them (kept for the differential test,
++# t_pts.bend).
++def j_ok(+nso: Bool, m: Maybe<&2, J.Jp>) -> Bool:
++  match m:
++    case None{}:
++      False{}
++    case Some{p}:
++      Bool.not(nso) || Bool.not(J.is_small_order(p))
++
++def p_ok(+allow_id: Bool, m: Maybe<&2, Pa.Pt>) -> Bool:
++  match m:
++    case None{}:
++      False{}
++    case Some{p}:
++      allow_id || Bool.not(Pa.is_identity(p))
++
++def pt_ok_ref(k: Kd, +w: Wd.W) -> Bool:
++  match k:
++    case JN{}:
++      j_ok(True{}, J.decode(w))
++    case JA{}:
++      j_ok(False{}, J.decode(w))
++    case PI{}:
++      p_ok(True{}, Pa.decompress(w))
++    case PN{}:
++      p_ok(False{}, Pa.decompress(w))
++
++# The same predicates without computing the point (no inversion, no square root): only
++# whether it exists. Both fields have m - 1 = 2^32 t (t odd), so Euler's criterion
++# x^((m-1)/2) is pow_c3(x)^2 * x (= x^t, as in the Tonelli-Shanks start of sqrt_cand)
++# squared 31 times. sqrt(x) is Some exactly when x is 0 or a square (sqrt_cand is a root
++# of every square; the result is checked by squaring).
++def fr_euler1(+x: F.Fr) -> Bool:
++  +z0 = F.pow_c3(x)
++  F.is_eq(F.sqr_n(31n, F.mul(F.sqr(z0), x)), F.one())
++
++def fp_euler1(+x: B.Fp) -> Bool:
++  +z0 = B.pow_c3(x)
++  B.is_eq(B.sqr_n(31n, B.mul(B.sqr(z0), x)), B.one())
++
++def j_fin(xz: Bool, +nso: Bool, +small: Bool, +sign: U32, +num: F.Fr, +den: F.Fr) -> Bool:
++  match xz:
++    case True{}:
++      U32.is_eq(sign, 0) && Bool.not(nso && small)
++    case False{}:
++      fr_euler1(F.mul(num, den)) && Bool.not(nso && small)
++
++# Jubjub (jj.bend decode): v canonical; u^2 = x = (v^2 - 1) / (1 + d v^2) (1/0 read as 0)
++# must be a square; u = 0 with sign 1 is rejected (ZIP 216). For den != 0, x and num * den
++# differ by the square den^-2, so they are squares together, and x = 0 iff num = 0.
++# Small order (jj.bend is_small_order on (+-u, v)): u v = 0 or u^2 + v^2 = 0, i.e. x = 0, or
++# v = 0, or x + v^2 = 0 (for den != 0: num + v^2 den = 0; for den = 0, x = 0).
++def j_v(+nso: Bool, +v: F.Fr, +sign: U32) -> Bool:
++  +v2 = F.sqr(v)
++  +num = F.sub(v2, F.one())
++  +den = F.add(F.one(), F.mul(J.d(), v2))
++  +den0 = F.is_zero(den)
++  +xz = den0 || F.is_zero(num)
++  +small = xz || F.is_zero(v) || F.is_zero(F.add(num, F.mul(v2, den)))
++  j_fin(xz, nso, small, sign, num, den)
++
++def j_canon(ok: Bool, +nso: Bool, +vw: Wd.W, +sign: U32) -> Bool:
++  match ok:
++    case False{}:
++      False{}
++    case True{}:
++      j_v(nso, F.from_words(vw), sign)
++
++def j_check(+nso: Bool, +w: Wd.W) -> Bool:
++  +vw = Wd.clear_top_bit(w)
++  j_canon(Wd.is_lt(vw, F.modulus()), nso, vw, Wd.top_bit(w))
++
++def p_rhs(z: Bool, +rhs: B.Fp) -> Bool:
++  match z:
++    case True{}:
++      True{}
++    case False{}:
++      fp_euler1(rhs)
++
++# Pallas (pallas.bend decompress): x canonical; x = 0 with sign 0 is the identity; x = 0 with
++# sign 1 needs sqrt(5) (none: 5 is a non-residue); otherwise y^2 = x^3 + 5 must be 0 or a
++# square. Every point but the identity has z = 1.
++def p_x(x0: Bool, +allow_id: Bool, +x: B.Fp, +sign: U32) -> Bool:
++  match x0:
++    case True{}:
++      allow_id && U32.is_eq(sign, 0)
++    case False{}:
++      +rhs = B.add(B.mul(B.sqr(x), x), B.from_u32(5))
++      p_rhs(B.is_zero(rhs), rhs)
++
++def p_canon(ok: Bool, +allow_id: Bool, +xw: Wd.W, +sign: U32) -> Bool:
++  match ok:
++    case False{}:
++      False{}
++    case True{}:
++      +x = B.from_words(xw)
++      p_x(B.is_zero(x), allow_id, x, sign)
++
++def p_check(+allow_id: Bool, +w: Wd.W) -> Bool:
++  +xw = Wd.clear_top_bit(w)
++  p_canon(Wd.is_lt(xw, B.modulus()), allow_id, xw, Wd.top_bit(w))
++
++def pt_ok(k: Kd, +w: Wd.W) -> Bool:
++  match k:
++    case JN{}:
++      j_check(True{}, w)
++    case JA{}:
++      j_check(False{}, w)
++    case PI{}:
++      p_check(True{}, w)
++    case PN{}:
++      p_check(False{}, w)
++
++# ---------------------------------------------------------------- collecting
++
++def pt_at(+b: U32, k: Kd, +c: P.C, +off: U32) -> Pt:
++  Pt{b, k, H.w32(P.c_xs(P.skip(c, off)))}
++
++def cat(xs: +List<Pt>, ys: +List<Pt>) -> +List<Pt>:
++  List.append(&2, Pt, xs, ys)
++
++def sp4(n: Nat, +b: U32, +c: P.C, acc: +List<Pt>) -> +List<Pt>:
++  match n:
++    case 0n:
++      acc
++    case 1n+m:
++      sp4(m, b, P.skip(c, 384), pt_at(b, JA{}, c, 96) <> pt_at(b, JN{}, c, 0) <> acc)
++
++def op4(n: Nat, +b: U32, +c: P.C, acc: +List<Pt>) -> +List<Pt>:
++  match n:
++    case 0n:
++      acc
++    case 1n+m:
++      op4(m, b, P.skip(c, 948), pt_at(b, JN{}, c, 0) <> acc)
++
++def sp5(n: Nat, +b: U32, +c: P.C, acc: +List<Pt>) -> +List<Pt>:
++  match n:
++    case 0n:
++      acc
++    case 1n+m:
++      sp5(m, b, P.skip(c, 96), pt_at(b, JA{}, c, 64) <> pt_at(b, JN{}, c, 0) <> acc)
++
++def op5(n: Nat, +b: U32, +c: P.C, acc: +List<Pt>) -> +List<Pt>:
++  match n:
++    case 0n:
++      acc
++    case 1n+m:
++      op5(m, b, P.skip(c, 756), pt_at(b, JN{}, c, 0) <> acc)
++
++def acts(n: Nat, +b: U32, +c: P.C, acc: +List<Pt>) -> +List<Pt>:
++  match n:
++    case 0n:
++      acc
++    case 1n+m:
++      acts(m, b, P.skip(c, 820), pt_at(b, PN{}, c, 128) <> pt_at(b, PN{}, c, 64) <> pt_at(b, PI{}, c, 0) <> acc)
++
++# v4: after the transparent part: lock 4, expiry 4, valueBalance 8, spends, outputs.
++def tx4(+b: U32, +c0: P.C, acc: +List<Pt>) -> +List<Pt>:
++  +tp = P.transparent(P.skip(c0, 8))
++  +sc = P.skip(P.tp_c(tp), 16)
++  +ns = P.cs(sc)
++  +nsv = P.cs_v(ns)
++  +no = P.cs(P.skip(P.cs_c(ns), (nsv * 384 : U32)))
++  op4(U32.to_nat(P.cs_v(no)), b, P.cs_c(no), sp4(U32.to_nat(nsv), b, P.cs_c(ns), acc))
++
++def bun(+b: U32, +c: P.C, acc: +List<Pt>) -> +List<Pt>:
++  +na = P.cs(c)
++  acts(U32.to_nat(P.cs_v(na)), b, P.cs_c(na), acc)
++
++def iron_sel(v6: Bool, +b: U32, +c: P.C, acc: +List<Pt>) -> +List<Pt>:
++  match v6:
++    case True{}:
++      bun(b, c, acc)
++    case False{}:
++      acc
++
++# v5/v6: header fragment (20 bytes incl. version and group), transparent, Sapling v5,
++# Orchard, [Ironwood].
++def tx56(+v6: Bool, +b: U32, +c0: P.C, acc: +List<Pt>) -> +List<Pt>:
++  +tp = P.transparent(P.skip(c0, 20))
++  +sc = P.tp_c(tp)
++  +ns = P.cs(sc)
++  +nsv = P.cs_v(ns)
++  +no = P.cs(P.skip(P.cs_c(ns), (nsv * 96 : U32)))
++  +a1 = op5(U32.to_nat(P.cs_v(no)), b, P.cs_c(no), sp5(U32.to_nat(nsv), b, P.cs_c(ns), acc))
++  +sap = P.sapling5(sc)
++  +orch = P.bundle(P.sap_c(sap))
++  iron_sel(v6, b, P.bun_c(orch), bun(b, P.sap_c(sap), a1))
++
++def by_v4(v4: Bool, +b: U32, +c: P.C, acc: +List<Pt>) -> +List<Pt>:
++  match v4:
++    case True{}:
++      tx4(b, c, acc)
++    case False{}:
++      acc
++
++def by_v56(v56: Bool, +v: U32, +b: U32, +c: P.C, acc: +List<Pt>) -> +List<Pt>:
++  match v56:
++    case True{}:
++      tx56(U32.is_eq(v, 6), b, c, acc)
++    case False{}:
++      by_v4(U32.is_eq(v, 4), b, c, acc)
++
++def by_ver_ow(+v: U32, +b: U32, +c: P.C, acc: +List<Pt>) -> +List<Pt>:
++  by_v56(U32.is_ge(v, 5), v, b, c, acc)
++
++def tx_ow(ow: Bool, +v: U32, +b: U32, +c: P.C, acc: +List<Pt>) -> +List<Pt>:
++  match ow:
++    case True{}:
++      by_ver_ow(v, b, c, acc)
++    case False{}:
++      acc
++
++# The points of one transaction starting at c (prepended to acc).
++def tx(+b: U32, +c: P.C, acc: +List<Pt>) -> +List<Pt>:
++  +h = P.u32(c)
++  tx_ow(U32.is_eq((h >> 31n : U32), 1), (h .&. 2147483647 : U32), b, c, acc)
+--- /dev/null	2026-10-24 11:53:48.103801042 +0400
++++ bend/sha.bend (new file)	2026-10-27 16:31:37.822094080 +0400
+@@ -0,0 +1,204 @@
++# fullnode/fast: SHA-256 / SHA-256d (FIPS 180-4) over byte lists, as node/block/sha256.bend
++# (same rounds, same schedule window, same padding) with the list work made linear:
++#   - a message block's 16 words are read in one pass (node/block re-dropped from the block
++#     start for every word: 480 list steps per 64 bytes);
++#   - the round constants are built once per message, not once per block;
++#   - the padded message is ONE copy of the input prefix (take_onto), not take + append,
++#     and its length is passed in instead of counted.
++# Tested: every txid / block hash / merkle verdict identical to node/block's on the bench
++# windows (fast/README.md).
++import Base
++
++type S8 is Data:
++  S8{a: U32, b: U32, c: U32, d: U32, e: U32, f: U32, g: U32, h: U32}
++
++type W16 is Data:
++  W16{w0: U32, w1: U32, w2: U32, w3: U32, w4: U32, w5: U32, w6: U32, w7: U32,
++      w8: U32, w9: U32, w10: U32, w11: U32, w12: U32, w13: U32, w14: U32, w15: U32}
++
++def iv() -> S8:
++  S8{1779033703, 3144134277, 1013904242, 2773480762, 1359893119, 2600822924, 528734635, 1541459225}
++
++def ks() -> +List<U32>:
++  [1116352408, 1899447441, 3049323471, 3921009573, 961987163, 1508970993, 2453635748, 2870763221,
++   3624381080, 310598401, 607225278, 1426881987, 1925078388, 2162078206, 2614888103, 3248222580,
++   3835390401, 4022224774, 264347078, 604807628, 770255983, 1249150122, 1555081692, 1996064986,
++   2554220882, 2821834349, 2952996808, 3210313671, 3336571891, 3584528711, 113926993, 338241895,
++   666307205, 773529912, 1294757372, 1396182291, 1695183700, 1986661051, 2177026350, 2456956037,
++   2730485921, 2820302411, 3259730800, 3345764771, 3516065817, 3600352804, 4094571909, 275423344,
++   430227734, 506948616, 659060556, 883997877, 958139571, 1322822218, 1537002063, 1747873779,
++   1955562222, 2024104815, 2227730452, 2361852424, 2428436474, 2756734187, 3204031479, 3329325298]
++
++def big_s0(+a: U32) -> U32:
++  (((a >> 2n) .|. (a << 30n)) .^. ((a >> 13n) .|. (a << 19n)) .^. ((a >> 22n) .|. (a << 10n)) : U32)
++
++def big_s1(+e: U32) -> U32:
++  (((e >> 6n) .|. (e << 26n)) .^. ((e >> 11n) .|. (e << 21n)) .^. ((e >> 25n) .|. (e << 7n)) : U32)
++
++def small_s0(+x: U32) -> U32:
++  (((x >> 7n) .|. (x << 25n)) .^. ((x >> 18n) .|. (x << 14n)) .^. (x >> 3n) : U32)
++
++def small_s1(+x: U32) -> U32:
++  (((x >> 17n) .|. (x << 15n)) .^. ((x >> 19n) .|. (x << 13n)) .^. (x >> 10n) : U32)
++
++def ch(+e: U32, +f: U32, +g: U32) -> U32:
++  ((e .&. f) .^. (U32.not(e) .&. g) : U32)
++
++def maj(+a: U32, +b: U32, +c: U32) -> U32:
++  ((a .&. b) .^. (a .&. c) .^. (b .&. c) : U32)
++
++def round(st: S8, +k: U32, +w: U32) -> S8:
++  S8{+a, +b, +c, +d, +e, +f, +g, +h} = st
++  +t1 = (h + big_s1(e) + ch(e, f, g) + k + w : U32)
++  +t2 = (big_s0(a) + maj(a, b, c) : U32)
++  S8{(t1 + t2 : U32), a, b, c, (d + t1 : U32), e, f, g}
++
++def shift(win: W16) -> W16:
++  W16{+w0, +w1, w2, w3, w4, w5, w6, w7, w8, +w9, w10, w11, w12, w13, +w14, w15} = win
++  W16{w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15,
++      (small_s1(w14) + w9 + small_s0(w1) + w0 : U32)}
++
++def head(+win: W16) -> U32:
++  W16{w0, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _} = win
++  w0
++
++def rounds(ks: +List<U32>, st: S8, +win: W16) -> S8:
++  match ks:
++    case Nil{}:
++      st
++    case Con{k, rest}:
++      rounds(rest, round(st, k, head(win)), shift(win))
++
++def add8(x: S8, y: S8) -> S8:
++  S8{a0, b0, c0, d0, e0, f0, g0, h0} = x
++  S8{a1, b1, c1, d1, e1, f1, g1, h1} = y
++  S8{(a0 + a1 : U32), (b0 + b1 : U32), (c0 + c1 : U32), (d0 + d1 : U32),
++     (e0 + e1 : U32), (f0 + f1 : U32), (g0 + g1 : U32), (h0 + h1 : U32)}
++
++# A big-endian word and the bytes after it.
++def rd4(xs: +List<U32>) -> U32 & +List<U32>:
++  match xs:
++    case Con{a, Con{b, Con{c, Con{d, t}}}}:
++      (((a << 24n) .|. (b << 16n) .|. (c << 8n) .|. d : U32), t)
++    case _:
++      (0, Nil{})
++
++# The 16 words of the next 64-byte block, read in one pass, and the bytes after it.
++def bw15(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, +w7: U32, +w8: U32, +w9: U32, +w10: U32, +w11: U32, +w12: U32, +w13: U32, +w14: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w15, r) = p
++  (W16{w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15}, r)
++
++def bw14(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, +w7: U32, +w8: U32, +w9: U32, +w10: U32, +w11: U32, +w12: U32, +w13: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w14, r) = p
++  bw15(w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, rd4(r))
++
++def bw13(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, +w7: U32, +w8: U32, +w9: U32, +w10: U32, +w11: U32, +w12: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w13, r) = p
++  bw14(w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, rd4(r))
++
++def bw12(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, +w7: U32, +w8: U32, +w9: U32, +w10: U32, +w11: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w12, r) = p
++  bw13(w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, rd4(r))
++
++def bw11(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, +w7: U32, +w8: U32, +w9: U32, +w10: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w11, r) = p
++  bw12(w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, rd4(r))
++
++def bw10(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, +w7: U32, +w8: U32, +w9: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w10, r) = p
++  bw11(w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, rd4(r))
++
++def bw9(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, +w7: U32, +w8: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w9, r) = p
++  bw10(w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, rd4(r))
++
++def bw8(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, +w7: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w8, r) = p
++  bw9(w0, w1, w2, w3, w4, w5, w6, w7, w8, rd4(r))
++
++def bw7(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w7, r) = p
++  bw8(w0, w1, w2, w3, w4, w5, w6, w7, rd4(r))
++
++def bw6(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w6, r) = p
++  bw7(w0, w1, w2, w3, w4, w5, w6, rd4(r))
++
++def bw5(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w5, r) = p
++  bw6(w0, w1, w2, w3, w4, w5, rd4(r))
++
++def bw4(+w0: U32, +w1: U32, +w2: U32, +w3: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w4, r) = p
++  bw5(w0, w1, w2, w3, w4, rd4(r))
++
++def bw3(+w0: U32, +w1: U32, +w2: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w3, r) = p
++  bw4(w0, w1, w2, w3, rd4(r))
++
++def bw2(+w0: U32, +w1: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w2, r) = p
++  bw3(w0, w1, w2, rd4(r))
++
++def bw1(+w0: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w1, r) = p
++  bw2(w0, w1, rd4(r))
++
++def bw0(p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w0, r) = p
++  bw1(w0, rd4(r))
++
++def block_words(xs: +List<U32>) -> W16 & +List<U32>:
++  bw0(rd4(xs))
++
++def compress(+k: +List<U32>, +st: S8, +win: W16) -> S8:
++  add8(st, rounds(k, st, win))
++
++def blocks(n: Nat, +k: +List<U32>, wb: W16 & +List<U32>, +st: S8) -> S8:
++  match n:
++    case 0n:
++      st
++    case 1n+p:
++      (win, rest) = wb
++      blocks(p, k, block_words(rest), compress(k, st, win))
++
++def be32(+x: U32) -> +List<U32>:
++  [(x >> 24n : U32), ((x >> 16n) .&. 255 : U32), ((x >> 8n) .&. 255 : U32), (x .&. 255 : U32)]
++
++def be32_onto(+x: U32, acc: +List<U32>) -> +List<U32>:
++  (x >> 24n : U32) <> ((x >> 16n) .&. 255 : U32) <> ((x >> 8n) .&. 255 : U32) <> (x .&. 255 : U32) <> acc
++
++def digest(st: S8) -> +List<U32>:
++  S8{a, b, c, d, e, f, g, h} = st
++  be32_onto(a, be32_onto(b, be32_onto(c, be32_onto(d, be32_onto(e, be32_onto(f, be32_onto(g, be32(h))))))))
++
++def zeros_onto(n: Nat, acc: +List<U32>) -> +List<U32>:
++  match n:
++    case 0n:
++      acc
++    case 1n+p:
++      zeros_onto(p, 0 <> acc)
++
++# 0x80, then zeros until the length is 56 mod 64, then the bit length (64-bit big-endian).
++def padding(+len: U32) -> +List<U32>:
++  +zs = ((119 - (len .&. 63)) .&. 63 : U32)
++  128 <> zeros_onto(U32.to_nat(zs), be32_onto((len >> 29n : U32), be32((len << 3n : U32))))
++
++# The first n bytes of xs followed by rest (one copy).
++def take_onto(n: Nat, xs: +List<U32>, rest: +List<U32>) -> +List<U32>:
++  match n xs:
++    case 0n _:
++      rest
++    case 1n+p Con{h, t}:
++      h <> take_onto(p, t, rest)
++    case 1n+p Nil{}:
++      rest
++
++# SHA-256 of the first len bytes of xs (xs must hold at least len bytes).
++def hash_n(+xs: +List<U32>, +len: U32) -> +List<U32>:
++  +nblk = ((len + 72) >> 6n : U32)
++  +k = ks()
++  digest(blocks(U32.to_nat(nblk), k, block_words(take_onto(U32.to_nat(len), xs, padding(len))), iv()))
++
++def hash_d_n(+xs: +List<U32>, +len: U32) -> +List<U32>:
++  hash_n(hash_n(xs, len), 32)
+--- /dev/null	2026-10-24 11:53:48.103801042 +0400
++++ wire/blk.bend (new file)	2026-10-27 16:31:37.826718983 +0400
+@@ -0,0 +1,103 @@
++# Block headers and blocks, matching zcash_primitives BlockHeader::read + Transaction::read.
++# A header is 140 fixed bytes, then the Equihash solution as a CompactSize-prefixed vector,
++# which Zebend requires to be the (200,9) length 1344: canonically fd 40 05, 1487 bytes total.
++# A block is a header, a CompactSize transaction count, the transactions, and nothing after.
++import Base
++import ../../node/wire/hb.bend as H
++import ../../node/wire/cs.bend as CS
++import ./txv.bend as T
++
++def header_len() -> U32:
++  1487
++
++# MAX_BLOCK_SIZE (consensus): checked against the input length before anything is parsed.
++def max_block() -> U32:
++  2000000
++
++# The smallest possible transaction (Sprout v1: header, two empty vectors, lock_time).
++def min_tx() -> U32:
++  10
++
++def header_at(+xs: +List<U32>) -> Bool:
++  U32.is_eq(H.at(xs, 140), 253) && U32.is_eq(H.at(xs, 141), 64) && U32.is_eq(H.at(xs, 142), 5)
++
++# A byte string that is exactly one header.
++def header_ok(+xs: +List<U32>) -> Bool:
++  U32.is_eq(H.length(xs), header_len()) && header_at(xs)
++
++def txs(n: Nat, +s: H.S) -> Maybe<&2, H.S>:
++  match n:
++    case 0n:
++      Some{s}
++    case 1n+m:
++      do Maybe<&2, H.S>:
++        s2 : H.S <- T.tx(s)
++        s3 : H.S <- txs(m, s2)
++        return s3
++
++def keep_n(+n: U32, m: Maybe<&2, H.S>) -> Maybe<&2, H.V>:
++  match m:
++    case None{}:
++      None{}
++    case Some{s}:
++      Some{H.V{n, s}}
++
++def counted(fits: Bool, c: H.V) -> Maybe<&2, H.V>:
++  match fits:
++    case False{}:
++      None{}
++    case True{}:
++      H.V{+n, +s} = c
++      keep_n(n, txs(U32.to_nat(n), s))
++
++# The count is bounded by the remaining bytes before any transaction is read.
++def bounded(c: H.V) -> Maybe<&2, H.V>:
++  H.V{+n, +s} = c
++  counted(U32.is_le(n, (H.rem(s) / min_tx() : U32)), H.V{n, s})
++
++def body(+s: H.S) -> Maybe<&2, H.V>:
++  do Maybe<&2, H.V>:
++    c : H.V <- CS.read(s)
++    r : H.V <- bounded(c)
++    return r
++
++def after_header(ok: Bool, +s: H.S) -> Maybe<&2, H.V>:
++  match ok:
++    case False{}:
++      None{}
++    case True{}:
++      do Maybe<&2, H.V>:
++        t : H.S <- H.skip(s, header_len())
++        r : H.V <- body(t)
++        return r
++
++def when_done(ok: Bool, +n: U32) -> Maybe<&2, U32>:
++  match ok:
++    case True{}:
++      Some{n}
++    case False{}:
++      None{}
++
++def done_count(m: Maybe<&2, H.V>) -> Maybe<&2, U32>:
++  match m:
++    case None{}:
++      None{}
++    case Some{r}:
++      H.V{+n, +s} = r
++      when_done(H.is_done(s), n)
++
++# A whole byte string that is exactly one block; answers its transaction count.
++def parse(+xs: +List<U32>) -> Maybe<&2, U32>:
++  +s = H.start(xs)
++  done_count(after_header(U32.is_le(header_len(), H.rem(s)) && header_at(xs), s))
++
++def capped(ok: Bool, +xs: +List<U32>) -> Maybe<&2, U32>:
++  match ok:
++    case False{}:
++      None{}
++    case True{}:
++      parse(xs)
++
++# parse, with the consensus size limit applied first.
++def parse_capped(+xs: +List<U32>) -> Maybe<&2, U32>:
++  capped(U32.is_le(H.length(xs), max_block()), xs)
+--- /dev/null	2026-10-24 11:53:48.103801042 +0400
++++ wire/txv.bend (new file)	2026-10-27 16:31:37.831927555 +0400
+@@ -0,0 +1,577 @@
++# fullnode/fast: node/wire/txv.bend with the curve-point decodings DEFERRED. Identical to
++# node/wire/txv.bend except jpoint and ppoint: here they only consume the 32 bytes (H.word
++# needs exactly 32 to remain, as before) and do not decode. The caller (fast/bend/delta.bend)
++# decodes every such point separately (fast/bend/pts.bend, at the same positions, in one
++# batch: on the Metal GPU when available) and rejects the block if any fails. A point check
++# never moves the cursor, so  (this validator accepts) AND (every point decodes)  is exactly
++# node/wire's verdict. The original decoding functions are kept below as *_decode.
++# A well-formedness validator for Zcash transactions (v1/v2 Sprout, v3, v4, v5, v6) that
++# accepts exactly what zcash_primitives 0.31 Transaction::read accepts when it consumes the
++# whole input. Every rule below cites the reader it mirrors. Before any vector is read, its
++# CompactSize count is checked against the bytes that remain (count * minimum element size),
++# so a huge count is rejected without looping or allocating.
++import Base
++import ../../halo2/lib/words.bend as Wd
++import ../../halo2/lib/fp.bend as Fp
++import ../../halo2/lib/pallas.bend as P
++import ../../node/wire/hb.bend as H
++import ../../node/wire/cs.bend as CS
++import ../../node/wire/fr.bend as Fr
++import ../../node/wire/jj.bend as J
++
++# ---------------------------------------------------------------- encoded values
++
++def keep_s(ok: Bool, s: H.S) -> Maybe<&2, H.S>:
++  match ok:
++    case True{}:
++      Some{s}
++    case False{}:
++      None{}
++
++def wcheck_pbase(r: H.W) -> Maybe<&2, H.S>:
++  H.Wv{+w, +s} = r
++  keep_s(Wd.is_lt(w, Fp.modulus()), s)
++
++# A canonical Pallas base field element (orchard Nullifier / ExtractedNoteCommitment / Anchor).
++def pbase(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    r : H.W <- H.word(s)
++    s2 : H.S <- wcheck_pbase(r)
++    return s2
++
++def pt_ok(+allow_id: Bool, m: Maybe<&2, P.Pt>, s: H.S) -> Maybe<&2, H.S>:
++  match m:
++    case None{}:
++      None{}
++    case Some{p}:
++      keep_s(allow_id || Bool.not(P.is_identity(p)), s)
++
++def wcheck_ppoint(+allow_id: Bool, r: H.W) -> Maybe<&2, H.S>:
++  H.Wv{+w, +s} = r
++  pt_ok(allow_id, P.decompress(w), s)
++
++# A Pallas point encoding (pasta_curves from_bytes); allow_id = False also rejects the identity.
++def ppoint(+allow_id: Bool, +s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    r : H.W <- H.word(s)
++    return H.wv_s(r)
++
++def ppoint_decode(+allow_id: Bool, +s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    r : H.W <- H.word(s)
++    s2 : H.S <- wcheck_ppoint(allow_id, r)
++    return s2
++
++def wcheck_fr(r: H.W) -> Maybe<&2, H.S>:
++  H.Wv{+w, +s} = r
++  keep_s(Wd.is_lt(w, Fr.modulus()), s)
++
++# A canonical BLS12-381 scalar (Sapling cmu / anchor).
++def frc(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    r : H.W <- H.word(s)
++    s2 : H.S <- wcheck_fr(r)
++    return s2
++
++def jj_ok(+nso: Bool, m: Maybe<&2, J.Jp>, s: H.S) -> Maybe<&2, H.S>:
++  match m:
++    case None{}:
++      None{}
++    case Some{p}:
++      keep_s(Bool.not(nso) || Bool.not(J.is_small_order(p)), s)
++
++def wcheck_jj(+nso: Bool, r: H.W) -> Maybe<&2, H.S>:
++  H.Wv{+w, +s} = r
++  jj_ok(nso, J.decode(w), s)
++
++# A Jubjub point encoding; nso = True also rejects small-order points (Sapling cv).
++def jpoint(+nso: Bool, +s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    r : H.W <- H.word(s)
++    return H.wv_s(r)
++
++def jpoint_decode(+nso: Bool, +s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    r : H.W <- H.word(s)
++    s2 : H.S <- wcheck_jj(nso, r)
++    return s2
++
++# A CompactSize-prefixed byte string (Script, proof bytes).
++def bytes_vec(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    +c : H.V <- CS.read(s)
++    s2 : H.S <- H.skip(H.st(c), H.val(c))
++    return s2
++
++
++type Elt is Data:
++  KIn{}
++  KOut{}
++  KSpend5{}
++  KOut5{}
++  KSpend4{}
++  KOut4{}
++  KJsPhgr{}
++  KJsGroth{}
++  KAct{}
++
++def min_size(k: Elt) -> U32:
++  match k:
++    case KIn{}:
++      41
++    case KOut{}:
++      9
++    case KSpend5{}:
++      96
++    case KOut5{}:
++      756
++    case KSpend4{}:
++      384
++    case KOut4{}:
++      948
++    case KJsPhgr{}:
++      1802
++    case KJsGroth{}:
++      1698
++    case KAct{}:
++      820
++
++# zcash_transparent TxIn::read: outpoint (36), script_sig, sequence (4).
++def txin(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    a : H.S <- H.skip(s, 36)
++    b : H.S <- bytes_vec(a)
++    c : H.S <- H.skip(b, 4)
++    return c
++
++# zcash_transparent TxOut::read: Zatoshis (0..=MAX_MONEY), script_pubkey.
++def txout(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    a : H.S <- H.amount(True{}, s)
++    b : H.S <- bytes_vec(a)
++    return b
++
++# sapling read_spend_v5: cv (not small order), nullifier, rk.
++def spend5(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    a : H.S <- jpoint(True{}, s)
++    b : H.S <- H.skip(a, 32)
++    c : H.S <- jpoint(False{}, b)
++    return c
++
++# sapling read_output_v5: cv (not small order), cmu (canonical), epk, enc (580), out (80).
++def out5(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    a : H.S <- jpoint(True{}, s)
++    b : H.S <- frc(a)
++    c : H.S <- H.skip(b, 692)
++    return c
++
++# sapling read_spend_v4: cv, anchor (canonical), nullifier, rk, zkproof (192), sig (64).
++def spend4(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    a : H.S <- jpoint(True{}, s)
++    b : H.S <- frc(a)
++    c : H.S <- H.skip(b, 32)
++    e : H.S <- jpoint(False{}, c)
++    f : H.S <- H.skip(e, 256)
++    return f
++
++# sapling read_output_v4: cv, cmu, epk, enc, out, zkproof (192).
++def out4(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    a : H.S <- jpoint(True{}, s)
++    b : H.S <- frc(a)
++    c : H.S <- H.skip(b, 884)
++    return c
++
++def js_rest(g: Bool) -> U32:
++  match g:
++    case True{}:
++      1682
++    case False{}:
++      1786
++
++# sprout JsDescription::read: vpub_old, vpub_new (ZatBalance::from_u64: <= MAX_MONEY), then
++# anchor, 2 nullifiers, 2 commitments, ephemeral key, random seed, 2 macs (288 bytes), the
++# proof (192 Groth16 or 296 PHGR) and two 601-byte ciphertexts.
++def js(+groth: Bool, +s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    a : H.S <- H.amount(True{}, s)
++    b : H.S <- H.amount(True{}, a)
++    c : H.S <- H.skip(b, js_rest(groth))
++    return c
++
++# orchard read_action_without_auth + Action::from_parts: cv (Pallas point), nf (canonical),
++# rk (Pallas point, not the identity), cmx (canonical), epk (Pallas point, not the identity),
++# enc (580), out (80).
++def action(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    a : H.S <- ppoint(True{}, s)
++    b : H.S <- pbase(a)
++    c : H.S <- ppoint(False{}, b)
++    e : H.S <- pbase(c)
++    f : H.S <- ppoint(False{}, e)
++    g : H.S <- H.skip(f, 660)
++    return g
++
++def elem(k: Elt, +s: H.S) -> Maybe<&2, H.S>:
++  match k:
++    case KIn{}:
++      txin(s)
++    case KOut{}:
++      txout(s)
++    case KSpend5{}:
++      spend5(s)
++    case KOut5{}:
++      out5(s)
++    case KSpend4{}:
++      spend4(s)
++    case KOut4{}:
++      out4(s)
++    case KJsPhgr{}:
++      js(False{}, s)
++    case KJsGroth{}:
++      js(True{}, s)
++    case KAct{}:
++      action(s)
++
++def elems(n: Nat, +k: Elt, +s: H.S) -> Maybe<&2, H.S>:
++  match n:
++    case 0n:
++      Some{s}
++    case 1n+m:
++      do Maybe<&2, H.S>:
++        s2 : H.S <- elem(k, s)
++        s3 : H.S <- elems(m, k, s2)
++        return s3
++
++def vec_fin(+n: U32, m: Maybe<&2, H.S>) -> Maybe<&2, H.V>:
++  match m:
++    case None{}:
++      None{}
++    case Some{s}:
++      Some{H.V{n, s}}
++
++def vec_go(fits: Bool, +k: Elt, c: H.V) -> Maybe<&2, H.V>:
++  match fits:
++    case False{}:
++      None{}
++    case True{}:
++      H.V{+n, +s} = c
++      vec_fin(n, elems(U32.to_nat(n), k, s))
++
++# Bound the count by the remaining bytes before reading any element.
++def vec_bounded(+k: Elt, c: H.V) -> Maybe<&2, H.V>:
++  H.V{+n, +s} = c
++  vec_go(U32.is_le(n, (H.rem(s) / min_size(k) : U32)), k, H.V{n, s})
++
++# zcash_encoding Vector::read: a canonical CompactSize count, then that many elements.
++# Answers the count and the cursor after the last element.
++def vec(+k: Elt, +s: H.S) -> Maybe<&2, H.V>:
++  do Maybe<&2, H.V>:
++    +c : H.V <- CS.read(s)
++    r : H.V <- vec_bounded(k, c)
++    return r
++
++
++def transparent(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    +a : H.V <- vec(KIn{}, s)
++    +b : H.V <- vec(KOut{}, H.st(a))
++    return H.st(b)
++
++def when(b: Bool, +s: H.S, f: H.S -> Maybe<&2, H.S>) -> Maybe<&2, H.S>:
++  match b:
++    case True{}:
++      f(s)
++    case False{}:
++      Some{s}
++
++def sap5_tail(+ns: U32, +no: U32, +s: H.S) -> Maybe<&2, H.S>:
++  +any = Bool.not(U32.is_eq(ns, 0) && U32.is_eq(no, 0))
++  do Maybe<&2, H.S>:
++    a : H.S <- when(any, s, x => H.amount(False{}, x))
++    b : H.S <- when(Bool.not(U32.is_eq(ns, 0)), a, x => frc(x))
++    c : H.S <- H.skip(b, (ns * 256 : U32))
++    e : H.S <- H.skip(c, (no * 192 : U32))
++    f : H.S <- when(any, e, x => H.skip(x, 64))
++    return f
++
++# sapling read_v5_bundle: spends, outputs, valueBalance and anchor when present, then the
++# spend proofs + spend auth sigs (256 each), output proofs (192 each), binding sig.
++def sapling5(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    +sp : H.V <- vec(KSpend5{}, s)
++    +op : H.V <- vec(KOut5{}, H.st(sp))
++    t : H.S <- sap5_tail(H.val(sp), H.val(op), H.st(op))
++    return t
++
++# sapling read_v4_components: valueBalance, spends, outputs; returns whether any are present.
++type V4 is Data:
++  V4{any: Bool, s: H.S}
++
++def sapling4(+s: H.S) -> Maybe<&2, V4>:
++  do Maybe<&2, V4>:
++    a : H.S <- H.amount(False{}, s)
++    +sp : H.V <- vec(KSpend4{}, a)
++    +op : H.V <- vec(KOut4{}, H.st(sp))
++    return V4{Bool.not(U32.is_eq(H.val(sp), 0) && U32.is_eq(H.val(op), 0)), H.st(op)}
++
++def js_kind(g: Bool) -> Elt:
++  match g:
++    case True{}:
++      KJsGroth{}
++    case False{}:
++      KJsPhgr{}
++
++# Sprout joinsplits: a vector of JsDescription; when non-empty, pubkey (32) + sig (64).
++def joinsplits(+groth: Bool, +s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    +j : H.V <- vec(js_kind(groth), s)
++    t : H.S <- when(Bool.not(U32.is_eq(H.val(j), 0)), H.st(j), x => H.skip(x, 96))
++    return t
++
++# The Orchard-protocol bundle version a slot uses under a branch (bundle_version_for_branch).
++type Bv is Data:
++  BvNone{}
++  Bv{insecure: Bool, orchard_pool: Bool}
++
++# Flags::from_byte: bits 3..7 must be 0; bit 2 must be 0 for the Orchard pool.
++def flags_ok(+b: U32, +orchard_pool: Bool) -> Bool:
++  U32.is_eq((b .&. 248 : U32), 0) && (Bool.not(orchard_pool) || U32.is_eq((b .&. 4 : U32), 0))
++
++def flags_check(+orchard_pool: Bool, r: H.V) -> Maybe<&2, H.S>:
++  H.V{+b, +s} = r
++  keep_s(flags_ok(b, orchard_pool), s)
++
++# validate_proof_size: proof length = 2720 + 2272 * actions, except the InsecureV1 circuit.
++def proof_check(+insecure: Bool, +n: U32, r: H.V) -> Maybe<&2, H.S>:
++  H.V{+len, +s} = r
++  keep_s(insecure || U32.is_eq(len, (2720 + 2272 * n : U32)), s)
++
++def bundle_body(bv: Bv, +n: U32, +s: H.S) -> Maybe<&2, H.S>:
++  match bv:
++    case BvNone{}:
++      None{}
++    case Bv{+insecure, +orch}:
++      do Maybe<&2, H.S>:
++        f : H.V <- H.u8(s)
++        a : H.S <- flags_check(orch, f)
++        b : H.S <- H.amount(False{}, a)
++        c : H.S <- pbase(b)
++        +pl : H.V <- CS.read(c)
++        e : H.S <- proof_check(insecure, n, pl)
++        g : H.S <- H.skip(e, H.val(pl))
++        h : H.S <- H.skip(g, (64 * n : U32))
++        i : H.S <- H.skip(h, 64)
++        return i
++
++def bundle_sel(empty: Bool, bv: Bv, +n: U32, +s: H.S) -> Maybe<&2, H.S>:
++  match empty:
++    case True{}:
++      Some{s}
++    case False{}:
++      bundle_body(bv, n, s)
++
++def bundle_after(bv: Bv, +n: U32, +s: H.S) -> Maybe<&2, H.S>:
++  bundle_sel(U32.is_eq(n, 0), bv, n, s)
++
++# zcash_primitives components::orchard read_bundle: actions; if non-empty, the slot must be
++# supported under the branch, then flags, valueBalance, anchor, proof, auth sigs, binding sig.
++def bundle(bv: Bv, +s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    +a : H.V <- vec(KAct{}, s)
++    b : H.S <- bundle_after(bv, H.val(a), H.st(a))
++    return b
++
++
++def known_branch(+b: U32) -> Bool:
++  U32.is_eq(b, 0) || U32.is_eq(b, 1537743641) || U32.is_eq(b, 1991772603) ||
++  U32.is_eq(b, 733220448) || U32.is_eq(b, 4122551051) || U32.is_eq(b, 3925833126) ||
++  U32.is_eq(b, 3268858036) || U32.is_eq(b, 3370586197) || U32.is_eq(b, 1307332080) ||
++  U32.is_eq(b, 1412952880) || U32.is_eq(b, 933566043) || U32.is_eq(b, 1998129881)
++
++def is_nu63_plus(+b: U32) -> Bool:
++  U32.is_eq(b, 933566043) || U32.is_eq(b, 1998129881)
++
++def is_nu5_insecure(+b: U32) -> Bool:
++  U32.is_eq(b, 3268858036) || U32.is_eq(b, 3370586197) || U32.is_eq(b, 1307332080)
++
++def bv_v2(v2plus: Bool) -> Bv:
++  match v2plus:
++    case True{}:
++      Bv{False{}, True{}}
++    case False{}:
++      BvNone{}
++
++def orchard_bv_sel(+ins: Bool, +v2plus: Bool) -> Bv:
++  match ins:
++    case True{}:
++      Bv{True{}, True{}}
++    case False{}:
++      bv_v2(v2plus)
++
++def orchard_bv(+b: U32) -> Bv:
++  orchard_bv_sel(is_nu5_insecure(b), U32.is_eq(b, 1412952880) || is_nu63_plus(b))
++
++def ironwood_sel(ok: Bool) -> Bv:
++  match ok:
++    case True{}:
++      Bv{False{}, False{}}
++    case False{}:
++      BvNone{}
++
++def ironwood_bv(+b: U32) -> Bv:
++  ironwood_sel(is_nu63_plus(b))
++
++def keep_v(ok: Bool, v: H.V) -> Maybe<&2, H.V>:
++  match ok:
++    case True{}:
++      Some{v}
++    case False{}:
++      None{}
++
++def branch_check(r: H.V) -> Maybe<&2, H.V>:
++  H.V{+b, +s} = r
++  keep_v(known_branch(b), H.V{b, s})
++
++# read_header_fragment: a known consensus branch id, lock_time, expiry_height.
++def header_fragment(+s: H.S) -> Maybe<&2, H.V>:
++  do Maybe<&2, H.V>:
++    r : H.V <- H.u32le(s)
++    +b : H.V <- branch_check(r)
++    t : H.S <- H.skip(H.st(b), 8)
++    return H.V{H.val(b), t}
++
++# read_v5: header fragment, transparent, Sapling v5, Orchard slot.
++def tx_v5(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    +h : H.V <- header_fragment(s)
++    t : H.S <- transparent(H.st(h))
++    sp : H.S <- sapling5(t)
++    o : H.S <- bundle(orchard_bv(H.val(h)), sp)
++    return o
++
++# read_v6: header fragment, transparent, Sapling v5, Orchard slot, Ironwood slot.
++def tx_v6(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    +h : H.V <- header_fragment(s)
++    t : H.S <- transparent(H.st(h))
++    sp : H.S <- sapling5(t)
++    o : H.S <- bundle(orchard_bv(H.val(h)), sp)
++    i : H.S <- bundle(ironwood_bv(H.val(h)), o)
++    return i
++
++def v4_binding(r: V4) -> Maybe<&2, H.S>:
++  V4{+any, +s} = r
++  when(any, s, x => H.skip(x, 64))
++
++def v4_s(r: V4) -> H.S:
++  V4{_, +s} = r
++  s
++
++def v4_any(r: V4) -> Bool:
++  V4{+any, _} = r
++  any
++
++# read_v4 for V4: transparent, lock, expiry, Sapling v4 components, Groth16 joinsplits,
++# then the binding signature when there are Sapling spends or outputs.
++def tx_v4(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    t : H.S <- transparent(s)
++    a : H.S <- H.skip(t, 8)
++    +sap : V4 <- sapling4(a)
++    j : H.S <- joinsplits(True{}, v4_s(sap))
++    b : H.S <- v4_binding(V4{v4_any(sap), j})
++    return b
++
++# read_v4 for V3: transparent, lock, expiry, PHGR joinsplits.
++def tx_v3(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    t : H.S <- transparent(s)
++    a : H.S <- H.skip(t, 8)
++    j : H.S <- joinsplits(False{}, a)
++    return j
++
++# read_v4 for Sprout(v): transparent, lock; PHGR joinsplits when v >= 2.
++def tx_sprout(+v: U32, +s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    t : H.S <- transparent(s)
++    a : H.S <- H.skip(t, 4)
++    j : H.S <- when(U32.is_le(2, v), a, x => joinsplits(False{}, x))
++    return j
++
++def by_v6(m: Bool, +s: H.S) -> Maybe<&2, H.S>:
++  match m:
++    case True{}:
++      tx_v6(s)
++    case False{}:
++      None{}
++
++def by_v5(m: Bool, +ver: U32, +g: U32, +s: H.S) -> Maybe<&2, H.S>:
++  match m:
++    case True{}:
++      tx_v5(s)
++    case False{}:
++      by_v6(U32.is_eq(ver, 6) && U32.is_eq(g, 3632576152), s)
++
++def by_v4(m: Bool, +ver: U32, +g: U32, +s: H.S) -> Maybe<&2, H.S>:
++  match m:
++    case True{}:
++      tx_v4(s)
++    case False{}:
++      by_v5(U32.is_eq(ver, 5) && U32.is_eq(g, 648488714), ver, g, s)
++
++def by_v3(m: Bool, +ver: U32, +g: U32, +s: H.S) -> Maybe<&2, H.S>:
++  match m:
++    case True{}:
++      tx_v3(s)
++    case False{}:
++      by_v4(U32.is_eq(ver, 4) && U32.is_eq(g, 2301567109), ver, g, s)
++
++def by_group(+ver: U32, r: H.V) -> Maybe<&2, H.S>:
++  H.V{+g, +s} = r
++  by_v3(U32.is_eq(ver, 3) && U32.is_eq(g, 63210096), ver, g, s)
++
++def overwintered(+ver: U32, +s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    g : H.V <- H.u32le(s)
++    t : H.S <- by_group(ver, g)
++    return t
++
++def sprout_or_none(ok: Bool, +ver: U32, +s: H.S) -> Maybe<&2, H.S>:
++  match ok:
++    case True{}:
++      tx_sprout(ver, s)
++    case False{}:
++      None{}
++
++def by_header(ow: Bool, +ver: U32, +s: H.S) -> Maybe<&2, H.S>:
++  match ow:
++    case True{}:
++      overwintered(ver, s)
++    case False{}:
++      sprout_or_none(U32.is_le(1, ver), ver, s)
++
++def after_header(r: H.V) -> Maybe<&2, H.S>:
++  H.V{+h, +s} = r
++  by_header(U32.is_eq((h >> 31n : U32), 1), (h .&. 2147483647 : U32), s)
++
++# TxVersion::read, then the version's reader. Answers the cursor after the transaction.
++def tx(+s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    +h : H.V <- H.u32le(s)
++    t : H.S <- after_header(h)
++    return t
++
++def is_some_done(m: Maybe<&2, H.S>) -> Bool:
++  match m:
++    case None{}:
++      False{}
++    case Some{s}:
++      H.is_done(s)
++
++# A whole byte string is exactly one valid transaction.
++def valid(+bs: +List<U32>) -> Bool:
++  is_some_done(tx(H.start(bs)))
+# For review: fullnode/wire/txv.bend against node/wire/txv.bend (only the point decoders change)
+--- ../node/wire/txv.bend	2026-10-25 12:40:34.661987651 +0400
++++ fast/bench/mirror/fullnode/wire/txv.bend	2026-10-27 16:31:37.831927555 +0400
+@@ -1,3 +1,10 @@
++# fullnode/fast: node/wire/txv.bend with the curve-point decodings DEFERRED. Identical to
++# node/wire/txv.bend except jpoint and ppoint: here they only consume the 32 bytes (H.word
++# needs exactly 32 to remain, as before) and do not decode. The caller (fast/bend/delta.bend)
++# decodes every such point separately (fast/bend/pts.bend, at the same positions, in one
++# batch: on the Metal GPU when available) and rejects the block if any fails. A point check
++# never moves the cursor, so  (this validator accepts) AND (every point decodes)  is exactly
++# node/wire's verdict. The original decoding functions are kept below as *_decode.
+ # A well-formedness validator for Zcash transactions (v1/v2 Sprout, v3, v4, v5, v6) that
+ # accepts exactly what zcash_primitives 0.31 Transaction::read accepts when it consumes the
+ # whole input. Every rule below cites the reader it mirrors. Before any vector is read, its
+@@ -7,10 +14,10 @@
+ import ../../halo2/lib/words.bend as Wd
+ import ../../halo2/lib/fp.bend as Fp
+ import ../../halo2/lib/pallas.bend as P
+-import ./hb.bend as H
+-import ./cs.bend as CS
+-import ./fr.bend as Fr
+-import ./jj.bend as J
++import ../../node/wire/hb.bend as H
++import ../../node/wire/cs.bend as CS
++import ../../node/wire/fr.bend as Fr
++import ../../node/wire/jj.bend as J
+ 
+ # ---------------------------------------------------------------- encoded values
+ 
+@@ -47,6 +54,11 @@
+ def ppoint(+allow_id: Bool, +s: H.S) -> Maybe<&2, H.S>:
+   do Maybe<&2, H.S>:
+     r : H.W <- H.word(s)
++    return H.wv_s(r)
++
++def ppoint_decode(+allow_id: Bool, +s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    r : H.W <- H.word(s)
+     s2 : H.S <- wcheck_ppoint(allow_id, r)
+     return s2
+ 
+@@ -76,6 +88,11 @@
+ def jpoint(+nso: Bool, +s: H.S) -> Maybe<&2, H.S>:
+   do Maybe<&2, H.S>:
+     r : H.W <- H.word(s)
++    return H.wv_s(r)
++
++def jpoint_decode(+nso: Bool, +s: H.S) -> Maybe<&2, H.S>:
++  do Maybe<&2, H.S>:
++    r : H.W <- H.word(s)
+     s2 : H.S <- wcheck_jj(nso, r)
+     return s2
+ 
+# fullnode/wire/blk.bend against node/wire/blk.bend (imports only)
+--- ../node/wire/blk.bend	2026-10-25 12:40:34.662100818 +0400
++++ fast/bench/mirror/fullnode/wire/blk.bend	2026-10-27 16:31:37.826718983 +0400
+@@ -3,8 +3,8 @@
+ # which Zebend requires to be the (200,9) length 1344: canonically fd 40 05, 1487 bytes total.
+ # A block is a header, a CompactSize transaction count, the transactions, and nothing after.
+ import Base
+-import ./hb.bend as H
+-import ./cs.bend as CS
++import ../../node/wire/hb.bend as H
++import ../../node/wire/cs.bend as CS
+ import ./txv.bend as T
+ 
+ def header_len() -> U32:
+# fullnode/bend/sha.bend against node/block/sha256.bend
+--- ../node/block/sha256.bend	2026-10-24 02:20:01.285791171 +0400
++++ fast/bench/mirror/fullnode/bend/sha.bend	2026-10-27 16:31:37.822094080 +0400
+@@ -1,9 +1,13 @@
+-# SHA-256 (FIPS 180-4) over byte lists, and SHA-256d, the Zcash block hash and
+-# P2P checksum. Message words are big-endian; the schedule is a sliding window
+-# of 16 words: at round t it holds W[t..t+15], and W[t+16] = σ1(W[t+14]) +
+-# W[t+9] + σ0(W[t+1]) + W[t].
++# fullnode/fast: SHA-256 / SHA-256d (FIPS 180-4) over byte lists, as node/block/sha256.bend
++# (same rounds, same schedule window, same padding) with the list work made linear:
++#   - a message block's 16 words are read in one pass (node/block re-dropped from the block
++#     start for every word: 480 list steps per 64 bytes);
++#   - the round constants are built once per message, not once per block;
++#   - the padded message is ONE copy of the input prefix (take_onto), not take + append,
++#     and its length is passed in instead of counted.
++# Tested: every txid / block hash / merkle verdict identical to node/block's on the bench
++# windows (fast/README.md).
+ import Base
+-import ./bytes.bend as B
+ 
+ type S8 is Data:
+   S8{a: U32, b: U32, c: U32, d: U32, e: U32, f: U32, g: U32, h: U32}
+@@ -71,50 +75,130 @@
+   S8{(a0 + a1 : U32), (b0 + b1 : U32), (c0 + c1 : U32), (d0 + d1 : U32),
+      (e0 + e1 : U32), (f0 + f1 : U32), (g0 + g1 : U32), (h0 + h1 : U32)}
+ 
+-def get_be32(xs: +List<U32>) -> U32:
++# A big-endian word and the bytes after it.
++def rd4(xs: +List<U32>) -> U32 & +List<U32>:
+   match xs:
+-    case Con{a, Con{b, Con{c, Con{d, _}}}}:
+-      ((a << 24n) .|. (b << 16n) .|. (c << 8n) .|. d : U32)
++    case Con{a, Con{b, Con{c, Con{d, t}}}}:
++      (((a << 24n) .|. (b << 16n) .|. (c << 8n) .|. d : U32), t)
+     case _:
+-      0
++      (0, Nil{})
+ 
+-def be_at(+xs: +List<U32>, n: Nat) -> U32:
+-  get_be32(B.drop(xs, n))
++# The 16 words of the next 64-byte block, read in one pass, and the bytes after it.
++def bw15(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, +w7: U32, +w8: U32, +w9: U32, +w10: U32, +w11: U32, +w12: U32, +w13: U32, +w14: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w15, r) = p
++  (W16{w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15}, r)
+ 
+-def block_words(+xs: +List<U32>) -> W16:
+-  W16{be_at(xs, 0n), be_at(xs, 4n), be_at(xs, 8n), be_at(xs, 12n),
+-      be_at(xs, 16n), be_at(xs, 20n), be_at(xs, 24n), be_at(xs, 28n),
+-      be_at(xs, 32n), be_at(xs, 36n), be_at(xs, 40n), be_at(xs, 44n),
+-      be_at(xs, 48n), be_at(xs, 52n), be_at(xs, 56n), be_at(xs, 60n)}
++def bw14(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, +w7: U32, +w8: U32, +w9: U32, +w10: U32, +w11: U32, +w12: U32, +w13: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w14, r) = p
++  bw15(w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, rd4(r))
+ 
+-def compress(+st: S8, +block: +List<U32>) -> S8:
+-  add8(st, rounds(ks(), st, block_words(block)))
++def bw13(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, +w7: U32, +w8: U32, +w9: U32, +w10: U32, +w11: U32, +w12: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w13, r) = p
++  bw14(w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, rd4(r))
+ 
+-def blocks(n: Nat, +xs: +List<U32>, +st: S8) -> S8:
++def bw12(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, +w7: U32, +w8: U32, +w9: U32, +w10: U32, +w11: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w12, r) = p
++  bw13(w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, rd4(r))
++
++def bw11(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, +w7: U32, +w8: U32, +w9: U32, +w10: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w11, r) = p
++  bw12(w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, rd4(r))
++
++def bw10(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, +w7: U32, +w8: U32, +w9: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w10, r) = p
++  bw11(w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, rd4(r))
++
++def bw9(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, +w7: U32, +w8: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w9, r) = p
++  bw10(w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, rd4(r))
++
++def bw8(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, +w7: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w8, r) = p
++  bw9(w0, w1, w2, w3, w4, w5, w6, w7, w8, rd4(r))
++
++def bw7(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, +w6: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w7, r) = p
++  bw8(w0, w1, w2, w3, w4, w5, w6, w7, rd4(r))
++
++def bw6(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, +w5: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w6, r) = p
++  bw7(w0, w1, w2, w3, w4, w5, w6, rd4(r))
++
++def bw5(+w0: U32, +w1: U32, +w2: U32, +w3: U32, +w4: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w5, r) = p
++  bw6(w0, w1, w2, w3, w4, w5, rd4(r))
++
++def bw4(+w0: U32, +w1: U32, +w2: U32, +w3: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w4, r) = p
++  bw5(w0, w1, w2, w3, w4, rd4(r))
++
++def bw3(+w0: U32, +w1: U32, +w2: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w3, r) = p
++  bw4(w0, w1, w2, w3, rd4(r))
++
++def bw2(+w0: U32, +w1: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w2, r) = p
++  bw3(w0, w1, w2, rd4(r))
++
++def bw1(+w0: U32, p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w1, r) = p
++  bw2(w0, w1, rd4(r))
++
++def bw0(p: U32 & +List<U32>) -> W16 & +List<U32>:
++  (w0, r) = p
++  bw1(w0, rd4(r))
++
++def block_words(xs: +List<U32>) -> W16 & +List<U32>:
++  bw0(rd4(xs))
++
++def compress(+k: +List<U32>, +st: S8, +win: W16) -> S8:
++  add8(st, rounds(k, st, win))
++
++def blocks(n: Nat, +k: +List<U32>, wb: W16 & +List<U32>, +st: S8) -> S8:
+   match n:
+     case 0n:
+       st
+     case 1n+p:
+-      blocks(p, B.drop(xs, 64n), compress(st, xs))
++      (win, rest) = wb
++      blocks(p, k, block_words(rest), compress(k, st, win))
+ 
+ def be32(+x: U32) -> +List<U32>:
+   [(x >> 24n : U32), ((x >> 16n) .&. 255 : U32), ((x >> 8n) .&. 255 : U32), (x .&. 255 : U32)]
+ 
++def be32_onto(+x: U32, acc: +List<U32>) -> +List<U32>:
++  (x >> 24n : U32) <> ((x >> 16n) .&. 255 : U32) <> ((x >> 8n) .&. 255 : U32) <> (x .&. 255 : U32) <> acc
++
+ def digest(st: S8) -> +List<U32>:
+   S8{a, b, c, d, e, f, g, h} = st
+-  B.append(be32(a), B.append(be32(b), B.append(be32(c), B.append(be32(d),
+-    B.append(be32(e), B.append(be32(f), B.append(be32(g), be32(h))))))))
++  be32_onto(a, be32_onto(b, be32_onto(c, be32_onto(d, be32_onto(e, be32_onto(f, be32_onto(g, be32(h))))))))
++
++def zeros_onto(n: Nat, acc: +List<U32>) -> +List<U32>:
++  match n:
++    case 0n:
++      acc
++    case 1n+p:
++      zeros_onto(p, 0 <> acc)
+ 
+ # 0x80, then zeros until the length is 56 mod 64, then the bit length (64-bit big-endian).
+-def pad(+xs: +List<U32>, +len: U32) -> +List<U32>:
++def padding(+len: U32) -> +List<U32>:
+   +zs = ((119 - (len .&. 63)) .&. 63 : U32)
+-  B.append(xs, 128 <> B.append(B.zeros(U32.to_nat(zs)),
+-    B.append(be32((len >> 29n : U32)), be32((len << 3n : U32)))))
++  128 <> zeros_onto(U32.to_nat(zs), be32_onto((len >> 29n : U32), be32((len << 3n : U32))))
++
++# The first n bytes of xs followed by rest (one copy).
++def take_onto(n: Nat, xs: +List<U32>, rest: +List<U32>) -> +List<U32>:
++  match n xs:
++    case 0n _:
++      rest
++    case 1n+p Con{h, t}:
++      h <> take_onto(p, t, rest)
++    case 1n+p Nil{}:
++      rest
+ 
+-def hash(+xs: +List<U32>) -> +List<U32>:
+-  +len = B.length(xs)
++# SHA-256 of the first len bytes of xs (xs must hold at least len bytes).
++def hash_n(+xs: +List<U32>, +len: U32) -> +List<U32>:
+   +nblk = ((len + 72) >> 6n : U32)
+-  digest(blocks(U32.to_nat(nblk), pad(xs, len), iv()))
++  +k = ks()
++  digest(blocks(U32.to_nat(nblk), k, block_words(take_onto(U32.to_nat(len), xs, padding(len))), iv()))
+ 
+-def hash_d(+xs: +List<U32>) -> +List<U32>:
+-  hash(hash(xs))
++def hash_d_n(+xs: +List<U32>, +len: U32) -> +List<U32>:
++  hash_n(hash_n(xs, len), 32)

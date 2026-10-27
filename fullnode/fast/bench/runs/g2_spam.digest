@@ -1,0 +1,19 @@
+utxo (29351833, '3db3543a4adce239')
+nf (1066798, '247f826ce4f53bf5')
+tx (3085589, 'e02ad8eddd83426b')
+blk (327127, '382418f228eb66f9')
+anchor (0, 'e3b0c44298fc1c14')
+undo (600, '78747be05ca09534')
+tip {'height': 1802999, 'hash': '0000000000b21fe4db9b7f6f3728257b3a8683b2d811b2e589ee8564b57ebbd7'}
+pools None
+leaf_lengths {'sprout': [32166720, 1524248], 'sapling': [33756032, 11952], 'orchard': [1877280, 2432], 'ironwood': [0, 0]}
+audit_disagreements None
+addr_deferred True
+leaves/ironwood.bin e3b0c44298fc1c14
+leaves/ironwood.blk e3b0c44298fc1c14
+leaves/orchard.bin bbd9a4af572e5cd8
+leaves/orchard.blk 1822ff5038ae208d
+leaves/sapling.bin 2d482044b462bef4
+leaves/sapling.blk 15d223da821947d7
+leaves/sprout.bin 66270f279ad91acb
+leaves/sprout.blk f411cd8091a7835d

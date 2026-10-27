@@ -1,0 +1,7 @@
+2026e04821e11d22546a4753443c85df  sync.py
+058109b75e16f09b686dfe5f1aa80bdc  store.py
+027d8424e9b23499b8f598f2727ed612  rules.py
+401379c6a753d7a897d891dcabb02bbd  rules/rules.bend
+68aecf108e73ad373f92b3c7ca21385a  bend/delta.bend
+4e25a7bea74f1dda3d38e9582f4decb3  bend/parse.bend
+589863479c1faa957098a958c282157d  bend/zip244.bend

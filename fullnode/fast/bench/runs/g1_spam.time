@@ -1,0 +1,20 @@
+load before: { 45.42 55.77 48.40 }
+       76.00 real       505.29 user        19.66 sys
+           638337024  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             1937397  page reclaims
+                 630  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+              161385  voluntary context switches
+             1071713  involuntary context switches
+         52245352748  instructions retired
+         26753046482  cycles elapsed
+           469533728  peak memory footprint
+load after: { 59.61 58.05 49.90 }

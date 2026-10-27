@@ -1,0 +1,26 @@
+18:03:22 sync: state tip 1799999, last checkpoint 3522460, verified headers to 3532408, 16 Bend jobs
+18:03:37 tip 1800223  window 224 blocks 101.2 MB in 15.1 s (waited for bend 6.1 s [bend 6.0 s, overlapped]; lookups 0.4 s, rules 8.4 s; resolve 0.2 s)  avg 14.8 blocks/s 6.68 MB/s  rules parts 15 reruns 0
+18:03:47 committed tip 1800223: 1 windows, 101 MB in one transaction (writer 1.2 s)
+18:03:47 tip 1800449  window 226 blocks 101.2 MB in 9.8 s (waited for bend 0.0 s [bend 6.2 s, overlapped]; lookups 0.4 s, rules 9.2 s; resolve 0.2 s)  avg 18.1 blocks/s 8.12 MB/s  rules parts 30 reruns 0
+18:04:03 committed tip 1800449: 1 windows, 101 MB in one transaction (writer 0.2 s)
+18:04:03 tip 1800655  window 206 blocks 101.1 MB in 15.7 s (waited for bend 0.0 s [bend 6.9 s, overlapped]; lookups 0.5 s, rules 15.0 s; resolve 0.2 s)  avg 16.1 blocks/s 7.46 MB/s  rules parts 45 reruns 0
+18:04:15 committed tip 1800655: 1 windows, 101 MB in one transaction (writer 0.3 s)
+18:04:15 tip 1800879  window 224 blocks 101.5 MB in 12.5 s (waited for bend 0.0 s [bend 9.9 s, overlapped]; lookups 0.5 s, rules 11.9 s; resolve 0.1 s)  avg 16.5 blocks/s 7.62 MB/s  rules parts 60 reruns 0
+18:04:28 committed tip 1800879: 1 windows, 102 MB in one transaction (writer 0.2 s)
+18:04:28 tip 1801081  window 202 blocks 102.6 MB in 12.7 s (waited for bend 0.0 s [bend 9.8 s, overlapped]; lookups 0.5 s, rules 12.1 s; resolve 0.1 s)  avg 16.4 blocks/s 7.70 MB/s  rules parts 74 reruns 0
+18:04:38 committed tip 1801081: 1 windows, 103 MB in one transaction (writer 0.2 s)
+18:04:38 tip 1802354  window 1273 blocks 101.5 MB in 9.5 s (waited for bend 0.0 s [bend 9.8 s, overlapped]; lookups 1.3 s, rules 7.7 s; resolve 0.6 s)  avg 31.2 blocks/s 8.07 MB/s  rules parts 89 reruns 0
+18:04:49 committed tip 1802354: 1 windows, 101 MB in one transaction (writer 2.9 s)
+18:04:49 tip 1802461  window 107 blocks 102.2 MB in 11.9 s (waited for bend 0.0 s [bend 6.9 s, overlapped]; lookups 0.4 s, rules 11.3 s; resolve 0.1 s)  avg 28.2 blocks/s 8.15 MB/s  rules parts 103 reruns 0
+18:05:01 committed tip 1802461: 1 windows, 102 MB in one transaction (writer 0.2 s)
+18:05:01 tip 1802569  window 108 blocks 101.3 MB in 11.4 s (waited for bend 0.0 s [bend 7.2 s, overlapped]; lookups 0.9 s, rules 10.3 s; resolve 0.1 s)  avg 26.0 blocks/s 8.23 MB/s  rules parts 117 reruns 0
+18:05:12 committed tip 1802569: 1 windows, 101 MB in one transaction (writer 0.3 s)
+18:05:12 tip 1802686  window 117 blocks 101.7 MB in 11.6 s (waited for bend 0.0 s [bend 8.2 s, overlapped]; lookups 0.6 s, rules 10.9 s; resolve 0.1 s)  avg 24.4 blocks/s 8.29 MB/s  rules parts 132 reruns 0
+18:05:24 committed tip 1802686: 1 windows, 102 MB in one transaction (writer 0.2 s)
+18:05:24 tip 1802785  window 99 blocks 100.7 MB in 11.9 s (waited for bend 0.0 s [bend 9.0 s, overlapped]; lookups 0.4 s, rules 11.5 s; resolve 0.1 s)  avg 22.8 blocks/s 8.30 MB/s  rules parts 147 reruns 0
+18:05:37 committed tip 1802785: 1 windows, 101 MB in one transaction (writer 1.8 s)
+18:05:37 tip 1802895  window 110 blocks 101.7 MB in 12.5 s (waited for bend 0.0 s [bend 8.3 s, overlapped]; lookups 0.0 s, rules 12.3 s; resolve 0.1 s)  avg 21.5 blocks/s 8.29 MB/s  rules parts 161 reruns 0
+18:05:41 committed tip 1802895: 1 windows, 102 MB in one transaction (writer 0.1 s)
+18:05:41 tip 1802999  window 104 blocks 86.3 MB in 4.6 s (waited for bend 0.0 s [bend 8.1 s, overlapped]; lookups 0.2 s, rules 4.3 s; resolve 0.1 s)  avg 21.5 blocks/s 8.63 MB/s  rules parts 176 reruns 0
+18:05:42 committed tip 1802999: 1 windows, 86 MB in one transaction (writer 0.5 s)
+18:05:42 stopped at committed tip 1802999: 3000 blocks 1202.9 MB in 140 s, 21.4 blocks/s 8.60 MB/s
