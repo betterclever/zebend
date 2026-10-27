@@ -1,0 +1,11 @@
+{
+ "_comment": "Pinned snapshot digests (the assumeutxo parameters). A consumer accepts a snapshot only if the Bend-computed state digest equals the digest pinned here for that (height, hash). The 3,522,460 entry is the last Zebra checkpoint: fill in 'digest' with the value confirm.py prints when the GENESIS instance (fullnode/state) commits exactly that height (it does: sync.py ends a window at the last checkpoint and drains before its first fully validated window). Until then it is null and no snapshot at that height is accepted.",
+ "main": [
+  {
+   "height": 3522460,
+   "hash": "000000000045b3f5233ab807e6ca23c991b92fe6726cb268793452af3e22f4f9",
+   "digest": null,
+   "source": "to be produced from the genesis instance (fullnode/state) at the last checkpoint"
+  }
+ ]
+}

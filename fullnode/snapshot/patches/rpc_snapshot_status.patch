@@ -1,0 +1,34 @@
+--- a/fullnode/rpc.py
++++ b/fullnode/rpc.py
+@@ -220,6 +220,21 @@
+         with self.lock:
+             return self.st.get("pools")
+ 
++    def snapshot_status(self):
++        """How this instance's state started (fullnode/snapshot/README.md): a store imported from
++        a snapshot reports "snapshot-assumed" until snapshot/confirm.py has recomputed the same
++        Bend digest from the genesis instance at that height ("confirmed")."""
++        with self.lock:
++            sn = self.st.get("snapshot")
++            assumed = self.st.get("assumed_state")
++        if sn:
++            return {k: sn.get(k) for k in ("status", "height", "hash", "digest", "pinned", "provenance",
++                                           "confirmed_at", "confirmed_by")}
++        if assumed:
++            return {"status": "none", "provenance": f"oracle-assisted assumed state from {assumed.get('start')}, "
++                                                    "NOT genesis-verified"}
++        return {"status": "none", "provenance": "synced from genesis by this node"}
++
+     def tree_sizes(self):
+         with self.lock:
+             return self.st.get("leaf_lengths", {})
+@@ -265,7 +280,8 @@
+                 "verificationprogress": min(1.0, h / max(1, self.idx.n - 1)), "chainwork": "0" * 64,
+                 "pruned": True, "size_on_disk": sum(p.stat().st_size for p in STATE.rglob("*") if p.is_file()),
+                 "estimatedheight": self.idx.n - 1, "commitments": 0, "valuePools": vp, "softforks": [],
+-                "upgrades": ups, "consensus": {"chaintip": self.branch_at(h), "nextblock": self.branch_at(h + 1)}}
++                "upgrades": ups, "consensus": {"chaintip": self.branch_at(h), "nextblock": self.branch_at(h + 1)},
++                "snapshot": self.snapshot_status()}
+ 
+     def _hdr_json(self, h):
+         raw = self.header(h)

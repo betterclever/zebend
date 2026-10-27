@@ -1,0 +1,49 @@
+--- a/fullnode/sync.py
++++ b/fullnode/sync.py
+@@ -299,6 +299,10 @@
+     if recs and recs[0][0] <= last_cp < recs[-1][0]:
+         recs = [r for r in recs if r[0] <= last_cp]  # never mix checkpointed and fully validated blocks
+         used = []
++    sa = args.snapshot_at
++    if sa is not None and recs and recs[0][0] <= sa < recs[-1][0]:
++        recs = [r for r in recs if r[0] <= sa]  # a window ends at the snapshot height (snapshot/confirm.py)
++        used = []
+     if not recs:
+         return recs, used, [], 0.0
+     tw = time.time()
+@@ -327,6 +331,10 @@
+                          "last committed group")
+     ap.add_argument("--commit-secs", type=int, default=300, help="commit a group at least this often")
+     ap.add_argument("--writer-cache-mb", type=int, default=2048, help="SQLite page cache of the writer process")
++    ap.add_argument("--snapshot-at", type=int, default=None,
++                    help="snapshot height H (fullnode/snapshot): end a window at H, commit it, and wait up to "
++                         "--snapshot-wait s for snapshot/confirm.py --watch to hold a read transaction at H")
++    ap.add_argument("--snapshot-wait", type=int, default=120)
+     ap.add_argument("--addr-index", choices=["defer", "keep"], default="defer",
+                     help="defer: below the last checkpoint the RPC-only address index is not maintained; it is "
+                          "rebuilt from the UTXO set before the first fully validated window")
+@@ -378,6 +386,7 @@
+     pools_cur = st.get("pools")  # value pools after the last resolved window (None: not tracked)
+     audit_n = st.get("audit_disagreements", 0)
+     t_commit = 0.0
++    held = args.snapshot_at is None or tip["height"] > args.snapshot_at
+ 
+     def finish():
+         """Wait for the group in flight to be committed; then its spool chunks can go."""
+@@ -438,6 +447,16 @@
+                 for p in SPOOL.glob("*.blk"):  # blocks of the abandoned branch
+                     p.unlink()
+                 continue
++            if not held and tip["height"] == args.snapshot_at:
++                held = True
++                drain()  # the state at the snapshot height is committed
++                flag = Path(os.environ.get("ZEBEND_SNAPSHOT_FLAGS", HERE / "snapshot/work")) / f"snapshot_reader_{args.snapshot_at}"
++                log(f"snapshot height {args.snapshot_at} committed: waiting up to {args.snapshot_wait} s for "
++                    f"snapshot/confirm.py to hold a read transaction")
++                tw0 = time.time()
++                while not flag.exists() and time.time() - tw0 < args.snapshot_wait and not _STOP:
++                    time.sleep(0.5)
++                log(f"  {'reader holds the state at the snapshot height' if flag.exists() else 'no reader'}: continuing")
+             if nxt is None or nxt[0] != tip["height"]:
+                 nxt = (tip["height"], prep.submit(prepare, tip["height"], args, last_cp, ex))
+             tw = time.time()
