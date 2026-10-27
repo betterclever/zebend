@@ -35,3 +35,7 @@ fullnode/**/target/
 fullnode/**/data/
 __pycache__/
 sapling/**/data/
+# NU7 work: cloned sources, testnet data, oracle builds (regenerable)
+consensus/nu7/data/
+consensus/nu7/oracle/target/
+consensus/nu7/wiring/work/
