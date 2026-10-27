@@ -10,7 +10,7 @@ labelled as such everywhere and is **not genesis-verified**. Numbers below come 
 python3 checkpoints.py              # once: Bend re-hashes every verified header, checks Zebra's checkpoints
 python3 tiphdr.py                   # extend the verified headers to the live tip (Bend: zebend-p2p + equihash)
 python3 download.py --peers 30      # blocks from genesis into a bounded spool (resumable)
-python3 sync.py                     # Bend extraction + rules + state, one atomic commit per window (resumable)
+python3 sync.py                     # Bend extraction + rules + state, one atomic commit per window (resumable; see §6)
 python3 rpc.py --port 8232          # zcashd-compatible JSON-RPC subset
 python3 rpccli.py getblockchaininfo
 
@@ -33,6 +33,7 @@ ZEBEND_STATE=$PWD/state-tip python3 rpc.py --port 18233
    deleted after its window        pools from genesis), full mode above it
    commits)                       anchors; verifier hooks (transparent, sapling, orchard)
                                   store.py: SQLite + leaf logs, one atomic commit/window
+                                  (writer process; pipelined, see §6)
 ```
 
 Python moves bytes, looks things up and compares what Bend prints. Parsing, hashing, txids,
@@ -139,7 +140,7 @@ SQLite (WAL, `synchronous=FULL`) + append-only leaf logs, per instance directory
 
 | Table / file | Content |
 |---|---|
-| `utxo`, `addr` | transparent unspent outputs (value, script, height, coinbase) + script → outpoint index |
+| `utxo`, `addr` | transparent unspent outputs (value, script, height, coinbase) + script → outpoint index (`addr` is RPC-only: below the last checkpoint sync.py leaves it empty, `meta.addr_deferred`, and rebuilds it from `utxo` before the first fully validated window) |
 | `nf` | nullifier sets: Sprout, Sapling, Orchard, Ironwood |
 | `tx` | txid → (height, index); getrawtransaction refetches the block |
 | `blk` | block index (hash, prev, time, size, tx count, bits) |
@@ -149,7 +150,8 @@ SQLite (WAL, `synchronous=FULL`) + append-only leaf logs, per instance directory
 | `leaves/<pool>.bin/.blk` | every note commitment in tree order + per-block counts |
 | `oracle_prevout` | (assumed-state instance only) outputs taken from the oracle |
 
-One SQLite transaction per window (≤ 2,000 blocks / 96 MB); leaf logs fsynced before it and
+One SQLite transaction per window (≤ 2,000 blocks / 96 MB), written by a separate writer process
+(§6); leaf logs fsynced before it and
 truncated back to the committed lengths on start. A crash anywhere resumes at the last
 committed window; spool chunks are deleted only after their last block commits; windows never
 mix checkpointed and fully validated blocks.
@@ -216,6 +218,88 @@ Sapling-era blocks (needs `z_gettreestate`, i.e. the Sapling tree), `GetTransact
 `sendrawtransaction` tested with a real mined tx (3,530,102 tx 2bac5d92…): Bend accepted it and
 returned the same txid; a truncated hex is rejected (-22). Relay of a *new* tx not tested.
 
+## 6. Sync throughput (`sync.py`, `store.py`, `rules.py`)
+
+**Profile of the old sync** (one 101 MB window, 324,127–324,435, 309 blocks, 9,751 tx, 648,639
+transparent inputs, 110,815 outputs; the 2018 consolidation era): 254 s in total, of which
+bin/rules ~200 s (one process over the whole window), the Python ctx builder 26 s (bytes
+`+=` per input: quadratic in block size, plus one SELECT per input), state 27–34 s, blockdelta
+7–16 s. Findings:
+- **bin/rules is superlinear in its input size**: 1.3 s/MB on a 100 MB window, 0.36 s/MB on
+  20 MB, 0.14–0.16 s/MB on 2–6 MB (same blocks). blockdelta: 0.19–0.28 s/MB at 2–6 MB.
+- **State**: the window's random-key B-tree writes dirty most of the `utxo` table: 1.9 GB of
+  WAL per window (464k pages); COMMIT 2 s, WAL checkpoint 6–20 s, 650k row deletes 2 s;
+  `synchronous=FULL` vs `NORMAL`: no measurable difference (one fsync per window). Per-row
+  Python `execute` calls, a second SELECT per input in the rules ctx builder, and the `addr`
+  index (2.3 GB, RPC-only) added the rest.
+- **The GIL**: a SQLite writer *thread* next to a busy Python thread is starved (600k deletes:
+  4.9 s alone, 641 s next to a CPU-bound thread; lookups 1.5 s alone, 13 s next to a writer
+  thread). Hence a writer *process*.
+- With `--keep-spool`, every window re-read every chunk since genesis (13 GB at 324k).
+
+**Changes:**
+1. *bin/rules in parallel parts* (`rules.run_rules`): the window is cut into parts of about
+   total/jobs bytes (≤ 8 MB), one bin/rules process each. bin/rules carries exactly one value
+   from block to block (the value pools); part k starts from pools *predicted* in Python and its
+   output is used only if that start equals the pools bin/rules itself printed after part k−1's
+   last block, otherwise the part is rerun from the printed pools. Every verdict is therefore
+   the one a single sequential run prints. Reruns so far: 0. blockdelta parts ≤ 8 MB.
+2. *Pipeline*: window k+1's spool read + blockdelta run in a background thread while window k is
+   checked, audited and resolved; all Bend processes share one pool of `--jobs` (default
+   cores − 2 = 16).
+3. *State*: one sorted batch lookup of every prevout per window (shared by the rules ctx and the
+   state); the window is resolved in Python in block/tx order (same semantics: missing input,
+   double spend in the window, BIP 30, nullifier reuse) and written with one sorted
+   `executemany` per table by a **writer process** (`store.Writer`), one transaction per
+   window, while the main process already works on the next window (lookups see the
+   committed state plus the overlay of the window in flight, `Store.pending`). Reads use a
+   second connection. Undo data unchanged (last 200 blocks; rollback works everywhere).
+4. `addr` index deferred below the last checkpoint (rebuilt from `utxo` in one sorted pass;
+   rebuilt index verified identical to the incrementally maintained one at 12,000).
+5. Spool chunks indexed once; chunks below the window never re-read.
+6. Kept: WAL, `synchronous=FULL` (every commit durable in the WAL), autocheckpoint after each
+   commit (on the writer process, off the critical path). Tried and rejected (measured slower):
+   a 4 GB WAL between checkpoints (every page read searches the WAL index: lookups 3× slower)
+   and multi-window transactions (`--commit-mb 1024`: cache spill, 2.0 vs 4.7 MB/s).
+
+**Before / after** (Mac M5 Max, 18 cores; bench spools are hard links of the live spool, state
+clones of the 324,126 genesis snapshot; spam-era base state: that snapshot relabelled with the
+32,292 outside prevouts of 1,800,000–1,802,999 from the oracle, pools unknown, bench only):
+
+| Range | Code | Blocks | MB | Time | blocks/s | MB/s |
+|---|---|---|---|---|---|---|
+| 324,127–324,700 (consolidations) | old | 574 | 193 | 380 s | 1.5 | 0.51 |
+| 324,127–332,000 | new | 7,874 | 888 | 189 s | 41.8 | **4.71** |
+| 1,800,000–1,800,449 (spam) | old | 450 | 202 | 55 s | 8.2 | 3.68 |
+| 1,800,000–1,802,999 (spam) | new | 3,000 | 1,203 | 64 s | 47.1 | **18.9** |
+| 0–12,000 (genesis rebuild) | old / new | 12,001 | 212 | 148 s / 16 s | 81 / 729 | 1.4 / 12.9 |
+
+Spam era: ~5 s per 100 MB window, bound by Bend (rules parts + blockdelta on 16 cores);
+consolidation era: bound by the state (writer 5–32 s per 100 MB window, prevout lookups
+3–14 s), 9× faster than before but still below the downloader there.
+
+**Equivalence and safety (all on copies):** genesis..12,000 rebuilt by old and new code: every
+table (utxo, nf, tx, blk incl. per-block pools, anchor, undo blobs), meta pools/tip/leaf
+lengths and leaf logs identical; `addr` identical after the rebuild. The live genesis state
+committed by the old code at 324,435 equals a new-code rebuild of 324,127–324,435 from the
+324,126 snapshot (every table except the deferred `addr`). Per-block pools and audit
+disagreements (0) identical old vs new on 324,127–324,700 and 1,800,000–1,800,449.
+`test_reorg.py 150` at 12,000: PASS. SIGKILL of the whole process tree (sync, writer, Bend
+children) mid-run, twice (different moments): restart resumed at the last commit (13,500 /
+13,000) and the state at 20,000 is identical to an uninterrupted run (PASS).
+
+**State size:** at 324,435 the database holds `utxo` 4.19 GB (28.8M outputs), `addr` 2.30 GB
+(now deferred), `tx` 0.15 GB (3.08M tx), `blk` 0.07, `nf` 0.05, `undo` 0.04 GB; leaf logs 32 MB.
+That is ~21 GB per million blocks *so far* without `addr` (28 GB with it), but the size follows
+the UTXO set (an early-era dust/consolidation set, not a per-block growth): whether the full
+chain fits in 60 GB depends on the UTXO set later on; to be re-measured as the sync advances.
+
+**Live genesis instance after the switch** (Oct 27, 14:05, from the old code's committed tip
+324,435, without `--keep-spool`; the 324 consumed chunks below the tip were moved to
+`work/spool-kept/`, 12 GB): first 8 minutes 324,435 → 342,769 at 36.9 blocks/s, 3.86 MB/s
+(consolidation era), writer process RSS 3.6 GB, main 2.6 GB; downloader restarted at 1.58M,
+23 MB/s.
+
 ## Results (04:20, Oct 26)
 
 - **Genesis instance (`state/`, genesis-verified so far):** tip **105,999**, every block
@@ -231,7 +315,7 @@ returned the same txid; a truncated hex is rejected (-22). Relay of a *new* tx n
   transparent and sapling hooks SKIPPED (component pending); 31,159 spent outputs from the
   oracle (Bend-checked txids). One FAIL seen and fixed: an Ironwood anchor newer than the
   root snapshot (the root set now refreshes from follow's live roots).
-- **Bottleneck after download:** bin/rules (audit) is one process per window: ~1.3 s per 2 MB
+- **(Superseded by §6: bin/rules now runs in parallel parts.)** Bottleneck after download: bin/rules (audit) is one process per window: ~1.3 s per 2 MB
   block. In the 2022 spam era this would fall behind the download; it needs splitting into
   parallel parts (pool deltas per part, folded in Bend). Not done yet.
 - **Disk:** 4.0 GB + 2.6 GB spool + 47 MB; Mac free space 186 GB.

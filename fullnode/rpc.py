@@ -397,6 +397,8 @@ class Node:
         return arg
 
     def getaddressutxos(self, arg, *_):
+        if self.q("SELECT v FROM meta WHERE k='addr_deferred' AND v='true'"):
+            raise RpcError(-1, "address index deferred until the sync passes the last checkpoint (store.py)")
         out = []
         tip = self.tip()["height"]
         for a in self._addresses(arg):

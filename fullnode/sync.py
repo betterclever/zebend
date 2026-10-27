@@ -48,25 +48,55 @@ def load_checkpoints():
 
 # ------------------------------------------------------------------ spool
 
+_SPOOL_INDEX = {}  # chunk path -> (size, [(height, offset, length)])
+
+
+def _chunk_index(p):
+    size = p.stat().st_size
+    got = _SPOOL_INDEX.get(p)
+    if got and got[0] == size:
+        return got[1]
+    recs = []
+    with open(p, "rb") as f:
+        off = 0
+        while off + 8 <= size:
+            f.seek(off)
+            h, n = struct.unpack("<II", f.read(8))
+            recs.append((h, off + 8, n))
+            off += 8 + n
+    _SPOOL_INDEX[p] = (size, recs)
+    return recs
+
+
 def spool_records(after, max_blocks, max_bytes):
     """Next contiguous blocks after height `after`, from complete spool chunks.
-    Returns (records [(height, raw)], chunk files fully consumed by this window)."""
+    Returns (records [(height, raw)], chunk files fully consumed by this window).
+    Each chunk's record headers are indexed once; chunks entirely below the window are not
+    read again (with --keep-spool the spool holds every chunk since genesis)."""
     files = sorted(SPOOL.glob("*.blk"), key=lambda p: int(p.stem))
     out, size, used, want = [], 0, [], after + 1
     for p in files:
-        data = p.read_bytes()
-        i, last = 0, None
-        whole = True
-        while i < len(data):
-            h, n = struct.unpack_from("<II", data, i)
-            if h == want and len(out) < max_blocks and size < max_bytes:
-                out.append((h, data[i + 8:i + 8 + n]))
+        try:
+            idx = _chunk_index(p)
+        except FileNotFoundError:  # deleted after its window committed
+            continue
+        if not idx or idx[-1][0] < want:
+            continue  # nothing at or above the window's start
+        take = []
+        whole, last = True, None
+        for h, off, n in idx:
+            if h == want and len(out) + len(take) < max_blocks and size < max_bytes:
+                take.append((h, off, n))
                 size += n
                 want += 1
             elif h >= want:
                 whole = False
             last = h
-            i += 8 + n
+        if take:
+            with open(p, "rb") as f:
+                for h, off, n in take:
+                    f.seek(off)
+                    out.append((h, f.read(n)))
         if last is not None and last < want:
             used.append(p)  # everything in this chunk is at or below the window's end
         if not whole or len(out) >= max_blocks or size >= max_bytes:
@@ -79,20 +109,22 @@ def spool_records(after, max_blocks, max_bytes):
 # ------------------------------------------------------------------ Bend extraction
 
 def window_file(path, recs):
+    last = headers.last_height()
     with open(path, "wb") as f:
         for h, raw in recs:
-            exp = headers.header(h) if 1 <= h <= headers.last_height() else bytes(HDR)
+            exp = headers.header(h) if 1 <= h <= last else bytes(HDR)
             f.write(struct.pack("<I", h) + exp + struct.pack("<I", len(raw)) + raw)
 
 
-def run_blockdelta(recs, jobs, tag):
-    """Split the window into ~equal-byte parts, one blockdelta process each, in parallel."""
+def run_blockdelta(recs, jobs, tag, ex=None):
+    """Split the window into ~equal-byte parts, one blockdelta process each, in parallel
+    (on the shared Bend executor `ex` when given)."""
     parts, cur, size = [], [], 0
     target = max(1, sum(len(r) for _, r in recs) // jobs + 1)
     for rec in recs:
         cur.append(rec)
         size += len(rec[1])
-        if size >= min(target, 24 << 20) or len(cur) >= 400:
+        if size >= min(target, 8 << 20) or len(cur) >= 400:
             parts.append(cur)
             cur, size = [], 0
     if cur:
@@ -107,13 +139,15 @@ def run_blockdelta(recs, jobs, tag):
             if r.stdout.strip():
                 break
         p.unlink(missing_ok=True)
-        return r.stdout, r.stderr
+        return parse_delta(r.stdout), r.stderr
 
-    with ThreadPoolExecutor(jobs) as ex:
+    if ex is None:
+        with ThreadPoolExecutor(jobs) as ex1:
+            outs = list(ex1.map(one, range(len(parts))))
+    else:
         outs = list(ex.map(one, range(len(parts))))
     blocks = []
-    for (out, err), part in zip(outs, parts):
-        got = parse_delta(out)
+    for (got, err), part in zip(outs, parts):
         if [b["height"] for b in got] != [h for h, _ in part]:
             raise Fail(f"blockdelta on {part[0][0]}..{part[-1][0]} returned blocks "
                        f"{[b['height'] for b in got][:3]}...; stderr {err.strip()[-300:]!r}")
@@ -256,10 +290,30 @@ def anchor_checks(full, st, log):
 
 # ------------------------------------------------------------------ main loop
 
+def prepare(after, args, last_cp, ex):
+    """Read the next window after height `after` from the spool and run blockdelta on it.
+    Runs in a background thread while the previous window's rules and state commit run."""
+    recs, used = spool_records(after, args.window, args.window_mb << 20)
+    if args.to is not None:
+        recs = [r for r in recs if r[0] <= args.to]
+    if recs and recs[0][0] <= last_cp < recs[-1][0]:
+        recs = [r for r in recs if r[0] <= last_cp]  # never mix checkpointed and fully validated blocks
+        used = []
+    if not recs:
+        return recs, used, [], 0.0
+    tw = time.time()
+    blocks = run_blockdelta(recs, args.jobs, recs[0][0], ex)
+    return recs, used, blocks, time.time() - tw
+
+
+_STOP = []
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--to", type=int, default=None)
-    ap.add_argument("--jobs", type=int, default=6)
+    ap.add_argument("--jobs", type=int, default=max(1, (os.cpu_count() or 8) - 2),
+                    help="Bend processes at a time (blockdelta and bin/rules parts)")
     ap.add_argument("--window", type=int, default=2000, help="max blocks per committed window")
     ap.add_argument("--window-mb", type=int, default=96)
     ap.add_argument("--once", action="store_true", help="one window, then exit")
@@ -267,7 +321,19 @@ def main():
                     help="fallback mode: start an EMPTY state at this height; spent outputs older than it come "
                          "from the lightwalletd oracle, checked by Bend txids (assumed.py). Not genesis-verified.")
     ap.add_argument("--keep-spool", action="store_true", help="do not delete consumed spool chunks (re-sync tests)")
+    ap.add_argument("--commit-mb", type=int, default=1,
+                    help="commit group size: windows are committed together, ONE transaction per group of about "
+                         "this many MB of blocks (or 4M UTXO changes, or --commit-secs); a crash resumes at the "
+                         "last committed group")
+    ap.add_argument("--commit-secs", type=int, default=300, help="commit a group at least this often")
+    ap.add_argument("--writer-cache-mb", type=int, default=2048, help="SQLite page cache of the writer process")
+    ap.add_argument("--addr-index", choices=["defer", "keep"], default="defer",
+                    help="defer: below the last checkpoint the RPC-only address index is not maintained; it is "
+                         "rebuilt from the UTXO set before the first fully validated window")
     args = ap.parse_args()
+    import signal  # SIGTERM/SIGINT: finish (or drop) the current window, then exit at a window boundary
+    for sig in (signal.SIGTERM, signal.SIGINT):
+        signal.signal(sig, lambda *_: (_STOP.append(1), log("stop requested: exiting after this window")))
     st = S.Store(STATE)
     cps = load_checkpoints()
     last_cp = max(cps)
@@ -290,99 +356,200 @@ def main():
     if assumed_mode:
         import assumed
         log(f"ASSUMED-STATE MODE from {st.get('assumed_state')['start']}: not genesis-verified")
-    log(f"sync: state tip {tip['height']}, last checkpoint {last_cp}, verified headers to {idx.n - 1}")
+    if args.addr_index == "defer" and st.addr_index and tip["height"] < last_cp:
+        log("address index: deferred until the last checkpoint (emptied now, rebuilt from the UTXO set later)")
+        st.defer_addr_index()
+    log(f"sync: state tip {tip['height']}, last checkpoint {last_cp}, verified headers to {idx.n - 1}, "
+        f"{args.jobs} Bend jobs")
+    import rules  # the Bend consensus rules engine (bin/rules) + verifier hooks
+    # Three overlapping stages: extraction of window k+1 (blockdelta), checks + rules + resolution
+    # of window k (this thread), and the state writer process, which writes each resolved window
+    # into the open transaction of the current commit group. A group (windows up to --commit-mb)
+    # is ONE SQLite transaction; groups commit in order. Windows are resolved against the
+    # committed state plus the overlays of the groups not committed yet (Store.pending).
+    ex = ThreadPoolExecutor(args.jobs)    # every Bend process (blockdelta, bin/rules parts) runs here
+    prep = ThreadPoolExecutor(1)          # extraction of the next window
+    wr = S.Writer(STATE, cache_mb=args.writer_cache_mb)
     t0, done, nbytes, last_log = time.time(), 0, 0, 0
-    while True:
-        if args.to is not None and tip["height"] >= args.to:
-            break
-        idx = headers.Index(HDRDIR / "hashes.bin")  # reopened: tiphdr.py extends (or, on a reorg, cuts) it
-        if tip["height"] >= 0 and (tip["height"] >= idx.n or idx.display(tip["height"]) != tip["hash"]):
-            h = min(tip["height"], idx.n - 1)
-            while h >= 0:
-                r = st.db.execute("SELECT hash FROM blk WHERE height=?", (h,)).fetchone()
-                if r and r[0].hex() == idx.display(h):
-                    break
-                h -= 1
-            log(f"REORG: tip {tip['height']} is no longer on the verified header chain; rolling back to {h}")
-            st.rollback_to(h)
-            tip = st.tip()
-            for p in SPOOL.glob("*.blk"):  # blocks of the abandoned branch
+    nxt = None
+    group = S.new_group()   # windows resolved since the last commit (sent to the writer)
+    inflight = None         # the group whose commit the writer is finishing
+    st.pending = [group]
+    pools_cur = st.get("pools")  # value pools after the last resolved window (None: not tracked)
+    audit_n = st.get("audit_disagreements", 0)
+    t_commit = 0.0
+
+    def finish():
+        """Wait for the group in flight to be committed; then its spool chunks can go."""
+        nonlocal inflight, t_commit
+        if inflight is None:
+            return
+        g, inflight = inflight, None
+        try:
+            t_commit = wr.result()  # a StateError of the commit surfaces here (group not committed)
+        finally:
+            st.pending = [x for x in st.pending if x is not g]
+        ctip = st.tip()["height"]
+        for p in ([] if args.keep_spool else g["used"]):
+            ix = _chunk_index(p)  # delete a chunk only once every block in it is committed
+            if ix and ix[-1][0] <= ctip:
                 p.unlink()
-            continue
-        recs, used = spool_records(tip["height"], args.window, args.window_mb << 20)
-        if args.to is not None:
-            recs = [r for r in recs if r[0] <= args.to]
-        if recs and recs[0][0] <= last_cp < recs[-1][0]:
-            recs = [r for r in recs if r[0] <= last_cp]  # never mix checkpointed and fully validated blocks
-            used = []
-        if not recs:
+                _SPOOL_INDEX.pop(p, None)
+        log(f"committed tip {ctip}: {g['n']} windows, {g['bytes'] / 1e6:.0f} MB in one transaction "
+            f"(writer {t_commit:.1f} s)")
+
+    def flush():
+        """End the current group: commit it (asynchronously; at most one group in flight)."""
+        nonlocal group, inflight
+        if not group["n"]:
+            return
+        finish()
+        wr.commit(group["last"], group["hash"], group["extra"])
+        inflight, group = group, S.new_group()
+        st.pending = [inflight, group]
+
+    def drain():
+        flush()
+        finish()
+
+    try:
+        while not _STOP:
+            if args.to is not None and tip["height"] >= args.to:
+                break
+            idx = headers.Index(HDRDIR / "hashes.bin")  # reopened: tiphdr.py extends (or, on a reorg, cuts) it
+            if tip["height"] >= 0 and (tip["height"] >= idx.n or idx.display(tip["height"]) != tip["hash"]):
+                if nxt is not None:  # the prepared window may belong to the abandoned branch
+                    try:
+                        nxt[1].result()
+                    except Exception:
+                        pass
+                    nxt = None
+                drain()
+                h = min(tip["height"], idx.n - 1)
+                while h >= 0:
+                    r = st.rdb.execute("SELECT hash FROM blk WHERE height=?", (h,)).fetchone()
+                    if r and r[0].hex() == idx.display(h):
+                        break
+                    h -= 1
+                log(f"REORG: tip {tip['height']} is no longer on the verified header chain; rolling back to {h}")
+                st.rollback_to(h)
+                tip = st.tip()
+                pools_cur = st.get("pools")
+                for p in SPOOL.glob("*.blk"):  # blocks of the abandoned branch
+                    p.unlink()
+                continue
+            if nxt is None or nxt[0] != tip["height"]:
+                nxt = (tip["height"], prep.submit(prepare, tip["height"], args, last_cp, ex))
+            tw = time.time()
+            recs, used, blocks, t_bend = nxt[1].result()
+            t_wait = time.time() - tw
+            nxt = None
+            if not recs:
+                drain()
+                if args.once:
+                    break
+                time.sleep(5)
+                continue
+            if not (args.to is not None and recs[-1][0] >= args.to) and not args.once:
+                nxt = (recs[-1][0], prep.submit(prepare, recs[-1][0], args, last_cp, ex))  # overlap: next window
+            tr = time.time()
+            checkpoint_checks(blocks, idx, cps, tip)
+            st.new_window()
+            if assumed_mode:
+                drain()  # prefill writes to the store: no group open
+                n_or = assumed.prefill(blocks, st, log)
+                if n_or:
+                    log(f"  {n_or} spent outputs from before the start height taken from the oracle (Bend-checked txids)")
+            # every spent output of the window not created inside it: one sorted batch lookup,
+            # shared by the rules engine (st.utxo) and the state resolution
+            made = set()
+            want = []
+            for b in blocks:
+                for t in b["txs"]:
+                    for (ptxid, vout, _seq) in t["ins"]:
+                        if (ptxid, vout) not in made:
+                            want.append(S.op_key(ptxid, vout))
+                    for (k, _v, _s) in t["outs"]:
+                        made.add((t["txid"], k))
+            st.prefetch(want)
+            t_pre = time.time() - tr
+            full = [b for b in blocks if b["height"] > last_cp]
+            if full:
+                if not st.addr_index:
+                    drain()
+                    ta = time.time()
+                    st.build_addr_index()
+                    log(f"  address index rebuilt from the UTXO set ({time.time() - ta:.0f} s)")
+                anchor_checks(full, st, log)
+            raw = dict(recs)
+            cp_part = [b for b in blocks if b["height"] <= last_cp]
+            extra = {}
+            if cp_part:
+                # Checkpointed blocks: the rules run in audit mode. They decide nothing (the checkpoint
+                # does) but track the value pools from genesis, and any disagreement with the
+                # canonical chain is a bug in our rules: logged and counted, never hidden.
+                extra = rules.validate(cp_part, st, raw, log, mode="audit", pools=pools_cur, jobs=args.jobs, ex=ex)
+                dis = extra["rules"]["disagreements"]
+                if dis:
+                    audit_n += len(dis)
+                    extra["audit_disagreements"] = audit_n
+                    log(f"  AUDIT: rules disagree with checkpointed blocks: {dis[:3]} (total {audit_n})")
+            if full:
+                e2 = rules.validate(full, st, raw, log, mode="full", pools=extra.get("pools", pools_cur),
+                                    jobs=args.jobs, ex=ex)
+                rs = e2["rules"]
+                log(f"  full validation {full[0]['height']}..{full[-1]['height']}: every consensus rule PASS "
+                    f"(turnstile {rs['turnstile']}); hooks: {rs['hooks']}")
+                extra.update(e2)
+            for b in blocks:  # per-block pools go into the block index (rollback restores them)
+                pb = extra.get("pools_by_height", {})
+                if b["height"] in pb:
+                    b["info"] = {"pools": pb[b["height"]]}
+            extra.pop("pools_by_height", None)
+            t_rules = time.time() - tr
+            ta = time.time()
+            ws = st.resolve_window(blocks)  # pass 1 (raises StateError on a missing input etc.)
+            wbytes = sum(b["size"] for b in blocks)
+            S.merge_window(group, ws, wbytes)
+            group.setdefault("t0", time.time())
+            group["used"] += used
+            group["extra"].update(extra)
+            wr.apply(ws)
+            t_resolve = time.time() - ta
+            if "pools" in extra:
+                pools_cur = extra["pools"]
+            tip = {"height": blocks[-1]["height"], "hash": blocks[-1]["hash"]}
+            done += len(blocks)
+            nbytes += wbytes
+            if (group["bytes"] >= args.commit_mb << 20 or len(group["spent"]) + len(group["created"]) > 4_000_000
+                    or time.time() - group["t0"] > args.commit_secs
+                    or args.once or (args.to is not None and tip["height"] >= args.to)):
+                flush()
+            el = time.time() - t0
+            if time.time() - last_log > 30 or args.once or args.to is not None:
+                log(f"tip {tip['height']}  window {len(blocks)} blocks {wbytes / 1e6:.1f} MB in {time.time() - tw:.1f} s "
+                    f"(waited for bend {t_wait:.1f} s [bend {t_bend:.1f} s, overlapped]; lookups {t_pre:.1f} s, "
+                    f"rules {t_rules - t_pre:.1f} s; resolve {t_resolve:.1f} s)  avg {done / el:.1f} blocks/s "
+                    f"{nbytes / el / 1e6:.2f} MB/s  rules parts {rules.STATS['parts']} reruns {rules.STATS['reruns']}")
+                last_log = time.time()
             if args.once:
                 break
-            time.sleep(5)
-            continue
-        tw = time.time()
-        blocks = run_blockdelta(recs, args.jobs, recs[0][0])
-        t_bend = time.time() - tw
-        checkpoint_checks(blocks, idx, cps, tip)
-        if assumed_mode:
-            n_or = assumed.prefill(blocks, st, log)
-            if n_or:
-                log(f"  {n_or} spent outputs from before the start height taken from the oracle (Bend-checked txids)")
-        full = [b for b in blocks if b["height"] > last_cp]
-        if full:
-            anchor_checks(full, st, log)
-        import rules  # the Bend consensus rules engine (bin/rules) + verifier hooks
-        raw = dict(recs)
-        cp_part = [b for b in blocks if b["height"] <= last_cp]
-        extra = {}
-        if cp_part:
-            # Checkpointed blocks: the rules run in audit mode. They decide nothing (the checkpoint
-            # does) but track the value pools from genesis, and any disagreement with the
-            # canonical chain is a bug in our rules: logged and counted, never hidden.
-            extra = rules.validate(cp_part, st, raw, log, mode="audit")
-            dis = extra["rules"]["disagreements"]
-            if dis:
-                n = st.get("audit_disagreements", 0) + len(dis)
-                extra["audit_disagreements"] = n
-                log(f"  AUDIT: rules disagree with checkpointed blocks: {dis[:3]} (total {n})")
-        if full:
-            e2 = rules.validate(full, st, raw, log, mode="full", pools=extra.get("pools", st.get("pools")))
-            rs = e2["rules"]
-            log(f"  full validation {full[0]['height']}..{full[-1]['height']}: every consensus rule PASS "
-                f"(turnstile {rs['turnstile']}); hooks: {rs['hooks']}")
-            extra.update(e2)
-        for b in blocks:  # per-block pools go into the block index (rollback restores them)
-            pb = extra.get("pools_by_height", {})
-            if b["height"] in pb:
-                b["info"] = {"pools": pb[b["height"]]}
-        extra.pop("pools_by_height", None)
-        ta = time.time()
-        st.apply_window(blocks, extra_meta=extra)
-        t_apply = time.time() - ta
-        tip = st.tip()
-        for p in ([] if args.keep_spool else used):
-            if int(p.stem) <= tip["height"]:
-                last_in = tip["height"]
-                # delete a chunk only once every block in it is committed
-                data_last = None
-                with open(p, "rb") as f:
-                    d = f.read()
-                i = 0
-                while i < len(d):
-                    hh, n = struct.unpack_from("<II", d, i)
-                    data_last = hh
-                    i += 8 + n
-                if data_last is not None and data_last <= last_in:
-                    p.unlink()
-        done += len(blocks)
-        nbytes += sum(b["size"] for b in blocks)
-        el = time.time() - t0
-        if time.time() - last_log > 30 or args.once:
-            log(f"tip {tip['height']}  window {len(blocks)} blocks {sum(b['size'] for b in blocks) / 1e6:.1f} MB "
-                f"(bend {t_bend:.1f} s, state {t_apply:.1f} s)  avg {done / el:.1f} blocks/s {nbytes / el / 1e6:.2f} MB/s")
-            last_log = time.time()
-        if args.once:
-            break
+        drain()
+    finally:
+        if nxt is not None:
+            nxt[1].cancel()
+        prep.shutdown(wait=True, cancel_futures=True)
+        if inflight is not None:  # leaving on an error: let the group in flight finish committing
+            try:
+                finish()
+            except Exception:
+                pass
+        wr.close()  # an open (uncommitted) group is rolled back
+        ex.shutdown(wait=True)
+    el = time.time() - t0
+    if done:
+        log(f"stopped at committed tip {st.tip()['height']}: {done} blocks {nbytes / 1e6:.1f} MB in {el:.0f} s, "
+            f"{done / el:.1f} blocks/s {nbytes / el / 1e6:.2f} MB/s")
     st.close()
 
 

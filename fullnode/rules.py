@@ -56,7 +56,7 @@ def _prev_times(h, st, window_times):
         if t is None:
             r = None
             try:
-                r = st.db.execute("SELECT time FROM blk WHERE height=?", (x,)).fetchone()
+                r = getattr(st, "rdb", st.db).execute("SELECT time FROM blk WHERE height=?", (x,)).fetchone()
             except AttributeError:
                 pass
             if r:
@@ -68,36 +68,67 @@ def _prev_times(h, st, window_times):
     return out
 
 
-def build_ctx(blocks, st, pools):
-    """ctx.bin bytes for the window. Raises RuleFail if a spent output is unknown."""
+NU6, NU61, NU63_END = 2726400, 3146400, 4406400
+
+
+def predicted_delta(b, tin):
+    """A GUESS of bin/rules' value-pool change for block b (sprout, sapling, orchard, ironwood,
+    lockbox, transparent), used only to start the parts of a window in parallel. It decides
+    nothing: run_rules accepts a part's output only if the pools it started from equal the pools
+    bin/rules itself printed after the previous part's last block, and reruns the part otherwise."""
+    spr = sum(j["vpub_old"] - j["vpub_new"] for t in b["txs"] for j in t["js"])
+    sap = sum(t["sap"]["vb"] for t in b["txs"] if t["sap"])
+    orch = sum(t["orch"]["vb"] for t in b["txs"] if t["orch"])
+    iw = sum(t["iw"]["vb"] for t in b["txs"] if t["iw"])
+    tout = sum(o[1] for t in b["txs"] for o in t["outs"])
+    h = b["height"]
+    dfr = (9375000 if NU6 <= h < NU63_END else 0) - (7875000000000 if h == NU61 else 0)
+    return [spr, -sap, -orch, -iw, dfr, tout - tin]
+
+
+def block_records(blocks, st):
+    """Per block: the ctx.bin record (without the pools header) and the predicted pool delta.
+    Raises RuleFail if a spent output is unknown."""
     made = {}  # (txid, vout) -> (value, script, height, cb): outputs created earlier in the window
     window_times = {b["height"]: b["time"] for b in blocks}
-    out = b"".join(_u64(pools.get(n, 0)) for n in POOL_NAMES)
+    recs, deltas = [], []
     for b in blocks:
         h = b["height"]
         times = _prev_times(h, st, window_times)
-        rec = struct.pack("<II", h, len(times)) + b"".join(struct.pack("<I", t) for t in times)
+        rec = [struct.pack("<II", h, len(times)), b"".join(struct.pack("<I", t) for t in times)]
+        tin = 0
         for t in b["txs"]:
             for (ptxid, vout, _seq) in t["ins"]:
                 u = made.get((ptxid, vout)) or st.utxo(ptxid, vout)
                 if u is None:
                     raise RuleFail(f"block {h} tx {t['txid']}: spends {ptxid}:{vout}, which is not an unspent output")
                 value, script, ph, cb = u
-                rec += struct.pack("<IIIII", value & 0xFFFFFFFF, value >> 32, ph, int(cb), len(script)) + bytes(script)
+                tin += value
+                rec.append(struct.pack("<IIIII", value & 0xFFFFFFFF, value >> 32, ph, int(cb), len(script)))
+                rec.append(bytes(script))
             for (k, value, script) in t["outs"]:
                 made[(t["txid"], k)] = (value, script, h, t["cb"])
-        out += struct.pack("<I", len(rec)) + rec
-    return out
+        rec = b"".join(rec)
+        recs.append(struct.pack("<I", len(rec)) + rec)
+        deltas.append(predicted_delta(b, tin))
+    return recs, deltas
+
+
+def build_ctx(blocks, st, pools):
+    """ctx.bin bytes for a window. Raises RuleFail if a spent output is unknown."""
+    recs, _ = block_records(blocks, st)
+    return b"".join(_u64(pools.get(n, 0)) for n in POOL_NAMES) + b"".join(recs)
 
 
 def window_bytes(blocks, raw_by_height):
-    out = b""
+    out = []
+    last = headers.last_height()
     for b in blocks:
         h = b["height"]
         raw = raw_by_height[h]
-        exp = headers.header(h) if 1 <= h <= headers.last_height() else raw[:HDR]
-        out += struct.pack("<I", h) + exp + struct.pack("<I", len(raw)) + raw
-    return out
+        exp = headers.header(h) if 1 <= h <= last else raw[:HDR]
+        out += [struct.pack("<I", h), exp, struct.pack("<I", len(raw)), raw]
+    return b"".join(out)
 
 
 def _signed(s):
@@ -123,12 +154,11 @@ def parse_rules(text):
     return res
 
 
-def run_rules(blocks, st, raw_by_height, pools, tag=None):
+def _run_part(blocks, ctx, raw_by_height, tag):
     WORK.mkdir(parents=True, exist_ok=True)
-    tag = tag or f"{os.getpid()}_{blocks[0]['height']}"  # several node instances share work/
     wp, cp = WORK / f"win_{tag}.bin", WORK / f"ctx_{tag}.bin"
     wp.write_bytes(window_bytes(blocks, raw_by_height))
-    cp.write_bytes(build_ctx(blocks, st, pools))
+    cp.write_bytes(ctx)
     for _ in range(3):  # empty output (a known rare Bend runtime issue) is rerun
         r = subprocess.run([str(BIN / "rules"), str(wp), str(cp)], capture_output=True, text=True)
         if r.stdout.strip():
@@ -139,6 +169,62 @@ def run_rules(blocks, st, raw_by_height, pools, tag=None):
         raise RuleFail(f"bin/rules gave no verdict for {missing[:3]}; stderr {r.stderr.strip()[-300:]!r}")
     wp.unlink(missing_ok=True)
     cp.unlink(missing_ok=True)
+    return res
+
+
+STATS = {"parts": 0, "reruns": 0}
+
+
+def split_parts(blocks, jobs, max_bytes=8 << 20):
+    """Contiguous parts (lists of indexes into blocks) of about equal bytes."""
+    total = sum(b["size"] for b in blocks)
+    target = max(1, min(max_bytes, total // max(1, jobs) + 1))
+    parts, cur, size = [], [], 0
+    for i, b in enumerate(blocks):
+        cur.append(i)
+        size += b["size"]
+        if size >= target:
+            parts.append(cur)
+            cur, size = [], 0
+    if cur:
+        parts.append(cur)
+    return parts
+
+
+def run_rules(blocks, st, raw_by_height, pools, tag=None, jobs=1, ex=None):
+    """bin/rules over the window, split into parts that run in parallel.
+
+    bin/rules carries exactly one value from block to block: the value pools (every other input
+    of a block is in the block and its own ctx record). Part k starts from pools predicted by
+    predicted_delta(); its output is used only if that start equals the pools bin/rules printed
+    after part k-1's last block, so every verdict is the one a single sequential run over the
+    window prints. A mispredicted part is rerun from the printed pools (STATS["reruns"])."""
+    tag = tag or f"{os.getpid()}_{blocks[0]['height']}"  # several node instances share work/
+    recs, deltas = block_records(blocks, st)
+    parts = split_parts(blocks, jobs) if jobs > 1 else [list(range(len(blocks)))]
+    starts, p = [], [pools.get(n, 0) for n in POOL_NAMES]
+    for part in parts:
+        starts.append(dict(zip(POOL_NAMES, p)))
+        for i in part:
+            p = [a + d for a, d in zip(p, deltas[i])]
+
+    def one(k, start):
+        ctx = b"".join(_u64(start[n]) for n in POOL_NAMES) + b"".join(recs[i] for i in parts[k])
+        return _run_part([blocks[i] for i in parts[k]], ctx, raw_by_height, f"{tag}_{k}")
+
+    if ex is not None and len(parts) > 1:
+        outs = list(ex.map(one, range(len(parts)), starts))
+    else:
+        outs = [one(k, starts[k]) for k in range(len(parts))]
+    res = {}
+    for k, part in enumerate(parts):
+        if k > 0:
+            actual = outs[k - 1][blocks[parts[k - 1][-1]]["height"]]["pools"]
+            if actual != starts[k]:
+                STATS["reruns"] += 1
+                outs[k] = one(k, actual)
+        res.update(outs[k])
+    STATS["parts"] += len(parts)
     return res
 
 
@@ -237,7 +323,7 @@ def run_hooks(blocks, st, raw_by_height, log):
 
 # ------------------------------------------------------------------ entry point
 
-def validate(blocks, st, raw_by_height, log, mode="full", pools=None):
+def validate(blocks, st, raw_by_height, log, mode="full", pools=None, jobs=1, ex=None):
     """Decide every non-crypto rule for `blocks` (in height order, a contiguous window).
 
     mode "full": raise RuleFail on any violated rule or hook FAIL.
@@ -249,7 +335,7 @@ def validate(blocks, st, raw_by_height, log, mode="full", pools=None):
     t0 = time.time()
     prev = st.get("pools") if pools is None else pools  # pools: carried from an earlier call in the same window
     known = prev is not None
-    res = run_rules(blocks, st, raw_by_height, prev or {})
+    res = run_rules(blocks, st, raw_by_height, prev or {}, jobs=jobs, ex=ex)
     fails, skipped_turnstile = [], 0
     for b in blocks:
         r = res[b["height"]]
