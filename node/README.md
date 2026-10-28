@@ -69,11 +69,11 @@ all checks PASS.
 | No nullifier reused (Sprout, Sapling, Orchard, Ironwood) | ✅ (state) | ✅ (state) |
 | Non-crypto consensus rules (`rules/README.md`: coinbase, issuance/funding streams/lockbox, fees, value balance, maturity + coinbase shielding, expiry, lock time, sizes, sigops incl. P2SH, versions + branch ids, duplicates, turnstile) | audit only (run, logged, not enforced) | ✅ enforced (bin/rules) |
 | Turnstile (no pool negative) | audit, pools tracked from genesis | ✅ when pools are tracked from genesis; **SKIPPED** in the assumed-state instance |
-| Ironwood anchors | trusted | ✅ (roots: follow's Bend-computed tree, see §3) |
-| Orchard, Sapling, Sprout anchors | trusted | **SKIPPED (tree builder pending)** |
+| Ironwood anchors | trusted | ✅ node's own Bend tree (follow's roots as fallback) |
+| Orchard, Sapling, Sprout anchors | trusted | ✅ node's own Bend trees, built from genesis (`trees.py`) |
 | Orchard/Ironwood RedPallas + Halo 2 | trusted | ✅ hook `orchard` (follow's Bend verifiers) |
-| Transparent scripts/ECDSA/sighash | trusted | **SKIPPED (component pending)**: hook `transparent` |
-| Sapling/Sprout proofs and signatures | trusted | **SKIPPED (component pending)**: hook `sapling` |
+| Transparent scripts/ECDSA/sighash | trusted | ✅ hook `transparent` (`zcash/transparent`) |
+| Sapling/Sprout proofs and signatures | trusted | ✅ hook `sapling` (Groth16, RedJubjub, Ed25519) |
 | ZIP 221 history root / hashBlockCommitments | not checked | not checked (pending) |
 | NU7 (3,543,405) issuance (ZIPs 218/235/237), Sprout retirement | — | pending (printed `skip`); branch id 0x77190ad9 and v4 retirement implemented, untested |
 
@@ -144,7 +144,7 @@ SQLite (WAL, `synchronous=FULL`) + append-only leaf logs, per instance directory
 | `nf` | nullifier sets: Sprout, Sapling, Orchard, Ironwood |
 | `tx` | txid → (height, index); getrawtransaction refetches the block |
 | `blk` | block index (hash, prev, time, size, tx count, bits) |
-| `anchor` | tree roots per pool (filled as tree builders land) |
+| `anchor` | tree roots per pool, per block (all four pools) |
 | `undo` | per-block undo data, last 200 blocks (`Store.rollback_to`) |
 | `meta` | tip, leaf-log lengths, value pools (+ `pools@<h>` per window), rules summary, audit count |
 | `leaves/<pool>.bin/.blk` | every note commitment in tree order + per-block counts |
