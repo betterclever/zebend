@@ -91,6 +91,9 @@ this is a model of the gate's algebra, not a check of Orchard's generated gate c
 | gadget | 0.06 s | 0.07 s |
 | prims | 0.2 s | 1 s |
 | orchard | 0.1 s | 1 s |
+| opt_gates | 11 s | 43 s |
+| msm_chunk | 0.1 s | 0.2 s |
+| msm_bucket | 0.1 s | 0.2 s |
 
 `--verdict` is fast because Bend caches its compiled Lean kernel (`~/.bend/bendtt/`); it
 still rejects unsound proofs (an `@unsafe` "proof" fails it).
@@ -271,3 +274,47 @@ hypothesis is false for every p ≥ 1. `orchard/gadget_vacuous.bend` proves this
 (`nzd_unsatisfiable: NoZeroDivisors(1 + pp) -> Empty`). `orchard/`'s `NZD` quantifies only
 over canonical elements, which a prime p satisfies, and `orchard/`'s `last_window_bit` /
 `E.boolean` is the non-vacuous version of that law, on a real Orchard gate.
+
+## opt_gates/: the optimised generated verifier computes what the original computes (56 laws)
+
+`research/perf4/v/opt_gates.py` (perf4 lever F: CSE, constant folding, a+(−b) → a−b, dead
+code, inversion batching) is checked by translation validation, for every function it
+rewrites, in `orchard_bt` (batch verifier) and `orchard_ba` (single verifier). `gen.py` checks
+mechanically that the original and optimised bodies run the same non-arithmetic statements in
+the same order. Each law states that every value passed to those statements is equal in Z/p,
+for every p ≥ 2, every input and every constant. A once-proven normaliser (`sound.bend`'s
+`nf_sound`: each rewrite rule preserves value) discharges the laws. In `ba` this covers all
+215 `"expr"` values (the 193 gate polynomials and the permutation and lookup expressions)
+individually.
+
+**Trusted, not proven:** that `binvs` (Montgomery's batch inversion) returns pointwise inverses,
+and, in `bt`, the removal of the log lines. Details: `opt_gates/README.md`.
+
+## msm_chunk/: chunking and merging preserve the MSM (8 laws)
+
+This is a model, with Nat points, of `msm_par.mpar`/`msm_auto` and `bt.groups`/`leaf`/`join`/
+`check`, with the same control structure. Laws:
+
+* `msm_split`: any split point splits the MSM;
+* `mpar_ok`, `msm_auto_ok`: the chunked MSM equals the MSM for every fuel, chunk count and length;
+* `groups_ok`, with its non-vacuity law `aligned_sat`;
+* `shared_base`: s₁·P + s₂·P = (s₁+s₂)·P, base by base, through `vadd`;
+* `merge_ok`, with `merge_sat`: for any tree of weighted proofs, the merged check value equals
+  Σₖ rₖ·(own MSM + shared-base MSM).
+
+`fx_dense` is not covered.
+
+## msm_bucket/: the signed-digit bucket MSM computes Σ kᵢ·Pᵢ (18 laws)
+
+This is a model of `msm_ba.msm9`: carry-free signed digits, bucket fill, pairwise rounds,
+running-sum reduction over the reversed buckets, and windows combined by halving and doubling.
+Points are free generators p (for P) and n (for −P).
+
+* `window_ok`: one window equals Σᵢ dᵢⱼ·Pᵢ;
+* `msm9_ok`: the result is Σᵢ posvᵢ·Pᵢ + negvᵢ·(−Pᵢ);
+* `recode`: posv + H == negv + k';
+* hypotheses discharged or shown satisfiable: `win_sat`, `points_sat`, and `fuel_c4..16` for
+  every window width the code accepts.
+
+Not modelled: bit extraction of the windows, the curve formulas (taken to be group addition),
+and `Array.swap`.
