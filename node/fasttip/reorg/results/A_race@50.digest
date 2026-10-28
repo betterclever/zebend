@@ -1,0 +1,13 @@
+  meta             04b78a7b17ab4fad
+  blk              63b1329e38bc2c6b  (22 rows)
+  undo             423b03c1f711ad73  (22 rows)
+  tx               eda7010b9b24eaed  (150 rows)
+  nf               557780523bd4e7bd  (101 rows)
+  anchor           3114dee9e6152558  (25 rows)
+  utxo             4a9544f732b1f7d2  (258 rows)
+  counts           (27285321, 55127742)
+  leaves/sprout    7f0a44eafc60ce68
+  leaves/sapling   6e912ed131ede839
+  leaves/orchard   1135a4f654b7b7c8
+  leaves/ironwood  6b03f204682e0705
+DIGEST 91a51d585f2f112fc6b9dcad2f0967cef88aff1032adedfc7274c6d346d1aadf

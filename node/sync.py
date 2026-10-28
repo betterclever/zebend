@@ -372,6 +372,22 @@ def prepare(after, args, last_cp, ex):
 _STOP = []
 
 
+def off_index(recs):
+    """node/fasttip reorg: the first height of a prepared window whose block is no longer the
+    verified header at its height (the header index switched to a competing chain while the window
+    was being read). Header bytes == the verified header covers the hash and the prev link
+    (hashes.bin and extra.bin hold the same chain). None: every block is still on the index."""
+    idx = headers.Index(HDRDIR / "hashes.bin")
+    try:
+        last = min(idx.n - 1, headers.last_height())
+        for h, raw in recs:
+            if h >= 1 and (h > last or raw[:HDR] != headers.header(h)):
+                return h
+    finally:
+        idx.f.close()
+    return None
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--to", type=int, default=None)
@@ -539,6 +555,15 @@ def main():
                 else:
                     time.sleep(5)
                 continue
+            if BLOCK_SOURCE is not None:
+                bad = off_index(recs)
+                if bad is not None:  # a block of the branch the index just left: drop the window, not FAIL
+                    log(f"  window {recs[0][0]}..{recs[-1][0]}: block {bad} is not on the verified header chain any "
+                        f"more (the index switched to a competing chain while it was prepared): dropped, not validated")
+                    for p in used:  # spool chunks of the abandoned branch (as the rollback below does)
+                        p.unlink(missing_ok=True)
+                        _SPOOL_INDEX.pop(p, None)
+                    continue
             if not (args.to is not None and recs[-1][0] >= args.to) and not args.once:
                 nxt = (recs[-1][0], prep.submit(prepare, recs[-1][0], args, last_cp, ex))  # overlap: next window
             tr = time.time()

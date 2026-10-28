@@ -1,0 +1,79 @@
+09:59:12.944 fasttip: appended 1 header(s) 3532945..3532945 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 30 ms)
+09:59:13.095 history: state at 3532944 (seeded at 3,521,999 (consensus/gaps/history/data/seed_3521999.st, NU6.3-epoch tree, validated by header 3,522,000); rolled forward with this instance genesis-built tree roots); checked from 3428143
+09:59:13.095 trees: sprout size 1547344 root 92ea4f11169eeba7 (built from this instance's leaf logs since genesis); sapling size 73990684 root f7f3064ca281e81b (built from this instance's leaf logs since genesis); orchard size 50478863 root 5bb0fd2301e14fa9 (built from this instance's leaf logs since genesis); ironwood size 953184 root ec8b3fcd19119b40 (built from this instance's leaf logs since genesis)
+09:59:13.095 sync: state tip 3532944, last checkpoint 3522460, verified headers to 3532944, 16 Bend jobs
+09:59:13.188   anchors: Ironwood 1/1 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:59:13.219   full validation 3532945..3532945: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 5, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 1, 'skipped': 0}"}
+09:59:13.219   history (ZIP 221): 1 MATCH  [trees+anchors 0.04 s, history 0.01 s]
+09:59:13.226 tip 3532945  window 1 blocks 0.0 MB in 0.1 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.1 s; resolve 0.0 s)  avg 9.4 blocks/s 0.12 MB/s  rules parts 1 reruns 0
+09:59:13.242 committed tip 3532945: 1 windows, 0 MB in one transaction (writer 0.0 s)
+09:59:14.305 fasttip: competing chain from follow-tap (block): forks after 3532944, 1 header(s) 3532945..3532945 tip 000000000048cae4; ours 1 header(s) 3532945..3532945: work 2.881e+12 <= ours 2.881e+12: ignored (more work required)
+09:59:14.357 fasttip: REORG: competing chain from follow-tap (block): forks after 3532944, 2 header(s) 3532945..3532946 tip 00000000001711e9; ours 1 header(s) 3532945..3532945: work 5.692e+12 > ours 2.881e+12, Bend PASS (Equihash, target, links, difficulty, hash); header index switched in 52 ms: dropped 1 header(s), verified tip now 3532946; sync.py rolls the state back to 3532944
+09:59:14.358 REORG: tip 3532945 is no longer on the verified header chain; rolling back to 3532944
+09:59:14.595   anchors: Ironwood 1/1 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:59:14.608   full validation 3532945..3532945: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 5, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 1, 'skipped': 0}"}
+09:59:14.608   history (ZIP 221): 1 MATCH  [trees+anchors 0.03 s, history 0.01 s]
+09:59:14.673   anchors: Ironwood 2/2 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:59:14.705   full validation 3532946..3532946: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 4, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 2, 'skipped': 0}"}
+09:59:14.705   history (ZIP 221): 1 MATCH  [trees+anchors 0.04 s, history 0.01 s]
+09:59:14.742 committed tip 3532946: 2 windows, 0 MB in one transaction (writer 0.0 s)
+09:59:14.749 REORG TIMING: announcement -> index switched 0.109 s, -> winning block 3532946 committed 0.501 s
+09:59:15.118 fasttip: appended 1 header(s) 3532947..3532947 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 26 ms)
+09:59:15.311   anchors: Ironwood 3/3 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:59:15.323   full validation 3532947..3532947: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 10, 'skipped': 0}", 'sapling': "PASS {'pass': 1, 'skipped': 0}", 'orchard': "PASS {'pass': 3, 'skipped': 0}"}
+09:59:15.323   history (ZIP 221): 1 MATCH  [trees+anchors 0.15 s, history 0.01 s]
+09:59:15.384 committed tip 3532947: 1 windows, 0 MB in one transaction (writer 0.1 s)
+09:59:15.766 fasttip: appended 1 header(s) 3532948..3532948 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 27 ms)
+09:59:15.775   anchors: Ironwood 0/0 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:59:15.787   full validation 3532948..3532948: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 0, 'skipped': 0}"}
+09:59:15.787   history (ZIP 221): 1 MATCH  [trees+anchors 0.00 s, history 0.01 s]
+09:59:15.796 committed tip 3532948: 1 windows, 0 MB in one transaction (writer 0.0 s)
+09:59:16.166 fasttip: appended 1 header(s) 3532949..3532949 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 23 ms)
+09:59:16.174   anchors: Ironwood 0/0 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:59:16.184   full validation 3532949..3532949: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 0, 'skipped': 0}"}
+09:59:16.184   history (ZIP 221): 1 MATCH  [trees+anchors 0.00 s, history 0.01 s]
+09:59:16.186 committed tip 3532949: 1 windows, 0 MB in one transaction (writer 0.0 s)
+09:59:16.555 fasttip: appended 1 header(s) 3532950..3532950 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 21 ms)
+09:59:16.716   anchors: Ironwood 6/6 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:59:16.733   full validation 3532950..3532950: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 11, 'skipped': 0}", 'sapling': "PASS {'pass': 1, 'skipped': 0}", 'orchard': "PASS {'pass': 6, 'skipped': 0}"}
+09:59:16.733   history (ZIP 221): 1 MATCH  [trees+anchors 0.12 s, history 0.02 s]
+09:59:16.798 committed tip 3532950: 1 windows, 0 MB in one transaction (writer 0.0 s)
+=== run_tests: SIGKILL sent to pid 84071 on /committed tip 3532950/ ===
+/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/lib/python3.15/multiprocessing/resource_tracker.py:475: UserWarning: resource_tracker: There appear to be 6 leaked semaphore objects to clean up at shutdown: {'/mp-ke9cw90s', '/mp-v7yy_dty', '/mp-cl2f2fc0', '/mp-1b5arx8c', '/mp-knyg97co', '/mp-882tru4i'}
+  warnings.warn(
+=== run_tests: first run exit -9 (SIGKILL); restarting ===
+09:59:18.939 fasttip: appended 1 header(s) 3532951..3532951 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 21 ms)
+09:59:18.962 fasttip: appended 1 header(s) 3532952..3532952 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 22 ms)
+09:59:18.984 fasttip: appended 1 header(s) 3532953..3532953 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 22 ms)
+09:59:19.017 fasttip: appended 1 header(s) 3532954..3532954 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 33 ms)
+09:59:19.046 history: state at 3532950 (seeded at 3,521,999 (consensus/gaps/history/data/seed_3521999.st, NU6.3-epoch tree, validated by header 3,522,000); rolled forward with this instance genesis-built tree roots); checked from 3428143
+09:59:19.046 trees: sprout size 1547344 root 92ea4f11169eeba7 (built from this instance's leaf logs since genesis); sapling size 73990688 root c6c09e3eae5fb1f0 (built from this instance's leaf logs since genesis); orchard size 50478863 root 5bb0fd2301e14fa9 (built from this instance's leaf logs since genesis); ironwood size 953210 root 36bf1462f7582f3e (built from this instance's leaf logs since genesis)
+09:59:19.046 sync: state tip 3532950, last checkpoint 3522460, verified headers to 3532950, 16 Bend jobs
+09:59:19.052 fasttip: appended 1 header(s) 3532955..3532955 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 35 ms)
+09:59:19.092 fasttip: appended 1 header(s) 3532956..3532956 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 40 ms)
+09:59:19.121   anchors: Ironwood 2/2 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:59:19.132 fasttip: appended 1 header(s) 3532957..3532957 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 40 ms)
+09:59:19.138   full validation 3532951..3532951: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 2, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 2, 'skipped': 0}"}
+09:59:19.138   history (ZIP 221): 1 MATCH  [trees+anchors 0.04 s, history 0.01 s]
+09:59:19.140 tip 3532951  window 1 blocks 0.0 MB in 0.1 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.1 s; resolve 0.0 s)  avg 12.7 blocks/s 0.22 MB/s  rules parts 1 reruns 0
+09:59:19.281   anchors: Ironwood 2/2 PASS; Sapling 0/0 PASS; Orchard 1/1 PASS; Sprout 0/0 PASS
+09:59:19.295   full validation 3532952..3532952: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 6, 'skipped': 0}", 'sapling': "PASS {'pass': 1, 'skipped': 0}", 'orchard': "PASS {'pass': 2, 'skipped': 0}"}
+09:59:19.295   history (ZIP 221): 1 MATCH  [trees+anchors 0.13 s, history 0.01 s]
+09:59:19.339   anchors: Ironwood 3/3 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:59:19.354   full validation 3532953..3532953: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 3, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 3, 'skipped': 0}"}
+09:59:19.354   history (ZIP 221): 1 MATCH  [trees+anchors 0.04 s, history 0.01 s]
+09:59:19.394   anchors: Ironwood 2/2 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:59:19.405   full validation 3532954..3532954: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 2, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 2, 'skipped': 0}"}
+09:59:19.405   history (ZIP 221): 1 MATCH  [trees+anchors 0.04 s, history 0.01 s]
+09:59:19.408   anchors: Ironwood 0/0 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:59:19.420   full validation 3532955..3532955: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 0, 'skipped': 0}"}
+09:59:19.420   history (ZIP 221): 1 MATCH  [trees+anchors 0.00 s, history 0.01 s]
+09:59:19.460   anchors: Ironwood 1/1 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:59:19.471   full validation 3532956..3532956: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 1, 'skipped': 0}"}
+09:59:19.471   history (ZIP 221): 1 MATCH  [trees+anchors 0.04 s, history 0.01 s]
+09:59:19.525   anchors: Ironwood 1/1 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:59:19.536   full validation 3532957..3532957: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 5, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 1, 'skipped': 0}"}
+09:59:19.536   history (ZIP 221): 1 MATCH  [trees+anchors 0.04 s, history 0.01 s]
+09:59:19.565 committed tip 3532957: 7 windows, 0 MB in one transaction (writer 0.1 s)
+09:59:19.582 stopped at committed tip 3532957: 7 blocks 0.1 MB in 1 s, 13.4 blocks/s 0.26 MB/s
+RESULT {"case": "D_reapply", "resume": true, "resume_to_tip_s": 0.697, "ok": true, "reorgs": [], "stats": {"inv": 0, "blocks": 0, "headers_msgs": 0, "pushed": 7, "orphans": 5, "fallback runs": 0, "dup blocks": 0, "header fails": 0, "forks seen": 0, "reorgs": 0, "forks ignored": 0, "reorgs refused": 0, "follow tap": 7}, "final_tip": {"height": 3532957, "hash": "0000000000600f9f4bbf6b00cc5aa6e233a7c83add768ceb9e5320e3264a6e8e"}, "wall_s": 3.5}

@@ -20,7 +20,7 @@ leaves/<pool>.blk: u32 height, u32 count per block that appends any): the input 
 builders. Sprout and Sapling trees are pending components; their leaves are kept so the
 trees can be built later without downloading the chain again.
 """
-import json, os, pickle, sqlite3, struct, time
+import json, os, pickle, queue, sqlite3, struct, time
 from pathlib import Path
 
 POOLS = ["sprout", "sapling", "orchard", "ironwood"]
@@ -447,8 +447,18 @@ def _writer_main(path, inq, outq, cache_mb):
     st.db.execute(f"PRAGMA cache_size=-{cache_mb * 1024}")
     open_, failed, first, busy = False, None, None, 0.0
     undo, leaves = [], {p: [bytearray(), bytearray()] for p in POOLS}
+    ppid = os.getppid()
     while True:
-        msg = inq.get()
+        try:
+            msg = inq.get(timeout=2)
+        except queue.Empty:
+            # node/fasttip reorg (SIGKILL test): the parent died without saying goodbye (SIGKILL, OOM).
+            # Exit: an open group is rolled back by SQLite when the connection goes away. Before, the
+            # orphan writer kept the group's BEGIN IMMEDIATE (the write lock) and the restarted node
+            # could not write.
+            if os.getppid() != ppid:
+                os._exit(3)
+            continue
         if msg is None:
             if open_:
                 st.db.execute("ROLLBACK")

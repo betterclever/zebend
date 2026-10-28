@@ -1,0 +1,12 @@
+09:19:32.421 fasttip: appended 1 header(s) 3532945..3532945 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 23 ms)
+09:19:32.494 history: state at 3532944 (seeded at 3,521,999 (consensus/gaps/history/data/seed_3521999.st, NU6.3-epoch tree, validated by header 3,522,000); rolled forward with this instance genesis-built tree roots); checked from 3428143
+09:19:32.494 trees: sprout size 1547344 root 92ea4f11169eeba7 (built from this instance's leaf logs since genesis); sapling size 73990684 root f7f3064ca281e81b (built from this instance's leaf logs since genesis); orchard size 50478863 root 5bb0fd2301e14fa9 (built from this instance's leaf logs since genesis); ironwood size 953184 root ec8b3fcd19119b40 (built from this instance's leaf logs since genesis)
+09:19:32.494 sync: state tip 3532944, last checkpoint 3522460, verified headers to 3532944, 16 Bend jobs
+09:19:32.548   anchors: Ironwood 1/1 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:19:32.563   full validation 3532945..3532945: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 5, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 1, 'skipped': 0}"}
+09:19:32.563   history (ZIP 221): 1 MATCH  [trees+anchors 0.03 s, history 0.01 s]
+09:19:32.566 tip 3532945  window 1 blocks 0.0 MB in 0.1 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.0 s; resolve 0.0 s)  avg 16.6 blocks/s 0.22 MB/s  rules parts 1 reruns 0
+09:19:32.575 committed tip 3532945: 1 windows, 0 MB in one transaction (writer 0.0 s)
+09:20:33.599 SCENARIO ERROR TimeoutError: block 3532946 00000000001711e9 not committed in 60.0 s (tip {'height': 3532945, 'hash': '00000000005714cf10a45db247b0508b150e72b1678e2a5b15bebc01dd308e4f'})
+09:20:33.607 stopped at committed tip 3532945: 1 blocks 0.0 MB in 61 s, 0.0 blocks/s 0.00 MB/s
+RESULT {"case": "A", "resume": false, "stale_committed": true, "ok": false, "error": "TimeoutError: block 3532946 00000000001711e9 not committed in 60.0 s (tip {'height': 3532945, 'hash': '00000000005714cf10a45db247b0508b150e72b1678e2a5b15bebc01dd308e4f'})", "reorgs": null, "stats": {"inv": 0, "blocks": 0, "headers_msgs": 0, "pushed": 1, "orphans": 1, "fallback runs": 0, "dup blocks": 0, "header fails": 0, "follow tap": 2}, "final_tip": {"height": 3532945, "hash": "00000000005714cf10a45db247b0508b150e72b1678e2a5b15bebc01dd308e4f"}, "wall_s": 63.4}

@@ -1,0 +1,538 @@
+--- a/node/fasttip/tipfeed.py
++++ b/node/fasttip/tipfeed.py
+@@ -15,7 +15,16 @@
+     instead of a spool chunk;
+   * a block that does not extend our tip (we missed one): getheaders to that peer; a header batch
+     that extends our tip is checked the same way (one equihash7 + one hdrchain run per batch) and
+-    its blocks are requested; anything else (a fork, a reorg) kicks the fallback;
++    its blocks are requested;
++  * a block or header batch that does not extend our tip and links (directly, or through other
++    such headers kept in a side store) to a block of our verified chain below the tip is a
++    COMPETING CHAIN (forkswitch.py): the push path decides at once. A missing link is asked for
++    with getheaders + locator (to the announcing push peer, else one short-lived connection).
++    The competing headers are checked in Bend (same programs and rule as above, on top of the
++    fork point); if they carry strictly more chain work than ours above the fork point, the
++    header index is switched (crash-safe) and sync.py's own rollback (store.rollback_to, undo
++    data) and block pickup do the rest. Less or equal work: ignored. Deeper than the undo depth
++    (600): refused, loudly (`REORG REFUSED`);
+   * safety net for a missed inv (measured: a connected peer does not always announce every
+     block): every --hdr-poll s one push peer, round-robin, is asked `getheaders` over its
+     existing connection (no new connection, one small message); new headers take the path above.
+@@ -29,7 +38,8 @@
+     connection. Its "announcement" time is follow's receipt time (the file's mtime);
+   * fallback = the old live.py cycle (tiphdr.py, then download.py into the spool for missing
+     blocks), run when push is quiet for 3 x --every s, when no push peer is connected, or when
+-    kicked (fork / missed block / failed check). tiphdr.py also handles reorgs (drop_tip).
++    kicked (missed block / failed check). A fork the fallback sees goes to the same fork choice
++    (getheaders + locator, Bend checks, more work only); tiphdr.drop_tip is no longer used here.
+ 
+ hashlib is used only to NAME blocks for routing (which getdata a block answers; which inv we
+ already have), as headers.routing_index and net.py do; the index only ever receives Bend's hashes.
+@@ -41,6 +51,8 @@
+ if str(NODE) not in sys.path:
+     sys.path.insert(0, str(NODE))
+ import headers, net  # noqa: E402
++sys.path.insert(0, str(Path(__file__).resolve().parent))
++import forkswitch as FS  # noqa: E402
+ 
+ HDR = 1487
+ HDRDIR = NODE / "state/hdr"
+@@ -55,6 +67,8 @@
+ # and swarm seeds, tiphdr.py's first choices. Push peers are picked elsewhere (IPv6 first: a
+ # different source address from the IPv4 connections the other components hold).
+ RESERVED = set(net.KNOWN)
++KNOWN_DEPTH = 800        # our verified hashes kept in memory (fork points up to this deep are recognised)
++HEADERS_FULL = 160       # Zebra answers getheaders with at most 160 headers: a full reply may continue
+ 
+ 
+ def sha256d(b):  # routing names only (see module doc)
+@@ -78,6 +92,7 @@
+         self.seq = self.seen = 0
+         self.meta = {}     # height -> timing dict (inv, recv, header, put)
+         self.after = None  # the tip sync last asked from (its committed/resolved tip)
++        self.recent = {}   # height -> (raw, hint) of blocks handed out (re-served after a rollback)
+ 
+     def put(self, h, raw, hint, meta=None):
+         with self.cv:
+@@ -88,29 +103,42 @@
+             self.cv.notify_all()
+ 
+     def take(self, after, max_blocks=2000, max_bytes=96 << 20):
+-        idx = _idx()
+-        try:
+-            with self.cv:
++        with self.cv:  # the index is opened under the lock a reorg switch holds (forkswitch)
++            idx = _idx()
++            try:
+                 self.seen = self.seq
+                 self.after = after
+                 for k in [k for k in self.blocks if k <= after]:
+                     del self.blocks[k]
+                 out, h, size = [], after + 1, 0
+-                while h in self.blocks and len(out) < max_blocks and size < max_bytes:
+-                    raw, hint = self.blocks[h]
++                while (h in self.blocks or h in self.recent) and len(out) < max_blocks and size < max_bytes:
++                    # a block handed out before (recent) is served again if it is still on the index:
++                    # sync.py may roll back below a fork point (to a ZIP 221 window start)
++                    raw, hint = self.blocks[h] if h in self.blocks else self.recent[h]
+                     if h >= idx.n or idx.internal(h) != hint or raw[4:36] != idx.internal(h - 1):
+-                        for k in [k for k in self.blocks if k >= h]:
+-                            del self.blocks[k]
++                        if h in self.blocks:
++                            for k in [k for k in self.blocks if k >= h]:
++                                del self.blocks[k]
++                        self.recent.pop(h, None)
+                         break
+                     out.append((h, raw))
+                     size += len(raw)
+                     h += 1
+                 now = time.time()
+-                for hh, _ in out:
++                for hh, raw in out:
+                     self.meta.setdefault(hh, {}).setdefault("t_take", now)
++                    self.recent[hh] = (raw, idx.internal(hh))
++                for k in [k for k in self.recent if k <= h - 1 - 64]:  # the last 64 blocks handed out
++                    del self.recent[k]
+                 return out
+-        finally:
+-            idx.f.close()
++            finally:
++                idx.f.close()
++
++    def drop_above(self, h):
++        with self.cv:
++            for d in (self.blocks, self.recent):
++                for k in [k for k in d if k > h]:
++                    del d[k]
+ 
+     def wait(self, secs):
+         """sync.py's idle wait: returns as soon as a block was put since the last take()."""
+@@ -141,9 +169,17 @@
+         self.children = set()             # running fallback subprocesses (killed by stop())
+         self.last_tap = 0.0               # last block the follow tap delivered
+         self.fail_streak = 0              # consecutive failed handshakes (connect pacing)
++        self.side = {}                    # name -> [header, raw block or None, ip, t]: headers not on our chain
++        self.fork_seen = {}               # (branch tip name, length) -> verdict (each branch is decided once)
++        self.want_seen = {}               # missing link name -> t asked (getheaders rate limit)
++        self.last_probe = 0.0             # last short-lived getheaders connection (no push peer)
++        self.reorgs = []                  # switches done: dicts for the log / tests
++        self.refused = {}                 # fork height -> t of the last REORG REFUSED line
+         self.stats = {"inv": 0, "blocks": 0, "headers_msgs": 0, "pushed": 0, "orphans": 0, "fallback runs": 0,
+-                      "dup blocks": 0, "header fails": 0}
++                      "dup blocks": 0, "header fails": 0, "forks seen": 0, "reorgs": 0, "forks ignored": 0,
++                      "reorgs refused": 0}
+         WORK.mkdir(parents=True, exist_ok=True)
++        FS.reconcile(HDRDIR, self.log)  # an index switch interrupted by a crash leaves a consistent prefix
+         self._refresh_known()
+ 
+     # ------------------------------------------------------------ lifecycle
+@@ -186,7 +222,7 @@
+         idx = _idx()
+         try:
+             top = idx.n - 1
+-            self.known = {idx.internal(h): h for h in range(max(0, top - 200), top + 1)}
++            self.known = {idx.internal(h): h for h in range(max(0, top - KNOWN_DEPTH), top + 1)}
+             self.top, self.top_hash = top, idx.internal(top)
+         finally:
+             idx.f.close()
+@@ -277,18 +313,24 @@
+                 self.inflight[h] = (ip, now)
+         return self._send(ip, "getdata", net.varint(len(hashes)) + b"".join(struct.pack("<I", MSG_BLOCK) + h for h in hashes))
+ 
+-    def _getheaders(self, ip):
++    def _locator(self):
++        """Our tip, dense for 16 blocks, then doubling back past the undo depth."""
+         idx = _idx()
+         try:
+             top, loc, step, h = idx.n - 1, [], 1, idx.n - 1
+-            while h >= max(0, top - 600) and len(loc) < 20:
++            while h >= max(0, top - KNOWN_DEPTH) and len(loc) < 32:
+                 loc.append(idx.internal(h))
+-                if len(loc) >= 8:
++                if len(loc) >= 16:
+                     step *= 2
+                 h -= step
++            if top - KNOWN_DEPTH > 0:
++                loc.append(idx.internal(top - KNOWN_DEPTH))  # fork points down to KNOWN_DEPTH are found
+         finally:
+             idx.f.close()
+-        self._send(ip, "getheaders", struct.pack("<I", net.PROTO) + net.varint(len(loc)) + b"".join(loc) + bytes(32))
++        return struct.pack("<I", net.PROTO) + net.varint(len(loc)) + b"".join(loc) + bytes(32)
++
++    def _getheaders(self, ip, payload=None):
++        return self._send(ip, "getheaders", payload or self._locator())
+ 
+     def _reader(self, p):
+         last = time.time()
+@@ -332,7 +374,7 @@
+                 if ip in self.peer_info:
+                     self.peer_info[ip]["invs"] += 1
+                 self.inv_seen.setdefault(hsh, (now, ip, "inv"))
+-                if hsh in self.known:
++                if hsh in self.known or (hsh in self.side and self.side[hsh][1] is not None):
+                     continue
+                 f = self.inflight.get(hsh)
+                 if f is None or (f[0] != ip and now - f[1] > 1.0):  # slow first announcer: ask this one too
+@@ -379,18 +421,14 @@
+                 self._put(got[0][0], raw, hint, ip, t_recv, got[0][2])
+                 self._drain_orphans(hint)
+             return
+-        # does not extend our tip: we missed a block, or a fork
++        # does not extend our tip: we missed a block (its parent comes later), or a competing chain
+         with self.lock:
+             self.orphans[raw[4:36]] = (raw, ip, t_recv)
+             while len(self.orphans) > 64:
+                 self.orphans.pop(next(iter(self.orphans)))
+         self.stats["orphans"] += 1
+-        if raw[4:36] in self.known:  # a sibling of an indexed block: a fork at or below our tip
+-            self.log(f"fasttip: block {hint[::-1].hex()[:16]} from {ip} forks at {self.known[raw[4:36]] + 1}; "
+-                     f"kicking the fallback (tiphdr.py handles reorgs)")
+-            self.kick.set()
+-        else:
+-            self._getheaders(ip)
++        self._note_side(raw[:HDR], raw, ip, t_recv)
++        self._consider(hint, ip, "block", t_recv)
+ 
+     def _wanted(self, h):
+         """Hand a block to sync only if the state may still need it (sync drops older ones anyway)."""
+@@ -427,15 +465,22 @@
+         k = 0
+         while k < len(hdrs) and names[k] in self.known:
+             k += 1
++        if not hdrs[k:] and n >= HEADERS_FULL and k and self.known.get(names[-1], self.top) < self.top - HEADERS_FULL:
++            # a full reply of headers we have, far below our tip: the peer's chain forks deeper; continue
++            self._getheaders(ip, struct.pack("<I", net.PROTO) + net.varint(1) + names[-1] + bytes(32))
++            return
+         hdrs, names = hdrs[k:], names[k:]
+         if not hdrs:
+             return
+         with self.lock:
+             for nm in names:
+                 self.inv_seen.setdefault(nm, (t, ip, "headers"))
+-        if hdrs[0][4:36] != self.top_hash:
+-            self.log(f"fasttip: headers from {ip} do not extend our tip {self.top} (fork or reorg); kicking the fallback")
+-            self.kick.set()
++        if hdrs[0][4:36] != self.top_hash:  # a competing chain (or a reply for a branch we hold in part)
++            for x in hdrs:
++                self._note_side(x, None, ip, t)
++            switched = self._consider(names[-1], ip, "headers", t)
++            if not switched and n >= HEADERS_FULL and names[-1] in self.side:  # the peer has more: continue
++                self._getheaders(ip, struct.pack("<I", net.PROTO) + net.varint(1) + names[-1] + bytes(32))
+             return
+         got = self._verify_append(hdrs, ip)
+         if not got:
+@@ -451,6 +496,193 @@
+         if want:
+             self._getdata(ip, want)
+ 
++    # ------------------------------------------------------------ competing chains (forkswitch.py)
++    def _note_side(self, hdr, raw, ip, t):
++        """Keep a header (and its block, if we have it) that is not on our verified chain."""
++        name = sha256d(hdr)
++        if name in self.known:
++            return name
++        with self.lock:
++            e = self.side.get(name)
++            if e is None:
++                self.side[name] = [hdr, raw, ip, t]
++                while len(self.side) > 4000:
++                    self.side.pop(next(iter(self.side)))
++            elif raw is not None and e[1] is None:
++                e[1] = raw
++        return name
++
++    def _branch_from(self, name):
++        """Walk back from side header `name` to our verified chain, then forward through side
++        headers that build on it. Returns (fork height, [headers above it]) or (None, missing name)."""
++        with self.lock:
++            back, cur = [], name
++            while cur in self.side and cur not in self.known and len(back) < 4000:
++                back.append(self.side[cur][0])
++                cur = self.side[cur][0][4:36]
++            if cur not in self.known:
++                return None, cur
++            branch = back[::-1]
++            children = {}
++            for nm, e in self.side.items():
++                if nm not in self.known:
++                    children.setdefault(e[0][4:36], []).append((e[3], nm))
++            tip = sha256d(branch[-1]) if branch else cur
++            while tip in children and len(branch) < 4000:  # the earliest-seen child on a tie
++                _, tip = min(children[tip])
++                branch.append(self.side[tip][0])
++        return self.known[cur], branch
++
++    def _consider(self, name, ip, why, t):
++        """A header/block not extending our tip: decide at once if it is a competing chain."""
++        fork_h, branch = self._branch_from(name)
++        if fork_h is None:  # a link is missing: ask for the headers in between (or we missed a block)
++            self._want_headers(ip, branch, why)
++            return False
++        if not branch:
++            return False
++        # fork_h == top: side headers that extend our tip (e.g. they arrived before their parent was
++        # appended): the same path with nothing to drop (work > 0 = ours above the tip)
++        return self._fork(fork_h, branch, ip, why, t)
++
++    def _fork(self, F, branch, ip, why, t_first):
++        key = (sha256d(branch[-1]), len(branch))
++        v = self.fork_seen.get(key, 0)
++        if not isinstance(v, int) or v >= 3:  # decided (ignored / switched / refused), or Bend failed 3 times
++            return False
++        self.fork_seen[key] = "decided"       # the paths below that may succeed on a retry reset it
++        if len(self.fork_seen) > 2000:
++            self.fork_seen.clear()
++        self.stats["forks seen"] += 1
++        t0 = time.perf_counter()
++        with self.hdr_lock:
++            idx = _idx()
++            try:
++                top = idx.n - 1
++                if F > top or idx.internal(F) != branch[0][4:36]:
++                    self._refresh_known()
++                    self.fork_seen.pop(key, None)  # the index moved meanwhile: decide again next time
++                    return False
++                ours = [headers.header(h) for h in range(F + 1, top + 1)]
++                ctx = [headers.header(h) for h in range(F - CTX + 1, F + 1)]
++                base_hash = idx.internal(F)
++            finally:
++                idx.f.close()
++            depth, st_tip = top - F, FS.state_tip(os.environ.get("ZEBEND_STATE", NODE / "state"))
++            sdepth = (st_tip - F) if st_tip is not None else depth
++            label = (f"competing chain from {ip} ({why}): forks after {F}, {len(branch)} header(s) {F + 1}..{F + len(branch)} "
++                     f"tip {sha256d(branch[-1])[::-1].hex()[:16]}; ours {depth} header(s) {F + 1}..{top}")
++            if F + 1 < FS.EXTRA_FIRST:
++                ours = [b"\0" * HDR]  # below the fixed header files: never switched (refused below if it wins)
++            w_ours, w_new = FS.chain_work(ours), FS.chain_work(branch)
++            if w_new <= w_ours:
++                self.stats["forks ignored"] += 1
++                self.log(f"fasttip: {label}: work {w_new:.4g} <= ours {w_ours:.4g}: ignored (more work required)")
++                return False
++            ok, bend, detail = FS.bend_check(F, base_hash, ctx, branch, FOLLOW_BIN / "equihash7", HDRCHAIN, WORK,
++                                             f"fork_{os.getpid()}_{F}")
++            if not ok:
++                # (a Bend run that gave no output is retried on the next announcement, at most 3 times)
++                self.stats["header fails"] += 1
++                self.fork_seen[key] = v + 1
++                self.log(f"fasttip: {label}: rejected by Bend: {detail}")
++                return False
++            if F + 1 < FS.EXTRA_FIRST or max(depth, sdepth) > FS.UNDO_DEPTH:
++                # a valid competing chain with more work that we cannot switch to: say so, loudly
++                self.fork_seen[key] = "refused"  # (the same branch again: silent; a longer one: re-checked)
++                if time.time() - self.refused.get(F, 0) < 600:  # loud, but once per fork point per 10 min
++                    return False
++                self.refused[F] = time.time()
++                self.stats["reorgs refused"] += 1
++                self.log(f"fasttip: REORG REFUSED: {label}: work {w_new:.4g} > ours {w_ours:.4g}, Bend PASS, but it is "
++                         f"{max(depth, sdepth)} blocks deep (state tip {st_tip}): deeper than the undo depth {FS.UNDO_DEPTH} "
++                         f"(or below the fixed header files at {FS.EXTRA_FIRST}). NOTHING CHANGED: this node stays on its "
++                         f"chain and is now on a minority fork. Operator: restore a snapshot below {F} and resync.")
++                return False
++            with self.buffer.cv:  # no block is handed to sync while the index changes
++                FS.switch_index(HDRDIR, F, branch, bend)
++                self.buffer.drop_above(F)
++            self._refresh_known()
++            self.last_push = time.time()
++            secs = time.perf_counter() - t0
++        self.stats["reorgs"] += 1
++        rec = {"t": time.time(), "fork": F, "dropped": depth, "added": len(branch), "ip": ip, "why": why,
++               "t_first": t_first, "decide_s": round(secs, 4), "work_ours": w_ours, "work_new": w_new}
++        self.reorgs.append(rec)
++        self.log(f"fasttip: {'REORG' if depth else 'side headers extend the tip'}: {label}: work {w_new:.4g} > ours {w_ours:.4g}, Bend PASS (Equihash, target, links, "
++                 f"difficulty, hash); header index switched in {secs * 1000:.0f} ms: dropped {depth} header(s), "
++                 f"verified tip now {self.top}; sync.py rolls the state back to {F}")
++        if self.prof is not None:
++            self.prof.add("header", secs)
++        want = []
++        for k, (hdr, b) in enumerate(zip(branch, bend)):
++            e = self.side.get(sha256d(hdr))
++            if e is not None and e[1] is not None:
++                self._put(F + 1 + k, e[1], b, e[2], e[3], secs)
++            else:
++                want.append(b)
++        with self.lock:
++            for k in [k for k in self.side if self.side[k][0] in branch]:
++                self.side.pop(k, None)
++            ips = sorted(self.conns)
++        if want and ips:
++            self._getdata(ip if ip in ips else random.choice(ips), want)
++        return True
++
++    def _want_headers(self, ip, missing, why):
++        """The headers between our chain and a side header are missing: getheaders with our
++        locator to the announcing push peer (or another), else one short-lived connection."""
++        now = time.time()
++        if now - self.want_seen.get(missing, 0) < 10:
++            return
++        self.want_seen[missing] = now
++        if len(self.want_seen) > 2000:
++            self.want_seen.clear()
++        with self.lock:
++            ips = sorted(self.conns)
++        if ip in ips:
++            self._getheaders(ip)
++            return
++        if ips:
++            self._getheaders(random.choice(ips))
++        # follow tap: follow usually writes the missing parent within milliseconds; ask the network
++        # only if it is still missing after 3 s (no push peer, or the push peers do not answer)
++        threading.Timer(3.0 if ips or str(ip).startswith("follow") else 0.0, self._probe, args=(missing, why)).start()
++
++    def _probe(self, missing, why, peers=None):
++        if self.stop_ev.is_set() or missing in self.side or missing in self.known:
++            return
++        if time.time() - self.last_probe < 20:
++            return
++        self.last_probe = time.time()
++        import tiphdr  # node/tiphdr.py (read-only use: its peer order)
++        with self.lock:
++            busy = set(self.conns)
++        for peer in [p for p in (peers or tiphdr.candidate_peers()) if p not in busy][:2]:
++            t = time.time()
++            try:
++                p = net.Peer(peer, timeout=8)
++            except Exception as e:  # noqa: transport
++                self.log(f"fasttip: fork probe {peer}: {e.__class__.__name__}")
++                continue
++            try:
++                p.s.sendall(net.frame("getheaders", self._locator()))
++                p.s.settimeout(1.0)
++                while time.time() - t < 15:
++                    try:
++                        cmd, pl = p.recv()
++                    except (socket.timeout, TimeoutError):
++                        continue
++                    if cmd == "headers":
++                        self.stats["fork probes"] = self.stats.get("fork probes", 0) + 1
++                        self.log(f"fasttip: fork probe ({why}): getheaders to {peer} answered in {time.time() - t:.2f} s")
++                        self.q.put(("headers", pl, peer, time.time()))
++                        return
++            except Exception as e:  # noqa: transport
++                self.log(f"fasttip: fork probe {peer}: {e.__class__.__name__}: {e}")
++            finally:
++                p.close()
++
+     def _prev_of(self, h):
+         idx = _idx()
+         try:
+@@ -482,35 +714,13 @@
+                 tip_hex = idx.internal(top).hex()
+             finally:
+                 idx.f.close()
+-            tag = f"{os.getpid()}_{top}"
+-            hfile, nfile = WORK / f"chk_{tag}.bin", WORK / f"new_{tag}.bin"
+-            hfile.write_bytes(prev + b"".join(hdrs))
+-            nfile.write_bytes(b"".join(hdrs))
+-            n = CTX + len(hdrs)
+-            pe = subprocess.Popen([str(FOLLOW_BIN / "equihash7"), str(hfile), str(n), str(n), "4", str(top - CTX + 1), "main",
+-                                   "+RTS", "--gpu", "off", "-RTS"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+-            ph = subprocess.Popen([str(HDRCHAIN), str(nfile), "0", str(len(hdrs)), tip_hex],
+-                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+-            out_e, _ = pe.communicate(timeout=120)
+-            out_h, _ = ph.communicate(timeout=120)
+-            hfile.unlink(missing_ok=True)
+-            nfile.unlink(missing_ok=True)
+-            # tiphdr.append's acceptance rule, verbatim
+-            got = dict((k, (int(x), int(y))) for k, x, y in re.findall(
+-                r"^(equihash valid|hash <= target|prev-hash links|difficulty \(nBits == expected\)) (\d+)/(\d+)", out_e, re.M))
+-            want = {"equihash valid": (n, n), "hash <= target": (n, n), "prev-hash links": (n - 1, n - 1)}
+-            dk, dn = got.pop("difficulty (nBits == expected)", (0, -1))
+-            hashes = re.findall(r"^h (\d+) ([0-9a-f]{64})$", out_h, re.M)
+-            links = re.search(r"^links (\d+)/(\d+)$", out_h, re.M)
+-            ok_h = (len(hashes) == len(hdrs) and [int(i) for i, _ in hashes] == list(range(len(hdrs)))
+-                    and links and links.group(1) == links.group(2) == str(len(hdrs)))
+-            if got != want or dk != dn or dn < len(hdrs) or not ok_h:
+-                got["difficulty (nBits == expected)"] = (dk, dn)
++            # tiphdr.append's acceptance rule, verbatim (forkswitch.bend_check: equihash7 + hdrchain)
++            ok, bend, detail = FS.bend_check(top, bytes.fromhex(tip_hex), [prev[k * HDR:(k + 1) * HDR] for k in range(CTX)],
++                                             hdrs, FOLLOW_BIN / "equihash7", HDRCHAIN, WORK, f"{os.getpid()}_{top}")
++            if not ok:
+                 self.stats["header fails"] += 1
+-                self.log(f"fasttip: headers {top + 1}..{top + len(hdrs)} from {ip} rejected by Bend: {got}, "
+-                         f"hdrchain {'ok' if ok_h else out_h.strip()[-200:]!r}")
++                self.log(f"fasttip: headers {top + 1}..{top + len(hdrs)} from {ip} rejected by Bend: {detail}")
+                 return None
+-            bend = [bytes.fromhex(x)[::-1] for _, x in hashes]
+             with open(HDRDIR / "extra.bin", "ab") as f:
+                 f.write(b"".join(hdrs))
+             with open(HDRDIR / "hashes.bin", "ab") as f:
+@@ -607,10 +817,12 @@
+                 continue
+             top = self.top
+             for n in names:
+-                if not n.isdigit() or n in seen:
++                if not n.isdigit():
+                     continue
+                 h = int(n)
+-                if h <= top or h > top + 100:
++                # at or below our tip too: after a reorg follow writes the competing block at a
++                # height we already have (the same directory, new bytes)
++                if h <= top - 100 or h > top + 100:
+                     continue
+                 p = FOLLOW_WIN / n / "block.bin"
+                 try:
+@@ -618,6 +830,8 @@
+                 except OSError:
+                     continue
+                 k = (st.st_size, st.st_mtime_ns)
++                if seen.get(n) == k:
++                    continue
+                 if sizes.get(n, (None, None, 0))[:2] != k:
+                     sizes[n] = (*k, time.time())
+                     continue
+@@ -629,9 +843,9 @@
+                     continue
+                 if len(raw) != st.st_size or len(raw) < HDR + 1:
+                     continue
+-                seen[n] = time.time()
++                seen[n] = k
+                 hint = sha256d(raw[:HDR])
+-                if hint in self.known:
++                if hint in self.known or hint in self.side:
+                     continue
+                 self.stats["follow tap"] = self.stats.get("follow tap", 0) + 1
+                 self.last_tap = time.time()
+@@ -639,7 +853,7 @@
+                     self.inv_seen.setdefault(hint, (st.st_mtime_ns / 1e9, "follow", "follow-tap"))
+                 self.q.put(("block", raw, "follow-tap", time.time()))
+             if len(seen) > 500:
+-                for n in sorted(seen, key=lambda k: seen[k])[:250]:
++                for n in sorted(seen, key=lambda k: int(k))[:250]:
+                     seen.pop(n, None)
+                     sizes.pop(n, None)
+ 
+@@ -721,13 +935,9 @@
+             if len(raw) != len(pairs) * HDR or not pairs or int(pairs[0][0]) != top + 1:
+                 continue
+             hdrs = [raw[k * HDR:(k + 1) * HDR] for k in range(len(pairs))]
+-            if hdrs[0][4:36] != bytes.fromhex(top_hex)[::-1]:  # tiphdr.py: drop_tip(top)
+-                with self.hdr_lock:
+-                    if self.top != top:
+-                        return "tip moved during the request; next round"
+-                    rc = tiphdr.drop_tip(top)
+-                    self._refresh_known()
+-                return f"reorg at the tip (headers from {peer} do not link): drop_tip returned {rc}; verified tip now {self.top}"
++            if hdrs[0][4:36] != bytes.fromhex(top_hex)[::-1]:  # a fork: the push path's fork choice decides
++                self._probe(b"fallback", "fallback", peers=[peer])
++                return f"headers from {peer} do not link to our tip {top}: fork choice asked (getheaders + locator)"
+             # headers the push path appended meanwhile are skipped; the rest must extend the tip
+             hdrs = [x for x in hdrs if sha256d(x) not in self.known]
+             if not hdrs:
+@@ -739,13 +949,10 @@
+             got = self._verify_append(hdrs, f"{peer} (fallback)")
+             if got:
+                 return f"appended {len(got)} headers {got[0][0]}..{got[-1][0]} from {peer}"
+-        if no_link:
+-            with self.hdr_lock:  # tiphdr.drop_tip: our tip lost a block race; cut and refetch
+-                if self.top != top:
+-                    return "tip moved during the request; next round"
+-                rc = tiphdr.drop_tip(self.top)
+-                self._refresh_known()
+-            return f"reorg at the tip: drop_tip returned {rc}; verified tip now {self.top}"
++        if no_link:  # peers do not know our tip: it may have lost a block race. The fork choice decides
++            self.last_probe = 0.0  # (getheaders + locator, Bend checks, more work only); no blind header cut
++            self._probe(b"no-link", "fallback")
++            return "peers do not know our tip: fork choice asked (getheaders + locator)"
+         return "no headers from any peer"
+ 
+     def _missing_from(self):

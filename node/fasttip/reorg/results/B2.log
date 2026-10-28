@@ -1,0 +1,71 @@
+09:37:05.699 fasttip: competing chain from follow-tap (block): forks after 3532944, 1 header(s) 3532945..3532945 tip 000000000048cae4; ours 2 header(s) 3532945..3532946: work 2.881e+12 <= ours 5.692e+12: ignored (more work required)
+09:37:05.707 fasttip: competing chain from follow-tap (block): forks after 3532944, 2 header(s) 3532945..3532946 tip 00000000001711e9; ours 2 header(s) 3532945..3532946: work 5.692e+12 <= ours 5.692e+12: ignored (more work required)
+09:37:05.831 history: state at 3532946 (seeded at 3,521,999 (consensus/gaps/history/data/seed_3521999.st, NU6.3-epoch tree, validated by header 3,522,000); rolled forward with this instance genesis-built tree roots); checked from 3428143
+09:37:05.831 trees: sprout size 1547344 root 92ea4f11169eeba7 (built from this instance's leaf logs since genesis); sapling size 73990684 root f7f3064ca281e81b (built from this instance's leaf logs since genesis); orchard size 50478863 root 5bb0fd2301e14fa9 (built from this instance's leaf logs since genesis); ironwood size 953193 root dca311c6d404d8e8 (built from this instance's leaf logs since genesis)
+09:37:05.831 sync: state tip 3532946, last checkpoint 3522460, verified headers to 3532946, 16 Bend jobs
+09:37:05.850 fasttip: REORG: competing chain from follow-tap (block): forks after 3532944, 3 header(s) 3532945..3532947 tip 00000000001bbb37; ours 2 header(s) 3532945..3532946: work 8.423e+12 > ours 5.692e+12, Bend PASS (Equihash, target, links, difficulty, hash); header index switched in 143 ms: dropped 2 header(s), verified tip now 3532947; sync.py rolls the state back to 3532944
+09:37:05.853 REORG: tip 3532946 is no longer on the verified header chain; rolling back to 3532944
+09:37:06.299   anchors: Ironwood 1/1 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:37:06.322   full validation 3532945..3532945: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 5, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 1, 'skipped': 0}"}
+09:37:06.322   history (ZIP 221): 1 MATCH  [trees+anchors 0.07 s, history 0.02 s]
+09:37:06.323 tip 3532945  window 1 blocks 0.0 MB in 0.1 s (waited for bend 0.0 s [bend 0.0 s, overlapped]; lookups 0.0 s, rules 0.1 s; resolve 0.0 s)  avg 2.1 blocks/s 0.03 MB/s  rules parts 1 reruns 0
+09:37:06.367   anchors: Ironwood 2/2 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:37:06.429   full validation 3532946..3532946: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 4, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 2, 'skipped': 0}"}
+09:37:06.429   history (ZIP 221): 1 MATCH  [trees+anchors 0.04 s, history 0.06 s]
+09:37:06.683   anchors: Ironwood 3/3 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:37:06.746   full validation 3532947..3532947: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 10, 'skipped': 0}", 'sapling': "PASS {'pass': 1, 'skipped': 0}", 'orchard': "PASS {'pass': 3, 'skipped': 0}"}
+09:37:06.746   history (ZIP 221): 1 MATCH  [trees+anchors 0.24 s, history 0.06 s]
+09:37:06.882 REORG TIMING: announcement -> index switched 0.21 s, -> winning block 3532947 committed 1.242 s
+09:37:06.882 committed tip 3532947: 3 windows, 0 MB in one transaction (writer 0.1 s)
+09:37:07.619 fasttip: appended 1 header(s) 3532948..3532948 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 33 ms)
+09:37:07.668   anchors: Ironwood 0/0 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:37:07.715   full validation 3532948..3532948: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 0, 'skipped': 0}"}
+09:37:07.715   history (ZIP 221): 1 MATCH  [trees+anchors 0.00 s, history 0.05 s]
+09:37:07.738 committed tip 3532948: 1 windows, 0 MB in one transaction (writer 0.0 s)
+09:37:08.132 fasttip: appended 1 header(s) 3532949..3532949 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 25 ms)
+09:37:08.172   anchors: Ironwood 0/0 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:37:08.219   full validation 3532949..3532949: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 0, 'skipped': 0}"}
+09:37:08.219   history (ZIP 221): 1 MATCH  [trees+anchors 0.00 s, history 0.05 s]
+09:37:08.235 committed tip 3532949: 1 windows, 0 MB in one transaction (writer 0.0 s)
+09:37:08.613 fasttip: appended 1 header(s) 3532950..3532950 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 27 ms)
+09:37:08.796   anchors: Ironwood 6/6 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:37:08.813   full validation 3532950..3532950: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 11, 'skipped': 0}", 'sapling': "PASS {'pass': 1, 'skipped': 0}", 'orchard': "PASS {'pass': 6, 'skipped': 0}"}
+09:37:08.813   history (ZIP 221): 1 MATCH  [trees+anchors 0.13 s, history 0.02 s]
+09:37:08.899 committed tip 3532950: 1 windows, 0 MB in one transaction (writer 0.1 s)
+09:37:09.294 fasttip: appended 1 header(s) 3532951..3532951 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 24 ms)
+09:37:09.342   anchors: Ironwood 2/2 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:37:09.360   full validation 3532951..3532951: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 2, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 2, 'skipped': 0}"}
+09:37:09.360   history (ZIP 221): 1 MATCH  [trees+anchors 0.04 s, history 0.01 s]
+09:37:09.370 committed tip 3532951: 1 windows, 0 MB in one transaction (writer 0.0 s)
+09:37:09.757 fasttip: appended 1 header(s) 3532952..3532952 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 23 ms)
+09:37:09.939   anchors: Ironwood 2/2 PASS; Sapling 0/0 PASS; Orchard 1/1 PASS; Sprout 0/0 PASS
+09:37:09.951   full validation 3532952..3532952: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 6, 'skipped': 0}", 'sapling': "PASS {'pass': 1, 'skipped': 0}", 'orchard': "PASS {'pass': 2, 'skipped': 0}"}
+09:37:09.951   history (ZIP 221): 1 MATCH  [trees+anchors 0.13 s, history 0.01 s]
+09:37:09.963 committed tip 3532952: 1 windows, 0 MB in one transaction (writer 0.0 s)
+09:37:10.338 fasttip: appended 1 header(s) 3532953..3532953 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 23 ms)
+09:37:10.384   anchors: Ironwood 3/3 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:37:10.397   full validation 3532953..3532953: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 3, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 3, 'skipped': 0}"}
+09:37:10.397   history (ZIP 221): 1 MATCH  [trees+anchors 0.04 s, history 0.01 s]
+09:37:10.406 committed tip 3532953: 1 windows, 0 MB in one transaction (writer 0.0 s)
+09:37:10.773 fasttip: appended 1 header(s) 3532954..3532954 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 21 ms)
+09:37:10.821   anchors: Ironwood 2/2 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:37:10.831   full validation 3532954..3532954: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 2, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 2, 'skipped': 0}"}
+09:37:10.831   history (ZIP 221): 1 MATCH  [trees+anchors 0.03 s, history 0.01 s]
+09:37:10.840 committed tip 3532954: 1 windows, 0 MB in one transaction (writer 0.0 s)
+09:37:11.224 fasttip: appended 1 header(s) 3532955..3532955 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 22 ms)
+09:37:11.232   anchors: Ironwood 0/0 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:37:11.243   full validation 3532955..3532955: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 0, 'skipped': 0}"}
+09:37:11.243   history (ZIP 221): 1 MATCH  [trees+anchors 0.00 s, history 0.01 s]
+09:37:11.251 committed tip 3532955: 1 windows, 0 MB in one transaction (writer 0.0 s)
+09:37:11.624 fasttip: appended 1 header(s) 3532956..3532956 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 21 ms)
+09:37:11.662   anchors: Ironwood 1/1 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:37:11.672   full validation 3532956..3532956: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 0, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 1, 'skipped': 0}"}
+09:37:11.672   history (ZIP 221): 1 MATCH  [trees+anchors 0.03 s, history 0.01 s]
+09:37:11.675 committed tip 3532956: 1 windows, 0 MB in one transaction (writer 0.0 s)
+09:37:12.059 fasttip: appended 1 header(s) 3532957..3532957 from follow-tap (Equihash, target, links, difficulty, hash: Bend PASS, 23 ms)
+09:37:12.103   anchors: Ironwood 1/1 PASS; Sapling 0/0 PASS; Orchard 0/0 PASS; Sprout 0/0 PASS
+09:37:12.112   full validation 3532957..3532957: every consensus rule PASS (turnstile checked); hooks: {'transparent': "PASS {'pass': 5, 'skipped': 0}", 'sapling': "PASS {'pass': 0, 'skipped': 0}", 'orchard': "PASS {'pass': 1, 'skipped': 0}"}
+09:37:12.112   history (ZIP 221): 1 MATCH  [trees+anchors 0.03 s, history 0.01 s]
+09:37:12.122 committed tip 3532957: 1 windows, 0 MB in one transaction (writer 0.0 s)
+09:37:12.135 stopped at committed tip 3532957: 13 blocks 0.3 MB in 6 s, 2.1 blocks/s 0.04 MB/s
+RESULT {"case": "B2", "resume": false, "t_announce": 1793160425.64105, "t_switch": 1793160425.850846, "t_committed": 1793160426.8827221, "announce_to_switch_s": 0.21, "announce_to_commit_s": 1.242, "decide_s": 0.1428, "ok": true, "reorgs": [{"t": 1793160425.850846, "fork": 3532944, "dropped": 2, "added": 3, "ip": "follow-tap", "why": "block", "t_first": 1793160425.690071, "decide_s": 0.1428, "work_ours": 5692158205680, "work_new": 8422736933531}], "stats": {"inv": 0, "blocks": 0, "headers_msgs": 0, "pushed": 13, "orphans": 3, "fallback runs": 0, "dup blocks": 0, "header fails": 0, "forks seen": 3, "reorgs": 1, "forks ignored": 2, "reorgs refused": 0, "follow tap": 13}, "final_tip": {"height": 3532957, "hash": "0000000000600f9f4bbf6b00cc5aa6e233a7c83add768ceb9e5320e3264a6e8e"}, "wall_s": 6.6}
