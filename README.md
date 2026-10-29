@@ -43,8 +43,9 @@ used only as the oracle Zebend is compared against.
   turnstile, issuance, NU7, difficulty, parsers, Merkle trees on the running code, real Orchard
   gate soundness, the fix for the May 2026 Orchard bug, and the optimisations of the fast
   Halo 2 verifier.
-- **Fast where it counts.** Batch Halo 2 verification of all 392,806 bundles in 176 s, about
-  2× the official Rust `BatchVerifier` on the same machine.
+- **Fast enough to follow the tip.** Batch Halo 2 verification of all 392,806 bundles in 176 s,
+  about 3× the upstream Rust crates. Zakura's tuned crates are still about 5× faster; see
+  [docs/performance.md](docs/performance.md).
 - **Finds the May 2026 bug class.** An under-constraint checker re-finds the missing copy
   constraint in the pre-NU6.2 Orchard circuit automatically, and the fix is proven in Bend.
 
