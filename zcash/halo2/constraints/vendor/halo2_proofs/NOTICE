@@ -1,0 +1,12 @@
+This directory is a vendored copy of the halo2_proofs crate, version 0.4.0
+(https://github.com/zcash/halo2), licensed under MIT OR Apache-2.0.
+
+Zebend modified it to export the constraint system for its under-constraint
+checker. Each change is marked with a "ZEBEND:" comment:
+
+  - src/plonk/zebend_cs.rs: new file, the exporter.
+  - src/plonk.rs: declares the zebend_cs module.
+  - src/plonk/permutation.rs: drops one cfg(feature = "unstable-verifier-fingerprint")
+    gate so the exporter can read the permutation columns.
+
+All other files are unchanged from the published crate.

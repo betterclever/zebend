@@ -150,3 +150,17 @@ docs/       documentation and brand
 Zebend is young software and has not been audited. Do not use it as the only validator for funds.
 If you find a soundness issue in Zcash itself while using Zebend's tools, report it privately to the
 Zcash security contacts first. See [docs/security.md](docs/security.md).
+
+## License
+
+Zebend is licensed under either of
+
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE))
+- MIT license ([LICENSE-MIT](LICENSE-MIT))
+
+at your option. Unless you explicitly state otherwise, any contribution you submit for inclusion
+in Zebend shall be dual licensed as above, without any additional terms or conditions.
+
+Third-party code keeps its own licence: the vendored `halo2_proofs` in
+`zcash/halo2/constraints/vendor/` (MIT OR Apache-2.0, see its NOTICE for Zebend's changes) and
+`web/vendor/shim` (MIT OR Apache-2.0). Bend, which Zebend is written in, is Apache-2.0.
