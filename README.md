@@ -19,8 +19,9 @@
 
 ---
 
-Every Zcash node today, Zebra and Zakura alike, verifies shielded transactions with the same Rust
-cryptography crates. When those crates have a bug, as the Orchard circuit did in May 2026, there is
+Every Zcash node today, Zebra and Zakura alike, verifies shielded transactions with Rust cryptography
+descended from the same code (Zakura's crates are forks of the ones Zebra uses). When that code has
+a bug, as the Orchard circuit did in May 2026, there is
 no second implementation to disagree with them.
 
 **Zebend is that second implementation.** It re-implements Zcash's consensus rules and all of its
@@ -94,21 +95,23 @@ lists exactly which claims are which.
 
 ## Performance
 
-Measured on one Apple M5 Max, against the Rust crates Zakura uses and against Zakura itself
-on the same live blocks. Full method and data: [docs/performance.md](docs/performance.md).
+Measured on one Apple M5 Max, against the Rust crates Zakura uses
+([Zakura Common](https://github.com/zakura-core/common)) and against Zakura itself on the same live
+blocks. Full method and data: [docs/performance.md](docs/performance.md).
 
 | | Zebend | Rust / Zakura |
 |---|---|---|
-| Halo 2, all 392,806 mainnet bundles | **2,225 bundles/s** (176 s) | 1,068/s quiet machine, 709/s same session |
-| Sapling Groth16 proof | **1.78 ms** | 2.10 ms |
+| Halo 2 batch, 18 threads | 2,408–2,520 bundles/s | **7,052–11,535/s** |
+| Halo 2, one proof, 1 thread | 27 ms | **5.0 ms** |
+| Sapling Groth16, batch, 1 thread | **0.67 ms/proof** | 0.78–0.80 ms |
 | Sync from genesis to the last checkpoint | ≈4.5 h of active sync | 4 h 20 min |
 | Snapshot to download | **2.4 GB** | 12.1 GB |
 | Block validation at the tip (block in hand → committed) | 0.06 s | **0.003 s** |
 | Announcement → committed, median | 0.37 s | **0.26 s** |
 | Memory | **~209 MB** | 395 MB |
 
-Zakura validates a block in hand faster; Zebend is ahead on batch Halo 2 throughput and snapshot
-size. Both nodes agreed on every block in the comparison.
+Zakura is faster almost everywhere, including Halo 2 (3–4.5× in batch). Zebend is ahead on batch
+Groth16, memory and snapshot size. Both nodes agreed on every block in the comparison.
 
 ## Documentation
 

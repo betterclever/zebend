@@ -1,0 +1,20 @@
+18:32  up  9:49, 1 user, load averages: 6.02 5.47 11.86
+set real: 18523 proofs; 2 reps; load average at start 6.0, end 9.8
+                                                         1 thread             18 threads
+rust single                                      2.064 ms (484/s)     0.159 ms (6,290/s)
+bend single (verify_main)                        1.803 ms (555/s)     0.140 ms (7,163/s)
+rust batch (verify_multicore)                  0.824 ms (1,213/s)     0.300 ms (3,334/s)
+rust batch (chunks of 128)                     0.893 ms (1,119/s)    0.069 ms (14,392/s)
+bend batch (batch_main, chunks of 128)         0.672 ms (1,488/s)    0.058 ms (17,319/s)
+18:36  up  9:54, 1 user, load averages: 9.82 6.87 10.73
+rust single threads=18 n=18523 valid=18523 1.941s = 9542 proofs/s (0.105 ms/proof)
+rust batch(verify_multicore) threads=18 n=18523 ok=true 5.488s = 3375 proofs/s
+rust batch(chunks of 128, verify) threads=18 n=18523 ok=true 1.199s = 15453 proofs/s
+zakura batch(chunks of 64, verify_multicore_prepared) threads=18 n=18523 ok=true 6.621s = 2798 proofs/s
+zakura batch(chunks of 128, verify_prepared) threads=18 n=18523 ok=true 1.165s = 15899 proofs/s
+rust single threads=18 n=18523 valid=18523 1.967s = 9418 proofs/s (0.106 ms/proof)
+rust batch(verify_multicore) threads=18 n=18523 ok=true 5.387s = 3438 proofs/s
+rust batch(chunks of 128, verify) threads=18 n=18523 ok=true 1.143s = 16203 proofs/s
+zakura batch(chunks of 64, verify_multicore_prepared) threads=18 n=18523 ok=true 6.576s = 2817 proofs/s
+zakura batch(chunks of 128, verify_prepared) threads=18 n=18523 ok=true 1.161s = 15956 proofs/s
+18:37  up  9:54, 1 user, load averages: 9.95 7.33 10.75

@@ -1,0 +1,16 @@
+[package]
+name = "equihash-zakura"
+version = "0.1.0"
+edition = "2021"
+description = "zcash/headers/oracle's Equihash timing (`check`) and verdicts (`lines`), on zakura-equihash"
+
+[dependencies]
+# as zakura's workspace Cargo.toml: equihash = zakura-equihash (no "solver": verification only)
+equihash = { version = "=4.0.0", package = "zakura-equihash" }
+sha2 = "0.10"
+hex = "0.4"
+rayon = "1"
+anyhow = "1"
+
+[profile.release]
+opt-level = 3

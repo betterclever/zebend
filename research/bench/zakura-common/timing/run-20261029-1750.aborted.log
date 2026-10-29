@@ -1,0 +1,55 @@
+===== round 1  Thu Oct 29 17:50:19 IST 2026
+--- halo2_batch upstream  load averages: 25.21 52.55 62.94
+rust halo2 BatchVerifier threads=18: 10048 bundles, all ok true, 26.2s = 384 bundles/s
+    wall 30.77 s
+--- halo2_batch zakura  load averages: 36.27 52.50 62.55
+prepare_batch_validation (as Zakura): false
+rust zakura-halo2 ProofBatch par_chunks(64) threads=18: 10048 bundles, all ok true, 1.5s = 6665 bundles/s
+prepare_batch_validation (as Zakura): false
+rust zakura-halo2 ProofBatch, Zakura's >=64-action batches threads=18: 10048 bundles, all ok true, 1.7s = 6056 bundles/s
+zakura-batch: 9041 of 10048 bundles are in fully shielded txs
+prepare_batch_validation (as Zakura): false
+rust zakura BatchValidator (proofs + RedPallas), Zakura's >=64-action batches threads=18: 9041 bundles, all ok true, 1.7s = 5233 bundles/s
+    wall 11.11 s
+--- halo2_one_1t upstream  load averages: 34.93 51.70 62.16
+keygen 2375 ms
+built and proved 1 bundles (2 actions each) in 4334 ms
+rust orchard single proof verify (2 actions): median 48.024 ms
+rust orchard BatchValidator K=1 bundles (proofs + signatures, all threads): median 67.7 ms = 15 bundles/s
+    wall 6.98 s
+--- halo2_one_1t zakura  load averages: 32.77 50.98 61.84
+keygen 430 ms
+prepare_batch_validation (as Zakura): false
+built and proved 1 bundles (2 actions each) in 950 ms
+rust orchard single proof verify (2 actions): median 10.894 ms
+rust orchard one-bundle BatchValidator, as Zakura (2 actions, proof + signatures): median 13.410 ms
+rust orchard BatchValidator K=1 bundles (proofs + signatures, all threads): median 11.6 ms = 86 bundles/s
+sanity: wrong sighash rejected; proof vs other bundle's instances rejected (k >= 2)
+    wall 1.89 s
+--- halo2_one_18t upstream  load averages: 35.03 51.14 61.83
+keygen 2984 ms
+built and proved 1 bundles (2 actions each) in 1291 ms
+rust orchard single proof verify (2 actions): median 5.348 ms
+rust orchard BatchValidator K=1 bundles (proofs + signatures, all threads): median 5.9 ms = 170 bundles/s
+    wall 4.32 s
+--- halo2_one_18t zakura  load averages: 37.83 51.46 61.88
+keygen 68 ms
+prepare_batch_validation (as Zakura): false
+built and proved 1 bundles (2 actions each) in 68 ms
+rust orchard single proof verify (2 actions): median 2.076 ms
+rust orchard one-bundle BatchValidator, as Zakura (2 actions, proof + signatures): median 3.185 ms
+rust orchard BatchValidator K=1 bundles (proofs + signatures, all threads): median 2.4 ms = 415 bundles/s
+sanity: wrong sighash rejected; proof vs other bundle's instances rejected (k >= 2)
+    wall 0.17 s
+--- redpallas_18t upstream  load averages: 37.83 51.46 61.88
+Error: No such file or directory (os error 2)
+    wall 0.04 s
+--- redpallas_18t zakura  load averages: 37.83 51.46 61.88
+rust reddsa batch threads=18: 157 chunks, 1283411 signatures, rejected chunks [], 8.17s = 157124 sigs/s
+    wall 8.35 s
+--- groth16_1t upstream  load averages: 39.69 51.62 61.88
+Error: No such file or directory (os error 2)
+    wall 0.03 s
+--- groth16_1t zakura  load averages: 39.69 51.62 61.88
+rust single threads=1 n=18523 valid=18523 38.935s = 476 proofs/s (2.102 ms/proof)
+rust batch(verify_multicore) threads=1 n=18523 ok=true 21.919s = 845 proofs/s

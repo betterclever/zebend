@@ -1,0 +1,6 @@
+Vendored copy of zakura-orchard 4.0.0 (crates.io, MIT OR Apache-2.0), used only by the
+research/bench/zakura-common/halo2_batch benchmark harness.
+
+Zebend's only change: src/bundle/batch.rs gains `ProofBatch` (re-exported from src/bundle.rs),
+the proof half of `BatchValidator` without RedPallas signatures, so a proofs-only batch can be
+timed. It is additive: `BatchValidator`, the verifier and every other file are unchanged.

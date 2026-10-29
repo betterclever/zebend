@@ -1,0 +1,25 @@
+[package]
+name = "zc-halo2-perf"
+version = "0.1.0"
+edition = "2021"
+description = "zcash/halo2/lib/perf's Rust Halo 2 baselines, rebuilt on the Zakura Common crates"
+
+# Dependencies as Zakura's workspace Cargo.toml declares them (zakura-core/common, =4.0.0).
+[dependencies]
+orchard = { version = "=4.0.0", package = "zakura-orchard", default-features = false, features = ["backend-halo2", "circuit", "multicore", "std"] }
+halo2_proofs = { version = "=4.0.0", package = "zakura-halo2-proofs" }
+pasta_curves = { version = "=4.0.0", package = "zakura-pasta-curves" }
+ff = "0.14"
+group = "0.14"
+rand = "0.10"
+rand_chacha = "0.10"
+rayon = "1.10"
+
+# Zakura's release profile (zakura/Cargo.toml): thin LTO, 4 units, 1 unit per dependency.
+[profile.release]
+panic = "unwind"
+lto = "thin"
+codegen-units = 4
+
+[profile.release.package."*"]
+codegen-units = 1

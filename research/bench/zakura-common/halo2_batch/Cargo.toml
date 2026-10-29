@@ -1,0 +1,27 @@
+[package]
+name = "zc-halo2-batch"
+version = "0.1.0"
+edition = "2021"
+description = "research/proofsets/oracle's rust-batch Halo 2 baseline, rebuilt on the Zakura Common crates, plus Zakura's own batching"
+
+# Dependencies as Zakura's workspace Cargo.toml declares them (zakura-core/common, =4.0.0).
+[dependencies]
+zcash_primitives = { version = "=4.0.0", package = "zakura-primitives", default-features = false, features = ["std", "circuits", "multicore", "backend-halo2"] }
+zcash_protocol = { version = "=4.0.0", package = "zakura-protocol", default-features = false, features = ["std"] }
+orchard = { version = "=4.0.0", package = "zakura-orchard", default-features = false, features = ["backend-halo2", "circuit", "multicore", "std"] }
+anyhow = "1"
+rand = "0.10"
+rayon = "1.10"
+
+# zakura-orchard 4.0.0 plus one additive type, ProofBatch (see vendor/zakura-orchard/ZEBEND_NOTICE).
+[patch.crates-io]
+zakura-orchard = { path = "vendor/zakura-orchard" }
+
+# Zakura's release profile (zakura/Cargo.toml): thin LTO, 4 units, 1 unit per dependency.
+[profile.release]
+panic = "unwind"
+lto = "thin"
+codegen-units = 4
+
+[profile.release.package."*"]
+codegen-units = 1

@@ -1,0 +1,18 @@
+[package]
+name = "groth16-zakura"
+version = "0.1.0"
+edition = "2021"
+description = "zcash/sapling/groth16/oracle's bench, on the Zakura Common crates (zakura-bellman, zakura-bls12-381)"
+
+[dependencies]
+# as zakura's workspace Cargo.toml: bellman = zakura-bellman, bls12_381 = zakura-bls12-381
+bellman = { version = "=4.0.0", package = "zakura-bellman", features = ["groth16", "multicore"] }
+bls12_381 = { version = "=4.0.0", package = "zakura-bls12-381" }
+ff = "0.14"
+group = "0.14"
+rand = "0.10"
+rayon = "1"
+anyhow = "1"
+
+[profile.release]
+opt-level = 3

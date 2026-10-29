@@ -1,0 +1,328 @@
+===== round 1  Thu Oct 29 17:53:22 IST 2026
+--- halo2_batch upstream  load averages: 21.36 40.85 56.26
+rust halo2 BatchVerifier threads=18: 10048 bundles, all ok true, 34.1s = 294 bundles/s
+    wall 36.98 s
+--- halo2_batch zakura  load averages: 87.78 54.56 60.51
+prepare_batch_validation (as Zakura): false
+rust zakura-halo2 ProofBatch par_chunks(64) threads=18: 10048 bundles, all ok true, 2.0s = 5132 bundles/s
+prepare_batch_validation (as Zakura): false
+rust zakura-halo2 ProofBatch, Zakura's >=64-action batches threads=18: 10048 bundles, all ok true, 3.5s = 2851 bundles/s
+zakura-batch: 9041 of 10048 bundles are in fully shielded txs
+prepare_batch_validation (as Zakura): false
+rust zakura BatchValidator (proofs + RedPallas), Zakura's >=64-action batches threads=18: 9041 bundles, all ok true, 2.7s = 3326 bundles/s
+    wall 16.24 s
+--- halo2_one_1t upstream  load averages: 89.67 56.49 61.09
+keygen 3278 ms
+built and proved 1 bundles (2 actions each) in 4395 ms
+rust orchard single proof verify (2 actions): median 35.515 ms
+rust orchard BatchValidator K=1 bundles (proofs + signatures, all threads): median 34.5 ms = 29 bundles/s
+    wall 7.84 s
+--- halo2_one_1t zakura  load averages: 83.37 55.73 60.79
+keygen 305 ms
+prepare_batch_validation (as Zakura): false
+built and proved 1 bundles (2 actions each) in 684 ms
+rust orchard single proof verify (2 actions): median 10.401 ms
+rust orchard one-bundle BatchValidator, as Zakura (2 actions, proof + signatures): median 10.606 ms
+rust orchard BatchValidator K=1 bundles (proofs + signatures, all threads): median 8.6 ms = 116 bundles/s
+sanity: wrong sighash rejected; proof vs other bundle's instances rejected (k >= 2)
+    wall 1.06 s
+--- halo2_one_18t upstream  load averages: 78.05 55.09 60.54
+keygen 2324 ms
+built and proved 1 bundles (2 actions each) in 909 ms
+rust orchard single proof verify (2 actions): median 6.929 ms
+rust orchard BatchValidator K=1 bundles (proofs + signatures, all threads): median 7.6 ms = 131 bundles/s
+    wall 3.29 s
+--- halo2_one_18t zakura  load averages: 78.05 55.09 60.54
+keygen 77 ms
+prepare_batch_validation (as Zakura): false
+built and proved 1 bundles (2 actions each) in 104 ms
+rust orchard single proof verify (2 actions): median 3.337 ms
+rust orchard one-bundle BatchValidator, as Zakura (2 actions, proof + signatures): median 3.349 ms
+rust orchard BatchValidator K=1 bundles (proofs + signatures, all threads): median 2.3 ms = 430 bundles/s
+sanity: wrong sighash rejected; proof vs other bundle's instances rejected (k >= 2)
+    wall 0.22 s
+--- redpallas_18t upstream  load averages: 78.05 55.09 60.54
+rust reddsa batch threads=18: 157 chunks, 1283411 signatures, rejected chunks [], 14.18s = 90477 sigs/s
+    wall 15.62 s
+--- redpallas_18t zakura  load averages: 83.00 57.23 61.20
+rust reddsa batch threads=18: 157 chunks, 1283411 signatures, rejected chunks [], 13.80s = 93034 sigs/s
+    wall 13.93 s
+--- groth16_1t upstream  load averages: 93.43 60.88 62.44
+rust single threads=1 n=18523 valid=18523 65.705s = 282 proofs/s (3.547 ms/proof)
+rust batch(verify_multicore) threads=1 n=18523 ok=true 24.770s = 748 proofs/s
+rust batch(chunks of 128, verify) threads=1 n=18523 ok=true 26.367s = 703 proofs/s
+rust single threads=1 n=18523 valid=18523 38.961s = 475 proofs/s (2.103 ms/proof)
+rust batch(verify_multicore) threads=1 n=18523 ok=true 14.912s = 1242 proofs/s
+rust batch(chunks of 128, verify) threads=1 n=18523 ok=true 15.809s = 1172 proofs/s
+rust single threads=1 n=18523 valid=18523 38.264s = 484 proofs/s (2.066 ms/proof)
+rust batch(verify_multicore) threads=1 n=18523 ok=true 14.965s = 1238 proofs/s
+rust batch(chunks of 128, verify) threads=1 n=18523 ok=true 15.963s = 1160 proofs/s
+    wall 257.03 s
+--- groth16_1t zakura  load averages: 9.00 33.26 49.84
+zakura batch(chunks of 64, verify_multicore_prepared) threads=1 n=18523 ok=true 18.293s = 1013 proofs/s
+zakura batch(chunks of 128, verify_prepared) threads=1 n=18523 ok=true 21.939s = 844 proofs/s
+rust single threads=1 n=18523 valid=18523 29.106s = 636 proofs/s (1.571 ms/proof)
+rust batch(verify_multicore) threads=1 n=18523 ok=true 20.965s = 884 proofs/s
+rust batch(chunks of 128, verify) threads=1 n=18523 ok=true 24.277s = 763 proofs/s
+zakura batch(chunks of 64, verify_multicore_prepared) threads=1 n=18523 ok=true 26.797s = 691 proofs/s
+zakura batch(chunks of 128, verify_prepared) threads=1 n=18523 ok=true 28.460s = 651 proofs/s
+rust single threads=1 n=18523 valid=18523 32.580s = 569 proofs/s (1.759 ms/proof)
+rust batch(verify_multicore) threads=1 n=18523 ok=true 14.146s = 1309 proofs/s
+rust batch(chunks of 128, verify) threads=1 n=18523 ok=true 14.696s = 1260 proofs/s
+zakura batch(chunks of 64, verify_multicore_prepared) threads=1 n=18523 ok=true 14.676s = 1262 proofs/s
+zakura batch(chunks of 128, verify_prepared) threads=1 n=18523 ok=true 13.872s = 1335 proofs/s
+    wall 315.33 s
+--- redjubjub_1t upstream  load averages: 30.31 40.72 48.20
+rust batch threads=1: 29 chunks, 230769 sigs, all chunks ok true, 21.232s = 10869 sigs/s
+rust single threads=1: 230769 sigs, 230769 valid, 47.760s = 4832 sigs/s
+    wall 84.63 s
+--- redjubjub_1t zakura  load averages: 9.77 31.40 43.91
+rust batch threads=1: 29 chunks, 230769 sigs, all chunks ok true, 21.033s = 10972 sigs/s
+rust single threads=1: 230769 sigs, 230769 valid, 35.025s = 6589 sigs/s
+zakura batch(weight 64) threads=1: 6029 batches, 230769 sigs, all ok true, 20.366s = 11331 sigs/s
+    wall 91.40 s
+--- equihash upstream  load averages: 6.26 24.66 40.05
+headers 16384 [0, 16383]
+prev-hash links 16383/16383
+hash <= target 16384/16384
+lightwalletd hash spot checks 0/0
+equihash valid (rust, 18 threads) 16384/16384 in 127.295167ms = 128709 headers/s
+equihash rust 1 thread: 2000 headers (2000 valid) in 192.352916ms = 10398 headers/s
+    wall 0.38 s
+--- equihash zakura  load averages: 6.26 24.66 40.05
+headers 16384
+equihash valid (rust, 18 threads) 16384/16384 in 67.706625ms = 241985 headers/s
+equihash rust 1 thread: 2000 headers (2000 valid) in 101.32075ms = 19739 headers/s
+    wall 0.19 s
+--- scan upstream  load averages: 6.26 24.66 40.05
+orchard batch API threads=1: 262144 outputs in 10.277s = 25509 outputs/s (4110 notes found)
+orchard batch API threads=18: 262144 outputs in 0.781s = 335797 outputs/s (4110 notes found)
+    wall 11.10 s
+--- scan zakura  load averages: 6.22 24.05 39.65
+orchard batch API threads=1: 262144 outputs in 5.213s = 50284 outputs/s (4110 notes found)
+orchard batch API threads=18: 262144 outputs in 0.490s = 534660 outputs/s (4110 notes found)
+    wall 5.75 s
+--- halo2_batch bend  load averages: 6.04 23.71 39.44
+halo2_batch: bundles 10048, agree with official 10048, disagree 0, Bend valid 10048; batches 3 (0 rejected); batch process time 4.2s = 2380 bundles/s; wall 4s
+    wall 4.55 s
+===== round 2  Thu Oct 29 18:07:48 IST 2026
+--- halo2_batch zakura  load averages: 8.52 23.93 39.43
+prepare_batch_validation (as Zakura): false
+rust zakura-halo2 ProofBatch par_chunks(64) threads=18: 10048 bundles, all ok true, 0.9s = 11535 bundles/s
+prepare_batch_validation (as Zakura): false
+rust zakura-halo2 ProofBatch, Zakura's >=64-action batches threads=18: 10048 bundles, all ok true, 1.1s = 9272 bundles/s
+zakura-batch: 9041 of 10048 bundles are in fully shielded txs
+prepare_batch_validation (as Zakura): false
+rust zakura BatchValidator (proofs + RedPallas), Zakura's >=64-action batches threads=18: 9041 bundles, all ok true, 1.2s = 7653 bundles/s
+    wall 7.61 s
+--- halo2_batch upstream  load averages: 9.66 23.66 39.15
+rust halo2 BatchVerifier threads=18: 10048 bundles, all ok true, 12.5s = 806 bundles/s
+    wall 14.66 s
+--- halo2_one_1t zakura  load averages: 17.26 24.67 39.24
+keygen 195 ms
+prepare_batch_validation (as Zakura): false
+built and proved 1 bundles (2 actions each) in 390 ms
+rust orchard single proof verify (2 actions): median 5.099 ms
+rust orchard one-bundle BatchValidator, as Zakura (2 actions, proof + signatures): median 5.680 ms
+rust orchard BatchValidator K=1 bundles (proofs + signatures, all threads): median 4.9 ms = 203 bundles/s
+sanity: wrong sighash rejected; proof vs other bundle's instances rejected (k >= 2)
+    wall 0.63 s
+--- halo2_one_1t upstream  load averages: 17.26 24.67 39.24
+keygen 1998 ms
+built and proved 1 bundles (2 actions each) in 2431 ms
+rust orchard single proof verify (2 actions): median 20.713 ms
+rust orchard BatchValidator K=1 bundles (proofs + signatures, all threads): median 20.9 ms = 48 bundles/s
+    wall 4.54 s
+--- halo2_one_18t zakura  load averages: 16.20 24.32 39.03
+keygen 45 ms
+prepare_batch_validation (as Zakura): false
+built and proved 1 bundles (2 actions each) in 43 ms
+rust orchard single proof verify (2 actions): median 1.294 ms
+rust orchard one-bundle BatchValidator, as Zakura (2 actions, proof + signatures): median 1.781 ms
+rust orchard BatchValidator K=1 bundles (proofs + signatures, all threads): median 1.2 ms = 847 bundles/s
+sanity: wrong sighash rejected; proof vs other bundle's instances rejected (k >= 2)
+    wall 0.11 s
+--- halo2_one_18t upstream  load averages: 16.20 24.32 39.03
+keygen 906 ms
+built and proved 1 bundles (2 actions each) in 433 ms
+rust orchard single proof verify (2 actions): median 2.943 ms
+rust orchard BatchValidator K=1 bundles (proofs + signatures, all threads): median 3.1 ms = 327 bundles/s
+    wall 1.36 s
+--- redpallas_18t zakura  load averages: 16.20 24.32 39.03
+rust reddsa batch threads=18: 157 chunks, 1283411 signatures, rejected chunks [], 4.29s = 299508 sigs/s
+    wall 4.40 s
+--- redpallas_18t upstream  load averages: 16.90 24.33 38.95
+rust reddsa batch threads=18: 157 chunks, 1283411 signatures, rejected chunks [], 4.39s = 292162 sigs/s
+    wall 4.46 s
+--- groth16_1t zakura  load averages: 17.79 24.40 38.88
+zakura batch(chunks of 64, verify_multicore_prepared) threads=1 n=18523 ok=true 15.122s = 1225 proofs/s
+zakura batch(chunks of 128, verify_prepared) threads=1 n=18523 ok=true 14.554s = 1273 proofs/s
+rust single threads=1 n=18523 valid=18523 25.253s = 734 proofs/s (1.363 ms/proof)
+rust batch(verify_multicore) threads=1 n=18523 ok=true 14.275s = 1298 proofs/s
+rust batch(chunks of 128, verify) threads=1 n=18523 ok=true 14.568s = 1272 proofs/s
+zakura batch(chunks of 64, verify_multicore_prepared) threads=1 n=18523 ok=true 15.422s = 1201 proofs/s
+zakura batch(chunks of 128, verify_prepared) threads=1 n=18523 ok=true 15.128s = 1224 proofs/s
+rust single threads=1 n=18523 valid=18523 27.315s = 678 proofs/s (1.475 ms/proof)
+rust batch(verify_multicore) threads=1 n=18523 ok=true 14.340s = 1292 proofs/s
+rust batch(chunks of 128, verify) threads=1 n=18523 ok=true 14.598s = 1269 proofs/s
+zakura batch(chunks of 64, verify_multicore_prepared) threads=1 n=18523 ok=true 15.209s = 1218 proofs/s
+zakura batch(chunks of 128, verify_prepared) threads=1 n=18523 ok=true 14.593s = 1269 proofs/s
+    wall 254.66 s
+--- groth16_1t upstream  load averages: 5.19 13.22 30.06
+rust single threads=1 n=18523 valid=18523 38.357s = 483 proofs/s (2.071 ms/proof)
+rust batch(verify_multicore) threads=1 n=18523 ok=true 15.135s = 1224 proofs/s
+rust batch(chunks of 128, verify) threads=1 n=18523 ok=true 17.668s = 1048 proofs/s
+rust single threads=1 n=18523 valid=18523 40.559s = 457 proofs/s (2.190 ms/proof)
+rust batch(verify_multicore) threads=1 n=18523 ok=true 15.324s = 1209 proofs/s
+rust batch(chunks of 128, verify) threads=1 n=18523 ok=true 16.056s = 1154 proofs/s
+rust single threads=1 n=18523 valid=18523 39.869s = 465 proofs/s (2.152 ms/proof)
+rust batch(verify_multicore) threads=1 n=18523 ok=true 15.246s = 1215 proofs/s
+rust batch(chunks of 128, verify) threads=1 n=18523 ok=true 17.413s = 1064 proofs/s
+    wall 215.66 s
+--- redjubjub_1t zakura  load averages: 8.75 10.60 25.12
+rust batch threads=1: 29 chunks, 230769 sigs, all chunks ok true, 21.814s = 10579 sigs/s
+rust single threads=1: 230769 sigs, 230769 valid, 34.886s = 6615 sigs/s
+zakura batch(weight 64) threads=1: 6029 batches, 230769 sigs, all ok true, 20.476s = 11270 sigs/s
+    wall 93.92 s
+--- redjubjub_1t upstream  load averages: 4.95 8.96 22.95
+rust batch threads=1: 29 chunks, 230769 sigs, all chunks ok true, 22.816s = 10114 sigs/s
+rust single threads=1: 230769 sigs, 230769 valid, 50.525s = 4567 sigs/s
+    wall 88.74 s
+--- equihash zakura  load averages: 4.36 7.83 21.19
+headers 16384
+equihash valid (rust, 18 threads) 16384/16384 in 64.739834ms = 253074 headers/s
+equihash rust 1 thread: 2000 headers (2000 valid) in 91.250209ms = 21918 headers/s
+    wall 0.18 s
+--- equihash upstream  load averages: 4.36 7.83 21.19
+headers 16384 [0, 16383]
+prev-hash links 16383/16383
+hash <= target 16384/16384
+lightwalletd hash spot checks 0/0
+equihash valid (rust, 18 threads) 16384/16384 in 122.279709ms = 133988 headers/s
+equihash rust 1 thread: 2000 headers (2000 valid) in 191.09275ms = 10466 headers/s
+    wall 0.38 s
+--- scan zakura  load averages: 4.36 7.83 21.19
+orchard batch API threads=1: 262144 outputs in 5.191s = 50502 outputs/s (4110 notes found)
+orchard batch API threads=18: 262144 outputs in 0.532s = 492293 outputs/s (4110 notes found)
+    wall 5.76 s
+--- scan upstream  load averages: 7.10 8.28 21.19
+orchard batch API threads=1: 262144 outputs in 10.044s = 26099 outputs/s (4110 notes found)
+orchard batch API threads=18: 262144 outputs in 0.790s = 331859 outputs/s (4110 notes found)
+    wall 10.88 s
+--- halo2_batch bend  load averages: 7.12 8.24 21.03
+halo2_batch: bundles 10048, agree with official 10048, disagree 0, Bend valid 10048; batches 3 (0 rejected); batch process time 4.2s = 2408 bundles/s; wall 4s
+    wall 4.39 s
+===== round 3  Thu Oct 29 18:19:40 IST 2026
+--- halo2_batch upstream  load averages: 8.15 8.43 21.02
+rust halo2 BatchVerifier threads=18: 10048 bundles, all ok true, 12.1s = 833 bundles/s
+    wall 14.39 s
+--- halo2_batch zakura  load averages: 13.61 9.65 21.24
+prepare_batch_validation (as Zakura): false
+rust zakura-halo2 ProofBatch par_chunks(64) threads=18: 10048 bundles, all ok true, 0.9s = 11367 bundles/s
+prepare_batch_validation (as Zakura): false
+rust zakura-halo2 ProofBatch, Zakura's >=64-action batches threads=18: 10048 bundles, all ok true, 1.3s = 7862 bundles/s
+zakura-batch: 9041 of 10048 bundles are in fully shielded txs
+prepare_batch_validation (as Zakura): false
+rust zakura BatchValidator (proofs + RedPallas), Zakura's >=64-action batches threads=18: 9041 bundles, all ok true, 1.3s = 7052 bundles/s
+    wall 7.62 s
+--- halo2_one_1t upstream  load averages: 13.48 9.69 21.18
+keygen 1968 ms
+built and proved 1 bundles (2 actions each) in 2417 ms
+rust orchard single proof verify (2 actions): median 20.482 ms
+rust orchard BatchValidator K=1 bundles (proofs + signatures, all threads): median 20.6 ms = 48 bundles/s
+    wall 4.48 s
+--- halo2_one_1t zakura  load averages: 13.28 9.71 21.12
+keygen 193 ms
+prepare_batch_validation (as Zakura): false
+built and proved 1 bundles (2 actions each) in 386 ms
+rust orchard single proof verify (2 actions): median 4.967 ms
+rust orchard one-bundle BatchValidator, as Zakura (2 actions, proof + signatures): median 5.521 ms
+rust orchard BatchValidator K=1 bundles (proofs + signatures, all threads): median 5.0 ms = 199 bundles/s
+sanity: wrong sighash rejected; proof vs other bundle's instances rejected (k >= 2)
+    wall 0.62 s
+--- halo2_one_18t upstream  load averages: 13.28 9.71 21.12
+keygen 976 ms
+built and proved 1 bundles (2 actions each) in 442 ms
+rust orchard single proof verify (2 actions): median 3.048 ms
+rust orchard BatchValidator K=1 bundles (proofs + signatures, all threads): median 3.1 ms = 321 bundles/s
+    wall 1.44 s
+--- halo2_one_18t zakura  load averages: 13.28 9.71 21.12
+keygen 40 ms
+prepare_batch_validation (as Zakura): false
+built and proved 1 bundles (2 actions each) in 45 ms
+rust orchard single proof verify (2 actions): median 1.455 ms
+rust orchard one-bundle BatchValidator, as Zakura (2 actions, proof + signatures): median 1.851 ms
+rust orchard BatchValidator K=1 bundles (proofs + signatures, all threads): median 1.2 ms = 854 bundles/s
+sanity: wrong sighash rejected; proof vs other bundle's instances rejected (k >= 2)
+    wall 0.10 s
+--- redpallas_18t upstream  load averages: 13.28 9.71 21.12
+rust reddsa batch threads=18: 157 chunks, 1283411 signatures, rejected chunks [], 4.53s = 283052 sigs/s
+    wall 4.65 s
+--- redpallas_18t zakura  load averages: 13.66 9.85 21.10
+rust reddsa batch threads=18: 157 chunks, 1283411 signatures, rejected chunks [], 4.49s = 285695 sigs/s
+    wall 4.58 s
+--- groth16_1t upstream  load averages: 15.85 10.36 21.22
+rust single threads=1 n=18523 valid=18523 39.421s = 470 proofs/s (2.128 ms/proof)
+rust batch(verify_multicore) threads=1 n=18523 ok=true 15.073s = 1229 proofs/s
+rust batch(chunks of 128, verify) threads=1 n=18523 ok=true 15.816s = 1171 proofs/s
+rust single threads=1 n=18523 valid=18523 37.422s = 495 proofs/s (2.020 ms/proof)
+rust batch(verify_multicore) threads=1 n=18523 ok=true 14.580s = 1270 proofs/s
+rust batch(chunks of 128, verify) threads=1 n=18523 ok=true 15.518s = 1194 proofs/s
+rust single threads=1 n=18523 valid=18523 36.838s = 503 proofs/s (1.989 ms/proof)
+rust batch(verify_multicore) threads=1 n=18523 ok=true 14.526s = 1275 proofs/s
+rust batch(chunks of 128, verify) threads=1 n=18523 ok=true 15.502s = 1195 proofs/s
+    wall 204.73 s
+--- groth16_1t zakura  load averages: 3.86 7.35 17.64
+zakura batch(chunks of 64, verify_multicore_prepared) threads=1 n=18523 ok=true 14.848s = 1248 proofs/s
+zakura batch(chunks of 128, verify_prepared) threads=1 n=18523 ok=true 14.387s = 1287 proofs/s
+rust single threads=1 n=18523 valid=18523 24.535s = 755 proofs/s (1.325 ms/proof)
+rust batch(verify_multicore) threads=1 n=18523 ok=true 13.825s = 1340 proofs/s
+rust batch(chunks of 128, verify) threads=1 n=18523 ok=true 14.293s = 1296 proofs/s
+zakura batch(chunks of 64, verify_multicore_prepared) threads=1 n=18523 ok=true 14.810s = 1251 proofs/s
+zakura batch(chunks of 128, verify_prepared) threads=1 n=18523 ok=true 14.390s = 1287 proofs/s
+rust single threads=1 n=18523 valid=18523 25.018s = 740 proofs/s (1.351 ms/proof)
+rust batch(verify_multicore) threads=1 n=18523 ok=true 14.454s = 1281 proofs/s
+rust batch(chunks of 128, verify) threads=1 n=18523 ok=true 14.636s = 1266 proofs/s
+zakura batch(chunks of 64, verify_multicore_prepared) threads=1 n=18523 ok=true 15.142s = 1223 proofs/s
+zakura batch(chunks of 128, verify_prepared) threads=1 n=18523 ok=true 14.679s = 1262 proofs/s
+    wall 247.85 s
+--- redjubjub_1t upstream  load averages: 4.66 5.67 14.24
+rust batch threads=1: 29 chunks, 230769 sigs, all chunks ok true, 22.849s = 10100 sigs/s
+rust single threads=1: 230769 sigs, 230769 valid, 51.286s = 4500 sigs/s
+    wall 89.86 s
+--- redjubjub_1t zakura  load averages: 5.20 5.53 13.31
+rust batch threads=1: 29 chunks, 230769 sigs, all chunks ok true, 20.560s = 11224 sigs/s
+rust single threads=1: 230769 sigs, 230769 valid, 34.834s = 6625 sigs/s
+zakura batch(weight 64) threads=1: 6029 batches, 230769 sigs, all ok true, 20.376s = 11326 sigs/s
+    wall 91.40 s
+--- equihash upstream  load averages: 3.90 5.05 12.35
+headers 16384 [0, 16383]
+prev-hash links 16383/16383
+hash <= target 16384/16384
+lightwalletd hash spot checks 0/0
+equihash valid (rust, 18 threads) 16384/16384 in 129.319125ms = 126694 headers/s
+equihash rust 1 thread: 2000 headers (2000 valid) in 191.679916ms = 10434 headers/s
+    wall 0.38 s
+--- equihash zakura  load averages: 3.90 5.05 12.35
+headers 16384
+equihash valid (rust, 18 threads) 16384/16384 in 69.890083ms = 234425 headers/s
+equihash rust 1 thread: 2000 headers (2000 valid) in 99.741875ms = 20052 headers/s
+    wall 0.18 s
+--- scan upstream  load averages: 3.90 5.05 12.35
+orchard batch API threads=1: 262144 outputs in 10.088s = 25986 outputs/s (4110 notes found)
+orchard batch API threads=18: 262144 outputs in 0.771s = 340186 outputs/s (4110 notes found)
+    wall 10.90 s
+--- scan zakura  load averages: 3.85 5.00 12.25
+orchard batch API threads=1: 262144 outputs in 5.149s = 50907 outputs/s (4110 notes found)
+orchard batch API threads=18: 262144 outputs in 0.456s = 574802 outputs/s (4110 notes found)
+    wall 5.65 s
+--- halo2_batch bend  load averages: 3.78 4.97 12.19
+halo2_batch: bundles 10048, agree with official 10048, disagree 0, Bend valid 10048; batches 3 (0 rejected); batch process time 4.0s = 2520 bundles/s; wall 4s
+    wall 4.23 s
+===== transparent (bench.sh runs both sides itself)
+load before: 5.96 5.40 12.30
+82 files, 119293 inputs
+oracle   1 proc:   3.17 s   26.6 us/input   12 procs:   0.37 s    321032 inputs/s
+zakura   1 proc:   3.01 s   25.3 us/input   12 procs:   0.37 s    319137 inputs/s
+load after: 5.58 5.34 12.20
+===== done Thu Oct 29 18:31:21 IST 2026

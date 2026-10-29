@@ -134,6 +134,11 @@ Bend batch 0.708 / 0.067 ms (1 / 18 threads). It is consistent with the table ab
 | Rust batch, chunks of 128 | 0.932 ms (1,073/s) | **0.067 ms** (14,832/s) |
 | **Bend batch**, chunks of 128 | **0.672 ms** (1,489/s) | 0.081 ms (12,288/s) |
 
+"Rust" here is the upstream crates (`bellman` 0.15, `sapling-crypto` 0.9). Against Zakura's forks
+([Zakura Common](https://github.com/zakura-core/common), 29 Oct 2026, `research/bench/zakura-common/`),
+single verification is faster in Rust (1.33–1.47 ms vs Bend's 1.80 ms on one thread), while Bend's
+batch stays ahead (0.67 ms/proof vs 0.78–0.80 ms on one thread; 17,319 vs ~15,900 proofs/s on 18).
+
 Bend is 1.2–1.4× faster than the official Rust on one thread. On 18 threads, single verification
 is 1.1× faster. Batch verification is within ±20% of Rust's chunked batch either way: faster on
 `real`, slower on `old_real` (that run had load 16 from other jobs). The reasons are specific:

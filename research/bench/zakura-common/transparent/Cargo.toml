@@ -1,0 +1,24 @@
+[package]
+name = "tv-zakura"
+version = "0.1.0"
+edition = "2021"
+description = "Transparent-input baseline on Zakura's own code path: zakura-script 5.0.1 CachedFfiTransaction::is_valid (zakura-chain SigHasher + zcash_script 0.6), from Zakura v1.7.0"
+
+[workspace]
+
+[dependencies]
+# Zakura v1.7.0, the version benchmarked in research/bench/zakura_vs_zebend.md
+# (~/zakura-bench/src/zakura; its script and sighash code is identical to the checkout in
+# zcash/consensus/nu7/data/src/zakura apart from tests).
+zakura-script = { path = "../../../../../../../zakura-bench/src/zakura/crates/zakura-script" }
+zakura-chain = { path = "../../../../../../../zakura-bench/src/zakura/crates/zakura-chain" }
+anyhow = "1"
+hex = "0.4"
+rayon = "1"
+sha2 = "0.10"
+
+# Zakura's release profile.
+[profile.release]
+lto = "thin"
+codegen-units = 4
+debug = "line-tables-only"

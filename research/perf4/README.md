@@ -1,5 +1,11 @@
 # perf4: faster Halo 2 (Orchard/Ironwood) verification in Bend
 
+> **Correction (29 Oct 2026).** "Rust" on this page is the upstream crates (`halo2_proofs` 0.4,
+> `orchard` 0.16). Zakura links its own forks, [Zakura Common](https://github.com/zakura-core/common),
+> which verify the same 10,048-bundle sample at 7,052–11,535 bundles/s against perf4's ~2,400–2,500:
+> perf4 is faster than upstream, not faster than Zakura. See `research/bench/zakura-common/` and
+> `docs/performance.md`.
+
 A drop-in successor to `research/perf3/v64` (the verifier the node runs as
 `node/follow/bin/halo2_batch` and through the orchard hook). Same inputs, same output lines,
 same verdicts. All Bend: no C post-processing and no Rust in the verifier. It builds with the

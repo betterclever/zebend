@@ -1,0 +1,24 @@
+[package]
+name = "scan2-vectors-zakura"
+version = "0.1.0"
+edition = "2021"
+description = "research/scan2/rust ported to the Zakura Common crates (zakura-core/common 4.0.0)"
+
+[workspace]
+
+[dependencies]
+# Package renames and features exactly as Zakura's workspace Cargo.toml.
+orchard = { version = "=4.0.0", package = "zakura-orchard", default-features = false, features = ["backend-halo2", "circuit", "multicore", "std"] }
+zcash_note_encryption = { version = "=4.0.0", package = "zakura-note-encryption" }
+pasta_curves = { version = "=4.0.0", package = "zakura-pasta-curves" }
+blake2b_simd = "1"
+chacha20 = "0.9"
+getrandom = "0.3"
+hex = "0.4"
+anyhow = "1"
+
+# Zakura's release profile.
+[profile.release]
+lto = "thin"
+codegen-units = 4
+debug = "line-tables-only"
