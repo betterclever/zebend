@@ -43,4 +43,5 @@ HEADER = [
 
 if __name__ == "__main__":
     only = [int(x) for a in sys.argv[1:] for x in a.split()]
-    LG.emit("orchard_canon", [g for g in GATES if not only or g.g in only], HEADER)
+    LG.emit("orchard_canon", [g for g in GATES if not only or g.g in only], HEADER,
+            extra_imports=[("./PROOF_RANGE.bend", "Range"), ("./PROOF_CANON.bend", "Canon")])
