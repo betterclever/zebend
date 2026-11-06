@@ -77,6 +77,24 @@ law add_lt:
   for +cb: D.Canon(b)
   L.Le(1n+D.val(65536n, Fp.add(a, b)), D.val(65536n, Fp.Fp{1, 0, 12525, 39213, 63771, 2380, 39164, 8774, 0, 0, 0, 0, 0, 0, 0, 16384}))
 
-# Non-vacuity of add_ok / add_lt: zero is canonical.
+# --- 4. Fp.sub is subtraction mod p ----------------------------------------------
+
+# For canonical a and b, the limbs Fp.sub returns hold (a + (p - b)) mod p.
+law sub_ok:
+  for +a: Fp.Fp
+  for +b: Fp.Fp
+  for +ca: D.Canon(a)
+  for +cb: D.Canon(b)
+  {D.val(65536n, Fp.sub(a, b)) == Nat.mod(Nat.add(D.val(65536n, a), Nat.sub(D.val(65536n, Fp.Fp{1, 0, 12525, 39213, 63771, 2380, 39164, 8774, 0, 0, 0, 0, 0, 0, 0, 16384}), D.val(65536n, b))), D.val(65536n, Fp.Fp{1, 0, 12525, 39213, 63771, 2380, 39164, 8774, 0, 0, 0, 0, 0, 0, 0, 16384})) : Nat}
+
+# ... and that value is below p.
+law sub_lt:
+  for +a: Fp.Fp
+  for +b: Fp.Fp
+  for +ca: D.Canon(a)
+  for +cb: D.Canon(b)
+  L.Le(1n+D.val(65536n, Fp.sub(a, b)), D.val(65536n, Fp.Fp{1, 0, 12525, 39213, 63771, 2380, 39164, 8774, 0, 0, 0, 0, 0, 0, 0, 16384}))
+
+# Non-vacuity of add_ok, add_lt, sub_ok, sub_lt: zero is canonical.
 law canon_zero:
   D.Canon(Fp.Fp{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})

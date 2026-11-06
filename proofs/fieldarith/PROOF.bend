@@ -8,6 +8,7 @@ import ./u32sem.bend as S
 import ./defs.bend as D
 import ./addproof.bend as AP
 import ./canon.bend as CN
+import ./subproof.bend as SP
 import ./LAWS.bend as Laws
 
 def Laws.u32_mask_mod(x, k):
@@ -51,6 +52,13 @@ def ltof(+a: Fp.Fp, +c: D.Canon(a)) -> L.Le(1n+D.val(65536n, a), D.val(65536n, F
 def Laws.add_lt(a, b, ca, cb):
   %Equal.sym(Nat, D.val(65536n, Fp.add(a, b)), Nat.mod(Nat.add(D.val(65536n, a), D.val(65536n, b)), D.val(65536n, Fp.Fp{1, 0, 12525, 39213, 63771, 2380, 39164, 8774, 0, 0, 0, 0, 0, 0, 0, 16384})), AP.add_ok_proof(a, b, ca, cb)) : L.Le(1n+_, D.val(65536n, Fp.Fp{1, 0, 12525, 39213, 63771, 2380, 39164, 8774, 0, 0, 0, 0, 0, 0, 0, 16384}))
   CN.mod_lt(Nat.add(D.val(65536n, a), D.val(65536n, b)), D.val(65536n, Fp.Fp{1, 0, 12525, 39213, 63771, 2380, 39164, 8774, 0, 0, 0, 0, 0, 0, 0, 16384}), D.val(65536n, a), ltof(a, ca))
+
+def Laws.sub_ok(a, b, ca, cb):
+  SP.sub_ok_proof(a, b, ca, cb)
+
+def Laws.sub_lt(a, b, ca, cb):
+  %Equal.sym(Nat, D.val(65536n, Fp.sub(a, b)), Nat.mod(Nat.add(D.val(65536n, a), Nat.sub(D.val(65536n, Fp.Fp{1, 0, 12525, 39213, 63771, 2380, 39164, 8774, 0, 0, 0, 0, 0, 0, 0, 16384}), D.val(65536n, b))), D.val(65536n, Fp.Fp{1, 0, 12525, 39213, 63771, 2380, 39164, 8774, 0, 0, 0, 0, 0, 0, 0, 16384})), SP.sub_ok_proof(a, b, ca, cb)) : L.Le(1n+_, D.val(65536n, Fp.Fp{1, 0, 12525, 39213, 63771, 2380, 39164, 8774, 0, 0, 0, 0, 0, 0, 0, 16384}))
+  CN.mod_lt(Nat.add(D.val(65536n, a), Nat.sub(D.val(65536n, Fp.Fp{1, 0, 12525, 39213, 63771, 2380, 39164, 8774, 0, 0, 0, 0, 0, 0, 0, 16384}), D.val(65536n, b))), D.val(65536n, Fp.Fp{1, 0, 12525, 39213, 63771, 2380, 39164, 8774, 0, 0, 0, 0, 0, 0, 0, 16384}), D.val(65536n, a), ltof(a, ca))
 
 def Laws.canon_zero():
   CN.canon_zero()
