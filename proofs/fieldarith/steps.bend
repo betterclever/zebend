@@ -23,12 +23,20 @@ def TOP(+m: Nat) -> Nat:
 def top_tb(+mp: Nat) -> L.Le(TOP(1n+mp), H.TB(1n+mp)):
   (Nat.mul(mp, 2n+mp), A.ac([mp, 1n, Nat.mul(mp, 2n+mp)], A.AP{A.AP{A.AP{A.AP{A.AV{1n}, A.AV{0n}}, A.AP{A.AV{1n}, A.AV{0n}}}, A.AV{1n}}, A.AV{2n}}, A.AP{A.AP{A.AV{1n}, A.AV{0n}}, A.AP{A.AP{A.AV{1n}, A.AP{A.AV{1n}, A.AV{0n}}}, A.AV{2n}}}, {==}))
 
+def top_tbm(+m: Nat, +mp: Nat, +hm: {m == 1n+mp : Nat}) -> L.Le(TOP(m), H.TB(m)):
+  %Equal.sym(Nat, m, 1n+mp, hm) : L.Le(TOP(_), H.TB(_))
+  top_tb(mp)
+
+def sq_k(+K: Nat, +bp: Nat, +hk: {K == 1n+bp : Nat}) -> {Nat.mul(K, K) == 1n+H.TB(bp) : Nat}:
+  %Equal.sym(Nat, K, 1n+bp, hk) : {Nat.mul(_, _) == 1n+H.TB(bp) : Nat}
+  H.sq_tb(bp)
+
 def m32() -> {Ws.mask(32n) == H.TB(65535n) : Nat}:
-  L.succ_inj(Ws.mask(32n), H.TB(65535n), Equal.trans(Nat, 1n+Ws.mask(32n), Nat.mul(65536n, 65536n), 1n+H.TB(65535n), Equal.sym(Nat, Nat.mul(65536n, 65536n), 1n+Ws.mask(32n), Ws.two32()), H.sq_tb(65535n)))
+  L.succ_inj(Ws.mask(32n), H.TB(65535n), Equal.trans(Nat, 1n+Ws.mask(32n), Nat.mul(65536n, 65536n), 1n+H.TB(65535n), Equal.sym(Nat, Nat.mul(65536n, 65536n), 1n+Ws.mask(32n), Ws.two32()), sq_k(65536n, 65535n, {==})))
 
 def le_m32(+x: Nat, +l: L.Le(x, TOP(65535n))) -> L.Le(x, Ws.mask(32n)):
   %Equal.sym(Nat, Ws.mask(32n), H.TB(65535n), m32()) : L.Le(x, _)
-  H.le_trans(x, TOP(65535n), H.TB(65535n), l, top_tb(65534n))
+  H.le_trans(x, TOP(65535n), H.TB(65535n), l, top_tbm(65535n, 65534n, {==}))
 
 def sb2(+m: Nat, +x: Nat, +y: Nat, +lx: L.Le(x, m), +ly: L.Le(y, m)) -> L.Le(Nat.add(x, y), TOP(m)):
   H.le_trans(Nat.add(x, y), Nat.add(m, m), TOP(m), H.le_add(x, m, y, m, lx, ly), (1n, {==}))
