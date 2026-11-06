@@ -5,8 +5,9 @@ the 10,048-bundle sample 4.6× faster than perf4 did. perf5 closes part of that 
 ahead. Same inputs, output lines and verdicts as perf4. All Bend: no C post-processing and no Rust in
 the verifier.
 
-**Not deployed.** The node still runs `node/follow/bin/halo2_batch` (the perf3 build). `DEPLOY.md`
-(written for perf4) describes the swap; the same steps apply with this directory.
+**Not deployed.** The node still runs the perf4 build (`node/follow/bin/halo2_batch` is
+byte-identical to `research/perf4/v/batch_main`). `DEPLOY.md` (written for perf4) describes the
+swap; the same steps apply with this directory.
 
 ## Results
 

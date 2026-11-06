@@ -12,7 +12,7 @@
 
 <p align="center">
   <img alt="Halo 2 proofs agreeing with halo2_proofs" src="https://img.shields.io/badge/mainnet%20Halo%202-392%2C806%20%2F%20392%2C806-2fbf71">
-  <img alt="Machine-checked laws" src="https://img.shields.io/badge/machine--checked%20laws-282-E4573D">
+  <img alt="Machine-checked laws" src="https://img.shields.io/badge/machine--checked%20laws-343-E4573D">
   <img alt="Network" src="https://img.shields.io/badge/network-mainnet%20%2B%20NU7-FFD04D">
   <img alt="Language" src="https://img.shields.io/badge/written%20in-Bend%202-2B100B">
 </p>
@@ -39,10 +39,11 @@ used only as the oracle Zebend is compared against.
   since NU6.3, 1,283,411 RedPallas signatures, 61,168 Groth16 proofs, 131,146 transparent inputs
   across all eras, every block header in Zcash's history, and the full Sapling (74.0M) and
   Orchard (50.5M) note commitment trees.
-- **Proven, not only tested.** 282 laws checked by Bend (`--verdict`, no `@unsafe`): the supply
+- **Proven, not only tested.** 343 laws checked by Bend (`--verdict`, no `@unsafe`): the supply
   turnstile, issuance, NU7, difficulty, parsers, Merkle trees on the running code, per-row
-  soundness of the Orchard gates (complete addition, range checks, a canonicity argument), the
-  fix for the May 2026 Orchard bug, and the optimisations of the fast Halo 2 verifier.
+  soundness of every Orchard gate (complete addition, range checks, a canonicity argument), the
+  fix for the May 2026 Orchard bug, Pasta field addition and subtraction, the curve formulas,
+  and the fast Halo 2 verifier's optimisations, batch inversion and fixed-base scalars.
 - **Fast enough to follow the tip.** Batch Halo 2 verification of all 392,806 bundles in 176 s,
   about 3× the upstream Rust crates. Zakura's tuned crates are still faster: about 4.6× than the
   deployed verifier, about 1.8× than the newest research build; see

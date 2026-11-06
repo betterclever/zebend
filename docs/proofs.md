@@ -1,7 +1,7 @@
 # Proofs
 
 Every law below is checked by Bend's dependent type checker with `bend PROOF.bend --verdict`,
-with no `@unsafe`. That checker is rechecked by a Lean-proven kernel. 295 laws in total.
+with no `@unsafe`. That checker is rechecked by a Lean-proven kernel. 343 laws in total.
 
 ## What is proven
 
@@ -25,6 +25,9 @@ with no `@unsafe`. That checker is rechecked by a Lean-proven kernel. 295 laws i
 | `proofs/opt_gates` | 56 | every optimised function of the fast Halo 2 verifier computes the same values as the original, in Z/p for every p ≥ 2 |
 | `proofs/msm_chunk` | 8 | chunked and parallel MSM equals the plain MSM; merging proofs on shared bases is exact |
 | `proofs/msm_bucket` | 18 | the signed-digit bucket method computes Σ sᵢ·Pᵢ |
+| `proofs/batchinv` | 9 | Montgomery batch inversion (fp64/fq64, msm_ba, vlib.binvs) returns the pointwise inverses whenever its one inversion succeeds; in a prime field it equals x^(p−2) pointwise, 0 ↦ 0 for binvs; a zero input makes every output 0 |
+| `proofs/curve` | 30 | the RCB complete addition, mixed addition and doubling of Pallas/Vesta compute the chord-and-tangent law of y² = x³ + b: the chord for P ≠ ±Q, the tangent for P = Q, the identity (0 : Y : 0) for P = −Q, the identity handled on either side, Z3 ≠ 0 when there is no point of order 2, doubling stays on the curve; the code's mul15 is b = 5 |
+| `proofs/fixedbase` | 9 | the sparse-to-dense step for fixed-base scalars (`bt.fx_dense`) keeps the MSM; the fixb comb tables and walk compute acc + Σ ±mⱼ·2^(c·j)·P |
 
 `proofs/gadget` holds an early law that turned out to be vacuous: its hypotheses can never be met.
 It is kept as a lesson and not counted. Every law with hypotheses now has a non-vacuity companion.
@@ -39,9 +42,15 @@ It is kept as a lesson and not counted. Every law with hypotheses now has a non-
   be unfolded by the checker on symbolic inputs (see `proofs/README.md`).
 - That the modulus limbs in the field code spell Pallas' p is checked in Python (`gen_add.py`),
   not in Bend.
-- The curve addition formulas are taken as the group operation.
-- Montgomery batch inversion, and the sparse-to-dense step for fixed-base scalars, in the fast
-  Halo 2 verifier.
+- That the chord-and-tangent law is a group (associativity). The formulas are proven to compute
+  it (`proofs/curve`), but add's projective on-curve identity as a single statement is not:
+  its 3,150-monomial certificate exceeds the checker's limits (in a prime field the case laws
+  cover every input).
+- Pallas' and Vesta's p are prime, as Fermat's little theorem (used by `batchinv`'s field laws),
+  and the curves have no point of order 2 (used by `curve`'s "Z3 ≠ 0" laws).
+- In `fixb`: that U32 shifts and masks extract the index bits `tget` reads, that the parallel
+  table build `wpar` equals the per-window map, and that `msm_ba.recode` recodes the scalar.
+  GLV's endomorphism and decomposition, and point decompression.
 - The proof systems themselves (halo2 with IPA, Groth16) and the hardness assumptions under them.
 - The full Orchard Action relation is not proven: only the gates, the anchoring, the range check
   and one canonicity argument above. Not proven: that the gadgets compose (the mul loop computes
@@ -58,6 +67,7 @@ It is kept as a lesson and not counted. Every law with hypotheses now has a non-
 
 ```sh
 cd proofs/msm_bucket && BEND_NO_TELEMETRY=1 bend PROOF.bend --verdict    # ALL PROOFS CHECK
+cd proofs/curve && BEND_NO_TELEMETRY=1 ../../tools/heavy.sh bend PROOF.bend --verdict   # 37 s, 2.9 GB
 ```
 
 Each directory's README states its laws in words, gives what is and is not covered, and how to

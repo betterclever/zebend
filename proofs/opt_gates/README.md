@@ -82,8 +82,9 @@ that law. Reproduce with `OPT_GATES_V=<dir with the four files> OPT_GATES_OUT=<d
 * **Inversion batching (rule 7).** `L.bfat(k, L.binvs([L.ub(x0), ..]))` is read as
   `L.binv(xk)`. That is, `vlib.binvs` is taken to return the pointwise inverses, with 0 ↦ 0,
   as its comment says. It is Montgomery's trick: `Fp.batch_inv` plus the zero masks `nz1`/`z0`.
-  It is tested (42/42 `-v` traces byte-identical, 392,806/392,806 verdicts) but **not proven
-  here**. The rule touches 19 inversions in 5 groups per file.
+  It is tested (42/42 `-v` traces byte-identical, 392,806/392,806 verdicts), and `../batchinv`
+  proves it (`binvs_finv`: binvs(xs) == [x^(p−2) for x in xs] for prime p, zeros included).
+  The rule touches 19 inversions in 5 groups per file.
 * **Log removal in `bt`.** `L.blgf` and `L.log_list` lines are erased from the original as the
   script erases them. The batch verifier never reads `St.log`. That is a reading of `vlib.bend`
   (only `print_log` reads it), not a proof. `ba` keeps the logs, and there they are checked
