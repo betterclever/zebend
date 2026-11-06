@@ -138,3 +138,35 @@ law cond_swap:
   for h1: {G.gate_26_1(pp, sel, a0, a1, a3, a4) == 0n : Nat}
   for h2: {G.gate_26_2(pp, sel, a4) == 0n : Nat}
   Either<&1, &1, {a4 == 0n : Nat} & {a2 == a0 : Nat} & {a3 == a1 : Nat}, {a4 == 1n : Nat} & {a2 == a1 : Nat} & {a3 == a0 : Nat}>
+
+# NON-VACUITY companions: every hypothesis of each law above at once, at p = 11 (pp = 10),
+# sel = si = 1, on a concrete row (found by ../orchard/lawgen.py's search; F.NZD(10n) is
+# nzd11.bend). They show none of the laws holds vacuously.
+
+# value_balance: row a0 = 10, a1 = 3, a2 = 6, a3 = 3.
+law value_balance_satisfiable:
+  {F.fmul(11n, 1n, 1n) == 1n : Nat} & L.Le(10n, 10n) & L.Le(3n, 10n) & {G.gate_0_0(10n, 1n, 10n, 3n, 6n, 3n) == 0n : Nat}
+
+# anchor_or_zero: row a0 = 0, a4 = 3, a5 = 9.
+law anchor_or_zero_satisfiable:
+  F.NZD(10n) & {F.fmul(11n, 1n, 1n) == 1n : Nat} & L.Le(0n, 10n) & L.Le(3n, 10n) & L.Le(9n, 10n) & {G.gate_0_1(10n, 1n, 0n, 3n, 9n) == 0n : Nat}
+
+# spend_disabled_zero: row a0 = 0, a6 = 3.
+law spend_disabled_zero_satisfiable:
+  F.NZD(10n) & L.Le(1n, 10n) & {F.fmul(11n, 1n, 1n) == 1n : Nat} & L.Le(0n, 10n) & L.Le(3n, 10n) & {G.gate_0_2(10n, 1n, 0n, 3n) == 0n : Nat}
+
+# output_disabled_zero: row a1 = 0, a7 = 3.
+law output_disabled_zero_satisfiable:
+  F.NZD(10n) & L.Le(1n, 10n) & {F.fmul(11n, 1n, 1n) == 1n : Nat} & L.Le(0n, 10n) & L.Le(3n, 10n) & {G.gate_0_3(10n, 1n, 0n, 3n) == 0n : Nat}
+
+# last_window_bit: row a5 = 1.
+law last_window_bit_satisfiable:
+  F.NZD(10n) & L.Le(1n, 10n) & {F.fmul(11n, 1n, 1n) == 1n : Nat} & L.Le(1n, 10n) & {G.gate_19_0(10n, 1n, 1n) == 0n : Nat}
+
+# decompose_bit: row a9 = 2, a10 = 2, a11 = 1, a21 = 9.
+law decompose_bit_satisfiable:
+  F.NZD(10n) & L.Le(1n, 10n) & {F.fmul(11n, 1n, 1n) == 1n : Nat} & L.Le(2n, 10n) & L.Le(2n, 10n) & L.Le(9n, 10n) & {G.gate_13_0(10n, 1n, 2n, 1n) == 0n : Nat} & {G.gate_13_1(10n, 1n, 2n, 2n, 1n, 9n) == 0n : Nat}
+
+# cond_swap: row a0 = 10, a1 = 3, a2 = 10, a3 = 3, a4 = 0.
+law cond_swap_satisfiable:
+  F.NZD(10n) & L.Le(1n, 10n) & {F.fmul(11n, 1n, 1n) == 1n : Nat} & L.Le(10n, 10n) & L.Le(3n, 10n) & L.Le(10n, 10n) & L.Le(3n, 10n) & L.Le(0n, 10n) & {G.gate_26_0(10n, 1n, 10n, 3n, 10n, 0n) == 0n : Nat} & {G.gate_26_1(10n, 1n, 10n, 3n, 3n, 0n) == 0n : Nat} & {G.gate_26_2(10n, 1n, 0n) == 0n : Nat}

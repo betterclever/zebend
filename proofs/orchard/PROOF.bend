@@ -4,6 +4,7 @@ import ./fieldmodel.bend as F
 import ./gates_model.bend as G
 import ./evals.bend as E
 import ./LAWS.bend as Laws
+import ./nzd11.bend as Z
 
 # Proofs of LAWS.bend. Each one strips the invertible selector (E.strip_inv), splits a product
 # that vanishes with the no-zero-divisor hypothesis or E.boolean, and moves negations
@@ -134,3 +135,23 @@ def Laws.cond_swap(pp, nzd, l1, sel, si, inv, a0, a1, a2, a3, a4, la0, la1, la2,
     swap_out(pp, sel, si, inv, a4, a0, a1, a3, la3, h1),
     E.boolean(pp, a4, nzd, l1, la4,
       E.strip_inv(pp, sel, bodybool(pp, a4), si, inv, E.le_fmul(pp, a4, F.fadd(1n+pp, 1n, neg(pp, a4))), h2)))
+def Laws.value_balance_satisfiable():
+  ({==}, (0n, {==}), (7n, {==}), {==})
+
+def Laws.anchor_or_zero_satisfiable():
+  (Z.nzd11, {==}, (10n, {==}), (7n, {==}), (1n, {==}), {==})
+
+def Laws.spend_disabled_zero_satisfiable():
+  (Z.nzd11, (9n, {==}), {==}, (10n, {==}), (7n, {==}), {==})
+
+def Laws.output_disabled_zero_satisfiable():
+  (Z.nzd11, (9n, {==}), {==}, (10n, {==}), (7n, {==}), {==})
+
+def Laws.last_window_bit_satisfiable():
+  (Z.nzd11, (9n, {==}), {==}, (9n, {==}), {==})
+
+def Laws.decompose_bit_satisfiable():
+  (Z.nzd11, (9n, {==}), {==}, (8n, {==}), (8n, {==}), (1n, {==}), {==}, {==})
+
+def Laws.cond_swap_satisfiable():
+  (Z.nzd11, (9n, {==}), {==}, (0n, {==}), (7n, {==}), (0n, {==}), (7n, {==}), (10n, {==}), {==}, {==}, {==})
