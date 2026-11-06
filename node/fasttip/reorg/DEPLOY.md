@@ -239,5 +239,5 @@ stale 3,532,945, obtained by getdata from one mainnet peer, /Zakura:1.6.0/, stil
 - **Names**: hashlib is used only to NAME headers for routing (side store keys, which getdata a
   block answers), as before; what goes into the header index is Bend's hash (hdrchain).
 - The writer fix (`store.py`) applies to every SIGKILL of the sync service, not only reorgs.
-- Lab leftovers: `/Users/betterclever/projects/zecathon/rglab/` (golden 14 GB APFS clone, g944,
-  ref, labs, fetched blocks). Delete when done; nothing there is used by the live node.
+- The lab directory (`rglab/`, outside the repo) was deleted on 6 Nov 2026; the results above are
+  what remains of it.

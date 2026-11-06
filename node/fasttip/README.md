@@ -196,6 +196,5 @@ what remains (one 76-action Ironwood bundle is checked by one `txx` process).
   per hook was the real churn and is gone). RedPallas block batching: not done (above).
 - During probing I connected once for 150 s to 136.115.98.175 (follow's fixed header peer, it was in
   peers.txt); follow kept running. tipsync now never picks net.KNOWN peers.
-- Lab leftovers: `/Users/betterclever/projects/zecathon/ftlab/` (golden clone of node/state at
-  3,532,820, the `base` and `fast` lab roots, 600 fetched blocks). Delete when done; nothing there
-  is used by the live node.
+- The lab directory (`ftlab/`, outside the repo) was deleted on 6 Nov 2026; the results above are
+  what remains of it.

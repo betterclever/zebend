@@ -22,6 +22,7 @@ Zebend's claims come in two kinds, and every README in the repository keeps them
 | Orchard tree | all 50,478,033 leaves | 770 / 770 subtree roots, 6 / 6 full roots equal the chain |
 | ZIP 221 | 784,104 Heartwood and Canopy headers plus every activation window | 0 mismatches |
 | NU7 | real testnet NU7 blocks | 23,036 / 23,036 valid; 82,648 / 82,648 difficulty checks |
+| NU7 on Mainnet | activation (3,543,405, 6 Nov 2026) and every block after it, validated by the live node | every rule PASS, every hook PASS, ZIP 221 MATCH; NSM pool seeded and tracked |
 | Live node | every block since it reached the tip | every rule PASS, every hook PASS, ZIP 221 MATCH |
 | Zebend vs Zakura | 141 consecutive live blocks | both nodes agree on every block |
 

@@ -2,8 +2,9 @@
 
 Every NU7 consensus change, written in Bend for both networks. Each one is tested against
 Zebra/Zakura code and real Testnet NU7 blocks, and the key laws are proven. The wiring into
-the full node, follow and tiphdr is **proposed, not applied**. The diffs are in `wiring/`;
-the coordinator applies them with a controlled restart.
+the full node, follow and tiphdr (diffs in `wiring/`) was applied to the live node on 27 Oct 2026.
+NU7 activated on Mainnet on 6 Nov 2026; the node validated the activation block 3,543,405 and every
+block after it with every rule and hook passing (see `docs/verification.md`).
 
 ## Sources (exact commits)
 
