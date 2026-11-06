@@ -105,6 +105,23 @@ def sum_cong(+bp: Nat, +env: +List<Nat>, +hc: X.Canon(bp, env), +cs: +List<X.E>,
     case Nil{} _:
       {==}
 
+# The Z/p step, from the Nat identity hn between the two sides.
+def cert_core(+bp: Nat, +env: +List<Nat>, +hc: X.Canon(bp, env), +t1: X.E, +t2: X.E, +cs: +List<X.E>, +rs: +List<Rel>, +k1: X.E, +k2: X.E, +hr: Holds(bp, env, rs), hn: {X.nv(bp, env, lhs(t1, cs, rs, k1)) == X.nv(bp, env, rhs(t2, cs, rs, k2)) : Nat}) -> {X.ev(bp, env, t1) == X.ev(bp, env, t2) : Nat}:
+  +m = {1n+bp : Nat}
+  +n1 = X.nv(bp, env, t1)
+  +n2 = X.nv(bp, env, t2)
+  +sa = X.nv(bp, env, suma(cs, rs))
+  +sb = X.nv(bp, env, sumb(cs, rs))
+  +q1 = X.nv(bp, env, k1)
+  +q2 = X.nv(bp, env, k2)
+  # mod p: the K terms vanish
+  +hm = Equal.trans(Nat, Nat.mod(Nat.add(n1, sb), m), Nat.mod(Nat.add(Nat.add(n1, sb), Nat.mul(q1, m)), m), Nat.mod(Nat.add(n2, sa), m), Equal.sym(Nat, Nat.mod(Nat.add(Nat.add(n1, sb), Nat.mul(q1, m)), m), Nat.mod(Nat.add(n1, sb), m), L.mod_add_mul(Nat.add(n1, sb), q1, bp)), Equal.trans(Nat, Nat.mod(Nat.add(Nat.add(n1, sb), Nat.mul(q1, m)), m), Nat.mod(Nat.add(Nat.add(n2, sa), Nat.mul(q2, m)), m), Nat.mod(Nat.add(n2, sa), m), Equal.cong(Nat, Nat, w => Nat.mod(w, m), Nat.add(Nat.add(n1, sb), Nat.mul(q1, m)), Nat.add(Nat.add(n2, sa), Nat.mul(q2, m)), hn), L.mod_add_mul(Nat.add(n2, sa), q2, bp)))
+  # the sums agree by the hypotheses
+  +hs = Equal.trans(Nat, Nat.mod(Nat.add(n1, sb), m), Nat.mod(Nat.add(n2, sa), m), Nat.mod(Nat.add(n2, sb), m), hm, madd_cong(bp, n2, n2, sa, sb, {==}, sum_cong(bp, env, hc, cs, rs, hr)))
+  # cancel, and read back in Z/p
+  Equal.trans(Nat, X.ev(bp, env, t1), Nat.mod(n1, m), X.ev(bp, env, t2), X.ev_nv(bp, env, hc, t1), Equal.trans(Nat, Nat.mod(n1, m), Nat.mod(n2, m), X.ev(bp, env, t2), mcancel(bp, n1, n2, sb, hs), Equal.sym(Nat, X.ev(bp, env, t2), Nat.mod(n2, m), X.ev_nv(bp, env, hc, t2))))
+
+
 law cert_ok:
   for +bp: Nat
   for +env: +List<Nat>
@@ -120,21 +137,7 @@ law cert_ok:
   {X.ev(bp, env, t1) == X.ev(bp, env, t2) : Nat}
 
 def cert_ok(bp, env, hc, t1, t2, cs, rs, k1, k2, hr, h):
-  +m = {1n+bp : Nat}
-  +n1 = X.nv(bp, env, t1)
-  +n2 = X.nv(bp, env, t2)
-  +sa = X.nv(bp, env, suma(cs, rs))
-  +sb = X.nv(bp, env, sumb(cs, rs))
-  +q1 = X.nv(bp, env, k1)
-  +q2 = X.nv(bp, env, k2)
-  # the Nat identity
-  +hn = Equal.trans(Nat, X.nv(bp, env, lhs(t1, cs, rs, k1)), P.evp(P.nf(lhs(t1, cs, rs, k1)), bp <> env), X.nv(bp, env, rhs(t2, cs, rs, k2)), P.nf_ok(bp, env, lhs(t1, cs, rs, k1)), Equal.trans(Nat, P.evp(P.nf(lhs(t1, cs, rs, k1)), bp <> env), P.evp(P.nf(rhs(t2, cs, rs, k2)), bp <> env), X.nv(bp, env, rhs(t2, cs, rs, k2)), Equal.cong(+List<P.Tm>, Nat, w => P.evp(w, bp <> env), P.nf(lhs(t1, cs, rs, k1)), P.nf(rhs(t2, cs, rs, k2)), h), Equal.sym(Nat, X.nv(bp, env, rhs(t2, cs, rs, k2)), P.evp(P.nf(rhs(t2, cs, rs, k2)), bp <> env), P.nf_ok(bp, env, rhs(t2, cs, rs, k2)))))
-  # mod p: the K terms vanish
-  +hm = Equal.trans(Nat, Nat.mod(Nat.add(n1, sb), m), Nat.mod(Nat.add(Nat.add(n1, sb), Nat.mul(q1, m)), m), Nat.mod(Nat.add(n2, sa), m), Equal.sym(Nat, Nat.mod(Nat.add(Nat.add(n1, sb), Nat.mul(q1, m)), m), Nat.mod(Nat.add(n1, sb), m), L.mod_add_mul(Nat.add(n1, sb), q1, bp)), Equal.trans(Nat, Nat.mod(Nat.add(Nat.add(n1, sb), Nat.mul(q1, m)), m), Nat.mod(Nat.add(Nat.add(n2, sa), Nat.mul(q2, m)), m), Nat.mod(Nat.add(n2, sa), m), Equal.cong(Nat, Nat, w => Nat.mod(w, m), Nat.add(Nat.add(n1, sb), Nat.mul(q1, m)), Nat.add(Nat.add(n2, sa), Nat.mul(q2, m)), hn), L.mod_add_mul(Nat.add(n2, sa), q2, bp)))
-  # the sums agree by the hypotheses
-  +hs = Equal.trans(Nat, Nat.mod(Nat.add(n1, sb), m), Nat.mod(Nat.add(n2, sa), m), Nat.mod(Nat.add(n2, sb), m), hm, madd_cong(bp, n2, n2, sa, sb, {==}, sum_cong(bp, env, hc, cs, rs, hr)))
-  # cancel, and read back in Z/p
-  Equal.trans(Nat, X.ev(bp, env, t1), Nat.mod(n1, m), X.ev(bp, env, t2), X.ev_nv(bp, env, hc, t1), Equal.trans(Nat, Nat.mod(n1, m), Nat.mod(n2, m), X.ev(bp, env, t2), mcancel(bp, n1, n2, sb, hs), Equal.sym(Nat, X.ev(bp, env, t2), Nat.mod(n2, m), X.ev_nv(bp, env, hc, t2))))
+  cert_core(bp, env, hc, t1, t2, cs, rs, k1, k2, hr, Equal.trans(Nat, X.nv(bp, env, lhs(t1, cs, rs, k1)), P.evp(P.nf(lhs(t1, cs, rs, k1)), bp <> env), X.nv(bp, env, rhs(t2, cs, rs, k2)), P.nf_ok(bp, env, lhs(t1, cs, rs, k1)), Equal.trans(Nat, P.evp(P.nf(lhs(t1, cs, rs, k1)), bp <> env), P.evp(P.nf(rhs(t2, cs, rs, k2)), bp <> env), X.nv(bp, env, rhs(t2, cs, rs, k2)), Equal.cong(+List<P.Tm>, Nat, w => P.evp(w, bp <> env), P.nf(lhs(t1, cs, rs, k1)), P.nf(rhs(t2, cs, rs, k2)), h), Equal.sym(Nat, X.nv(bp, env, rhs(t2, cs, rs, k2)), P.evp(P.nf(rhs(t2, cs, rs, k2)), bp <> env), P.nf_ok(bp, env, rhs(t2, cs, rs, k2))))))
 
 # cert_ok with the two sides given as expressions lt, rt that unfold to lhs(..) and rhs(..):
 # their normal forms can then be computed in steps (certgen.py's checkpoints).
@@ -158,3 +161,26 @@ law cert_ok2:
 
 def cert_ok2(bp, env, hc, t1, t2, cs, rs, k1, k2, hr, lt, rt, el, er, h):
   cert_ok(bp, env, hc, t1, t2, cs, rs, k1, k2, hr, Equal.trans(+List<P.Tm>, P.nf(lhs(t1, cs, rs, k1)), P.nf(lt), P.nf(rhs(t2, cs, rs, k2)), Equal.cong(X.E, +List<P.Tm>, w => P.nf(w), lhs(t1, cs, rs, k1), lt, Equal.sym(X.E, lt, lhs(t1, cs, rs, k1), el)), Equal.trans(+List<P.Tm>, P.nf(lt), P.nf(rt), P.nf(rhs(t2, cs, rs, k2)), h, Equal.cong(X.E, +List<P.Tm>, w => P.nf(w), rt, rhs(t2, cs, rs, k2), er))))
+
+# cert_ok with the Nat identity given directly (certgen.py's checkpoints prove it in steps,
+# each normalising one operation on literal polynomials).
+law cert_nv:
+  for +bp: Nat
+  for +env: +List<Nat>
+  for +hc: X.Canon(bp, env)
+  for +t1: X.E
+  for +t2: X.E
+  for +cs: +List<X.E>
+  for +rs: +List<Rel>
+  for +k1: X.E
+  for +k2: X.E
+  for +hr: Holds(bp, env, rs)
+  for +lt: X.E
+  for +rt: X.E
+  for el: {lt == lhs(t1, cs, rs, k1) : X.E}
+  for er: {rt == rhs(t2, cs, rs, k2) : X.E}
+  for hn: {X.nv(bp, env, lt) == X.nv(bp, env, rt) : Nat}
+  {X.ev(bp, env, t1) == X.ev(bp, env, t2) : Nat}
+
+def cert_nv(bp, env, hc, t1, t2, cs, rs, k1, k2, hr, lt, rt, el, er, hn):
+  cert_core(bp, env, hc, t1, t2, cs, rs, k1, k2, hr, Equal.trans(Nat, X.nv(bp, env, lhs(t1, cs, rs, k1)), X.nv(bp, env, lt), X.nv(bp, env, rhs(t2, cs, rs, k2)), Equal.cong(X.E, Nat, w => X.nv(bp, env, w), lhs(t1, cs, rs, k1), lt, Equal.sym(X.E, lt, lhs(t1, cs, rs, k1), el)), Equal.trans(Nat, X.nv(bp, env, lt), X.nv(bp, env, rt), X.nv(bp, env, rhs(t2, cs, rs, k2)), hn, Equal.cong(X.E, Nat, w => X.nv(bp, env, w), rt, rhs(t2, cs, rs, k2), er))))

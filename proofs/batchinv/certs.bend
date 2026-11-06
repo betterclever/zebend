@@ -40,6 +40,9 @@ def r1_er() -> {r1_rt() == R.rhs(r1_t2(), r1_cs(), r1_rs(), r1_k2()) : X.E}:
 def r1_h() -> {P.nf(r1_lt()) == P.nf(r1_rt()) : +List<P.Tm>}:
   {==}
 
+def r1_hn(+bp: Nat, +env: +List<Nat>) -> {X.nv(bp, env, r1_lt()) == X.nv(bp, env, r1_rt()) : Nat}:
+  Equal.trans(Nat, X.nv(bp, env, r1_lt()), P.evp(P.nf(r1_lt()), bp <> env), X.nv(bp, env, r1_rt()), P.nf_ok(bp, env, r1_lt()), Equal.trans(Nat, P.evp(P.nf(r1_lt()), bp <> env), P.evp(P.nf(r1_rt()), bp <> env), X.nv(bp, env, r1_rt()), Equal.cong(+List<P.Tm>, Nat, w => P.evp(w, bp <> env), P.nf(r1_lt()), P.nf(r1_rt()), r1_h()), Equal.sym(Nat, X.nv(bp, env, r1_rt()), P.evp(P.nf(r1_rt()), bp <> env), P.nf_ok(bp, env, r1_rt()))))
+
 # --- r2: 5 monomials, 0 checkpoints
 
 def r2_t1() -> X.E:
@@ -74,6 +77,9 @@ def r2_er() -> {r2_rt() == R.rhs(r2_t2(), r2_cs(), r2_rs(), r2_k2()) : X.E}:
 
 def r2_h() -> {P.nf(r2_lt()) == P.nf(r2_rt()) : +List<P.Tm>}:
   {==}
+
+def r2_hn(+bp: Nat, +env: +List<Nat>) -> {X.nv(bp, env, r2_lt()) == X.nv(bp, env, r2_rt()) : Nat}:
+  Equal.trans(Nat, X.nv(bp, env, r2_lt()), P.evp(P.nf(r2_lt()), bp <> env), X.nv(bp, env, r2_rt()), P.nf_ok(bp, env, r2_lt()), Equal.trans(Nat, P.evp(P.nf(r2_lt()), bp <> env), P.evp(P.nf(r2_rt()), bp <> env), X.nv(bp, env, r2_rt()), Equal.cong(+List<P.Tm>, Nat, w => P.evp(w, bp <> env), P.nf(r2_lt()), P.nf(r2_rt()), r2_h()), Equal.sym(Nat, X.nv(bp, env, r2_rt()), P.evp(P.nf(r2_rt()), bp <> env), P.nf_ok(bp, env, r2_rt()))))
 
 # --- r4: 1 monomials, 0 checkpoints
 
@@ -110,6 +116,9 @@ def r4_er() -> {r4_rt() == R.rhs(r4_t2(), r4_cs(), r4_rs(), r4_k2()) : X.E}:
 def r4_h() -> {P.nf(r4_lt()) == P.nf(r4_rt()) : +List<P.Tm>}:
   {==}
 
+def r4_hn(+bp: Nat, +env: +List<Nat>) -> {X.nv(bp, env, r4_lt()) == X.nv(bp, env, r4_rt()) : Nat}:
+  Equal.trans(Nat, X.nv(bp, env, r4_lt()), P.evp(P.nf(r4_lt()), bp <> env), X.nv(bp, env, r4_rt()), P.nf_ok(bp, env, r4_lt()), Equal.trans(Nat, P.evp(P.nf(r4_lt()), bp <> env), P.evp(P.nf(r4_rt()), bp <> env), X.nv(bp, env, r4_rt()), Equal.cong(+List<P.Tm>, Nat, w => P.evp(w, bp <> env), P.nf(r4_lt()), P.nf(r4_rt()), r4_h()), Equal.sym(Nat, X.nv(bp, env, r4_rt()), P.evp(P.nf(r4_rt()), bp <> env), P.nf_ok(bp, env, r4_rt()))))
+
 # --- r5: 5 monomials, 0 checkpoints
 
 def r5_t1() -> X.E:
@@ -144,3 +153,6 @@ def r5_er() -> {r5_rt() == R.rhs(r5_t2(), r5_cs(), r5_rs(), r5_k2()) : X.E}:
 
 def r5_h() -> {P.nf(r5_lt()) == P.nf(r5_rt()) : +List<P.Tm>}:
   {==}
+
+def r5_hn(+bp: Nat, +env: +List<Nat>) -> {X.nv(bp, env, r5_lt()) == X.nv(bp, env, r5_rt()) : Nat}:
+  Equal.trans(Nat, X.nv(bp, env, r5_lt()), P.evp(P.nf(r5_lt()), bp <> env), X.nv(bp, env, r5_rt()), P.nf_ok(bp, env, r5_lt()), Equal.trans(Nat, P.evp(P.nf(r5_lt()), bp <> env), P.evp(P.nf(r5_rt()), bp <> env), X.nv(bp, env, r5_rt()), Equal.cong(+List<P.Tm>, Nat, w => P.evp(w, bp <> env), P.nf(r5_lt()), P.nf(r5_rt()), r5_h()), Equal.sym(Nat, X.nv(bp, env, r5_rt()), P.evp(P.nf(r5_rt()), bp <> env), P.nf_ok(bp, env, r5_rt()))))

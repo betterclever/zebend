@@ -14,8 +14,80 @@ import ./expr.bend as X
 # the lexicographic order on monomials (mcmp) and merges equal monomials, so equal
 # polynomials get equal normal forms; soundness does not depend on that.
 
+# Coefficients are binary (Bn), so that the checker never builds a large unary Nat.
+type Bn is Data:
+  BE{}
+  B0{h: Bn}
+  B1{h: Bn}
+
+def bv(b: Bn) -> Nat:
+  match b:
+    case BE{}:
+      0n
+    case B0{h}:
+      +v = bv(h)
+      Nat.add(v, v)
+    case B1{h}:
+      +v = bv(h)
+      1n+Nat.add(v, v)
+
+def binc(b: Bn) -> Bn:
+  match b:
+    case BE{}:
+      B1{BE{}}
+    case B0{h}:
+      B1{h}
+    case B1{h}:
+      B0{binc(h)}
+
+def badd(a: Bn, b: Bn) -> Bn:
+  match a:
+    case BE{}:
+      b
+    case B0{x}:
+      match b:
+        case BE{}:
+          B0{x}
+        case B0{y}:
+          B0{badd(x, y)}
+        case B1{y}:
+          B1{badd(x, y)}
+    case B1{x}:
+      match b:
+        case BE{}:
+          B1{x}
+        case B0{y}:
+          B1{badd(x, y)}
+        case B1{y}:
+          B0{binc(badd(x, y))}
+
+def b0s(b: Bn) -> Bn:
+  match b:
+    case BE{}:
+      BE{}
+    case B0{h}:
+      B0{B0{h}}
+    case B1{h}:
+      B0{B1{h}}
+
+def bmul(a: Bn, +b: Bn) -> Bn:
+  match a:
+    case BE{}:
+      BE{}
+    case B0{x}:
+      b0s(bmul(x, b))
+    case B1{x}:
+      badd(b, b0s(bmul(x, b)))
+
+def tobin(n: Nat) -> Bn:
+  match n:
+    case 0n:
+      BE{}
+    case 1n+k:
+      binc(tobin(k))
+
 type Tm is Data:
-  Tm{c: Nat, m: +List<Nat>}
+  Tm{c: Bn, m: +List<Nat>}
 
 def hd(xs: +List<Nat>) -> Nat:
   match xs:
@@ -40,7 +112,7 @@ def evm(m: +List<Nat>, +vals: +List<Nat>) -> Nat:
 
 def evt(t: Tm, +vals: +List<Nat>) -> Nat:
   Tm{c, m} = t
-  Nat.mul(c, evm(m, vals))
+  Nat.mul(bv(c), evm(m, vals))
 
 def evp(ps: +List<Tm>, +vals: +List<Nat>) -> Nat:
   match ps:
@@ -100,7 +172,7 @@ def var(i: Nat) -> +List<Nat>:
 
 # --- polynomials -----------------------------------------------------------------------
 
-def tc(t: Tm) -> Nat:
+def tc(t: Tm) -> Bn:
   Tm{c, _} = t
   c
 
@@ -129,7 +201,7 @@ def mk(c: Cmp, +a: Tm, pr: +List<Tm>, +b: Tm, qr: +List<Tm>) -> St:
 def sum2(a: Tm, b: Tm) -> Tm:
   Tm{+c1, +m1} = a
   Tm{c2, _} = b
-  Tm{Nat.add(c1, c2), m1}
+  Tm{badd(c1, c2), m1}
 
 # what is left when the fuel runs out (never, with plus's fuel): append, still sound
 def stl(st: St) -> +List<Tm>:
@@ -171,12 +243,12 @@ def plus(+p: +List<Tm>, +q: +List<Tm>) -> +List<Tm>:
   +n = Nat.add(List.length(&2, Tm, p), List.length(&2, Tm, q))
   padd(1n+Nat.add(n, n), Go{p, q})
 
-def smul(+c: Nat, +m: +List<Nat>, q: +List<Tm>) -> +List<Tm>:
+def smul(+c: Bn, +m: +List<Nat>, q: +List<Tm>) -> +List<Tm>:
   match q:
     case Nil{}:
       Nil{}
     case Con{Tm{c2, m2}, r}:
-      Tm{Nat.mul(c, c2), mm(m, m2)} <> smul(c, m, r)
+      Tm{bmul(c, c2), mm(m, m2)} <> smul(c, m, r)
 
 def pmul(p: +List<Tm>, +q: +List<Tm>) -> +List<Tm>:
   match p:
@@ -186,14 +258,14 @@ def pmul(p: +List<Tm>, +q: +List<Tm>) -> +List<Tm>:
       plus(smul(c, m, q), pmul(r, q))
 
 def pvar(+i: Nat) -> +List<Tm>:
-  [Tm{1n, var(i)}]
+  [Tm{B1{BE{}}, var(i)}]
 
 def pconst(n: Nat) -> +List<Tm>:
   match n:
     case 0n:
       Nil{}
     case 1n+k:
-      [Tm{1n+k, Nil{}}]
+      [Tm{tobin(1n+k), Nil{}}]
 
 def nf(t: X.E) -> +List<Tm>:
   match t:
@@ -213,6 +285,75 @@ def nf(t: X.E) -> +List<Tm>:
       pmul(pvar(0n), nf(a))
 
 # --- soundness -------------------------------------------------------------------------
+
+def bv_binc(+b: Bn) -> {bv(binc(b)) == 1n+bv(b) : Nat}:
+  match b:
+    case BE{}:
+      {==}
+    case B0{+h}:
+      {==}
+    case B1{+h}:
+      %Equal.sym(Nat, bv(binc(h)), 1n+bv(h), bv_binc(h)) : {Nat.add(_, _) == 1n+(1n+Nat.add(bv(h), bv(h))) : Nat}
+      Equal.cong(Nat, Nat, w => 1n+w, Nat.add(bv(h), 1n+bv(h)), 1n+Nat.add(bv(h), bv(h)), N.add_succ_r(bv(h), bv(h)))
+
+def bv_badd(+a: Bn, +b: Bn) -> {bv(badd(a, b)) == Nat.add(bv(a), bv(b)) : Nat}:
+  match a:
+    case BE{}:
+      {==}
+    case B0{+x}:
+      match b:
+        case BE{}:
+          Equal.sym(Nat, Nat.add(bv(B0{x}), 0n), bv(B0{x}), N.add_zero_r(bv(B0{x})))
+        case B0{+y}:
+          %Equal.sym(Nat, bv(badd(x, y)), Nat.add(bv(x), bv(y)), bv_badd(x, y)) : {Nat.add(_, _) == Nat.add(Nat.add(bv(x), bv(x)), Nat.add(bv(y), bv(y))) : Nat}
+          N.swap_mid(bv(x), bv(y), bv(x), bv(y))
+        case B1{+y}:
+          %Equal.sym(Nat, bv(badd(x, y)), Nat.add(bv(x), bv(y)), bv_badd(x, y)) : {1n+Nat.add(_, _) == Nat.add(Nat.add(bv(x), bv(x)), 1n+Nat.add(bv(y), bv(y))) : Nat}
+          %Equal.sym(Nat, Nat.add(Nat.add(bv(x), bv(x)), 1n+Nat.add(bv(y), bv(y))), 1n+Nat.add(Nat.add(bv(x), bv(x)), Nat.add(bv(y), bv(y))), N.add_succ_r(Nat.add(bv(x), bv(x)), Nat.add(bv(y), bv(y)))) : {1n+Nat.add(Nat.add(bv(x), bv(y)), Nat.add(bv(x), bv(y))) == _ : Nat}
+          Equal.cong(Nat, Nat, w => 1n+w, Nat.add(Nat.add(bv(x), bv(y)), Nat.add(bv(x), bv(y))), Nat.add(Nat.add(bv(x), bv(x)), Nat.add(bv(y), bv(y))), N.swap_mid(bv(x), bv(y), bv(x), bv(y)))
+    case B1{+x}:
+      match b:
+        case BE{}:
+          Equal.sym(Nat, Nat.add(bv(B1{x}), 0n), bv(B1{x}), N.add_zero_r(bv(B1{x})))
+        case B0{+y}:
+          %Equal.sym(Nat, bv(badd(x, y)), Nat.add(bv(x), bv(y)), bv_badd(x, y)) : {1n+Nat.add(_, _) == 1n+Nat.add(Nat.add(bv(x), bv(x)), Nat.add(bv(y), bv(y))) : Nat}
+          Equal.cong(Nat, Nat, w => 1n+w, Nat.add(Nat.add(bv(x), bv(y)), Nat.add(bv(x), bv(y))), Nat.add(Nat.add(bv(x), bv(x)), Nat.add(bv(y), bv(y))), N.swap_mid(bv(x), bv(y), bv(x), bv(y)))
+        case B1{+y}:
+          %Equal.sym(Nat, bv(binc(badd(x, y))), 1n+bv(badd(x, y)), bv_binc(badd(x, y))) : {Nat.add(_, _) == 1n+Nat.add(Nat.add(bv(x), bv(x)), 1n+Nat.add(bv(y), bv(y))) : Nat}
+          %Equal.sym(Nat, bv(badd(x, y)), Nat.add(bv(x), bv(y)), bv_badd(x, y)) : {1n+Nat.add(_, 1n+_) == 1n+Nat.add(Nat.add(bv(x), bv(x)), 1n+Nat.add(bv(y), bv(y))) : Nat}
+          %Equal.sym(Nat, Nat.add(Nat.add(bv(x), bv(y)), 1n+Nat.add(bv(x), bv(y))), 1n+Nat.add(Nat.add(bv(x), bv(y)), Nat.add(bv(x), bv(y))), N.add_succ_r(Nat.add(bv(x), bv(y)), Nat.add(bv(x), bv(y)))) : {1n+_ == 1n+Nat.add(Nat.add(bv(x), bv(x)), 1n+Nat.add(bv(y), bv(y))) : Nat}
+          %Equal.sym(Nat, Nat.add(Nat.add(bv(x), bv(x)), 1n+Nat.add(bv(y), bv(y))), 1n+Nat.add(Nat.add(bv(x), bv(x)), Nat.add(bv(y), bv(y))), N.add_succ_r(Nat.add(bv(x), bv(x)), Nat.add(bv(y), bv(y)))) : {2n+Nat.add(Nat.add(bv(x), bv(y)), Nat.add(bv(x), bv(y))) == 1n+_ : Nat}
+          Equal.cong(Nat, Nat, w => 2n+w, Nat.add(Nat.add(bv(x), bv(y)), Nat.add(bv(x), bv(y))), Nat.add(Nat.add(bv(x), bv(x)), Nat.add(bv(y), bv(y))), N.swap_mid(bv(x), bv(y), bv(x), bv(y)))
+
+def bv_b0s(+b: Bn) -> {bv(b0s(b)) == Nat.add(bv(b), bv(b)) : Nat}:
+  match b:
+    case BE{}:
+      {==}
+    case B0{+h}:
+      {==}
+    case B1{+h}:
+      {==}
+
+def bv_bmul(+a: Bn, +b: Bn) -> {bv(bmul(a, b)) == Nat.mul(bv(a), bv(b)) : Nat}:
+  match a:
+    case BE{}:
+      {==}
+    case B0{+x}:
+      %Equal.sym(Nat, bv(b0s(bmul(x, b))), Nat.add(bv(bmul(x, b)), bv(bmul(x, b))), bv_b0s(bmul(x, b))) : {_ == Nat.mul(Nat.add(bv(x), bv(x)), bv(b)) : Nat}
+      %Equal.sym(Nat, bv(bmul(x, b)), Nat.mul(bv(x), bv(b)), bv_bmul(x, b)) : {Nat.add(_, _) == Nat.mul(Nat.add(bv(x), bv(x)), bv(b)) : Nat}
+      Equal.sym(Nat, Nat.mul(Nat.add(bv(x), bv(x)), bv(b)), Nat.add(Nat.mul(bv(x), bv(b)), Nat.mul(bv(x), bv(b))), L.mul_add_r(bv(x), bv(x), bv(b)))
+    case B1{+x}:
+      %Equal.sym(Nat, bv(badd(b, b0s(bmul(x, b)))), Nat.add(bv(b), bv(b0s(bmul(x, b)))), bv_badd(b, b0s(bmul(x, b)))) : {_ == Nat.mul(1n+Nat.add(bv(x), bv(x)), bv(b)) : Nat}
+      %Equal.sym(Nat, bv(b0s(bmul(x, b))), Nat.add(bv(bmul(x, b)), bv(bmul(x, b))), bv_b0s(bmul(x, b))) : {Nat.add(bv(b), _) == Nat.mul(1n+Nat.add(bv(x), bv(x)), bv(b)) : Nat}
+      %Equal.sym(Nat, bv(bmul(x, b)), Nat.mul(bv(x), bv(b)), bv_bmul(x, b)) : {Nat.add(bv(b), Nat.add(_, _)) == Nat.mul(1n+Nat.add(bv(x), bv(x)), bv(b)) : Nat}
+      Equal.cong(Nat, Nat, w => Nat.add(bv(b), w), Nat.add(Nat.mul(bv(x), bv(b)), Nat.mul(bv(x), bv(b))), Nat.mul(Nat.add(bv(x), bv(x)), bv(b)), Equal.sym(Nat, Nat.mul(Nat.add(bv(x), bv(x)), bv(b)), Nat.add(Nat.mul(bv(x), bv(b)), Nat.mul(bv(x), bv(b))), L.mul_add_r(bv(x), bv(x), bv(b))))
+
+def bv_tobin(+n: Nat) -> {bv(tobin(n)) == n : Nat}:
+  match n:
+    case 0n:
+      {==}
+    case 1n+k:
+      Equal.trans(Nat, bv(binc(tobin(k))), 1n+bv(tobin(k)), 1n+k, bv_binc(tobin(k)), Equal.cong(Nat, Nat, w => 1n+w, bv(tobin(k)), k, bv_tobin(k)))
 
 def IsEQ(c: Cmp) -> Type:
   match c:
@@ -333,9 +474,10 @@ def stl_ok(+st: St, +vals: +List<Nat>) -> {evp(stl(st), vals) == evst(st, vals) 
 def mk_eq(+a: Tm, +pr: +List<Tm>, +b: Tm, +qr: +List<Tm>, +vals: +List<Nat>, e: {mcmp(tm(a), tm(b)) == EQ{} : Cmp}) -> {Nat.add(evt(sum2(a, b), vals), Nat.add(evp(pr, vals), evp(qr, vals))) == Nat.add(Nat.add(evt(a, vals), evp(pr, vals)), Nat.add(evt(b, vals), evp(qr, vals))) : Nat}:
   match a b:
     case Tm{+c1, +m1} Tm{+c2, +m2}:
-      %mcmp_eq(m1, m2, e) : {Nat.add(Nat.mul(Nat.add(c1, c2), evm(m1, vals)), Nat.add(evp(pr, vals), evp(qr, vals))) == Nat.add(Nat.add(Nat.mul(c1, evm(m1, vals)), evp(pr, vals)), Nat.add(Nat.mul(c2, evm(_, vals)), evp(qr, vals))) : Nat}
-      %Equal.sym(Nat, Nat.mul(Nat.add(c1, c2), evm(m1, vals)), Nat.add(Nat.mul(c1, evm(m1, vals)), Nat.mul(c2, evm(m1, vals))), L.mul_add_r(c1, c2, evm(m1, vals))) : {Nat.add(_, Nat.add(evp(pr, vals), evp(qr, vals))) == Nat.add(Nat.add(Nat.mul(c1, evm(m1, vals)), evp(pr, vals)), Nat.add(Nat.mul(c2, evm(m1, vals)), evp(qr, vals))) : Nat}
-      N.swap_mid(Nat.mul(c1, evm(m1, vals)), Nat.mul(c2, evm(m1, vals)), evp(pr, vals), evp(qr, vals))
+      %mcmp_eq(m1, m2, e) : {Nat.add(Nat.mul(bv(badd(c1, c2)), evm(m1, vals)), Nat.add(evp(pr, vals), evp(qr, vals))) == Nat.add(Nat.add(Nat.mul(bv(c1), evm(m1, vals)), evp(pr, vals)), Nat.add(Nat.mul(bv(c2), evm(_, vals)), evp(qr, vals))) : Nat}
+      %Equal.sym(Nat, bv(badd(c1, c2)), Nat.add(bv(c1), bv(c2)), bv_badd(c1, c2)) : {Nat.add(Nat.mul(_, evm(m1, vals)), Nat.add(evp(pr, vals), evp(qr, vals))) == Nat.add(Nat.add(Nat.mul(bv(c1), evm(m1, vals)), evp(pr, vals)), Nat.add(Nat.mul(bv(c2), evm(m1, vals)), evp(qr, vals))) : Nat}
+      %Equal.sym(Nat, Nat.mul(Nat.add(bv(c1), bv(c2)), evm(m1, vals)), Nat.add(Nat.mul(bv(c1), evm(m1, vals)), Nat.mul(bv(c2), evm(m1, vals))), L.mul_add_r(bv(c1), bv(c2), evm(m1, vals))) : {Nat.add(_, Nat.add(evp(pr, vals), evp(qr, vals))) == Nat.add(Nat.add(Nat.mul(bv(c1), evm(m1, vals)), evp(pr, vals)), Nat.add(Nat.mul(bv(c2), evm(m1, vals)), evp(qr, vals))) : Nat}
+      N.swap_mid(Nat.mul(bv(c1), evm(m1, vals)), Nat.mul(bv(c2), evm(m1, vals)), evp(pr, vals), evp(qr, vals))
 
 def mk_ok(+c: Cmp, +a: Tm, +pr: +List<Tm>, +b: Tm, +qr: +List<Tm>, +vals: +List<Nat>) -> {mcmp(tm(a), tm(b)) == c : Cmp} -> {evst(mk(c, a, pr, b, qr), vals) == Nat.add(evp(a <> pr, vals), evp(b <> qr, vals)) : Nat}:
   match c:
@@ -373,25 +515,26 @@ def plus_ok(+p: +List<Tm>, +q: +List<Tm>, +vals: +List<Nat>) -> {evp(plus(p, q),
   +n = Nat.add(List.length(&2, Tm, p), List.length(&2, Tm, q))
   padd_ok(1n+Nat.add(n, n), Go{p, q}, vals)
 
-def smul_ok(+c: Nat, +m: +List<Nat>, +q: +List<Tm>, +vals: +List<Nat>) -> {evp(smul(c, m, q), vals) == Nat.mul(Nat.mul(c, evm(m, vals)), evp(q, vals)) : Nat}:
+def smul_ok(+c: Bn, +m: +List<Nat>, +q: +List<Tm>, +vals: +List<Nat>) -> {evp(smul(c, m, q), vals) == Nat.mul(Nat.mul(bv(c), evm(m, vals)), evp(q, vals)) : Nat}:
   match q:
     case Nil{}:
-      Equal.sym(Nat, Nat.mul(Nat.mul(c, evm(m, vals)), 0n), 0n, L.mul_zero_r(Nat.mul(c, evm(m, vals))))
+      Equal.sym(Nat, Nat.mul(Nat.mul(bv(c), evm(m, vals)), 0n), 0n, L.mul_zero_r(Nat.mul(bv(c), evm(m, vals))))
     case Con{Tm{+c2, +m2}, +r}:
-      %Equal.sym(Nat, Nat.mul(Nat.mul(c, evm(m, vals)), Nat.add(Nat.mul(c2, evm(m2, vals)), evp(r, vals))), Nat.add(Nat.mul(Nat.mul(c, evm(m, vals)), Nat.mul(c2, evm(m2, vals))), Nat.mul(Nat.mul(c, evm(m, vals)), evp(r, vals))), L.mul_add_l(Nat.mul(c, evm(m, vals)), Nat.mul(c2, evm(m2, vals)), evp(r, vals))) : {Nat.add(Nat.mul(Nat.mul(c, c2), evm(mm(m, m2), vals)), evp(smul(c, m, r), vals)) == _ : Nat}
-      %Equal.sym(Nat, evp(smul(c, m, r), vals), Nat.mul(Nat.mul(c, evm(m, vals)), evp(r, vals)), smul_ok(c, m, r, vals)) : {Nat.add(Nat.mul(Nat.mul(c, c2), evm(mm(m, m2), vals)), _) == Nat.add(Nat.mul(Nat.mul(c, evm(m, vals)), Nat.mul(c2, evm(m2, vals))), Nat.mul(Nat.mul(c, evm(m, vals)), evp(r, vals))) : Nat}
-      %Equal.sym(Nat, evm(mm(m, m2), vals), Nat.mul(evm(m, vals), evm(m2, vals)), evm_mm(m, m2, vals)) : {Nat.add(Nat.mul(Nat.mul(c, c2), _), Nat.mul(Nat.mul(c, evm(m, vals)), evp(r, vals))) == Nat.add(Nat.mul(Nat.mul(c, evm(m, vals)), Nat.mul(c2, evm(m2, vals))), Nat.mul(Nat.mul(c, evm(m, vals)), evp(r, vals))) : Nat}
-      Equal.cong(Nat, Nat, w => Nat.add(w, Nat.mul(Nat.mul(c, evm(m, vals)), evp(r, vals))), Nat.mul(Nat.mul(c, c2), Nat.mul(evm(m, vals), evm(m2, vals))), Nat.mul(Nat.mul(c, evm(m, vals)), Nat.mul(c2, evm(m2, vals))), mul4(c, c2, evm(m, vals), evm(m2, vals)))
+      %Equal.sym(Nat, Nat.mul(Nat.mul(bv(c), evm(m, vals)), Nat.add(Nat.mul(bv(c2), evm(m2, vals)), evp(r, vals))), Nat.add(Nat.mul(Nat.mul(bv(c), evm(m, vals)), Nat.mul(bv(c2), evm(m2, vals))), Nat.mul(Nat.mul(bv(c), evm(m, vals)), evp(r, vals))), L.mul_add_l(Nat.mul(bv(c), evm(m, vals)), Nat.mul(bv(c2), evm(m2, vals)), evp(r, vals))) : {Nat.add(Nat.mul(bv(bmul(c, c2)), evm(mm(m, m2), vals)), evp(smul(c, m, r), vals)) == _ : Nat}
+      %Equal.sym(Nat, evp(smul(c, m, r), vals), Nat.mul(Nat.mul(bv(c), evm(m, vals)), evp(r, vals)), smul_ok(c, m, r, vals)) : {Nat.add(Nat.mul(bv(bmul(c, c2)), evm(mm(m, m2), vals)), _) == Nat.add(Nat.mul(Nat.mul(bv(c), evm(m, vals)), Nat.mul(bv(c2), evm(m2, vals))), Nat.mul(Nat.mul(bv(c), evm(m, vals)), evp(r, vals))) : Nat}
+      %Equal.sym(Nat, evm(mm(m, m2), vals), Nat.mul(evm(m, vals), evm(m2, vals)), evm_mm(m, m2, vals)) : {Nat.add(Nat.mul(bv(bmul(c, c2)), _), Nat.mul(Nat.mul(bv(c), evm(m, vals)), evp(r, vals))) == Nat.add(Nat.mul(Nat.mul(bv(c), evm(m, vals)), Nat.mul(bv(c2), evm(m2, vals))), Nat.mul(Nat.mul(bv(c), evm(m, vals)), evp(r, vals))) : Nat}
+      %Equal.sym(Nat, bv(bmul(c, c2)), Nat.mul(bv(c), bv(c2)), bv_bmul(c, c2)) : {Nat.add(Nat.mul(_, Nat.mul(evm(m, vals), evm(m2, vals))), Nat.mul(Nat.mul(bv(c), evm(m, vals)), evp(r, vals))) == Nat.add(Nat.mul(Nat.mul(bv(c), evm(m, vals)), Nat.mul(bv(c2), evm(m2, vals))), Nat.mul(Nat.mul(bv(c), evm(m, vals)), evp(r, vals))) : Nat}
+      Equal.cong(Nat, Nat, w => Nat.add(w, Nat.mul(Nat.mul(bv(c), evm(m, vals)), evp(r, vals))), Nat.mul(Nat.mul(bv(c), bv(c2)), Nat.mul(evm(m, vals), evm(m2, vals))), Nat.mul(Nat.mul(bv(c), evm(m, vals)), Nat.mul(bv(c2), evm(m2, vals))), mul4(bv(c), bv(c2), evm(m, vals), evm(m2, vals)))
 
 def pmul_ok(+p: +List<Tm>, +q: +List<Tm>, +vals: +List<Nat>) -> {evp(pmul(p, q), vals) == Nat.mul(evp(p, vals), evp(q, vals)) : Nat}:
   match p:
     case Nil{}:
       {==}
     case Con{Tm{+c, +m}, +r}:
-      %Equal.sym(Nat, evp(plus(smul(c, m, q), pmul(r, q)), vals), Nat.add(evp(smul(c, m, q), vals), evp(pmul(r, q), vals)), plus_ok(smul(c, m, q), pmul(r, q), vals)) : {_ == Nat.mul(Nat.add(Nat.mul(c, evm(m, vals)), evp(r, vals)), evp(q, vals)) : Nat}
-      %Equal.sym(Nat, evp(smul(c, m, q), vals), Nat.mul(Nat.mul(c, evm(m, vals)), evp(q, vals)), smul_ok(c, m, q, vals)) : {Nat.add(_, evp(pmul(r, q), vals)) == Nat.mul(Nat.add(Nat.mul(c, evm(m, vals)), evp(r, vals)), evp(q, vals)) : Nat}
-      %Equal.sym(Nat, evp(pmul(r, q), vals), Nat.mul(evp(r, vals), evp(q, vals)), pmul_ok(r, q, vals)) : {Nat.add(Nat.mul(Nat.mul(c, evm(m, vals)), evp(q, vals)), _) == Nat.mul(Nat.add(Nat.mul(c, evm(m, vals)), evp(r, vals)), evp(q, vals)) : Nat}
-      Equal.sym(Nat, Nat.mul(Nat.add(Nat.mul(c, evm(m, vals)), evp(r, vals)), evp(q, vals)), Nat.add(Nat.mul(Nat.mul(c, evm(m, vals)), evp(q, vals)), Nat.mul(evp(r, vals), evp(q, vals))), L.mul_add_r(Nat.mul(c, evm(m, vals)), evp(r, vals), evp(q, vals)))
+      %Equal.sym(Nat, evp(plus(smul(c, m, q), pmul(r, q)), vals), Nat.add(evp(smul(c, m, q), vals), evp(pmul(r, q), vals)), plus_ok(smul(c, m, q), pmul(r, q), vals)) : {_ == Nat.mul(Nat.add(Nat.mul(bv(c), evm(m, vals)), evp(r, vals)), evp(q, vals)) : Nat}
+      %Equal.sym(Nat, evp(smul(c, m, q), vals), Nat.mul(Nat.mul(bv(c), evm(m, vals)), evp(q, vals)), smul_ok(c, m, q, vals)) : {Nat.add(_, evp(pmul(r, q), vals)) == Nat.mul(Nat.add(Nat.mul(bv(c), evm(m, vals)), evp(r, vals)), evp(q, vals)) : Nat}
+      %Equal.sym(Nat, evp(pmul(r, q), vals), Nat.mul(evp(r, vals), evp(q, vals)), pmul_ok(r, q, vals)) : {Nat.add(Nat.mul(Nat.mul(bv(c), evm(m, vals)), evp(q, vals)), _) == Nat.mul(Nat.add(Nat.mul(bv(c), evm(m, vals)), evp(r, vals)), evp(q, vals)) : Nat}
+      Equal.sym(Nat, Nat.mul(Nat.add(Nat.mul(bv(c), evm(m, vals)), evp(r, vals)), evp(q, vals)), Nat.add(Nat.mul(Nat.mul(bv(c), evm(m, vals)), evp(q, vals)), Nat.mul(evp(r, vals), evp(q, vals))), L.mul_add_r(Nat.mul(bv(c), evm(m, vals)), evp(r, vals), evp(q, vals)))
 
 def nth_tl(+vals: +List<Nat>, +k: Nat) -> {T.nth(tl(vals), k) == T.nth(vals, 1n+k) : Nat}:
   match vals:
@@ -423,7 +566,7 @@ def pconst_ok(+n: Nat, +vals: +List<Nat>) -> {evp(pconst(n), vals) == n : Nat}:
     case 0n:
       {==}
     case 1n+k:
-      Equal.trans(Nat, Nat.add(Nat.mul(1n+k, 1n), 0n), Nat.mul(1n+k, 1n), 1n+k, N.add_zero_r(Nat.mul(1n+k, 1n)), L.mul_one_r(1n+k))
+      Equal.trans(Nat, Nat.add(Nat.mul(bv(tobin(1n+k)), 1n), 0n), Nat.mul(bv(tobin(1n+k)), 1n), 1n+k, N.add_zero_r(Nat.mul(bv(tobin(1n+k)), 1n)), Equal.trans(Nat, Nat.mul(bv(tobin(1n+k)), 1n), bv(tobin(1n+k)), 1n+k, L.mul_one_r(bv(tobin(1n+k))), bv_tobin(1n+k)))
 
 def add_cong(+x: Nat, +x2: Nat, +y: Nat, +y2: Nat, hx: {x == x2 : Nat}, hy: {y == y2 : Nat}) -> {Nat.add(x, y) == Nat.add(x2, y2) : Nat}:
   %hx : {Nat.add(x, y) == Nat.add(_, y2) : Nat}
