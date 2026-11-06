@@ -3,6 +3,9 @@ import ../msm_chunk/model.bend as MC
 import ../msm_chunk/lemmas.bend as MCL
 import ./model.bend as M
 import ./fxlemmas.bend as F
+import ./comb.bend as CB
+import ./comblemmas3.bend as K3
+import ./comblemmas4.bend as K4
 import ./LAWS.bend as Laws
 
 def Laws.fx_dense_sparse(fs, xs):
@@ -17,3 +20,18 @@ def Laws.fx_merged(gs, gss, fs, xs, h):
 
 def Laws.fx_46_sat():
   {==}
+
+def Laws.comb_entry(d, bs, p, hb):
+  K3.table_entry(d, bs, p, hb)
+
+def Laws.comb_walk(d, bases, ds, acc, h):
+  K3.walk_ok(d, bases, ds, acc, h)
+
+def Laws.comb_bases(n, c, p, j, hj):
+  K3.wbases_pow(n, c, p, j, hj)
+
+def Laws.comb_mul(d, n, p, ds, acc, h, hl):
+  Equal.trans(CB.SP, CB.walk(d, CB.windows(1n+d, CB.wbases(n, 1n+d, p)), ds, acc), CB.padd(acc, CB.wsum(CB.wbases(n, 1n+d, p), ds)), CB.padd(acc, CB.comb_sum(ds, 1n+d, 0n, p)), K3.walk_ok(d, CB.wbases(n, 1n+d, p), ds, acc, h), Equal.cong(CB.SP, CB.SP, z => CB.padd(acc, z), CB.wsum(CB.wbases(n, 1n+d, p), ds), CB.comb_sum(ds, 1n+d, 0n, p), K4.ws_cs0(ds, n, 1n+d, p, hl)))
+
+def Laws.comb_sat():
+  (((Inr{({==}, {==})}, ((Inl{{==}}, Unit{})))), (0n, {==}))

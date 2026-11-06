@@ -1,6 +1,8 @@
 import Base
 import ../msm_chunk/model.bend as MC
+import ../prims/natlib.bend as L
 import ./model.bend as M
+import ./comb.bend as CB
 
 # Fixed-base scalars in the fast Halo 2 verifier, over msm_chunk's (Nat, +) model of the
 # group (model.bend, comb.bend).
@@ -35,3 +37,49 @@ law fx_merged:
 # non-vacuity: 46 bases exist
 law fx_46_sat:
   {List.length(&2, Nat, M.zeros(46n)) == 46n : Nat}
+
+# --- lib/fixb.bend: the comb tables -------------------------------------------------------
+# Points are a P + b (-P) (comb.bend); a window of width c = 1 + d.
+
+# The table of a window, built from [B, 2B, .., 2^d B]: the entry whose index has the bits bs
+# (d of them, most significant first) is (1 + value(bs)) B.
+law comb_entry:
+  for +d: Nat
+  for +bs: +List<Bool>
+  for +p: CB.SP
+  for +hb: {List.length(&2, Bool, bs) == d : Nat}
+  {CB.tget(d, CB.window(1n+d, p), bs) == CB.smul(1n+CB.valb(bs), p) : CB.SP}
+
+# fixb.walk over the tables of any bases B_j: acc plus sum_j (signed) m_j B_j, when each
+# digit is 0 or its bits are those of m_j - 1.
+law comb_walk:
+  for +d: Nat
+  for +bases: +List<CB.SP>
+  for +ds: +List<CB.Dg>
+  for +acc: CB.SP
+  for +h: CB.DigOk(d, ds)
+  {CB.walk(d, CB.windows(1n+d, bases), ds, acc) == CB.padd(acc, CB.wsum(bases, ds)) : CB.SP}
+
+# fixb.wbases: the base of window j is 2^(c j) P.
+law comb_bases:
+  for +n: Nat
+  for +c: Nat
+  for +p: CB.SP
+  for +j: Nat
+  for +hj: L.Le(1n+j, n)
+  {CB.nthp(CB.wbases(n, c, p), j) == CB.smul(CB.pow2(Nat.mul(c, j)), p) : CB.SP}
+
+# Together: the comb scalar multiplication is acc + sum_j (signed) m_j 2^(c j) P.
+law comb_mul:
+  for +d: Nat
+  for +n: Nat
+  for +p: CB.SP
+  for +ds: +List<CB.Dg>
+  for +acc: CB.SP
+  for +h: CB.DigOk(d, ds)
+  for +hl: L.Le(List.length(&2, CB.Dg, ds), n)
+  {CB.walk(d, CB.windows(1n+d, CB.wbases(n, 1n+d, p)), ds, acc) == CB.padd(acc, CB.comb_sum(ds, 1n+d, 0n, p)) : CB.SP}
+
+# non-vacuity: c = 2, digits 2 (bits of 1: [1]) and 0, two windows
+law comb_sat:
+  Sigma<&2, &2, CB.DigOk(1n, [CB.Dg{2n, 1n, [True{}]}, CB.Dg{0n, 0n, Nil{}}]), _ => L.Le(List.length(&2, CB.Dg, [CB.Dg{2n, 1n, [True{}]}, CB.Dg{0n, 0n, Nil{}}]), 2n)>

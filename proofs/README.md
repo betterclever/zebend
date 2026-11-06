@@ -94,6 +94,9 @@ this is a model of the gate's algebra, not a check of Orchard's generated gate c
 | opt_gates | 11 s | 43 s |
 | msm_chunk | 0.1 s | 0.2 s |
 | msm_bucket | 0.1 s | 0.2 s |
+| batchinv | 0.1 s | 0.2 s |
+| curve | | 37 s (2.9 GB; run under `tools/heavy.sh`) |
+| fixedbase | 0.1 s | 0.2 s |
 
 `--verdict` is fast because Bend caches its compiled Lean kernel (`~/.bend/bendtt/`); it
 still rejects unsound proofs (an `@unsafe` "proof" fails it).
@@ -287,8 +290,9 @@ for every p ≥ 2, every input and every constant. A once-proven normaliser (`so
 215 `"expr"` values (the 193 gate polynomials and the permutation and lookup expressions)
 individually.
 
-**Trusted, not proven:** that `binvs` (Montgomery's batch inversion) returns pointwise inverses,
-and, in `bt`, the removal of the log lines. Details: `opt_gates/README.md`.
+**Trusted here:** that `binvs` (Montgomery's batch inversion) returns x^(p−2) pointwise, now
+proven in `batchinv/` (`binvs_finv`, for prime p); and, in `bt`, the removal of the log lines.
+Details: `opt_gates/README.md`.
 
 ## msm_chunk/: chunking and merging preserve the MSM (8 laws)
 
@@ -316,5 +320,40 @@ Points are free generators p (for P) and n (for −P).
 * hypotheses discharged or shown satisfiable: `win_sat`, `points_sat`, and `fuel_c4..16` for
   every window width the code accepts.
 
-Not modelled: bit extraction of the windows, the curve formulas (taken to be group addition),
-and `Array.swap`.
+Not modelled: bit extraction of the windows, the curve formulas (taken to be group addition
+here; `curve/` proves they compute the chord-and-tangent law), and `Array.swap`.
+
+## ring/: identities in Z/p from certificates (a library)
+
+Expressions over Z/p, a Nat-polynomial normaliser proven sound (`nf_ok`), and `cert_ok` /
+`cert_nv`: an identity modulo hypotheses holds in Z/p, for every p ≥ 2, when a certificate
+(found by `certgen.py` with sympy, never trusted) makes both sides equal Nat polynomials.
+Large identities are checked in steps (checkpoints), one operation on literal polynomials per
+conversion. Details: `ring/README.md`.
+
+## batchinv/: Montgomery batch inversion (9 laws)
+
+fp64/fq64 `batch_inv`, msm_ba's `batch_inv` and vlib's `binvs`, copied over Z/p:
+
+* `bi_inverts`: if the one inversion succeeds, every output inverts its input (any p ≥ 2);
+* `bi_finv`, `binvs_finv`: for prime p (Fermat's little theorem as a hypothesis), the outputs
+  are x^(p−2) pointwise, 0 ↦ 0 for binvs, which discharges opt_gates' trusted step;
+* `bi_zero`: a zero input makes every output 0; `ba_is_bi`: msm_ba's version is fp64's;
+* non-vacuity for p = 5. Details: `batchinv/README.md`.
+
+## curve/: the RCB formulas compute the chord-and-tangent law (30 laws)
+
+vesta.bend's `add`, `add_aff`, `double` (and pallas.bend, vesta_lz.bend, identical modulo
+types / `add_nr`) and msm_ba's affine `add_aff`, copied over Z/p, for y² = x³ + b with any b:
+the chord for P ≠ ±Q, the tangent for P = Q, the identity (0 : Y : 0) for P = −Q, the
+identity on either side, Z3 ≠ 0 given no point of order 2, doubling keeps the curve, and the
+code's mul15 is b = 5. Non-vacuity on y² = x³ + 5 over Z/7. Not proven: add's projective
+on-curve identity as one statement (too large for the checker). Details: `curve/README.md`.
+
+## fixedbase/: fixed-base scalars (9 laws)
+
+* `bt.fx_dense`: the MSM of the dense per-base scalars equals the sum of the sparse terms,
+  also merged with the G scalars as `bt.leaf` builds them;
+* `lib/fixb.bend`: the comb table entry at index bits bs is (1 + value(bs))·B, the walk adds
+  Σ ±mⱼ·Bⱼ, the window bases are 2^(c·j)·P, so the comb multiplication is Σ ±mⱼ·2^(c·j)·P.
+  Assumed: U32 bit extraction, `wpar` as a map, `recode`. Details: `fixedbase/README.md`.
