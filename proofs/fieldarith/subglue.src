@@ -1,0 +1,272 @@
+import Base
+import ../field/natlemmas.bend as N
+import ../prims/natlib.bend as L
+import ../prims/hi.bend as H
+import ./ac.bend as A
+import ./bits.bend as Bt
+import ./glue.bend as G
+
+# Pieces for Fp.sub: U32 masking by all-zeros / all-ones, and the final reduction.
+#   hS: D + VB == VA + e R      (a - b, low 256 bits D, borrow e)
+#   hT: T + k R == D + (e ? P : 0)   (add back p when it borrowed; k is the dropped carry)
+
+# --- U32 masks ----------------------------------------------------------------
+
+law wand_zero:
+  for +n: Nat
+  for +x: Word(n)
+  {Word.and(n, x, Word.zero(n)) == Word.zero(n) : Word(n)}
+
+def wand_zero(n, x):
+  match n:
+    case 0n:
+      match x:
+        case WNil{}:
+          {==}
+    case 1n+p:
+      match x:
+        case WCon{b, t}:
+          match b:
+            case False{}:
+              Equal.cong(Word(p), Word(1n+p), v => WCon{False{}, v}, Word.and(p, t, Word.zero(p)), Word.zero(p), wand_zero(p, t))
+            case True{}:
+              Equal.cong(Word(p), Word(1n+p), v => WCon{False{}, v}, Word.and(p, t, Word.zero(p)), Word.zero(p), wand_zero(p, t))
+
+law wand_ones:
+  for +n: Nat
+  for +x: Word(n)
+  {Word.and(n, x, Bt.lowmask(n, n)) == x : Word(n)}
+
+def wand_ones(n, x):
+  match n:
+    case 0n:
+      match x:
+        case WNil{}:
+          {==}
+    case 1n+p:
+      match x:
+        case WCon{b, t}:
+          match b:
+            case False{}:
+              Equal.cong(Word(p), Word(1n+p), v => WCon{False{}, v}, Word.and(p, t, Bt.lowmask(p, p)), t, wand_ones(p, t))
+            case True{}:
+              Equal.cong(Word(p), Word(1n+p), v => WCon{True{}, v}, Word.and(p, t, Bt.lowmask(p, p)), t, wand_ones(p, t))
+
+# q = p & (0 - e): zero when e == 0, p when e == 1.
+law qz:
+  for +p: U32
+  for +e: U32
+  for +he: {e == 0 : U32}
+  {U32.and(p, U32.sub(0, e)) == 0 : U32}
+
+def qz(p, e, he):
+  match p:
+    case U32{w}:
+      %Equal.sym(U32, e, 0, he) : {U32.and(U32{w}, U32.sub(0, _)) == 0 : U32}
+      Equal.cong(Word(32n), U32, z => U32{z}, Word.and(32n, w, Word.zero(32n)), Word.zero(32n), wand_zero(32n, w))
+
+law qo:
+  for +p: U32
+  for +e: U32
+  for +he: {e == 1 : U32}
+  {U32.and(p, U32.sub(0, e)) == p : U32}
+
+def qo(p, e, he):
+  match p:
+    case U32{w}:
+      %Equal.sym(U32, e, 1, he) : {U32.and(U32{w}, U32.sub(0, _)) == U32{w} : U32}
+      Equal.cong(Word(32n), U32, z => U32{z}, Word.and(32n, w, Bt.lowmask(32n, 32n)), w, wand_ones(32n, w))
+
+# x & y <= x.
+def le_dbl(+a: Nat, +b: Nat, +l: L.Le(a, b)) -> L.Le(Nat.double(a), Nat.double(b)):
+  (+e, h) = l
+  (Nat.double(e), Equal.trans(Nat, Nat.add(Nat.double(a), Nat.double(e)), Nat.double(Nat.add(a, e)), Nat.double(b), Equal.sym(Nat, Nat.double(Nat.add(a, e)), Nat.add(Nat.double(a), Nat.double(e)), N.double_add(a, e)), Equal.cong(Nat, Nat, z => Nat.double(z), Nat.add(a, e), b, h)))
+
+def le_s(+a: Nat, +b: Nat, +l: L.Le(a, b)) -> L.Le(a, 1n+b):
+  (+e, h) = l
+  (1n+e, Equal.trans(Nat, Nat.add(a, 1n+e), 1n+Nat.add(a, e), 1n+b, N.add_succ_r(a, e), Equal.cong(Nat, Nat, z => 1n+z, Nat.add(a, e), b, h)))
+
+def le_ss(+a: Nat, +b: Nat, +l: L.Le(a, b)) -> L.Le(1n+a, 1n+b):
+  (+e, h) = l
+  (e, Equal.cong(Nat, Nat, z => 1n+z, Nat.add(a, e), b, h))
+
+law wand_le:
+  for +n: Nat
+  for +x: Word(n)
+  for +y: Word(n)
+  L.Le(Word.to_nat(n, Word.and(n, x, y)), Word.to_nat(n, x))
+
+def wand_le(n, x, y):
+  match n:
+    case 0n:
+      (0n, {==})
+    case 1n+p:
+      match x:
+        case WCon{xb, xt}:
+          match xb:
+            case False{}:
+              match y:
+                case WCon{yb, yt}:
+                  le_dbl(Word.to_nat(p, Word.and(p, xt, yt)), Word.to_nat(p, xt), wand_le(p, xt, yt))
+            case True{}:
+              match y:
+                case WCon{yb, yt}:
+                  match yb:
+                    case False{}:
+                      le_s(Nat.double(Word.to_nat(p, Word.and(p, xt, yt))), Nat.double(Word.to_nat(p, xt)), le_dbl(Word.to_nat(p, Word.and(p, xt, yt)), Word.to_nat(p, xt), wand_le(p, xt, yt)))
+                    case True{}:
+                      le_ss(Nat.double(Word.to_nat(p, Word.and(p, xt, yt))), Nat.double(Word.to_nat(p, xt)), le_dbl(Word.to_nat(p, Word.and(p, xt, yt)), Word.to_nat(p, xt), wand_le(p, xt, yt)))
+
+law and_le:
+  for +x: U32
+  for +y: U32
+  L.Le(U32.to_nat(U32.and(x, y)), U32.to_nat(x))
+
+def and_le(x, y):
+  match x y:
+    case U32{a} U32{b}:
+      wand_le(32n, a, b)
+
+# --- the final reduction ------------------------------------------------------
+
+# Le(VB, P) from VB < P.
+def le_of_lt(+x: Nat, +P: Nat, +l: L.Le(1n+x, P)) -> L.Le(x, P):
+  (+f, h) = l
+  (1n+f, Equal.trans(Nat, Nat.add(x, 1n+f), Nat.add(1n+x, f), P, AC[[ Nat.add(x, 1n+f) |=| Nat.add(1n+x, f) ]], h))
+
+def fs0_dt(+T: Nat, +D: Nat, +R: Nat, +hT: {Nat.add(T, Nat.mul(0n, R)) == Nat.add(Nat.add(D, 0n), 0n) : Nat}) -> {T == D : Nat}:
+  CALC[[ T
+    ;; by Equal.sym(Nat, Nat.add(T, 0n), T, N.add_zero_r(T)) :: Nat.add(T, 0n)
+    ;; by hT :: Nat.add(Nat.add(D, 0n), 0n)
+    ;; by N.add_zero_r(Nat.add(D, 0n)) :: Nat.add(D, 0n)
+    ;; by N.add_zero_r(D) :: D ]]
+
+# No borrow: T == (VA + (P - VB)) mod P.
+law fins0:
+  for +T: Nat
+  for +D: Nat
+  for +P: Nat
+  for +VA: Nat
+  for +VB: Nat
+  for +R: Nat
+  for +RM: Nat
+  for +k: Nat
+  for +hS: {Nat.add(Nat.add(D, VB), 0n) == Nat.add(VA, Nat.mul(0n, R)) : Nat}
+  for +hT: {Nat.add(T, Nat.mul(k, R)) == Nat.add(Nat.add(D, 0n), 0n) : Nat}
+  for +hR: {R == 1n+RM : Nat}
+  for +lk: L.Le(k, 1n)
+  for +lD: L.Le(D, RM)
+  for +la: L.Le(1n+VA, P)
+  for +lb: L.Le(1n+VB, P)
+  {T == Nat.mod(Nat.add(VA, Nat.sub(P, VB)), P) : Nat}
+
+def fins0(T, D, P, VA, VB, R, RM, k, hS, hT, hR, lk, lD, la, lb):
+  match k:
+    case 0n:
+      (+g, hg) = lD
+      (+f1, h1) = la
+      +hTD = fs0_dt(T, D, R, hT)
+      +hDV = Equal.trans(Nat, Nat.add(D, VB), Nat.add(Nat.add(D, VB), 0n), VA, Equal.sym(Nat, Nat.add(Nat.add(D, VB), 0n), Nat.add(D, VB), N.add_zero_r(Nat.add(D, VB))), Equal.trans(Nat, Nat.add(Nat.add(D, VB), 0n), Nat.add(VA, 0n), VA, hS, N.add_zero_r(VA)))
+      %CALC[[ Nat.add(T, P)
+        ;; rw Equal.sym(Nat, Nat.add(VB, Nat.sub(P, VB)), P, L.sub_add(P, VB, le_of_lt(VB, P, lb))) :: P :: Nat.add(VB, Nat.sub(P, VB))
+        ;; ac :: Nat.add(Nat.add(T, VB), Nat.sub(P, VB))
+        ;; rw Equal.cong(Nat, Nat, z => Nat.add(z, VB), T, D, hTD) :: Nat.add(T, VB) :: Nat.add(D, VB)
+        ;; rw hDV :: Nat.add(D, VB) :: VA ]] : {T == Nat.mod(_, P) : Nat}
+      %h1 : {T == Nat.mod(Nat.add(T, _), _) : Nat}
+      G.mod_d(T, VA, f1, (Nat.add(VB, f1), CALC[[ Nat.add(T, Nat.add(VB, f1))
+        ;; ac :: Nat.add(Nat.add(T, VB), f1)
+        ;; rw Equal.cong(Nat, Nat, z => Nat.add(z, VB), T, D, hTD) :: Nat.add(T, VB) :: Nat.add(D, VB)
+        ;; rw hDV :: Nat.add(D, VB) :: VA ]]))
+    case 1n+kp:
+      match kp:
+        case 0n:
+          (+g, hg) = lD
+          Empty.absurd({T == Nat.mod(Nat.add(VA, Nat.sub(P, VB)), P) : Nat}, L.succ_add_ne(RM, Nat.add(T, g), CALC[[ Nat.add(1n+RM, Nat.add(T, g))
+            ;; rw Equal.sym(Nat, R, 1n+RM, hR) :: 1n+RM :: R
+            ;; ac :: Nat.add(Nat.add(T, R), g)
+            ;; rw Equal.cong(Nat, Nat, z => Nat.add(T, z), R, Nat.mul(1n, R), Equal.sym(Nat, Nat.mul(1n, R), R, L.mul_one_l(R))) :: Nat.add(T, R) :: Nat.add(T, Nat.mul(1n, R))
+            ;; rw hT :: Nat.add(T, Nat.mul(1n, R)) :: Nat.add(Nat.add(D, 0n), 0n)
+            ;; rw N.add_zero_r(Nat.add(D, 0n)) :: Nat.add(Nat.add(D, 0n), 0n) :: Nat.add(D, 0n)
+            ;; rw N.add_zero_r(D) :: Nat.add(D, 0n) :: D
+            ;; by hg :: RM ]]))
+        case 1n+kq:
+          (+e, he) = lk
+          Empty.absurd({T == Nat.mod(Nat.add(VA, Nat.sub(P, VB)), P) : Nat}, L.succ_ne_zero(Nat.add(kq, e), L.succ_inj(1n+Nat.add(kq, e), 0n, he)))
+
+# Borrow: p was added back; T == (VA + (P - VB)) mod P.
+law fins1:
+  for +T: Nat
+  for +D: Nat
+  for +P: Nat
+  for +VA: Nat
+  for +VB: Nat
+  for +R: Nat
+  for +RM: Nat
+  for +k: Nat
+  for +hS: {Nat.add(Nat.add(D, VB), 0n) == Nat.add(VA, Nat.mul(1n, R)) : Nat}
+  for +hT: {Nat.add(T, Nat.mul(k, R)) == Nat.add(Nat.add(D, P), 0n) : Nat}
+  for +hR: {R == 1n+RM : Nat}
+  for +lk: L.Le(k, 1n)
+  for +lT: L.Le(T, RM)
+  for +lD: L.Le(D, RM)
+  for +la: L.Le(1n+VA, P)
+  for +lb: L.Le(1n+VB, P)
+  {T == Nat.mod(Nat.add(VA, Nat.sub(P, VB)), P) : Nat}
+
+def fins1(T, D, P, VA, VB, R, RM, k, hS, hT, hR, lk, lT, lD, la, lb):
+  match k:
+    case 0n:
+      (+g, hg) = lT
+      (+f2, h2) = lb
+      +hS1 = Equal.trans(Nat, Nat.add(D, VB), Nat.add(Nat.add(D, VB), 0n), Nat.add(VA, R), Equal.sym(Nat, Nat.add(Nat.add(D, VB), 0n), Nat.add(D, VB), N.add_zero_r(Nat.add(D, VB))), Equal.trans(Nat, Nat.add(Nat.add(D, VB), 0n), Nat.add(VA, Nat.mul(1n, R)), Nat.add(VA, R), hS, Equal.cong(Nat, Nat, z => Nat.add(VA, z), Nat.mul(1n, R), R, L.mul_one_l(R))))
+      +hT0 = CALC[[ T
+        ;; by Equal.sym(Nat, Nat.add(T, 0n), T, N.add_zero_r(T)) :: Nat.add(T, 0n)
+        ;; by hT :: Nat.add(Nat.add(D, P), 0n)
+        ;; by N.add_zero_r(Nat.add(D, P)) :: Nat.add(D, P) ]]
+      Empty.absurd({T == Nat.mod(Nat.add(VA, Nat.sub(P, VB)), P) : Nat}, L.succ_add_ne(VB, Nat.add(VA, Nat.add(1n, Nat.add(f2, g))), L.add_cancel_l(RM, Nat.add(1n+VB, Nat.add(VA, Nat.add(1n, Nat.add(f2, g)))), VB, CALC[[ Nat.add(RM, Nat.add(1n+VB, Nat.add(VA, Nat.add(1n, Nat.add(f2, g)))))
+        ;; ac :: Nat.add(Nat.add(Nat.add(VA, 1n+RM), Nat.add(1n+VB, f2)), g)
+        ;; rw Equal.sym(Nat, R, 1n+RM, hR) :: 1n+RM :: R
+        ;; rw h2 :: Nat.add(1n+VB, f2) :: P
+        ;; rw Equal.sym(Nat, Nat.add(D, VB), Nat.add(VA, R), hS1) :: Nat.add(VA, R) :: Nat.add(D, VB)
+        ;; ac :: Nat.add(Nat.add(Nat.add(D, P), g), VB)
+        ;; rw Equal.sym(Nat, T, Nat.add(D, P), hT0) :: Nat.add(D, P) :: T
+        ;; rw hg :: Nat.add(T, g) :: RM ]])))
+    case 1n+kp:
+      match kp:
+        case 0n:
+          (+g, hg) = lD
+          (+f1, h1) = la
+          +hS1 = Equal.trans(Nat, Nat.add(D, VB), Nat.add(Nat.add(D, VB), 0n), Nat.add(VA, R), Equal.sym(Nat, Nat.add(Nat.add(D, VB), 0n), Nat.add(D, VB), N.add_zero_r(Nat.add(D, VB))), Equal.trans(Nat, Nat.add(Nat.add(D, VB), 0n), Nat.add(VA, Nat.mul(1n, R)), Nat.add(VA, R), hS, Equal.cong(Nat, Nat, z => Nat.add(VA, z), Nat.mul(1n, R), R, L.mul_one_l(R))))
+          +hT1 = CALC[[ Nat.add(T, R)
+            ;; rw Equal.cong(Nat, Nat, z => Nat.add(T, z), R, Nat.mul(1n, R), Equal.sym(Nat, Nat.mul(1n, R), R, L.mul_one_l(R))) :: Nat.add(T, R) :: Nat.add(T, Nat.mul(1n, R))
+            ;; by hT :: Nat.add(Nat.add(D, P), 0n)
+            ;; by N.add_zero_r(Nat.add(D, P)) :: Nat.add(D, P) ]]
+          +hTV = L.add_cancel_l(R, Nat.add(T, VB), Nat.add(VA, P), CALC[[ Nat.add(R, Nat.add(T, VB))
+            ;; ac :: Nat.add(Nat.add(T, R), VB)
+            ;; rw hT1 :: Nat.add(T, R) :: Nat.add(D, P)
+            ;; ac :: Nat.add(Nat.add(D, VB), P)
+            ;; rw hS1 :: Nat.add(D, VB) :: Nat.add(VA, R)
+            ;; ac :: Nat.add(R, Nat.add(VA, P)) ]])
+          +hVB = L.add_cancel_l(D, VB, Nat.add(VA, 1n+g), CALC[[ Nat.add(D, VB)
+            ;; by hS1 :: Nat.add(VA, R)
+            ;; rw hR :: R :: 1n+RM
+            ;; rw Equal.sym(Nat, Nat.add(D, g), RM, hg) :: RM :: Nat.add(D, g)
+            ;; ac :: Nat.add(D, Nat.add(VA, 1n+g)) ]])
+          +hVA = L.add_cancel_l(VB, Nat.add(VA, Nat.sub(P, VB)), T, CALC[[ Nat.add(VB, Nat.add(VA, Nat.sub(P, VB)))
+            ;; ac :: Nat.add(VA, Nat.add(VB, Nat.sub(P, VB)))
+            ;; rw L.sub_add(P, VB, le_of_lt(VB, P, lb)) :: Nat.add(VB, Nat.sub(P, VB)) :: P
+            ;; by Equal.sym(Nat, Nat.add(T, VB), Nat.add(VA, P), hTV) :: Nat.add(T, VB)
+            ;; ac :: Nat.add(VB, T) ]])
+          %Equal.sym(Nat, Nat.add(VA, Nat.sub(P, VB)), T, hVA) : {T == Nat.mod(_, P) : Nat}
+          %h1 : {T == Nat.mod(T, _) : Nat}
+          Equal.sym(Nat, Nat.mod(T, 1n+Nat.add(VA, f1)), T, L.mod_small(T, Nat.add(VA, f1), (g, L.add_cancel_l(VB, Nat.add(T, g), Nat.add(VA, f1), CALC[[ Nat.add(VB, Nat.add(T, g))
+            ;; rw hVB :: VB :: Nat.add(VA, 1n+g)
+            ;; ac :: Nat.add(Nat.add(T, Nat.add(VA, 1n+g)), g)
+            ;; rw Equal.sym(Nat, VB, Nat.add(VA, 1n+g), hVB) :: Nat.add(VA, 1n+g) :: VB
+            ;; rw hTV :: Nat.add(T, VB) :: Nat.add(VA, P)
+            ;; rw Equal.sym(Nat, Nat.add(1n+VA, f1), P, h1) :: P :: Nat.add(1n+VA, f1)
+            ;; ac :: Nat.add(Nat.add(VA, 1n+g), Nat.add(VA, f1))
+            ;; rw Equal.sym(Nat, VB, Nat.add(VA, 1n+g), hVB) :: Nat.add(VA, 1n+g) :: VB ]]))))
+        case 1n+kq:
+          (+e, he) = lk
+          Empty.absurd({T == Nat.mod(Nat.add(VA, Nat.sub(P, VB)), P) : Nat}, L.succ_ne_zero(Nat.add(kq, e), L.succ_inj(1n+Nat.add(kq, e), 0n, he)))

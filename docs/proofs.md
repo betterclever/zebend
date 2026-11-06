@@ -1,7 +1,7 @@
 # Proofs
 
 Every law below is checked by Bend's dependent type checker with `bend PROOF.bend --verdict`,
-with no `@unsafe`. That checker is rechecked by a Lean-proven kernel. 282 laws in total.
+with no `@unsafe`. That checker is rechecked by a Lean-proven kernel. 295 laws in total.
 
 ## What is proven
 
@@ -16,6 +16,7 @@ with no `@unsafe`. That checker is rechecked by a Lean-proven kernel. 282 laws i
 | `proofs/parse` | 11 | parser round-trips, and rejection of non-canonical and over-length input |
 | `proofs/merkle`, `proofs/state`, `zcash/state` | 9 | the incremental frontier equals the full tree, Merkle path soundness, nullifier-set insertion, on the running code |
 | `proofs/prims`, `proofs/field`, `proofs/fieldmul` | 12 | the 64-bit word primitives compute exact products and sums |
+| `proofs/fieldarith` | 13 | Pasta field addition and subtraction (`zcash/halo2/lib/fp.bend`, 16-bit limbs) compute (a ± b) mod p with a result below p, for canonical inputs; masks and shifts are mod and div by 2^k; U32 add/sub that do not wrap are exact |
 | `proofs/orchard` | 14 | soundness of real Orchard gates on the generated polynomials: value balance, anchor-or-zero, enable flags, booleanity, bit decomposition, conditional swap; a satisfiability companion for each |
 | `proofs/orchard_ecc` | 46 | complete addition (all five cases give the group-law result), incomplete addition (the chord-rule sum when x_p != x_q), the LSB row, the short-mul sign is +-1, and per-row facts of every other ECC gate; each with a satisfiability companion |
 | `proofs/orchard_canon` | 37 | the strict running-sum range check bounds z_0 < r^n (lookups assumed; counterexample without z_n = 0); x(g_d)'s NoteCommit decomposition is canonical (counterexample without the a' check); per-row facts of every decomposition and canonicity gate |
@@ -30,8 +31,14 @@ It is kept as a lesson and not counted. Every law with hypotheses now has a non-
 
 ## What is assumed
 
-- Field arithmetic computes a·b mod p. Tested on about 20,000 vectors per operation; Bend's checker
-  evaluates naturals in unary, so this needs an algebraic proof that has not been written.
+- Field multiplication computes a·b·R⁻¹ mod p (Montgomery), and the inversion and square root
+  built on it. Tested on about 20,000 vectors per operation; not proven. Addition and subtraction
+  of `zcash/halo2/lib/fp.bend` are proven (`proofs/fieldarith`).
+- The 64-bit-limb field of the fast Halo 2 verifier (`crypto/field3/fp64.bend`, `fq64.bend`):
+  tested, not proven, including addition. Its carry primitives (`U32.add_hi`, `U32.mac64`) cannot
+  be unfolded by the checker on symbolic inputs (see `proofs/README.md`).
+- That the modulus limbs in the field code spell Pallas' p is checked in Python (`gen_add.py`),
+  not in Bend.
 - The curve addition formulas are taken as the group operation.
 - Montgomery batch inversion, and the sparse-to-dense step for fixed-base scalars, in the fast
   Halo 2 verifier.

@@ -1,0 +1,285 @@
+import Base
+import ../field/natlemmas.bend as N
+import ../prims/natlib.bend as L
+import ../prims/words.bend as Ws
+import ../prims/hi.bend as H
+import ./ac.bend as A
+import ./u32bits.bend as UB
+import ./u32sem.bend as S
+
+# One limb step of zcash/halo2/lib/fp.bend's add, on values. Limbs are 16-bit values
+# held in U32s; every U32 operation below is exact (no 2^32 wrap), which these laws
+# prove from the limb bounds.
+#
+#   add:  v = a + b + c;           lo = v & 65535;  hi = v >> 16     lo + hi*2^16 == a + b + c
+#   sub:  w = x + 65536 - p - e;   lo = w & 65535;  e' = 1 - (w >> 16)   lo + p + e == x + e'*2^16
+
+def TOP(+m: Nat) -> Nat:
+  Nat.add(Nat.add(m, m), 1n)
+
+# --- bounds -------------------------------------------------------------------
+
+def top_tb(+mp: Nat) -> L.Le(TOP(1n+mp), H.TB(1n+mp)):
+  (Nat.mul(mp, 2n+mp), AC[[ Nat.add(Nat.add(Nat.add(1n+mp, 1n+mp), 1n), Nat.mul(mp, 2n+mp)) |=| Nat.add(1n+mp, Nat.add(2n+mp, Nat.mul(mp, 2n+mp))) ]])
+
+def top_tbm(+m: Nat, +mp: Nat, +hm: {m == 1n+mp : Nat}) -> L.Le(TOP(m), H.TB(m)):
+  %Equal.sym(Nat, m, 1n+mp, hm) : L.Le(TOP(_), H.TB(_))
+  top_tb(mp)
+
+def sq_k(+K: Nat, +bp: Nat, +hk: {K == 1n+bp : Nat}) -> {Nat.mul(K, K) == 1n+H.TB(bp) : Nat}:
+  %Equal.sym(Nat, K, 1n+bp, hk) : {Nat.mul(_, _) == 1n+H.TB(bp) : Nat}
+  H.sq_tb(bp)
+
+def m32() -> {Ws.mask(32n) == H.TB(65535n) : Nat}:
+  L.succ_inj(Ws.mask(32n), H.TB(65535n), Equal.trans(Nat, 1n+Ws.mask(32n), Nat.mul(65536n, 65536n), 1n+H.TB(65535n), Equal.sym(Nat, Nat.mul(65536n, 65536n), 1n+Ws.mask(32n), Ws.two32()), sq_k(65536n, 65535n, {==})))
+
+def le_m32(+x: Nat, +l: L.Le(x, TOP(65535n))) -> L.Le(x, Ws.mask(32n)):
+  %Equal.sym(Nat, Ws.mask(32n), H.TB(65535n), m32()) : L.Le(x, _)
+  H.le_trans(x, TOP(65535n), H.TB(65535n), l, top_tbm(65535n, 65534n, {==}))
+
+def sb2(+m: Nat, +x: Nat, +y: Nat, +lx: L.Le(x, m), +ly: L.Le(y, m)) -> L.Le(Nat.add(x, y), TOP(m)):
+  H.le_trans(Nat.add(x, y), Nat.add(m, m), TOP(m), H.le_add(x, m, y, m, lx, ly), (1n, {==}))
+
+def sb3(+m: Nat, +x: Nat, +y: Nat, +z: Nat, +lx: L.Le(x, m), +ly: L.Le(y, m), +lz: L.Le(z, 1n)) -> L.Le(Nat.add(Nat.add(x, y), z), TOP(m)):
+  H.le_add(Nat.add(x, y), Nat.add(m, m), z, 1n, H.le_add(x, m, y, m, lx, ly), lz)
+
+def lxk(+m: Nat, +x: Nat, +lx: L.Le(x, m)) -> L.Le(Nat.add(x, 1n+m), TOP(m)):
+  (+f, hf) = lx
+  (f, Equal.trans(Nat, Nat.add(Nat.add(x, 1n+m), f), Nat.add(Nat.add(Nat.add(x, f), m), 1n), TOP(m),
+    AC[[ Nat.add(Nat.add(x, 1n+m), f) |=| Nat.add(Nat.add(Nat.add(x, f), m), 1n) ]],
+    Equal.cong(Nat, Nat, w => Nat.add(Nat.add(w, m), 1n), Nat.add(x, f), m, hf)))
+
+def lpk(+m: Nat, +x: Nat, +p: Nat, +lp: L.Le(p, m)) -> L.Le(p, Nat.add(x, 1n+m)):
+  (+f, hf) = lp
+  %hf : L.Le(p, Nat.add(x, 1n+_))
+  (Nat.add(x, 1n+f), AC[[ Nat.add(p, Nat.add(x, 1n+f)) |=| Nat.add(x, 1n+Nat.add(p, f)) ]])
+
+# hi <= 1 when lo + hi * (1 + m) <= 2m + 1.
+def hi1(+m: Nat, +lo: Nat, +hi: Nat, +s: Nat, +h: {Nat.add(lo, Nat.mul(hi, 1n+m)) == s : Nat}, +l: L.Le(s, TOP(m))) -> L.Le(hi, 1n):
+  match hi:
+    case 0n:
+      (1n, {==})
+    case 1n+r:
+      match r:
+        case 0n:
+          (0n, {==})
+        case 1n+r2:
+          (+e, he) = l
+          Empty.absurd(L.Le(2n+r2, 1n), L.succ_add_ne(TOP(m), Nat.add(lo, Nat.add(Nat.mul(r2, 1n+m), e)),
+            Equal.trans(Nat, Nat.add(1n+TOP(m), Nat.add(lo, Nat.add(Nat.mul(r2, 1n+m), e))), Nat.add(s, e), TOP(m),
+              Equal.trans(Nat, Nat.add(1n+TOP(m), Nat.add(lo, Nat.add(Nat.mul(r2, 1n+m), e))), Nat.add(Nat.add(lo, Nat.add(1n+m, Nat.add(1n+m, Nat.mul(r2, 1n+m)))), e), Nat.add(s, e),
+                AC[[ Nat.add(1n+Nat.add(Nat.add(m, m), 1n), Nat.add(lo, Nat.add(Nat.mul(r2, 1n+m), e))) |=| Nat.add(Nat.add(lo, Nat.add(1n+m, Nat.add(1n+m, Nat.mul(r2, 1n+m)))), e) ]],
+                Equal.cong(Nat, Nat, w => Nat.add(w, e), Nat.add(lo, Nat.add(1n+m, Nat.add(1n+m, Nat.mul(r2, 1n+m)))), s, h)),
+              he)))
+
+def lek_r(+m: Nat, +x: Nat, +p: Nat, +f: Nat, +hf: {Nat.add(p, f) == m : Nat}) -> {Nat.add(x, 1n+m) == Nat.add(p, Nat.add(1n, Nat.add(x, f))) : Nat}:
+  %hf : {Nat.add(x, 1n+_) == Nat.add(p, Nat.add(1n, Nat.add(x, f))) : Nat}
+  AC[[ Nat.add(x, 1n+Nat.add(p, f)) |=| Nat.add(p, Nat.add(1n, Nat.add(x, f))) ]]
+
+# T >= E when T + P == x + 1 + m with P <= m and E <= 1.
+def lek(+m: Nat, +x: Nat, +p: Nat, +t: Nat, +e: Nat, +lp: L.Le(p, m), +le: L.Le(e, 1n), +h: {Nat.add(t, p) == Nat.add(x, 1n+m) : Nat}) -> L.Le(e, t):
+  (+f, hf) = lp
+  (+g, hg) = le
+  (Nat.add(g, Nat.add(x, f)), Equal.trans(Nat, Nat.add(e, Nat.add(g, Nat.add(x, f))), Nat.add(1n, Nat.add(x, f)), t,
+    Equal.trans(Nat, Nat.add(e, Nat.add(g, Nat.add(x, f))), Nat.add(Nat.add(e, g), Nat.add(x, f)), Nat.add(1n, Nat.add(x, f)),
+      AC[[ Nat.add(e, Nat.add(g, Nat.add(x, f))) |=| Nat.add(Nat.add(e, g), Nat.add(x, f)) ]],
+      Equal.cong(Nat, Nat, w => Nat.add(w, Nat.add(x, f)), Nat.add(e, g), 1n, hg)),
+    Equal.sym(Nat, t, Nat.add(1n, Nat.add(x, f)), L.add_cancel_l(p, t, Nat.add(1n, Nat.add(x, f)),
+      Equal.trans(Nat, Nat.add(p, t), Nat.add(x, 1n+m), Nat.add(p, Nat.add(1n, Nat.add(x, f))),
+        Equal.trans(Nat, Nat.add(p, t), Nat.add(t, p), Nat.add(x, 1n+m), AC[[ Nat.add(p, t) |=| Nat.add(t, p) ]], h),
+        lek_r(m, x, p, f, hf))))))
+
+# The borrow algebra: from lo + hi*K == T, (T + E) + P == x + K and e' + hi == 1,
+# (lo + P) + E == x + e' * K.
+def ss_alg(+lo: Nat, +hi: Nat, +K: Nat, +T: Nat, +E: Nat, +P: Nat, +x: Nat, +eo: Nat,
+    +h1: {Nat.add(lo, Nat.mul(hi, K)) == T : Nat},
+    +h2: {Nat.add(Nat.add(T, E), P) == Nat.add(x, K) : Nat},
+    +h3: {Nat.add(eo, hi) == 1n : Nat})
+    -> {Nat.add(Nat.add(lo, P), E) == Nat.add(x, Nat.mul(eo, K)) : Nat}:
+  match hi:
+    case 0n:
+      %Equal.sym(Nat, eo, 1n, Equal.trans(Nat, eo, Nat.add(eo, 0n), 1n, Equal.sym(Nat, Nat.add(eo, 0n), eo, N.add_zero_r(eo)), h3)) : {Nat.add(Nat.add(lo, P), E) == Nat.add(x, Nat.mul(_, K)) : Nat}
+      %Equal.sym(Nat, lo, T, Equal.trans(Nat, lo, Nat.add(lo, 0n), T, Equal.sym(Nat, Nat.add(lo, 0n), lo, N.add_zero_r(lo)), h1)) : {Nat.add(Nat.add(_, P), E) == Nat.add(x, Nat.mul(1n, K)) : Nat}
+      Equal.trans(Nat, Nat.add(Nat.add(T, P), E), Nat.add(Nat.add(T, E), P), Nat.add(x, Nat.mul(1n, K)),
+        AC[[ Nat.add(Nat.add(T, P), E) |=| Nat.add(Nat.add(T, E), P) ]],
+        Equal.trans(Nat, Nat.add(Nat.add(T, E), P), Nat.add(x, K), Nat.add(x, Nat.mul(1n, K)), h2,
+          Equal.cong(Nat, Nat, w => Nat.add(x, w), K, Nat.mul(1n, K), Equal.sym(Nat, Nat.mul(1n, K), K, L.mul_one_l(K)))))
+    case 1n+r:
+      match r:
+        case 0n:
+          %Equal.sym(Nat, eo, 0n, H.le_zero_go(eo, 0n, L.succ_inj(Nat.add(eo, 0n), 0n, Equal.trans(Nat, 1n+Nat.add(eo, 0n), Nat.add(eo, 1n), 1n, Equal.sym(Nat, Nat.add(eo, 1n), 1n+Nat.add(eo, 0n), N.add_succ_r(eo, 0n)), h3)))) : {Nat.add(Nat.add(lo, P), E) == Nat.add(x, Nat.mul(_, K)) : Nat}
+          Equal.trans(Nat, Nat.add(Nat.add(lo, P), E), x, Nat.add(x, 0n),
+            L.add_cancel_l(K, Nat.add(Nat.add(lo, P), E), x,
+              Equal.trans(Nat, Nat.add(K, Nat.add(Nat.add(lo, P), E)), Nat.add(Nat.add(Nat.add(lo, K), E), P), Nat.add(K, x),
+                AC[[ Nat.add(K, Nat.add(Nat.add(lo, P), E)) |=| Nat.add(Nat.add(Nat.add(lo, K), E), P) ]],
+                Equal.trans(Nat, Nat.add(Nat.add(Nat.add(lo, K), E), P), Nat.add(Nat.add(T, E), P), Nat.add(K, x),
+                  Equal.cong(Nat, Nat, w => Nat.add(Nat.add(w, E), P), Nat.add(lo, K), T,
+                    Equal.trans(Nat, Nat.add(lo, K), Nat.add(lo, Nat.mul(1n, K)), T, Equal.cong(Nat, Nat, w => Nat.add(lo, w), K, Nat.mul(1n, K), Equal.sym(Nat, Nat.mul(1n, K), K, L.mul_one_l(K))), h1)),
+                  Equal.trans(Nat, Nat.add(Nat.add(T, E), P), Nat.add(x, K), Nat.add(K, x), h2, AC[[ Nat.add(x, K) |=| Nat.add(K, x) ]])))),
+            Equal.sym(Nat, Nat.add(x, 0n), x, N.add_zero_r(x)))
+        case 1n+r2:
+          Empty.absurd({Nat.add(Nat.add(lo, P), E) == Nat.add(x, Nat.mul(eo, K)) : Nat}, L.succ_ne_zero(Nat.add(eo, r2), L.succ_inj(1n+Nat.add(eo, r2), 0n,
+            Equal.trans(Nat, 2n+Nat.add(eo, r2), Nat.add(eo, 2n+r2), 1n, AC[[ 2n+Nat.add(eo, r2) |=| Nat.add(eo, 2n+r2) ]], h3))))
+
+# --- the steps ----------------------------------------------------------------
+
+law add0_eq:
+  for +a: U32
+  for +b: U32
+  for +la: L.Le(U32.to_nat(a), 65535n)
+  for +lb: L.Le(U32.to_nat(b), 65535n)
+  {Nat.add(U32.to_nat(U32.and(U32.add(a, b), 65535)), Nat.mul(U32.to_nat(U32.shrn(U32.add(a, b), 16n)), 65536n)) == Nat.add(U32.to_nat(a), U32.to_nat(b)) : Nat}
+
+def add0_eq(a, b, la, lb):
+  Equal.trans(Nat, Nat.add(U32.to_nat(U32.and(U32.add(a, b), 65535)), Nat.mul(U32.to_nat(U32.shrn(U32.add(a, b), 16n)), 65536n)), U32.to_nat(U32.add(a, b)), Nat.add(U32.to_nat(a), U32.to_nat(b)),
+    UB.split16(U32.add(a, b)),
+    S.add_exact(a, b, le_m32(Nat.add(U32.to_nat(a), U32.to_nat(b)), sb2(65535n, U32.to_nat(a), U32.to_nat(b), la, lb))))
+
+law add0_hi:
+  for +a: U32
+  for +b: U32
+  for +la: L.Le(U32.to_nat(a), 65535n)
+  for +lb: L.Le(U32.to_nat(b), 65535n)
+  L.Le(U32.to_nat(U32.shrn(U32.add(a, b), 16n)), 1n)
+
+def add0_hi(a, b, la, lb):
+  hi1(65535n, U32.to_nat(U32.and(U32.add(a, b), 65535)), U32.to_nat(U32.shrn(U32.add(a, b), 16n)), Nat.add(U32.to_nat(a), U32.to_nat(b)), add0_eq(a, b, la, lb), sb2(65535n, U32.to_nat(a), U32.to_nat(b), la, lb))
+
+def add_l2(+a: U32, +b: U32, +c: U32, +la: L.Le(U32.to_nat(a), 65535n), +lb: L.Le(U32.to_nat(b), 65535n), +lc: L.Le(U32.to_nat(c), 1n),
+    +t1: {U32.to_nat(U32.add(a, b)) == Nat.add(U32.to_nat(a), U32.to_nat(b)) : Nat})
+    -> L.Le(Nat.add(U32.to_nat(U32.add(a, b)), U32.to_nat(c)), Ws.mask(32n)):
+  %Equal.sym(Nat, U32.to_nat(U32.add(a, b)), Nat.add(U32.to_nat(a), U32.to_nat(b)), t1) : L.Le(Nat.add(_, U32.to_nat(c)), Ws.mask(32n))
+  le_m32(Nat.add(Nat.add(U32.to_nat(a), U32.to_nat(b)), U32.to_nat(c)), sb3(65535n, U32.to_nat(a), U32.to_nat(b), U32.to_nat(c), la, lb, lc))
+
+def add_tv(+a: U32, +b: U32, +c: U32, +la: L.Le(U32.to_nat(a), 65535n), +lb: L.Le(U32.to_nat(b), 65535n), +lc: L.Le(U32.to_nat(c), 1n))
+    -> {U32.to_nat(U32.add(U32.add(a, b), c)) == Nat.add(Nat.add(U32.to_nat(a), U32.to_nat(b)), U32.to_nat(c)) : Nat}:
+  +t1 = S.add_exact(a, b, le_m32(Nat.add(U32.to_nat(a), U32.to_nat(b)), sb2(65535n, U32.to_nat(a), U32.to_nat(b), la, lb)))
+  +l2 = add_l2(a, b, c, la, lb, lc, t1)
+  Equal.trans(Nat, U32.to_nat(U32.add(U32.add(a, b), c)), Nat.add(U32.to_nat(U32.add(a, b)), U32.to_nat(c)), Nat.add(Nat.add(U32.to_nat(a), U32.to_nat(b)), U32.to_nat(c)),
+    S.add_exact(U32.add(a, b), c, l2),
+    Equal.cong(Nat, Nat, w => Nat.add(w, U32.to_nat(c)), U32.to_nat(U32.add(a, b)), Nat.add(U32.to_nat(a), U32.to_nat(b)), t1))
+
+law add_eq:
+  for +a: U32
+  for +b: U32
+  for +c: U32
+  for +la: L.Le(U32.to_nat(a), 65535n)
+  for +lb: L.Le(U32.to_nat(b), 65535n)
+  for +lc: L.Le(U32.to_nat(c), 1n)
+  {Nat.add(U32.to_nat(U32.and(U32.add(U32.add(a, b), c), 65535)), Nat.mul(U32.to_nat(U32.shrn(U32.add(U32.add(a, b), c), 16n)), 65536n)) == Nat.add(Nat.add(U32.to_nat(a), U32.to_nat(b)), U32.to_nat(c)) : Nat}
+
+def add_eq(a, b, c, la, lb, lc):
+  Equal.trans(Nat, Nat.add(U32.to_nat(U32.and(U32.add(U32.add(a, b), c), 65535)), Nat.mul(U32.to_nat(U32.shrn(U32.add(U32.add(a, b), c), 16n)), 65536n)), U32.to_nat(U32.add(U32.add(a, b), c)), Nat.add(Nat.add(U32.to_nat(a), U32.to_nat(b)), U32.to_nat(c)),
+    UB.split16(U32.add(U32.add(a, b), c)), add_tv(a, b, c, la, lb, lc))
+
+law add_hi:
+  for +a: U32
+  for +b: U32
+  for +c: U32
+  for +la: L.Le(U32.to_nat(a), 65535n)
+  for +lb: L.Le(U32.to_nat(b), 65535n)
+  for +lc: L.Le(U32.to_nat(c), 1n)
+  L.Le(U32.to_nat(U32.shrn(U32.add(U32.add(a, b), c), 16n)), 1n)
+
+def add_hi(a, b, c, la, lb, lc):
+  hi1(65535n, U32.to_nat(U32.and(U32.add(U32.add(a, b), c), 65535)), U32.to_nat(U32.shrn(U32.add(U32.add(a, b), c), 16n)), Nat.add(Nat.add(U32.to_nat(a), U32.to_nat(b)), U32.to_nat(c)), add_eq(a, b, c, la, lb, lc), sb3(65535n, U32.to_nat(a), U32.to_nat(b), U32.to_nat(c), la, lb, lc))
+
+def lA(+x: U32, +lx: L.Le(U32.to_nat(x), 65535n)) -> L.Le(Nat.add(U32.to_nat(x), U32.to_nat(65536)), Ws.mask(32n)):
+  %Equal.sym(Nat, U32.to_nat(65536), 65536n, S.tn65536()) : L.Le(Nat.add(U32.to_nat(x), _), Ws.mask(32n))
+  le_m32(Nat.add(U32.to_nat(x), 65536n), lxk(65535n, U32.to_nat(x), lx))
+
+# x + 65536, exactly.
+def tA(+x: U32, +lx: L.Le(U32.to_nat(x), 65535n)) -> {U32.to_nat(U32.add(x, 65536)) == Nat.add(U32.to_nat(x), 65536n) : Nat}:
+  Equal.trans(Nat, U32.to_nat(U32.add(x, 65536)), Nat.add(U32.to_nat(x), U32.to_nat(65536)), Nat.add(U32.to_nat(x), 65536n),
+    S.add_exact(x, 65536, lA(x, lx)),
+    Equal.cong(Nat, Nat, w => Nat.add(U32.to_nat(x), w), U32.to_nat(65536), 65536n, S.tn65536()))
+
+def lP(+x: U32, +p: U32, +lx: L.Le(U32.to_nat(x), 65535n), +lp: L.Le(U32.to_nat(p), 65535n)) -> L.Le(U32.to_nat(p), U32.to_nat(U32.add(x, 65536))):
+  %Equal.sym(Nat, U32.to_nat(U32.add(x, 65536)), Nat.add(U32.to_nat(x), 65536n), tA(x, lx)) : L.Le(U32.to_nat(p), _)
+  lpk(65535n, U32.to_nat(x), U32.to_nat(p), lp)
+
+# s1 = x + 65536 - p, exactly: s1 + p == x + 65536.
+def t2(+x: U32, +p: U32, +lx: L.Le(U32.to_nat(x), 65535n), +lp: L.Le(U32.to_nat(p), 65535n))
+    -> {Nat.add(U32.to_nat(U32.sub(U32.add(x, 65536), p)), U32.to_nat(p)) == Nat.add(U32.to_nat(x), 65536n) : Nat}:
+  Equal.trans(Nat, Nat.add(U32.to_nat(U32.sub(U32.add(x, 65536), p)), U32.to_nat(p)), U32.to_nat(U32.add(x, 65536)), Nat.add(U32.to_nat(x), 65536n),
+    S.sub_exact(U32.add(x, 65536), p, lP(x, p, lx, lp)), tA(x, lx))
+
+# w = x + 65536 - p - e, exactly: (w + e) + p == x + 65536.
+def tw(+x: U32, +p: U32, +e: U32, +lx: L.Le(U32.to_nat(x), 65535n), +lp: L.Le(U32.to_nat(p), 65535n), +le: L.Le(U32.to_nat(e), 1n))
+    -> {Nat.add(Nat.add(U32.to_nat(U32.sub(U32.sub(U32.add(x, 65536), p), e)), U32.to_nat(e)), U32.to_nat(p)) == Nat.add(U32.to_nat(x), 65536n) : Nat}:
+  Equal.trans(Nat, Nat.add(Nat.add(U32.to_nat(U32.sub(U32.sub(U32.add(x, 65536), p), e)), U32.to_nat(e)), U32.to_nat(p)), Nat.add(U32.to_nat(U32.sub(U32.add(x, 65536), p)), U32.to_nat(p)), Nat.add(U32.to_nat(x), 65536n),
+    Equal.cong(Nat, Nat, w => Nat.add(w, U32.to_nat(p)), Nat.add(U32.to_nat(U32.sub(U32.sub(U32.add(x, 65536), p), e)), U32.to_nat(e)), U32.to_nat(U32.sub(U32.add(x, 65536), p)),
+      S.sub_exact(U32.sub(U32.add(x, 65536), p), e, lek(65535n, U32.to_nat(x), U32.to_nat(p), U32.to_nat(U32.sub(U32.add(x, 65536), p)), U32.to_nat(e), lp, le, t2(x, p, lx, lp)))),
+    t2(x, p, lx, lp))
+
+# a value t with t + d == x + 65536 is at most 2 * 65535 + 1.
+def lw(+t: Nat, +d: Nat, +x: Nat, +lx: L.Le(x, 65535n), +h: {Nat.add(t, d) == Nat.add(x, 65536n) : Nat}) -> L.Le(t, TOP(65535n)):
+  H.le_trans(t, Nat.add(x, 65536n), TOP(65535n), (d, h), lxk(65535n, x, lx))
+
+law sub_bo:
+  for +x: U32
+  for +p: U32
+  for +e: U32
+  for +lx: L.Le(U32.to_nat(x), 65535n)
+  for +lp: L.Le(U32.to_nat(p), 65535n)
+  for +le: L.Le(U32.to_nat(e), 1n)
+  L.Le(U32.to_nat(U32.sub(1, U32.shrn(U32.sub(U32.sub(U32.add(x, 65536), p), e), 16n))), 1n)
+
+def sub_hi(+x: U32, +p: U32, +e: U32, +lx: L.Le(U32.to_nat(x), 65535n), +lp: L.Le(U32.to_nat(p), 65535n), +le: L.Le(U32.to_nat(e), 1n)) -> L.Le(U32.to_nat(U32.shrn(U32.sub(U32.sub(U32.add(x, 65536), p), e), 16n)), 1n):
+  hi1(65535n, U32.to_nat(U32.and(U32.sub(U32.sub(U32.add(x, 65536), p), e), 65535)), U32.to_nat(U32.shrn(U32.sub(U32.sub(U32.add(x, 65536), p), e), 16n)), U32.to_nat(U32.sub(U32.sub(U32.add(x, 65536), p), e)),
+    UB.split16(U32.sub(U32.sub(U32.add(x, 65536), p), e)),
+    lw(U32.to_nat(U32.sub(U32.sub(U32.add(x, 65536), p), e)), Nat.add(U32.to_nat(e), U32.to_nat(p)), U32.to_nat(x), lx,
+      Equal.trans(Nat, Nat.add(U32.to_nat(U32.sub(U32.sub(U32.add(x, 65536), p), e)), Nat.add(U32.to_nat(e), U32.to_nat(p))), Nat.add(Nat.add(U32.to_nat(U32.sub(U32.sub(U32.add(x, 65536), p), e)), U32.to_nat(e)), U32.to_nat(p)), Nat.add(U32.to_nat(x), 65536n),
+        AC[[ Nat.add(U32.to_nat(U32.sub(U32.sub(U32.add(x, 65536), p), e)), Nat.add(U32.to_nat(e), U32.to_nat(p))) |=| Nat.add(Nat.add(U32.to_nat(U32.sub(U32.sub(U32.add(x, 65536), p), e)), U32.to_nat(e)), U32.to_nat(p)) ]],
+        tw(x, p, e, lx, lp, le))))
+
+def sub_bo(x, p, e, lx, lp, le):
+  S.one_minus_le(U32.shrn(U32.sub(U32.sub(U32.add(x, 65536), p), e), 16n), sub_hi(x, p, e, lx, lp, le))
+
+law sub_eq:
+  for +x: U32
+  for +p: U32
+  for +e: U32
+  for +lx: L.Le(U32.to_nat(x), 65535n)
+  for +lp: L.Le(U32.to_nat(p), 65535n)
+  for +le: L.Le(U32.to_nat(e), 1n)
+  {Nat.add(Nat.add(U32.to_nat(U32.and(U32.sub(U32.sub(U32.add(x, 65536), p), e), 65535)), U32.to_nat(p)), U32.to_nat(e)) == Nat.add(U32.to_nat(x), Nat.mul(U32.to_nat(U32.sub(1, U32.shrn(U32.sub(U32.sub(U32.add(x, 65536), p), e), 16n))), 65536n)) : Nat}
+
+def sub_eq(x, p, e, lx, lp, le):
+  ss_alg(U32.to_nat(U32.and(U32.sub(U32.sub(U32.add(x, 65536), p), e), 65535)), U32.to_nat(U32.shrn(U32.sub(U32.sub(U32.add(x, 65536), p), e), 16n)), 65536n,
+    U32.to_nat(U32.sub(U32.sub(U32.add(x, 65536), p), e)), U32.to_nat(e), U32.to_nat(p), U32.to_nat(x), U32.to_nat(U32.sub(1, U32.shrn(U32.sub(U32.sub(U32.add(x, 65536), p), e), 16n))),
+    UB.split16(U32.sub(U32.sub(U32.add(x, 65536), p), e)),
+    tw(x, p, e, lx, lp, le),
+    S.one_minus(U32.shrn(U32.sub(U32.sub(U32.add(x, 65536), p), e), 16n), sub_hi(x, p, e, lx, lp, le)))
+
+# The first limb: w = x + 65536 - p (no borrow in).
+def sub0_hi(+x: U32, +p: U32, +lx: L.Le(U32.to_nat(x), 65535n), +lp: L.Le(U32.to_nat(p), 65535n)) -> L.Le(U32.to_nat(U32.shrn(U32.sub(U32.add(x, 65536), p), 16n)), 1n):
+  hi1(65535n, U32.to_nat(U32.and(U32.sub(U32.add(x, 65536), p), 65535)), U32.to_nat(U32.shrn(U32.sub(U32.add(x, 65536), p), 16n)), U32.to_nat(U32.sub(U32.add(x, 65536), p)),
+    UB.split16(U32.sub(U32.add(x, 65536), p)),
+    lw(U32.to_nat(U32.sub(U32.add(x, 65536), p)), U32.to_nat(p), U32.to_nat(x), lx, t2(x, p, lx, lp)))
+
+law sub0_bo:
+  for +x: U32
+  for +p: U32
+  for +lx: L.Le(U32.to_nat(x), 65535n)
+  for +lp: L.Le(U32.to_nat(p), 65535n)
+  L.Le(U32.to_nat(U32.sub(1, U32.shrn(U32.sub(U32.add(x, 65536), p), 16n))), 1n)
+
+def sub0_bo(x, p, lx, lp):
+  S.one_minus_le(U32.shrn(U32.sub(U32.add(x, 65536), p), 16n), sub0_hi(x, p, lx, lp))
+
+law sub0_eq:
+  for +x: U32
+  for +p: U32
+  for +lx: L.Le(U32.to_nat(x), 65535n)
+  for +lp: L.Le(U32.to_nat(p), 65535n)
+  {Nat.add(Nat.add(U32.to_nat(U32.and(U32.sub(U32.add(x, 65536), p), 65535)), U32.to_nat(p)), 0n) == Nat.add(U32.to_nat(x), Nat.mul(U32.to_nat(U32.sub(1, U32.shrn(U32.sub(U32.add(x, 65536), p), 16n))), 65536n)) : Nat}
+
+def sub0_eq(x, p, lx, lp):
+  ss_alg(U32.to_nat(U32.and(U32.sub(U32.add(x, 65536), p), 65535)), U32.to_nat(U32.shrn(U32.sub(U32.add(x, 65536), p), 16n)), 65536n,
+    U32.to_nat(U32.sub(U32.add(x, 65536), p)), 0n, U32.to_nat(p), U32.to_nat(x), U32.to_nat(U32.sub(1, U32.shrn(U32.sub(U32.add(x, 65536), p), 16n))),
+    UB.split16(U32.sub(U32.add(x, 65536), p)),
+    Equal.trans(Nat, Nat.add(Nat.add(U32.to_nat(U32.sub(U32.add(x, 65536), p)), 0n), U32.to_nat(p)), Nat.add(U32.to_nat(U32.sub(U32.add(x, 65536), p)), U32.to_nat(p)), Nat.add(U32.to_nat(x), 65536n),
+      Equal.cong(Nat, Nat, w => Nat.add(w, U32.to_nat(p)), Nat.add(U32.to_nat(U32.sub(U32.add(x, 65536), p)), 0n), U32.to_nat(U32.sub(U32.add(x, 65536), p)), N.add_zero_r(U32.to_nat(U32.sub(U32.add(x, 65536), p)))),
+      t2(x, p, lx, lp)),
+    S.one_minus(U32.shrn(U32.sub(U32.add(x, 65536), p), 16n), sub0_hi(x, p, lx, lp)))
