@@ -1,0 +1,33 @@
+== round 1  load averages: 5.77 8.40 9.64
+bend-perf5 18T 10048: agree 10048/10048 disagree 0  4126 bundles/s
+zakura     18T 10048: rust zakura-halo2 ProofBatch par_chunks(64) threads=18: 10048 bundles, all ok true, 1.1s = 9180 bundles/s
+ | actions:
+rust zakura-halo2 ProofBatch, Zakura's >=64-action batches threads=18: 10048 bundles, all ok true, 1.3s = 7782 bundles/s
+deployed   18T 10048: agree 10048/10048 disagree 0  2063 bundles/s
+zakura      1T  1024: rust zakura-halo2 ProofBatch par_chunks(64) threads=1: 1024 bundles, all ok true, 1.0s = 994 bundles/s
+ | actions:
+rust zakura-halo2 ProofBatch, Zakura's >=64-action batches threads=1: 1024 bundles, all ok true, 1.3s = 816 bundles/s
+bend-perf5  1T  1024: agree 1024/1024 disagree 0  306 bundles/s
+deployed    1T  1024: agree 1024/1024 disagree 0  172 bundles/s
+== round 2  load averages: 9.75 9.16 9.88
+bend-perf5 18T 10048: agree 10048/10048 disagree 0  4094 bundles/s
+zakura     18T 10048: rust zakura-halo2 ProofBatch par_chunks(64) threads=18: 10048 bundles, all ok true, 1.1s = 9144 bundles/s
+ | actions:
+rust zakura-halo2 ProofBatch, Zakura's >=64-action batches threads=18: 10048 bundles, all ok true, 1.2s = 8190 bundles/s
+deployed   18T 10048: agree 10048/10048 disagree 0  2145 bundles/s
+zakura      1T  1024: rust zakura-halo2 ProofBatch par_chunks(64) threads=1: 1024 bundles, all ok true, 1.0s = 999 bundles/s
+ | actions:
+rust zakura-halo2 ProofBatch, Zakura's >=64-action batches threads=1: 1024 bundles, all ok true, 1.3s = 811 bundles/s
+bend-perf5  1T  1024: agree 1024/1024 disagree 0  312 bundles/s
+deployed    1T  1024: agree 1024/1024 disagree 0  177 bundles/s
+== round 3  load averages: 12.22 9.81 10.10
+bend-perf5 18T 10048: agree 10048/10048 disagree 0  4222 bundles/s
+zakura     18T 10048: rust zakura-halo2 ProofBatch par_chunks(64) threads=18: 10048 bundles, all ok true, 1.1s = 9102 bundles/s
+ | actions:
+rust zakura-halo2 ProofBatch, Zakura's >=64-action batches threads=18: 10048 bundles, all ok true, 1.2s = 8266 bundles/s
+deployed   18T 10048: agree 10048/10048 disagree 0  1903 bundles/s
+zakura      1T  1024: rust zakura-halo2 ProofBatch par_chunks(64) threads=1: 1024 bundles, all ok true, 1.0s = 997 bundles/s
+ | actions:
+rust zakura-halo2 ProofBatch, Zakura's >=64-action batches threads=1: 1024 bundles, all ok true, 1.3s = 819 bundles/s
+bend-perf5  1T  1024: agree 1024/1024 disagree 0  303 bundles/s
+deployed    1T  1024: agree 1024/1024 disagree 0  173 bundles/s

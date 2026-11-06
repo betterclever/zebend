@@ -7,6 +7,7 @@ The fork is not published yet.
 | Branch | Change | Effect |
 |---|---|---|
 | `pr/u32-wide-mul` | `U32.mul_hi`, `add_hi`, `mac_hi`, `mac64`: high halves and multiply-accumulate on 64-bit lanes | 64-bit-limb field arithmetic; proven exact in `proofs/prims` |
+| `mont64` | `U32.mont64`: word k of a 4×64-bit CIOS Montgomery product, defined exactly through `Nat` in `base.bend`, one inline C body per multiply | Pasta multiply 281 → 198 instructions; Halo 2 batch ~1.17× (`research/perf5`) |
 | `pr/u64-lane-ops` | `add64`, `xor64`, `rotr64` | BLAKE2b and SHA-512 on 64-bit lanes |
 | `pr/file-read-words` | `File.read_words` / `File.write_words`: whole files as one flat `Array<U32>` | SHA-256d of 1 MB 27 → 1.9 ms; reference-counting share 47% → 0% |
 | `pr/metal-lane-spill` | restores the Metal lane spill that 2.0.39 removed | GPU programs with deep recursion no longer fault |

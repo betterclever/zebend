@@ -1,0 +1,15 @@
+load at start 24.7
+single 2-action verify, in-process, 1T (ms): before 29  after 27  Rust 21.25   load 19.0
+single 2-action verify, in-process, 18T (ms): before 9  after 8  Rust 3.20   load 17.9
+process wall, one batch of 1 real bundles, 18T (ms): before 16.3  after 15.9   load 19.3
+process wall, one batch of 10 real bundles, 18T (ms): before 19.1  after 17.9   load 19.3
+batch, 256 real bundles, 1T (bundles/s, process wall): before 87  after 176  Rust 94 (verify only)   load 18.5
+ 4:57  up 3 days, 15:35, 1 user, load averages: 18.48 23.65 26.63
+rust halo2 BatchVerifier threads=18: 10048 bundles, all ok true, 12.2s = 821 bundles/s
+batch_main: bundles 10048, agree with official 10048, disagree 0, Bend valid 10048; batches 3 (0 rejected); batch process time 17.0s = 591 bundles/s; wall 17s
+batch_main: bundles 10048, agree with official 10048, disagree 0, Bend valid 10048; batches 3 (0 rejected); batch process time 5.0s = 2028 bundles/s; wall 5s
+ 4:58  up 3 days, 15:35, 1 user, load averages: 21.77 23.77 26.53
+rust halo2 BatchVerifier threads=18: 10048 bundles, all ok true, 14.4s = 700 bundles/s
+batch_main: bundles 10048, agree with official 10048, disagree 0, Bend valid 10048; batches 3 (0 rejected); batch process time 19.1s = 527 bundles/s; wall 19s
+batch_main: bundles 10048, agree with official 10048, disagree 0, Bend valid 10048; batches 3 (0 rejected); batch process time 8.0s = 1251 bundles/s; wall 8s
+ 4:58  up 3 days, 15:36, 1 user, load averages: 25.24 24.58 26.70

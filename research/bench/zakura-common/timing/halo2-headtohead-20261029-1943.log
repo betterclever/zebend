@@ -1,0 +1,22 @@
+== round 1  load averages: 3.03 2.74 2.94
+bend   18T 10048: bundles 10048, agree with official 10048, disagree 0 time 4.3s = 2323 bundles/s 
+zakura 18T 10048: prepare_batch_validation (as Zakura): false
+10048 bundles, all ok true, 0.8s = 11889 bundles/s
+bend    1T  1024: bundles 1024, agree with official 1024, disagree 0 time 5.2s = 199 bundles/s 
+zakura  1T  1024: prepare_batch_validation (as Zakura): false
+1024 bundles, all ok true, 1.0s = 1036 bundles/s
+== round 2  load averages: 6.72 3.56 3.23
+zakura 18T 10048: prepare_batch_validation (as Zakura): false
+10048 bundles, all ok true, 0.8s = 12159 bundles/s
+bend   18T 10048: bundles 10048, agree with official 10048, disagree 0 time 3.8s = 2625 bundles/s 
+zakura  1T  1024: prepare_batch_validation (as Zakura): false
+1024 bundles, all ok true, 1.0s = 1034 bundles/s
+bend    1T  1024: bundles 1024, agree with official 1024, disagree 0 time 5.2s = 197 bundles/s 
+== round 3  load averages: 8.58 4.14 3.44
+bend   18T 10048: bundles 10048, agree with official 10048, disagree 0 time 4.3s = 2348 bundles/s 
+zakura 18T 10048: prepare_batch_validation (as Zakura): false
+10048 bundles, all ok true, 0.8s = 11886 bundles/s
+bend    1T  1024: bundles 1024, agree with official 1024, disagree 0 time 5.3s = 193 bundles/s 
+zakura  1T  1024: prepare_batch_validation (as Zakura): false
+1024 bundles, all ok true, 1.0s = 1043 bundles/s
+== end load averages: 8.72 4.40 3.55

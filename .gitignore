@@ -39,3 +39,6 @@ zcash/sapling/**/data/
 zcash/consensus/nu7/data/
 zcash/consensus/nu7/oracle/target/
 zcash/consensus/nu7/wiring/work/
+
+# local secrets
+.env

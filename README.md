@@ -44,7 +44,8 @@ used only as the oracle Zebend is compared against.
   gate soundness, the fix for the May 2026 Orchard bug, and the optimisations of the fast
   Halo 2 verifier.
 - **Fast enough to follow the tip.** Batch Halo 2 verification of all 392,806 bundles in 176 s,
-  about 3× the upstream Rust crates. Zakura's tuned crates are still about 5× faster; see
+  about 3× the upstream Rust crates. Zakura's tuned crates are still faster: about 4.6× than the
+  deployed verifier, about 1.8× than the newest research build; see
   [docs/performance.md](docs/performance.md).
 - **Finds the May 2026 bug class.** An under-constraint checker re-finds the missing copy
   constraint in the pre-NU6.2 Orchard circuit automatically, and the fix is proven in Bend.
@@ -102,7 +103,7 @@ blocks. Full method and data: [docs/performance.md](docs/performance.md).
 
 | | Zebend | Rust / Zakura |
 |---|---|---|
-| Halo 2 batch, 18 threads | 2,408–2,520 bundles/s | **7,052–11,535/s** |
+| Halo 2 batch, 18 threads | 2,408–2,520 bundles/s (research build: 5,784–6,361) | **7,052–11,535/s** |
 | Halo 2, one proof, 1 thread | 27 ms | **5.0 ms** |
 | Sapling Groth16, batch, 1 thread | **0.67 ms/proof** | 0.78–0.80 ms |
 | Sync from genesis to the last checkpoint | ≈4.5 h of active sync | 4 h 20 min |

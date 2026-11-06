@@ -1,0 +1,33 @@
+== round 1  load averages: 5.88 8.83 9.97
+bend-perf5 18T 10048: agree 10048/10048 disagree 0  4050 bundles/s
+zakura-batch: 9041 of 10048 bundles are in fully shielded txs
+prepare_batch_validation (as Zakura): false
+zakura     18T 10048: rust zakura BatchValidator (proofs + RedPallas), Zakura's >=64-action batches threads=18: 9041 bundles, all ok true, 1.4s = 6694 bundles/s
+deployed   18T 10048: agree 10048/10048 disagree 0  2149 bundles/s
+zakura-batch: 958 of 1024 bundles are in fully shielded txs
+prepare_batch_validation (as Zakura): false
+zakura      1T  1024: rust zakura BatchValidator (proofs + RedPallas), Zakura's >=64-action batches threads=1: 958 bundles, all ok true, 1.4s = 678 bundles/s
+bend-perf5  1T  1024: agree 1024/1024 disagree 0  314 bundles/s
+deployed    1T  1024: agree 1024/1024 disagree 0  174 bundles/s
+== round 2  load averages: 8.42 9.29 10.11
+bend-perf5 18T 10048: agree 10048/10048 disagree 0  3768 bundles/s
+zakura-batch: 9041 of 10048 bundles are in fully shielded txs
+prepare_batch_validation (as Zakura): false
+zakura     18T 10048: rust zakura BatchValidator (proofs + RedPallas), Zakura's >=64-action batches threads=18: 9041 bundles, all ok true, 1.5s = 6207 bundles/s
+deployed   18T 10048: agree 10048/10048 disagree 0  1911 bundles/s
+zakura-batch: 958 of 1024 bundles are in fully shielded txs
+prepare_batch_validation (as Zakura): false
+zakura      1T  1024: rust zakura BatchValidator (proofs + RedPallas), Zakura's >=64-action batches threads=1: 958 bundles, all ok true, 1.4s = 679 bundles/s
+bend-perf5  1T  1024: agree 1024/1024 disagree 0  311 bundles/s
+deployed    1T  1024: agree 1024/1024 disagree 0  172 bundles/s
+== round 3  load averages: 10.20 9.67 10.23
+bend-perf5 18T 10048: agree 10048/10048 disagree 0  3907 bundles/s
+zakura-batch: 9041 of 10048 bundles are in fully shielded txs
+prepare_batch_validation (as Zakura): false
+zakura     18T 10048: rust zakura BatchValidator (proofs + RedPallas), Zakura's >=64-action batches threads=18: 9041 bundles, all ok true, 1.6s = 5668 bundles/s
+deployed   18T 10048: agree 10048/10048 disagree 0  1658 bundles/s
+zakura-batch: 958 of 1024 bundles are in fully shielded txs
+prepare_batch_validation (as Zakura): false
+zakura      1T  1024: rust zakura BatchValidator (proofs + RedPallas), Zakura's >=64-action batches threads=1: 958 bundles, all ok true, 1.4s = 666 bundles/s
+bend-perf5  1T  1024: agree 1024/1024 disagree 0  286 bundles/s
+deployed    1T  1024: agree 1024/1024 disagree 0  171 bundles/s

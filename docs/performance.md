@@ -37,8 +37,20 @@ generated for the Orchard circuit and then optimised. Those optimisations are pr
 same values (see [proofs.md](proofs.md)). Single proofs are slower: most of one proof is a
 2,048-term MSM that Bend's runtime does not spread across all cores as well as Rust does.
 
+**Research builds, not yet deployed** (`research/perf5`, same 10,048 bundles, 18 threads, each run
+interleaved with Zakura Common in the same session):
+
+| Build | Zebend | Zakura Common, same session |
+|---|---|---|
+| perf5 (30 Oct, load ~4) | 4,413–4,459 bundles/s | 11,514–11,546/s |
+| perf5 + `U32.mont64` (30 Oct, load 12–14) | 5,784–6,361 bundles/s | 10,099–11,954/s |
+
+That narrows the batch gap from about 4.6× to about 1.8× (2.2× on one thread). Both builds agree with
+the official verifier on all 392,806 bundles. `U32.mont64` is a new primitive in Zebend's Bend fork
+(see [bend.md](bend.md)).
+
 Harnesses, timing script and raw logs: `research/bench/zakura-common/`. Earlier sources:
-`research/perf4/`, `zcash/sapling/groth16/`, `zcash/sapling/`, `research/sigbatch/`,
+`research/perf5/`, `research/perf4/`, `zcash/sapling/groth16/`, `zcash/sapling/`, `research/sigbatch/`,
 `zcash/transparent/`, `research/blake3x/`, `research/scan2/`.
 
 ## The node against Zakura

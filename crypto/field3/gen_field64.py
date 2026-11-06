@@ -7,7 +7,9 @@ single widening multiply, so a field multiplication costs ~32 64x64-bit products
 of ~96 32x32-bit ones, the same shape as pasta_curves.
 
   python3 gen_field64.py      # writes fp64.bend, fq64.bend (everything but mul / sqr_d
-                              # comes from gen_field3.Field32)
+                              # comes from gen_field3.Field32); mul / sqr_d use U32.mac64
+  FIELD_MUL=mont64 python3 gen_field64.py   # mul / sqr_d as one U32.mont64 (needs the fork's
+                                            # mont64 branch; ~1.17x on Halo 2, research/perf5)
 """
 import importlib.util
 import pathlib
@@ -117,7 +119,41 @@ class Field64(g3.Field32):
                 f"def sqr_d(a: {self.T}) -> {self.T}:\n" + "\n".join(e.lines) + f"\n  {self.lit(r)}\n")
 
 
+class FieldMont(Field64):
+    """mul / sqr_d as one U32.mont64 primitive (Bend fork, branch mont64): word k of the
+    4 x 64-bit CIOS Montgomery product, compiled to one inline body with add-with-carry
+    chains that the eight words share. Same results as Field64's mac64 code for every
+    input (both are CIOS with one final subtraction)."""
+
+    def mont(self, a, b):
+        m = [str(w) for w in self.limbs_u32()]
+        inv = self.halves(self.INV)
+        args = ", ".join([*a, *b, *m, *inv])
+        return [f"U32.mont64({k}, {args})" for k in range(8)]
+
+    def limbs_u32(self):
+        return [(v >> (32 * i)) & 0xffffffff for v in self.M64 for i in range(2)]
+
+    def gen_mul(self):
+        e = g3.g16.Emit()
+        a = self.destructure(e, "a", "a")
+        b = self.destructure(e, "b", "b")
+        return (f"# Montgomery product a * b * R^-1 mod m: one U32.mont64 (4 x 64-bit CIOS).\n"
+                f"def mul(a: {self.T}, b: {self.T}) -> {self.T}:\n" + "\n".join(e.lines)
+                + f"\n  {self.lit(self.mont(a, b))}\n")
+
+    def gen_sqr(self):
+        e = g3.g16.Emit()
+        a = self.destructure(e, "a", "a")
+        return (f"# Montgomery square: U32.mont64 of a with itself.\n"
+                f"def sqr_d(a: {self.T}) -> {self.T}:\n" + "\n".join(e.lines)
+                + f"\n  {self.lit(self.mont(a, a))}\n")
+
+
 if __name__ == "__main__":
+    import os
+    if os.environ.get("FIELD_MUL", "mac64") == "mont64":
+        Field64 = FieldMont
     for name, m, f in (("Fp", P, "fp64.bend"), ("Fq", Q, "fq64.bend")):
         (here / f).write_text(Field64(name, m).module())
     print("wrote fp64.bend fq64.bend")

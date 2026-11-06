@@ -1,0 +1,3 @@
+ 4:40  up 3 days, 15:18, 1 user, load averages: 28.97 27.01 23.18
+rust halo2 BatchVerifier threads=18: 392806 bundles, all ok true, 554.4s = 709 bundles/s
+ 4:50  up 3 days, 15:28, 1 user, load averages: 41.59 40.35 32.62
