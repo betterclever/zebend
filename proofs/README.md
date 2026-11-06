@@ -231,7 +231,7 @@ split of a value below 2^128, and the same unfolding step), `U32.xor64` (needs a
 Run with `prims/chk.sh FILE [--verdict]`: it raises the JS stack so the checker can
 expand `65536n` (2^16) once, in `words.bend`'s `e16`.
 
-## orchard/: soundness of Orchard circuit gadgets on the generated gates (7 laws)
+## orchard/: soundness of Orchard circuit gadgets on the generated gates (14 laws)
 
 Target: the exact gate polynomials of the generated Orchard circuit
 (`zcash/halo2/gen/orchard_cs.bend`). `gates.py` parses that file, decodes its Montgomery-form
@@ -258,6 +258,9 @@ the gate polynomial(s) evaluate to 0. `a<k>` is the k-th queried advice evaluati
 | `decompose_bit` | 13 "Decompose scalar for complete bits of variable-base mul": "bool_check" and "y_switch" together | `a10 == 2·a11 + 0` and `a9 + a21 == 0`, or `a10 == 2·a11 + 1` and `a9 == a21` |
 | `cond_swap` | 26 "a' = b ⋅ swap + a ⋅ (1-swap)": "a check", "b check", "swap is bool" together | `a4 == 0`, `a2 == a0`, `a3 == a1`; or `a4 == 1`, `a2 == a1`, `a3 == a0` |
 
+Each law has a `<name>_satisfiable` companion: every hypothesis at once, `F.NZD` included
+(`nzd11.bend` proves it for p = 11), on a concrete row at p = 11 with sel = si = 1.
+
 (`+`, `·`, `2·` above are `F.fadd`/`F.fmul` in Fp.) The laws are about the generated code
 after `gates.py`'s translation; that translation is checked by the 386/386 evaluation, not
 proven. Each law is about one gate on one row; what a gadget means across rows (e.g. a
@@ -274,6 +277,48 @@ hypothesis is false for every p ≥ 1. `orchard/gadget_vacuous.bend` proves this
 (`nzd_unsatisfiable: NoZeroDivisors(1 + pp) -> Empty`). `orchard/`'s `NZD` quantifies only
 over canonical elements, which a prime p satisfies, and `orchard/`'s `last_window_bit` /
 `E.boolean` is the non-vacuous version of that law, on a real Orchard gate.
+
+## orchard_ecc/, orchard_canon/, orchard_hash/: the rest of the Orchard gates (99 laws)
+
+Every Orchard gate not covered above, on the same generated polynomials. Each directory's
+README states its laws in words; `../orchard/lawgen.py` generates one law per gate (each
+polynomial read as an equation, a bit, a small range, a bit-guarded implication or a split
+product) with a satisfiability companion at p = 11, and hand-written laws give the meaning of
+the arithmetic gadgets:
+
+- `orchard_ecc/` (46): complete addition, all five cases (identity on either side, Q = -P,
+  distinct x, doubling) force R to the group-law result; incomplete addition with x_p != x_q is
+  the chord-rule sum; the LSB row; the short fixed-base sign is +-1; per-row facts of gates 1-4,
+  7-12, 14, 16-19.
+- `orchard_canon/` (37): the strict running-sum range check is sound (z_n = 0 and every
+  looked-up word < r give z_0 < r^n, lookups assumed), with a counterexample without z_n = 0;
+  NoteCommit's x(g_d) decomposition is canonical (x equals the integer a + 2^250 b_0 + 2^254 b_1),
+  with a counterexample without the a' check; per-row facts of gates 20, 27, 31, 32-43 (44-54).
+- `orchard_hash/` (16): per-row equations of the Poseidon (21-23) and Sinsemilla (24, 25, 28,
+  29) gates and the second conditional swap (30).
+
+Coverage of all 55 gates (gate numbers as in `orchard/names/names.txt`):
+
+| Gates | Chip | Where | Proven | Not proven |
+|---|---|---|---|---|
+| 0 | Action checks | `orchard` | all 4 constraints | |
+| 1, 2, 3, 4 | field add, short-range bitshift, point witnessing | `orchard_ecc` | per-row facts | short range check's integer argument |
+| 5 | incomplete addition | `orchard_ecc` | `incomplete_add` | |
+| 6 | complete addition | `orchard_ecc` | all 12 constraints, 5 cases | |
+| 7-12 | variable-base mul loop | `orchard_mul`, `orchard_ecc` | base anchored; bits, secant, gradient_2, init y_a | gradient_1 (8_3, 9_1, 11_3, 12_1); that the loop computes [k] P |
+| 13 | complete-bits decomposition | `orchard` | bool_check, y_switch | |
+| 14 | overflow check | `orchard_ecc` | per-row facts | the cross-row overflow argument |
+| 15 | LSB | `orchard_ecc` | `lsb_check` | |
+| 16-18 | fixed-base mul windows | `orchard_ecc` | window <= 7, coordinates, on-curve | that the fixed tables hold the base's multiples |
+| 19 | short fixed-base mul | `orchard`, `orchard_ecc` | last window bit, sign = +-1, y' = sign y | |
+| 20 | base-field scalar canonicity | `orchard_canon` | per-row facts | the integer canonicity argument |
+| 21-23 | Poseidon | `orchard_hash` | per-row round equations | composition into the permutation; constants vs. spec |
+| 24, 25, 28, 29 | Sinsemilla rounds | `orchard_hash` | per-row equations | that the rounds compute the hash |
+| 26, 30 | conditional swap | `orchard`, `orchard_hash` | all constraints | |
+| 27, 31 | Sinsemilla message decomposition | `orchard_canon` | per-row facts | |
+| 32 | CommitIvk canonicity | `orchard_canon` | per-row facts | integer canonicity of ak, nk |
+| 33-43, 44-54 | NoteCommit pieces and canonicity | `orchard_canon` | per-row facts; `canon_gd` (integer canonicity of x(g_d)) | integer canonicity of pk_d, rho, psi, y |
+| lookups | range-check table | `orchard_canon` | `running_sum_range` (lookup assumed) | the lookup argument itself (proof system) |
 
 ## opt_gates/: the optimised generated verifier computes what the original computes (56 laws)
 

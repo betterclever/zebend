@@ -1,7 +1,7 @@
 # Proofs
 
 Every law below is checked by Bend's dependent type checker with `bend PROOF.bend --verdict`,
-with no `@unsafe`. That checker is rechecked by a Lean-proven kernel. 176 laws in total.
+with no `@unsafe`. That checker is rechecked by a Lean-proven kernel. 282 laws in total.
 
 ## What is proven
 
@@ -16,7 +16,10 @@ with no `@unsafe`. That checker is rechecked by a Lean-proven kernel. 176 laws i
 | `proofs/parse` | 11 | parser round-trips, and rejection of non-canonical and over-length input |
 | `proofs/merkle`, `proofs/state`, `zcash/state` | 9 | the incremental frontier equals the full tree, Merkle path soundness, nullifier-set insertion, on the running code |
 | `proofs/prims`, `proofs/field`, `proofs/fieldmul` | 12 | the 64-bit word primitives compute exact products and sums |
-| `proofs/orchard` | 7 | soundness of real Orchard gates on the generated polynomials: value balance, anchor-or-zero, enable flags, booleanity, bit decomposition, conditional swap |
+| `proofs/orchard` | 14 | soundness of real Orchard gates on the generated polynomials: value balance, anchor-or-zero, enable flags, booleanity, bit decomposition, conditional swap; a satisfiability companion for each |
+| `proofs/orchard_ecc` | 46 | complete addition (all five cases give the group-law result), incomplete addition (the chord-rule sum when x_p != x_q), the LSB row, the short-mul sign is +-1, and per-row facts of every other ECC gate; each with a satisfiability companion |
+| `proofs/orchard_canon` | 37 | the strict running-sum range check bounds z_0 < r^n (lookups assumed; counterexample without z_n = 0); x(g_d)'s NoteCommit decomposition is canonical (counterexample without the a' check); per-row facts of every decomposition and canonicity gate |
+| `proofs/orchard_hash` | 16 | per-row equations of the Poseidon and Sinsemilla gates and the second conditional swap |
 | `proofs/orchard_mul` | 3 | the NU6.2 fix for the May 2026 Orchard bug: the base of the variable-base scalar multiplication is anchored to `g_d`, plus non-vacuity and a counterexample on the pre-NU6.2 circuit |
 | `proofs/opt_gates` | 56 | every optimised function of the fast Halo 2 verifier computes the same values as the original, in Z/p for every p ≥ 2 |
 | `proofs/msm_chunk` | 8 | chunked and parallel MSM equals the plain MSM; merging proofs on shared bases is exact |
@@ -33,7 +36,16 @@ It is kept as a lesson and not counted. Every law with hypotheses now has a non-
 - Montgomery batch inversion, and the sparse-to-dense step for fixed-base scalars, in the fast
   Halo 2 verifier.
 - The proof systems themselves (halo2 with IPA, Groth16) and the hardness assumptions under them.
-- The full Orchard Action relation is not proven: only the gates and the anchoring above.
+- The full Orchard Action relation is not proven: only the gates, the anchoring, the range check
+  and one canonicity argument above. Not proven: that the gadgets compose (the mul loop computes
+  [k] P, Poseidon and Sinsemilla compute their hashes), the integer canonicity of the other
+  decompositions (pk_d, rho, psi, y, ak, nk, the gate 20 scalar, the overflow check), and the
+  gradient_1 polynomials of the mul loop. `proofs/README.md` has the per-gate table.
+- Lookup arguments (that a looked-up value is in the table), copy constraints (the permutation
+  argument) and selector compression (that a gate's selector factor is non-zero exactly on the
+  rows the layout enables) are properties of halo2 and the layout; the laws state them as
+  hypotheses.
+- Primality of the Pallas modulus, used as `NZD` (no zero divisors among canonical elements).
 
 ## Check them
 
