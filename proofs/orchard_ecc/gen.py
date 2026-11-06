@@ -55,4 +55,5 @@ MODEL_ONLY = {5, 6, 15}
 
 if __name__ == "__main__":
     only = [int(x) for a in sys.argv[1:] for x in a.split()]
-    LG.emit("orchard_ecc", [g for g in GATES if not only or g.g in only], HEADER, model_only=MODEL_ONLY)
+    LG.emit("orchard_ecc", [g for g in GATES if not only or g.g in only], HEADER, model_only=MODEL_ONLY,
+            extra_imports=[("./PROOF_ECC.bend", "Hand")])
